@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import net.amigocraft.TTT.AutoUpdate;
 import net.amigocraft.TTT.Metrics;
+import net.amigocraft.TTT.localization.Localization;
 import net.amigocraft.TTT.utils.WorldUtils;
 
 import org.apache.commons.io.FileUtils;
@@ -52,6 +53,8 @@ public class TTT extends JavaPlugin implements Listener {
 
 	public static Logger log = Logger.getLogger("Minecraft");
 	public static TTT plugin = new TTT();
+	public static Localization local = new Localization();
+	public static String lang;
 
 	public HashMap<String, String> joinedPlayers = new HashMap<String, String>();
 	public HashMap<String, Integer> playerRoles = new HashMap<String, Integer>();
@@ -64,6 +67,16 @@ public class TTT extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable(){
+		// register events and the plugin variable
+		getServer().getPluginManager().registerEvents(this, this);
+		TTT.plugin = this;
+
+		// create the default config
+		if(!(new File(plugin.getDataFolder(), "config.yml")).exists())
+			plugin.saveDefaultConfig();
+		
+		TTT.lang = getConfig().getString("localization");
+
 		// autoupdate
 		if (getConfig().getBoolean("enable-auto-update")){
 			try {new AutoUpdate(this);}
@@ -76,39 +89,18 @@ public class TTT extends JavaPlugin implements Listener {
 				Metrics metrics = new Metrics(this);
 				metrics.start();
 			}
-			catch (IOException e) {log.warning("[GoldBank] Failed to submit statistics to Plugin Metrics");}
+			catch (IOException e) {log.warning("[TTT] " + local.getMessage("metrics-fail"));}
 		}
-
-		// register events and the plugin variable
-		getServer().getPluginManager().registerEvents(this, this);
-		TTT.plugin = this;
-
-		// create the default config
-		if(!(new File(plugin.getDataFolder(), "config.yml")).exists())
-			plugin.saveDefaultConfig();
 
 		File invDir = new File(this.getDataFolder() + File.separator + "inventories");
 		invDir.mkdir();
 
-		log.info(this + " has been enabled!");
+		log.info(this + " " + local.getMessage("enabled"));
 	}
 
 	@Override
 	public void onDisable(){
-		/*log.info(ChatColor.DARK_PURPLE + "Please wait, rolling back worlds...");
-		for (final World w : getServer().getWorlds()){
-			if (w.getName().substring(0, 4).equals("TTT_")){
-				for (Player p : w.getPlayers()){
-					p.teleport(getServer().getWorlds().get(0).getSpawnLocation());
-				}
-				getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
-					public void run(){
-						rollbackWorld(w.getName());
-					}
-				}, 20L);
-			}
-		}*/
-		log.info(this + " has been disabled!");
+		log.info(this + " " + local.getMessage("disabled"));
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
@@ -125,30 +117,30 @@ public class TTT extends JavaPlugin implements Listener {
 										if (!newFolder.exists()){
 											try {
 												FileUtils.copyDirectory(folder, newFolder);
-												sender.sendMessage(ChatColor.GREEN + "Successfully imported world!");
+												sender.sendMessage(ChatColor.GREEN + "[TTT] " + local.getMessage("import-success"));
 											}
 											catch (IOException e){
-												sender.sendMessage(ChatColor.RED + "An error occurred while creating the new folder");
+												sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("folder-error"));
 												e.printStackTrace();
 											}
 										}
 										else
-											sender.sendMessage(ChatColor.RED + "Error: This world has already been imported!");
+											sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("already-imported"));
 									}
 									else
-										sender.sendMessage(ChatColor.RED + "Error: The specified world cannot be loaded, and therefore is invalid or corrupt");
+										sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("cannot-load-world"));
 								}
 								else
-									sender.sendMessage(ChatColor.RED + "Error: Folder name must not start with \"TTT_\"!");
+									sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("start-error"));
 							}
 							else
-								sender.sendMessage(ChatColor.RED + "Error: Specified folder cannot be found! Verify that the folder is in the server's root directory, then try again.");
+								sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("folder-not-found"));
 						}
 						else
-							sender.sendMessage(ChatColor.RED + "Too few arguments! Usage: /ttt import [folder name]");
+							sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("invalid-args-1") + " " + local.getMessage("usage-import"));
 					}
 					else
-						sender.sendMessage(ChatColor.RED + "You do not have permission to import a map!");
+						sender.sendMessage(ChatColor.RED + local.getMessage("no-permission-import"));
 				}
 				else if (args[0].equalsIgnoreCase("join")){
 					if (sender instanceof Player){
@@ -183,10 +175,10 @@ public class TTT extends JavaPlugin implements Listener {
 										}
 										catch (Exception ex){
 											ex.printStackTrace();
-											sender.sendMessage(ChatColor.RED + "Failed to save inventory!");
+											sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-save-error"));
 										}
 										((Player)sender).getInventory().clear();
-										sender.sendMessage(ChatColor.GREEN + "Successfully joined map " + worldName);
+										sender.sendMessage(ChatColor.GREEN + local.getMessage("success-join") + " " + worldName);
 										List<String> testers = new ArrayList<String>();
 										testers.add("ZerosAce00000");
 										testers.add("momhipie");
@@ -197,37 +189,39 @@ public class TTT extends JavaPlugin implements Listener {
 										testers.add("shiny3");
 										String addition = "";
 										if (sender.getName().equals("AngryNerd1"))
-											addition = ", " + ChatColor.DARK_RED + "creator of " + "TTT" + ", " + ChatColor.DARK_PURPLE;
+											addition = ", " + ChatColor.DARK_RED + local.getMessage("creator") + ", " + ChatColor.DARK_PURPLE;
 										else if (testers.contains(sender.getName())){
-											addition = ", " + ChatColor.DARK_RED + "alpha tester of " + "TTT" + ", " + ChatColor.DARK_PURPLE;
+											addition = ", " + ChatColor.DARK_RED + local.getMessage("tester") + ", " + ChatColor.DARK_PURPLE;
 										}
-										Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + addition + " has joined map \"" + worldName + "\"");
+										Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + addition + " " + local.getMessage("joined-map") + " \"" + worldName + "\"");
 										if (joinedPlayers.size() >= getConfig().getInt("minimum-players") && !time.containsKey(worldName)){
 											for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers())
-												p.sendMessage(ChatColor.DARK_PURPLE + "Round is starting!");
+												p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("round-starting"));
 											time.put(worldName, getConfig().getInt("setup-time"));
 											tasks.put(worldName, setupTimer(worldName));
 										}
 										else {
-											((Player)sender).sendMessage(ChatColor.DARK_PURPLE + "Waiting for players...");
+											((Player)sender).sendMessage(ChatColor.DARK_PURPLE + local.getMessage("waiting"));
 										}
 									}
 									else
-										sender.sendMessage(ChatColor.RED + "Error: The specified map does not exist or has not been imported!!");
+										sender.sendMessage(ChatColor.RED + local.getMessage("invalid-map"));
 									folder = null;
 									tttFolder = null;
 								}
 								else
-									sender.sendMessage(ChatColor.RED + "You may not join a game already in progress!");
+									sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("in-progress"));
 							}
-							else
-								sender.sendMessage(ChatColor.RED + "Too few arguments! Usage: /tt join [world name]");
+							else {
+								sender.sendMessage(ChatColor.RED + local.getMessage("invalid-2"));
+								sender.sendMessage(ChatColor.RED + local.getMessage("usage-join"));
+							}
 						}
 						else
-							sender.sendMessage(ChatColor.RED + "You do not have permission to join a game!");
+							sender.sendMessage(ChatColor.RED + local.getMessage("no-permission-join"));
 					}
 					else
-						sender.sendMessage(ChatColor.RED + "You must be an ingame player to perform this command!");
+						sender.sendMessage(ChatColor.RED + local.getMessage("must-be-ingame"));
 				}
 				else if (args[0].equalsIgnoreCase("quit")){
 					if (sender instanceof Player){
@@ -239,19 +233,23 @@ public class TTT extends JavaPlugin implements Listener {
 								playerRoles.remove(sender.getName());
 							}
 							else
-								sender.sendMessage(ChatColor.RED + "You are not currently in a game!");
+								sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("not-in-game"));
 						}
 						else
-							sender.sendMessage(ChatColor.RED + "You do not have permission to leave a game!");
+							sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-permission-quit"));
 					}
 					else
-						sender.sendMessage(ChatColor.RED + "You must be an ingame player to perform this command!");
+						sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("must-be-ingame"));
 				}
-				else
-					sender.sendMessage(ChatColor.RED + "Invalid command! Usage: /ttt [command]");
+				else {
+					sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("invalid-args-2"));
+					sender.sendMessage(ChatColor.RED + local.getMessage("usage-1"));
+				}
 			}
-			else
-				sender.sendMessage(ChatColor.RED + "Too few arguments! Usage: /ttt [command]");
+			else {
+				sender.sendMessage(ChatColor.RED + local.getMessage("invalid-args-1"));
+				sender.sendMessage(ChatColor.RED + local.getMessage("usage-1"));
+			}
 			return true;
 		}
 		return false;
@@ -262,7 +260,7 @@ public class TTT extends JavaPlugin implements Listener {
 		if (e.getMessage().substring(0, 3).equalsIgnoreCase("kit")){
 			if (joinedPlayers.containsKey(e.getPlayer().getName()) || deadPlayers.containsKey(e.getPlayer().getName())){
 				e.setCancelled(true);
-				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] You may not use kits while in a game!");
+				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-kits"));
 			}
 		}
 	}
@@ -318,7 +316,7 @@ public class TTT extends JavaPlugin implements Listener {
 				if (joinedPlayers.containsKey(((Player)e.getEntity()).getName())){
 					e.setCancelled(true);
 					p.setHealth(20);
-					p.sendMessage(ChatColor.DARK_PURPLE + "You are now dead! You have been hidden from other players and are now capable of flying.");
+					p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("dead"));
 					String worldName = p.getWorld().getName().replace("TTT_", "");
 					joinedPlayers.remove(p.getName());
 					deadPlayers.put(p.getName(), worldName);
@@ -330,7 +328,7 @@ public class TTT extends JavaPlugin implements Listener {
 					ItemMeta idMeta = id.getItemMeta();
 					idMeta.setDisplayName("ID");
 					List<String> idLore = new ArrayList<String>();
-					idLore.add("This is the body of");
+					idLore.add(local.getMessage("body-of"));
 					idLore.add(((Player)e.getEntity()).getName());
 					idMeta.setLore(idLore);
 					id.setItemMeta(idMeta);
@@ -339,16 +337,16 @@ public class TTT extends JavaPlugin implements Listener {
 					ItemMeta tiMeta = ti.getItemMeta();
 					if (playerRoles.get(p.getName()) == 0){
 						ti.setDurability((short)5);
-						tiMeta.setDisplayName("§2Innocent");
+						tiMeta.setDisplayName("§2" + local.getMessage("innocent"));
 						List<String> tiLore = new ArrayList<String>();
-						tiLore.add("This person was innocent!");
+						tiLore.add(local.getMessage("innocent-id"));
 						tiMeta.setLore(tiLore);
 					}
 					else {
 						ti.setDurability((short)14);
-						tiMeta.setDisplayName("§4Traitor");
+						tiMeta.setDisplayName("§4" + local.getMessage("traitor"));
 						List<String> lore = new ArrayList<String>();
-						lore.add("This person was a traitor!");
+						lore.add(local.getMessage("traitor-id"));
 						tiMeta.setLore(lore);
 					}
 					ti.setItemMeta(tiMeta);
@@ -396,7 +394,7 @@ public class TTT extends JavaPlugin implements Listener {
 						if (p != null){
 							if (!getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 								offlinePlayers.add(pl);
-								Bukkit.broadcastMessage("[TTT]" + pl + " has left map \"" + worldName + "\"");
+								Bukkit.broadcastMessage("[TTT]" + pl + " " + local.getMessage("left-map") + " \"" + worldName + "\"");
 							}
 						}
 					}
@@ -418,12 +416,12 @@ public class TTT extends JavaPlugin implements Listener {
 				if (playerCount >= getConfig().getInt("minimum-players")){
 					if((currentTime % 10) == 0 && currentTime > 0){
 						for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_PURPLE + "The game will begin in " + currentTime + " seconds!");
+							p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("begin") + " " + currentTime + " " + local.getMessage("seconds") + "!");
 						}
 					}
 					else if (currentTime > 0 && currentTime < 10){
 						for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_PURPLE + "The game will begin in " + currentTime + " seconds!");
+							p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("begin") + " " + currentTime + " " + local.getMessage("seconds") + "!");
 						}
 					}
 					else if (currentTime <= 0){
@@ -436,7 +434,7 @@ public class TTT extends JavaPlugin implements Listener {
 						List<String> traitorNames = new ArrayList<String>();
 						for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
 							innocents.add(p.getName());
-							p.sendMessage(ChatColor.DARK_PURPLE + "The game has begun!");
+							p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("begun"));
 						}
 						while (traitors < limit){
 							Random randomGenerator = new Random();
@@ -461,19 +459,19 @@ public class TTT extends JavaPlugin implements Listener {
 							Player pl = getServer().getPlayer(p);
 							if (innocents.contains(p)){
 								playerRoles.put(p, 0);
-								pl.sendMessage(ChatColor.DARK_GREEN + "You are an innocent! But beware, there are traitors lurking about, yearning to fill you with bullets.");
+								pl.sendMessage(ChatColor.DARK_GREEN + local.getMessage("you-are-innocent"));
 								pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo});
 							}
 							else {
 								playerRoles.put(p, 1);
-								pl.sendMessage(ChatColor.DARK_RED + "You are a traitor! Your job is to kill all of the innocents. But beware, you are outnumbered. You'll need cleverness and agility if you are to win this.");
+								pl.sendMessage(ChatColor.DARK_RED + local.getMessage("you-are-traitor"));
 								if (traitorNames.size() > 1){
-									pl.sendMessage(ChatColor.DARK_RED + "Traitor, these are your allies:");
+									pl.sendMessage(ChatColor.DARK_RED + local.getMessage("allies"));
 									for (String t : traitorNames)
 										pl.sendMessage("- " + t);
 								}
 								else
-									pl.sendMessage(ChatColor.DARK_RED + "Traitor, you stand alone.");
+									pl.sendMessage(ChatColor.DARK_RED + local.getMessage("alone"));
 								pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo});
 							}
 						}
@@ -490,7 +488,7 @@ public class TTT extends JavaPlugin implements Listener {
 					time.remove(worldName);
 					Bukkit.getScheduler().cancelTask(tasks.get(worldName));
 					for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
-						p.sendMessage(ChatColor.DARK_PURPLE + "Waiting for players...");
+						p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("waiting"));
 					}
 				}
 			}
@@ -519,7 +517,7 @@ public class TTT extends JavaPlugin implements Listener {
 						if (p != null){
 							if (!getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 								offlinePlayers.add(pl);
-								Bukkit.broadcastMessage("[TTT]" + pl + " has left map \"" + worldName + "\"");
+								Bukkit.broadcastMessage("[TTT]" + pl + " " + local.getMessage("left-map") + " \"" + worldName + "\"");
 							}
 						}
 					}
@@ -571,9 +569,9 @@ public class TTT extends JavaPlugin implements Listener {
 					removeFoundBodies.clear();
 
 					if (!tLeft)
-						Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] The innocents won on map \"" + worldName + "\"!");
+						Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " + local.getMessage("innocent-win") + " \"" + worldName + "\"!");
 					if (!iLeft)
-						Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] The traitors won on map \"" + worldName + "\"!");
+						Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " + local.getMessage("innocent-win") + " \"" + worldName + "\"!");
 					for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
 						joinedPlayers.remove(p.getName());
 						playerRoles.remove(p.getName());
@@ -600,7 +598,7 @@ public class TTT extends JavaPlugin implements Listener {
 							}
 							catch (Exception ex){
 								ex.printStackTrace();
-								p.sendMessage(ChatColor.RED + "Failed to load stored inventory!");
+								p.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-load-fail"));
 							}
 						}
 						gameTime.remove(worldName);
@@ -629,17 +627,17 @@ public class TTT extends JavaPlugin implements Listener {
 					gameTime.put(worldName, newTime);
 					if (newTime % 60 == 0 && newTime >= 60){
 						for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(newTime / 60) + " minutes left in the game!");
+							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(newTime / 60) + " " + local.getMessage("minutes") + " " + local.getMessage("left"));
 						}
 					}
 					else if (newTime % 10 == 0 && newTime > 10 && newTime < 60){
 						for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(newTime) + " seconds left in the game!");
+							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(newTime) + " " + local.getMessage("seconds") + " " + local.getMessage("left"));
 						}
 					}
 					else if (newTime < 10 && newTime > 0){
 						for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(newTime) + " seconds left in the game!");
+							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(newTime) + " " + local.getMessage("seconds") + " " + local.getMessage("left"));
 						}
 					}
 					else if (newTime <= 0){
@@ -665,7 +663,7 @@ public class TTT extends JavaPlugin implements Listener {
 						removeFoundBodies.clear();
 
 						for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_GREEN + "The innocents won on map \"" + worldName + "\"!");
+							p.sendMessage(ChatColor.DARK_GREEN + "[TTT] " + local.getMessage("innocent-win") + " \"" + worldName + "\"!");
 							joinedPlayers.remove(p.getName());
 							playerRoles.remove(p.getName());
 							if (deadPlayers.containsKey(p.getName())){
@@ -691,7 +689,7 @@ public class TTT extends JavaPlugin implements Listener {
 								}
 								catch (Exception ex){
 									ex.printStackTrace();
-									p.sendMessage(ChatColor.RED + "Failed to load stored inventory!");
+									p.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-load-fail"));
 								}
 							}
 							gameTime.remove(worldName);
@@ -738,15 +736,15 @@ public class TTT extends JavaPlugin implements Listener {
 						File newFolder = new File("TTT_" + worldName);
 						try {
 							FileUtils.copyDirectory(folder, newFolder);
-							log.info("Successfully rolled back world \"" + worldName + "\"!");
+							log.info("[TTT] " + local.getMessage("rollback") + " \"" + worldName + "\"!");
 						}
 						catch (IOException ex){
-							log.info("An error occurred while recreating the new world folder for " + worldName);
+							log.info("[TTT] " + local.getMessage("folder-error") + " " + worldName);
 							ex.printStackTrace();
 						}
 					}
 					else
-						log.info("Error: The world cannot be loaded, and therefore is invalid or corrupt");
+						log.info("[TTT] " + local.getMessage("cannot-load-world"));
 				}
 			}
 		}, 100L);
@@ -819,9 +817,9 @@ public class TTT extends JavaPlugin implements Listener {
 						if (!found){
 							for (Player p : e.getPlayer().getWorld().getPlayers()){
 								if (bodies.get(index).getRole() == 0)
-									p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " found the body of " + bodies.get(index).getName() + ". He was innocent.");
+									p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " + local.getMessage("found-body") + " " + bodies.get(index).getName() + ". " + local.getMessage("was-innocent"));
 								else if (bodies.get(index).getRole() == 1)
-									p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " found the body of " + bodies.get(index).getName() + ". He was a traitor!.");
+									p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " + local.getMessage("found-body") + " " + bodies.get(index).getName() + ". " + local.getMessage("was-traitor"));
 							}
 							foundBodies.add(bodies.get(index));
 						}
@@ -843,7 +841,7 @@ public class TTT extends JavaPlugin implements Listener {
 										e.getPlayer().launchProjectile(Arrow.class);
 									}
 									else
-										e.getPlayer().sendMessage(ChatColor.RED + "You need more ammo!");
+										e.getPlayer().sendMessage(ChatColor.RED + local.getMessage("need-ammo"));
 								}
 							}
 						}
@@ -859,7 +857,7 @@ public class TTT extends JavaPlugin implements Listener {
 						if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
 							if (e.getClickedBlock().getType() == Material.CHEST){
 								Inventory inv = ((Chest)e.getClickedBlock().getState()).getInventory();
-								e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + "Searching body discreetly");
+								e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + local.getMessage("discreet"));
 								e.getPlayer().openInventory(inv);
 							}
 							break;
@@ -907,7 +905,7 @@ public class TTT extends JavaPlugin implements Listener {
 	public void onPlayerDropItem(PlayerDropItemEvent e){
 		if (joinedPlayers.containsKey(e.getPlayer().getName()) || deadPlayers.containsKey(e.getPlayer().getName())){
 			e.setCancelled(true);
-			e.getPlayer().sendMessage(ChatColor.RED + "You may not drop items while in a game!");
+			e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-drop"));
 		}
 	}
 }
