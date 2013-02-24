@@ -60,7 +60,7 @@ public class AutoUpdate implements Runnable, Listener, CommandExecutor, CommandS
    * COLOR_ERROR = The text color for error messages.
    */
   private long delay = 216000L;
-  private String bukkitdevSlug = "";
+  private String bukkitdevSlug = "ttt";
   private final ChatColor COLOR_INFO = ChatColor.BLUE;
   private final ChatColor COLOR_OK = ChatColor.GREEN;
   private final ChatColor COLOR_ERROR = ChatColor.RED;
