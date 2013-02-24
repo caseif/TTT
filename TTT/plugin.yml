@@ -1,0 +1,27 @@
+name: Trouble In Terrorist Town
+version: 0.1
+main: net.amigocraft.TTT.TTT
+author: Maxim Roncace
+website: http://www.headswilllol.com/
+description: This plugin allows players to participate in an imitation of the popular Garry's Mod gamemode "Trouble In Terrorist Town."
+commands:
+  ttt:
+    import:
+      description: Imports a TTT map from a specified folder in the server's root directory
+      usage: /ttt import [folder name]
+    join:
+      description: Adds player to a specified game of TTT
+      usage: /ttt join [map name]
+permissions:
+  ttt.*:
+    description: Allows for full control and manipulation of the plugin
+    default: op
+    children:
+      ttt.import: true
+      ttt.join: true
+  ttt.import:
+    description: Allows player to import worlds into the plugin
+    default: op
+  ttt.join:
+    description: Allows player to join TTT matches
+    default: true

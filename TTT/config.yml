@@ -1,0 +1,33 @@
+# ########################################### #
+# # Trouble In Terrorist Town Configuration # #
+# ########################################### #
+
+#How long should rounds last for (in seconds)?
+time-limit: 360
+
+#How long should the plugin wait before starting a new round once enough players have joined?
+setup-time: 90
+
+#How many players are required to start a round?
+minimum-players: 3
+
+#What should the ratio of traitors to innocents be (as a decimal)?
+traitor-ratio: 0.2
+
+#How much damage should crowbars do? (How many half-hearts?)
+crowbar-damage: 2
+  
+#Should guns be functional outside of arenas?
+guns-outside-arenas: false
+
+#Should ammunition (arrows) be required to use guns?
+require-ammo-for-guns: true
+
+#Should the plugin allow auto-updating?
+enable-auto-update: true
+
+#Allow me to collect anonymous usage imformation (pretty please)?
+enable-metrics: true
+
+#Don't touch this. Please.
+config-version: 0.1
