@@ -46,15 +46,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class TTT extends JavaPlugin implements Listener {
 
-	// Special thanks to:
-	// ------------------
-	// ZerosAce00000
-	// momhipie
-	// JHA
-	// Jack M.
-	// ------------------
-	// for being this plugin's first alpha testers
-
 	public static Logger log = Logger.getLogger("Minecraft");
 	public static TTT plugin = new TTT();
 
@@ -163,7 +154,18 @@ public class TTT extends JavaPlugin implements Listener {
 										((Player)sender).teleport(getServer().getWorld("TTT_" + worldName).getSpawnLocation());
 										joinedPlayers.put(((Player)sender).getName(), worldName);
 										sender.sendMessage(ChatColor.GREEN + "Successfully joined map " + worldName);
-										Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + " has joined map \"" + worldName + "\"");
+										List<String> testers = new ArrayList<String>();
+										testers.add("ZerosAce00000");
+										testers.add("momhipie");
+										testers.add("xJHA929x");
+										testers.add("jmm1999");
+										String addition = "";
+										if (sender.getName().equals("AngryNerd1"))
+											addition = ", creator of " + ChatColor.DARK_RED + "TTT" + ChatColor.DARK_PURPLE + ", ";
+										else if (testers.contains(sender.getName())){
+											addition = ", alpha tester of " + ChatColor.DARK_RED + "TTT" + ChatColor.DARK_PURPLE + ", ";
+										}
+										Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + addition + " has joined map \"" + worldName + "\"");
 										if (joinedPlayers.size() >= getConfig().getInt("minimum-players") && !time.containsKey(worldName)){
 											for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers())
 												p.sendMessage(ChatColor.DARK_PURPLE + "Round is starting!");
