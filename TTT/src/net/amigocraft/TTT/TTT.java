@@ -22,6 +22,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
@@ -38,7 +39,10 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -83,11 +87,27 @@ public class TTT extends JavaPlugin implements Listener {
 		if(!(new File(plugin.getDataFolder(), "config.yml")).exists())
 			plugin.saveDefaultConfig();
 
+		File invDir = new File(this.getDataFolder() + File.separator + "inventories");
+		invDir.mkdir();
+
 		log.info(this + " has been enabled!");
 	}
 
 	@Override
 	public void onDisable(){
+		/*log.info(ChatColor.DARK_PURPLE + "Please wait, rolling back worlds...");
+		for (final World w : getServer().getWorlds()){
+			if (w.getName().substring(0, 4).equals("TTT_")){
+				for (Player p : w.getPlayers()){
+					p.teleport(getServer().getWorlds().get(0).getSpawnLocation());
+				}
+				getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
+					public void run(){
+						rollbackWorld(w.getName());
+					}
+				}, 20L);
+			}
+		}*/
 		log.info(this + " has been disabled!");
 	}
 
@@ -114,7 +134,6 @@ public class TTT extends JavaPlugin implements Listener {
 										}
 										else
 											sender.sendMessage(ChatColor.RED + "Error: This world has already been imported!");
-										newFolder = null;
 									}
 									else
 										sender.sendMessage(ChatColor.RED + "Error: The specified world cannot be loaded, and therefore is invalid or corrupt");
@@ -124,7 +143,6 @@ public class TTT extends JavaPlugin implements Listener {
 							}
 							else
 								sender.sendMessage(ChatColor.RED + "Error: Specified folder cannot be found! Verify that the folder is in the server's root directory, then try again.");
-							folder = null;
 						}
 						else
 							sender.sendMessage(ChatColor.RED + "Too few arguments! Usage: /ttt import [folder name]");
@@ -153,17 +171,35 @@ public class TTT extends JavaPlugin implements Listener {
 										}
 										((Player)sender).teleport(getServer().getWorld("TTT_" + worldName).getSpawnLocation());
 										joinedPlayers.put(((Player)sender).getName(), worldName);
+										File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + sender.getName() + ".yml");
+										try {
+											if (!invF.exists())
+												invF.createNewFile();
+											YamlConfiguration invY = new YamlConfiguration();
+											invY.load(invF);
+											for (int i = 0; i < ((Player)sender).getInventory().getContents().length; i++)
+												invY.set(Integer.toString(i), ((Player)sender).getInventory().getContents()[i]);
+											invY.save(invF);
+										}
+										catch (Exception ex){
+											ex.printStackTrace();
+											sender.sendMessage(ChatColor.RED + "Failed to save inventory!");
+										}
+										((Player)sender).getInventory().clear();
 										sender.sendMessage(ChatColor.GREEN + "Successfully joined map " + worldName);
 										List<String> testers = new ArrayList<String>();
 										testers.add("ZerosAce00000");
 										testers.add("momhipie");
 										testers.add("xJHA929x");
 										testers.add("jmm1999");
+										testers.add("jon674");
+										testers.add("HardcoreBukkit");
+										testers.add("shiny3");
 										String addition = "";
 										if (sender.getName().equals("AngryNerd1"))
-											addition = ", creator of " + ChatColor.DARK_RED + "TTT" + ChatColor.DARK_PURPLE + ", ";
+											addition = ", " + ChatColor.DARK_RED + "creator of " + "TTT" + ", " + ChatColor.DARK_PURPLE;
 										else if (testers.contains(sender.getName())){
-											addition = ", alpha tester of " + ChatColor.DARK_RED + "TTT" + ChatColor.DARK_PURPLE + ", ";
+											addition = ", " + ChatColor.DARK_RED + "alpha tester of " + "TTT" + ", " + ChatColor.DARK_PURPLE;
 										}
 										Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + addition + " has joined map \"" + worldName + "\"");
 										if (joinedPlayers.size() >= getConfig().getInt("minimum-players") && !time.containsKey(worldName)){
@@ -219,6 +255,16 @@ public class TTT extends JavaPlugin implements Listener {
 			return true;
 		}
 		return false;
+	}
+
+	@EventHandler
+	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e){
+		if (e.getMessage().substring(0, 3).equalsIgnoreCase("kit")){
+			if (joinedPlayers.containsKey(e.getPlayer().getName()) || deadPlayers.containsKey(e.getPlayer().getName())){
+				e.setCancelled(true);
+				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] You may not use kits while in a game!");
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -321,8 +367,9 @@ public class TTT extends JavaPlugin implements Listener {
 							if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName() != null)
 								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("Crowbar"))
 									e.setDamage(getConfig().getInt("crowbar-damage"));
-					if (deadPlayers.containsKey(((Player)ed.getDamager()).getName()))
+					if (deadPlayers.containsKey(((Player)ed.getDamager()).getName())){
 						e.setCancelled(true);
+					}
 				}
 			}
 		}
@@ -339,7 +386,6 @@ public class TTT extends JavaPlugin implements Listener {
 						if (p != null){
 							if (!getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 								offlinePlayers.add(pl);
-								log.info("pl 1");
 							}
 						}
 					}
@@ -453,6 +499,7 @@ public class TTT extends JavaPlugin implements Listener {
 
 	public void gameTimer(final String worldName){
 		tasks.put(worldName, getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+			@SuppressWarnings("deprecation")
 			public void run(){
 				// verify that all players are still online
 				List<String> offlinePlayers = new ArrayList<String>();
@@ -462,7 +509,6 @@ public class TTT extends JavaPlugin implements Listener {
 						if (p != null){
 							if (!getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 								offlinePlayers.add(pl);
-								log.info(pl);
 							}
 						}
 					}
@@ -531,8 +577,32 @@ public class TTT extends JavaPlugin implements Listener {
 					for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
 						joinedPlayers.remove(p.getName());
 						playerRoles.remove(p.getName());
-						if (deadPlayers.containsKey(p.getName()))
+						if (deadPlayers.containsKey(p.getName())){
+							p.setAllowFlight(false);
+							for (Player pl : getServer().getOnlinePlayers()){
+								pl.showPlayer(p);
+							}
 							deadPlayers.remove(p.getName());
+						}
+						p.getInventory().clear();
+						File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".yml");
+						if (invF.exists()){
+							try {
+								YamlConfiguration invY = new YamlConfiguration();
+								invY.load(invF);
+								ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
+								for (String k : invY.getKeys(false)){
+									invI[Integer.parseInt(k)] = invY.getItemStack(k);
+								}
+								p.getInventory().setContents(invI);
+								p.updateInventory();
+								invF.delete();
+							}
+							catch (Exception ex){
+								ex.printStackTrace();
+								p.sendMessage(ChatColor.RED + "Failed to load stored inventory!");
+							}
+						}
 						gameTime.remove(worldName);
 						ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
 						ItemMeta cbMeta = crowbar.getItemMeta();
@@ -542,10 +612,9 @@ public class TTT extends JavaPlugin implements Listener {
 						ItemMeta gunMeta = crowbar.getItemMeta();
 						gunMeta.setDisplayName("Gun");
 						gun.setItemMeta(gunMeta);
-						ItemStack ammo = new ItemStack(Material.ARROW, 28);
 						p.getInventory().remove(crowbar);
 						p.getInventory().remove(gun);
-						p.getInventory().remove(ammo);
+						p.getInventory().remove(Material.ARROW);
 						p.teleport(getServer().getWorlds().get(0).getSpawnLocation());
 					}
 					gameTime.remove(worldName);
@@ -601,11 +670,42 @@ public class TTT extends JavaPlugin implements Listener {
 							playerRoles.remove(p.getName());
 							if (deadPlayers.containsKey(p.getName())){
 								p.setAllowFlight(false);
-								for (Player pl : getServer().getOnlinePlayers())
+								for (Player pl : getServer().getOnlinePlayers()){
 									pl.showPlayer(p);
+								}
 								deadPlayers.remove(p.getName());
 							}
+							p.getInventory().clear();
+							File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".yml");
+							if (invF.exists()){
+								try {
+									YamlConfiguration invY = new YamlConfiguration();
+									invY.load(invF);
+									ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
+									for (String k : invY.getKeys(false)){
+										invI[Integer.parseInt(k)] = invY.getItemStack(k);
+									}
+									p.getInventory().setContents(invI);
+									p.updateInventory();
+									invF.delete();
+								}
+								catch (Exception ex){
+									ex.printStackTrace();
+									p.sendMessage(ChatColor.RED + "Failed to load stored inventory!");
+								}
+							}
 							gameTime.remove(worldName);
+							ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
+							ItemMeta cbMeta = crowbar.getItemMeta();
+							cbMeta.setDisplayName("Crowbar");
+							crowbar.setItemMeta(cbMeta);
+							ItemStack gun = new ItemStack(Material.ANVIL, 1);
+							ItemMeta gunMeta = crowbar.getItemMeta();
+							gunMeta.setDisplayName("Gun");
+							gun.setItemMeta(gunMeta);
+							p.getInventory().remove(crowbar);
+							p.getInventory().remove(gun);
+							p.getInventory().remove(Material.ARROW);
 							p.teleport(getServer().getWorlds().get(0).getSpawnLocation());
 						}
 						Bukkit.getScheduler().cancelTask(tasks.get(worldName));
@@ -638,7 +738,7 @@ public class TTT extends JavaPlugin implements Listener {
 						File newFolder = new File("TTT_" + worldName);
 						try {
 							FileUtils.copyDirectory(folder, newFolder);
-							log.info("Successfully rolled back world!");
+							log.info("Successfully rolled back world \"" + worldName + "\"!");
 						}
 						catch (IOException ex){
 							log.info("An error occurred while recreating the new world folder for " + worldName);
@@ -654,18 +754,14 @@ public class TTT extends JavaPlugin implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInventoryClick(InventoryClickEvent e){
-		log.info("it fired");
 		for (HumanEntity he : e.getViewers()){
 			Player p = (Player)he;
 			if (joinedPlayers.containsKey(p.getName())){
-				log.info("they're joined");
 				if (e.getInventory().getType() == InventoryType.CHEST){
-					log.info("it's a chest");
 					Block block = ((Chest)e.getInventory().getHolder()).getBlock();
 					for (Body b : bodies){
 						if (b.getLocation().equals(FixedLocation.getFixedLocation(block))){
 							e.setCancelled(true);
-							log.info("it's a body");
 							break;
 						}
 					}
@@ -704,50 +800,69 @@ public class TTT extends JavaPlugin implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteract(PlayerInteractEvent e){
-		if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
-			if (e.getClickedBlock().getType() == Material.CHEST){
-				int index = -1;
-				for (int i = 0; i < bodies.size(); i++){
-					if (bodies.get(i).getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
-						index = i;
-						break;
+		if (!deadPlayers.containsKey(e.getPlayer().getName())){
+			if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
+				if (e.getClickedBlock().getType() == Material.CHEST){
+					int index = -1;
+					for (int i = 0; i < bodies.size(); i++){
+						if (bodies.get(i).getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
+							index = i;
+							break;
+						}
+					}
+					if (index != -1){
+						boolean found = false;
+						for (Body b : foundBodies){
+							if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock())))
+								found = true;
+						}
+						if (!found){
+							for (Player p : e.getPlayer().getWorld().getPlayers()){
+								if (bodies.get(index).getRole() == 0)
+									p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " found the body of " + bodies.get(index).getName() + ". He was innocent.");
+								else if (bodies.get(index).getRole() == 1)
+									p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " found the body of " + bodies.get(index).getName() + ". He was a traitor!.");
+							}
+							foundBodies.add(bodies.get(index));
+						}
 					}
 				}
-				if (index != -1){
-					boolean found = false;
-					for (Body b : foundBodies){
-						if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock())))
-							found = true;
-					}
-					if (!found){
-						for (Player p : e.getPlayer().getWorld().getPlayers()){
-							if (bodies.get(index).getRole() == 0)
-								p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " found the body of " + bodies.get(index).getName() + ". He was innocent.");
-							else if (bodies.get(index).getRole() == 1)
-								p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " found the body of " + bodies.get(index).getName() + ". He was a traitor!.");
+			}
+			if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
+				if (e.getPlayer().getItemInHand() != null){
+					if (e.getPlayer().getItemInHand().getItemMeta() != null){
+						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
+							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Gun")){
+								if ((joinedPlayers.containsKey(e.getPlayer().getName()) || getConfig().getBoolean("guns-outside-arenas")) && !deadPlayers.containsKey(e.getPlayer().getName())){
+									e.setCancelled(true);
+									if (e.getPlayer().getInventory().contains(Material.ARROW) || !getConfig().getBoolean("require-ammo-for-guns")){
+										if (getConfig().getBoolean("require-ammo-for-guns")){
+											removeArrow(e.getPlayer().getInventory());
+											e.getPlayer().updateInventory();
+										}
+										e.getPlayer().launchProjectile(Arrow.class);
+									}
+									else
+										e.getPlayer().sendMessage(ChatColor.RED + "You need more ammo!");
+								}
+							}
 						}
-						foundBodies.add(bodies.get(index));
 					}
 				}
 			}
 		}
-		if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
-			if (e.getPlayer().getItemInHand() != null){
-				if (e.getPlayer().getItemInHand().getItemMeta() != null){
-					if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Gun")){
-							if ((joinedPlayers.containsKey(e.getPlayer().getName()) || getConfig().getBoolean("guns-outside-arenas")) && !deadPlayers.containsKey(e.getPlayer().getName())){
-								e.setCancelled(true);
-								if (e.getPlayer().getInventory().contains(Material.ARROW) || !getConfig().getBoolean("require-ammo-for-guns")){
-									if (getConfig().getBoolean("require-ammo-for-guns")){
-										removeArrow(e.getPlayer().getInventory());
-										e.getPlayer().updateInventory();
-									}
-									e.getPlayer().launchProjectile(Arrow.class);
-								}
-								else
-									e.getPlayer().sendMessage(ChatColor.RED + "You need more ammo!");
+		else {
+			e.setCancelled(true);
+			if (deadPlayers.containsKey(e.getPlayer().getName())){
+				for (Body b : bodies){
+					if (b.getLocation().getWorld() != null){
+						if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
+							if (e.getClickedBlock().getType() == Material.CHEST){
+								Inventory inv = ((Chest)e.getClickedBlock().getState()).getInventory();
+								e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + "Searching body discreetly");
+								e.getPlayer().openInventory(inv);
 							}
+							break;
 						}
 					}
 				}
@@ -779,6 +894,20 @@ public class TTT extends JavaPlugin implements Listener {
 					break;
 				}
 			}
+		}
+	}
+
+	@EventHandler
+	public void onPlayerPickupItem(PlayerPickupItemEvent e){
+		if (deadPlayers.containsKey(e.getPlayer().getName()))
+			e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void onPlayerDropItem(PlayerDropItemEvent e){
+		if (joinedPlayers.containsKey(e.getPlayer().getName()) || deadPlayers.containsKey(e.getPlayer().getName())){
+			e.setCancelled(true);
+			e.getPlayer().sendMessage(ChatColor.RED + "You may not drop items while in a game!");
 		}
 	}
 }

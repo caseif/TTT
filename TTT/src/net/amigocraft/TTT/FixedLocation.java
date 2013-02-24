@@ -16,6 +16,8 @@ public class FixedLocation {
 	}
 
 	public static FixedLocation getFixedLocation(Block block){
+		if (block.getWorld() == null)
+			return null;
 		return new FixedLocation(block.getWorld().getName(), block.getX(), block.getY(), block.getZ());
 	}
 	
