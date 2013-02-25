@@ -17,7 +17,7 @@ public class Localization {
 		InputStream is = null;
 		is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/" + TTT.lang + ".properties");
 		if (is == null)
-			is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/en-US.properties");
+			is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/enUS.properties");
 		StringWriter writer = new StringWriter();
 		try {
 			IOUtils.copy(is, writer, "ISO-8859-1");
