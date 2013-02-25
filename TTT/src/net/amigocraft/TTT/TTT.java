@@ -136,8 +136,10 @@ public class TTT extends JavaPlugin implements Listener {
 							else
 								sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("folder-not-found"));
 						}
-						else
-							sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("invalid-args-1") + " " + local.getMessage("usage-import"));
+						else {
+							sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("invalid-args-1"));
+							sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("usage-import"));
+						}						
 					}
 					else
 						sender.sendMessage(ChatColor.RED + local.getMessage("no-permission-import"));

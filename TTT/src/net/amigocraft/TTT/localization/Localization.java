@@ -1,26 +1,23 @@
 package net.amigocraft.TTT.localization;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 
+import net.amigocraft.TTT.TTT;
+
 import org.apache.commons.io.IOUtils;
 import org.bukkit.ChatColor;
-
-import net.amigocraft.TTT.TTT;
 
 public class Localization {
 
 	public TTT plugin = TTT.plugin;
-	public String lang = TTT.lang;
 
 	public String getMessage(String key){
-		if (lang == null)
-			lang = "en-US";
-		InputStream is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/en-US.properties");
-		if (new File("/net/amigocraft/TTT/localization") != null)
-			is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/" + lang + ".properties");
+		InputStream is = null;
+		is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/" + TTT.lang + ".properties");
+		if (is == null)
+			is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/en-US.properties");
 		StringWriter writer = new StringWriter();
 		try {
 			IOUtils.copy(is, writer, "ISO-8859-1");
