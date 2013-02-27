@@ -37,6 +37,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -189,6 +190,7 @@ public class TTT extends JavaPlugin implements Listener {
 										testers.add("jon674");
 										testers.add("HardcoreBukkit");
 										testers.add("shiny3");
+										testers.add("jpf6368");
 										String addition = "";
 										if (sender.getName().equals("AngryNerd1"))
 											addition = ", " + ChatColor.DARK_RED + local.getMessage("creator") + ", " + ChatColor.DARK_PURPLE;
@@ -315,7 +317,8 @@ public class TTT extends JavaPlugin implements Listener {
 						armor += protection.get(p.getInventory().getArmorContents()[3].getType());
 			}
 			if (e.getDamage() - ((armor * .04) * e.getDamage()) >= ((Player)e.getEntity()).getHealth()){
-				if (joinedPlayers.containsKey(((Player)e.getEntity()).getName())){
+				if (joinedPlayers.containsKey(p.getName())){
+					if (playerRoles.containsKey(p.getName())){
 					e.setCancelled(true);
 					p.setHealth(20);
 					p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("dead"));
@@ -354,6 +357,9 @@ public class TTT extends JavaPlugin implements Listener {
 					ti.setItemMeta(tiMeta);
 					chest.getInventory().addItem(new ItemStack[]{id, ti});
 					bodies.add(new Body(p.getName(), playerRoles.get(p.getName()), FixedLocation.getFixedLocation(block)));
+					}
+					else
+						p.setHealth(20);
 				}
 			}
 			if (deadPlayers.containsKey(p.getName())){
@@ -369,6 +375,11 @@ public class TTT extends JavaPlugin implements Listener {
 									e.setDamage(getConfig().getInt("crowbar-damage"));
 					if (deadPlayers.containsKey(((Player)ed.getDamager()).getName())){
 						e.setCancelled(true);
+					}
+					
+					if (joinedPlayers.containsKey(((Player)ed.getDamager()).getName())){
+						if (time.get(joinedPlayers.get(((Player)ed.getDamager()).getName())) != null)
+							e.setCancelled(true);
 					}
 				}
 			}
@@ -476,6 +487,8 @@ public class TTT extends JavaPlugin implements Listener {
 									pl.sendMessage(ChatColor.DARK_RED + local.getMessage("alone"));
 								pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo});
 							}
+							pl.setHealth(20);
+							pl.setFoodLevel(20);
 						}
 						time.remove(worldName);
 						gameTime.put(worldName, getConfig().getInt("time-limit"));
@@ -665,7 +678,7 @@ public class TTT extends JavaPlugin implements Listener {
 						removeFoundBodies.clear();
 
 						for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_GREEN + "[TTT] " + local.getMessage("innocent-win") + " \"" + worldName + "\"!");
+							p.sendMessage(ChatColor.DARK_GREEN + "[TTT] " + local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
 							joinedPlayers.remove(p.getName());
 							playerRoles.remove(p.getName());
 							if (deadPlayers.containsKey(p.getName())){
@@ -855,7 +868,7 @@ public class TTT extends JavaPlugin implements Listener {
 			e.setCancelled(true);
 			if (deadPlayers.containsKey(e.getPlayer().getName())){
 				for (Body b : bodies){
-					if (b.getLocation().getWorld() != null){
+					if (e.getClickedBlock() != null){
 						if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
 							if (e.getClickedBlock().getType() == Material.CHEST){
 								Inventory inv = ((Chest)e.getClickedBlock().getState()).getInventory();
@@ -908,6 +921,15 @@ public class TTT extends JavaPlugin implements Listener {
 		if (joinedPlayers.containsKey(e.getPlayer().getName()) || deadPlayers.containsKey(e.getPlayer().getName())){
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-drop"));
+		}
+	}
+	
+	@EventHandler
+	public void onFoodDeplete(FoodLevelChangeEvent e){
+		if (e.getEntity().getType() == EntityType.PLAYER){
+			Player p = (Player)e.getEntity();
+			if (joinedPlayers.containsKey(p.getName()) || deadPlayers.containsKey(p.getName()))
+				e.setCancelled(true);
 		}
 	}
 }
