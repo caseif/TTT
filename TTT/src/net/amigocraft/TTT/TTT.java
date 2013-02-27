@@ -39,6 +39,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -65,6 +66,7 @@ public class TTT extends JavaPlugin implements Listener {
 	public HashMap<String, String> deadPlayers = new HashMap<String, String>();
 	public List<Body> bodies = new ArrayList<Body>();
 	public List<Body> foundBodies = new ArrayList<Body>();
+	public List<String> discreet = new ArrayList<String>();
 
 	@Override
 	public void onEnable(){
@@ -782,6 +784,8 @@ public class TTT extends JavaPlugin implements Listener {
 			}
 			else if (deadPlayers.containsKey(p.getName()))
 				e.setCancelled(true);
+			else if (discreet.contains(p.getName()))
+				e.setCancelled(true);
 		}
 	}
 
@@ -871,8 +875,11 @@ public class TTT extends JavaPlugin implements Listener {
 					if (e.getClickedBlock() != null){
 						if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
 							if (e.getClickedBlock().getType() == Material.CHEST){
-								Inventory inv = ((Chest)e.getClickedBlock().getState()).getInventory();
+								Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
+								Inventory inv = getServer().createInventory(null, chestinv.getSize());
+								inv.setContents(chestinv.getContents());
 								e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + local.getMessage("discreet"));
+								discreet.add(e.getPlayer().getName());
 								e.getPlayer().openInventory(inv);
 							}
 							break;
@@ -931,5 +938,11 @@ public class TTT extends JavaPlugin implements Listener {
 			if (joinedPlayers.containsKey(p.getName()) || deadPlayers.containsKey(p.getName()))
 				e.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void onInventoryClose(InventoryCloseEvent e){
+		if (discreet.contains(e.getPlayer().getName()))
+			discreet.remove(e.getPlayer().getName());
 	}
 }
