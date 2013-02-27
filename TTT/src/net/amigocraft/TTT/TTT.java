@@ -571,9 +571,9 @@ public class TTT extends JavaPlugin implements Listener {
 					removeFoundBodies.clear();
 
 					if (!tLeft)
-						Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " + local.getMessage("innocent-win") + " \"" + worldName + "\"!");
+						Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " + local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
 					if (!iLeft)
-						Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " + local.getMessage("innocent-win") + " \"" + worldName + "\"!");
+						Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " + local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
 					for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
 						joinedPlayers.remove(p.getName());
 						playerRoles.remove(p.getName());
@@ -819,9 +819,9 @@ public class TTT extends JavaPlugin implements Listener {
 						if (!found){
 							for (Player p : e.getPlayer().getWorld().getPlayers()){
 								if (bodies.get(index).getRole() == 0)
-									p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " + local.getMessage("found-body") + " " + bodies.get(index).getName() + ". " + local.getMessage("was-innocent"));
+									p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " + local.getMessage("found-body").replace("%", bodies.get(index).getName())  + ". " + local.getMessage("was-innocent"));
 								else if (bodies.get(index).getRole() == 1)
-									p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " + local.getMessage("found-body") + " " + bodies.get(index).getName() + ". " + local.getMessage("was-traitor"));
+									p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " + local.getMessage("found-body").replace("%", bodies.get(index).getName())  + ". " + local.getMessage("was-traitor"));
 							}
 							foundBodies.add(bodies.get(index));
 						}
