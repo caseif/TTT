@@ -119,6 +119,10 @@ public class TTT extends JavaPlugin implements Listener {
 										File newFolder = new File("TTT_" + args[1]);
 										if (!newFolder.exists()){
 											try {
+												File sessionLock = new File(folder + File.separator + "session.lock");
+												File uidDat = new File(folder + File.separator + "uid.dat");
+												sessionLock.delete();
+												uidDat.delete();
 												FileUtils.copyDirectory(folder, newFolder);
 												sender.sendMessage(ChatColor.GREEN + "[TTT] " + local.getMessage("import-success"));
 											}
