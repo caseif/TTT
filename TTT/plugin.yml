@@ -25,3 +25,6 @@ permissions:
   ttt.join:
     description: Allows player to join TTT matches
     default: true
+  ttt.quit:
+    description: Allows player to leave TTT matches
+    default: true
