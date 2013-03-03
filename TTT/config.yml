@@ -23,6 +23,12 @@ guns-outside-arenas: false
 #Should ammunition (arrows) be required to use guns?
 require-ammo-for-guns: true
 
+#What should the ratio be for detectives to other players?
+detective-ratio: 0.15
+
+#If at least this many players are in a game, there is guaranteed to be a detective.
+minimum-players-for-detective: 5
+
 #Should the plugin allow auto-updating?
 enable-auto-update: true
 
@@ -33,4 +39,4 @@ enable-metrics: true
 localization: enUS
 
 #Don't touch this. Please.
-config-version: 0.1
+config-version: 0.2

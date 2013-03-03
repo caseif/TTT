@@ -32,7 +32,20 @@ public class Localization {
 		catch (IOException e){
 			e.printStackTrace();
 		}
-		return ChatColor.RED + "Could not get message from localization!";
+		is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/enUS.properties");
+		try {
+			IOUtils.copy(is, writer, "ISO-8859-1");
+			String contents = writer.toString();
+			String[] lines = contents.split("\n");
+			for (int i = 0; i < lines.length; i++){
+				String[] params = lines[i].split("\\|");
+				if (params[0].equalsIgnoreCase(key))
+					return params[1];
+			}
+		}
+		catch (IOException e){
+			e.printStackTrace();
+		}
+		return ChatColor.DARK_RED + "Could not get message from localization!";
 	}
-
 }

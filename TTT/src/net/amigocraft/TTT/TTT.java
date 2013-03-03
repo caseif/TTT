@@ -78,9 +78,15 @@ public class TTT extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(this, this);
 		TTT.plugin = this;
 
+		// check if config should be overwritten
+		saveDefaultConfig();
+		if (getConfig().getDouble("config-version") < 0.2){
+			File config = new File(this.getDataFolder(), "config.yml");
+			config.delete();
+		}
+		
 		// create the default config
-		if(!(new File(plugin.getDataFolder(), "config.yml")).exists())
-			plugin.saveDefaultConfig();
+		saveDefaultConfig();
 
 		TTT.lang = getConfig().getString("localization");
 
@@ -460,25 +466,38 @@ public class TTT extends JavaPlugin implements Listener {
 					}
 					else if (currentTime <= 0){
 						int players = getServer().getWorld("TTT_" + worldName).getPlayers().size();
-						int traitors = 0;
+						int traitorNum = 0;
 						int limit = (int)(players * getConfig().getDouble("traitor-ratio"));
 						if (limit == 0)
 							limit = 1;
 						List<String> innocents = new ArrayList<String>();
-						List<String> traitorNames = new ArrayList<String>();
+						List<String> traitors = new ArrayList<String>();
+						List<String> detectives = new ArrayList<String>();
 						for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
 							innocents.add(p.getName());
 							p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("begun"));
 						}
-						while (traitors < limit){
+						while (traitorNum < limit){
 							Random randomGenerator = new Random();
 							int index = randomGenerator.nextInt(players);
 							String traitor = innocents.get(index);
 							if (innocents.contains(traitor)){
 								innocents.remove(traitor);
-								traitorNames.add(traitor);
-								traitors += 1;
+								traitors.add(traitor);
+								traitorNum += 1;
 							}
+						}
+						int dLimit = (int)(players * getConfig().getDouble("detective-ratio"));
+						if (players >= getConfig().getInt("minimum-players-for-detective") && dLimit == 0)
+							dLimit += 1;
+						int detectiveNum = 0;
+						while (detectiveNum < limit){
+							Random randomGenerator = new Random();
+							int index = randomGenerator.nextInt(innocents.size());
+							String detective = innocents.get(index);
+							innocents.remove(detective);
+							detectives.add(detective);
+							detectiveNum += 1;
 						}
 						ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
 						ItemMeta cbMeta = crowbar.getItemMeta();
@@ -496,17 +515,21 @@ public class TTT extends JavaPlugin implements Listener {
 								pl.sendMessage(ChatColor.DARK_GREEN + local.getMessage("you-are-innocent"));
 								pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo});
 							}
-							else {
+							else if (traitors.contains(p)){
 								playerRoles.put(p, 1);
 								pl.sendMessage(ChatColor.DARK_RED + local.getMessage("you-are-traitor"));
-								if (traitorNames.size() > 1){
+								if (traitors.size() > 1){
 									pl.sendMessage(ChatColor.DARK_RED + local.getMessage("allies"));
-									for (String t : traitorNames)
+									for (String t : traitors)
 										pl.sendMessage("- " + t);
 								}
 								else
 									pl.sendMessage(ChatColor.DARK_RED + local.getMessage("alone"));
 								pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo});
+							}
+							else if (detectives.contains(p)){
+								playerRoles.put(p, 2);
+								pl.sendMessage(ChatColor.BLUE + local.getMessage("you-are-detective"));
 							}
 							pl.setHealth(20);
 							pl.setFoodLevel(20);
@@ -817,6 +840,7 @@ public class TTT extends JavaPlugin implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onPlayerChat(AsyncPlayerChatEvent e){
 		for (Player p : getServer().getOnlinePlayers()){
@@ -838,6 +862,20 @@ public class TTT extends JavaPlugin implements Listener {
 				}
 				else
 					e.getRecipients().remove(p);
+			}
+		}
+		
+		if (playerRoles.containsKey(e.getPlayer().getName())){
+			if (playerRoles.get(e.getPlayer().getName()) == 2){
+				final Player player = e.getPlayer();
+				e.getPlayer().setDisplayName(ChatColor.BLUE + "[Detective] " + e.getPlayer().getDisplayName());
+				getServer().getScheduler().scheduleAsyncDelayedTask(this, new Runnable(){
+					public void run(){
+						String name = player.getDisplayName();
+						name = name.replace(ChatColor.BLUE + "[Detective] ", "");
+						player.setDisplayName(name);
+					}
+				}, 1);
 			}
 		}
 	}
