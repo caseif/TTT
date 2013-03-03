@@ -46,6 +46,8 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -77,7 +79,7 @@ public class TTT extends JavaPlugin implements Listener {
 		// create the default config
 		if(!(new File(plugin.getDataFolder(), "config.yml")).exists())
 			plugin.saveDefaultConfig();
-		
+
 		TTT.lang = getConfig().getString("localization");
 
 		// autoupdate
@@ -325,44 +327,44 @@ public class TTT extends JavaPlugin implements Listener {
 			if (e.getDamage() - ((armor * .04) * e.getDamage()) >= ((Player)e.getEntity()).getHealth()){
 				if (joinedPlayers.containsKey(p.getName())){
 					if (playerRoles.containsKey(p.getName())){
-					e.setCancelled(true);
-					p.setHealth(20);
-					p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("dead"));
-					String worldName = p.getWorld().getName().replace("TTT_", "");
-					joinedPlayers.remove(p.getName());
-					deadPlayers.put(p.getName(), worldName);
-					Block block = p.getLocation().getBlock();
-					block.setType(Material.CHEST);
-					Chest chest = (Chest)block.getState();
-					// player identifier
-					ItemStack id = new ItemStack(Material.PAPER, 1);
-					ItemMeta idMeta = id.getItemMeta();
-					idMeta.setDisplayName("ID");
-					List<String> idLore = new ArrayList<String>();
-					idLore.add(local.getMessage("body-of"));
-					idLore.add(((Player)e.getEntity()).getName());
-					idMeta.setLore(idLore);
-					id.setItemMeta(idMeta);
-					// role identifier
-					ItemStack ti = new ItemStack(Material.WOOL, 1);
-					ItemMeta tiMeta = ti.getItemMeta();
-					if (playerRoles.get(p.getName()) == 0){
-						ti.setDurability((short)5);
-						tiMeta.setDisplayName("§2" + local.getMessage("innocent"));
-						List<String> tiLore = new ArrayList<String>();
-						tiLore.add(local.getMessage("innocent-id"));
-						tiMeta.setLore(tiLore);
-					}
-					else {
-						ti.setDurability((short)14);
-						tiMeta.setDisplayName("§4" + local.getMessage("traitor"));
-						List<String> lore = new ArrayList<String>();
-						lore.add(local.getMessage("traitor-id"));
-						tiMeta.setLore(lore);
-					}
-					ti.setItemMeta(tiMeta);
-					chest.getInventory().addItem(new ItemStack[]{id, ti});
-					bodies.add(new Body(p.getName(), playerRoles.get(p.getName()), FixedLocation.getFixedLocation(block)));
+						e.setCancelled(true);
+						p.setHealth(20);
+						p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("dead"));
+						String worldName = p.getWorld().getName().replace("TTT_", "");
+						joinedPlayers.remove(p.getName());
+						deadPlayers.put(p.getName(), worldName);
+						Block block = p.getLocation().getBlock();
+						block.setType(Material.CHEST);
+						Chest chest = (Chest)block.getState();
+						// player identifier
+						ItemStack id = new ItemStack(Material.PAPER, 1);
+						ItemMeta idMeta = id.getItemMeta();
+						idMeta.setDisplayName("ID");
+						List<String> idLore = new ArrayList<String>();
+						idLore.add(local.getMessage("body-of"));
+						idLore.add(((Player)e.getEntity()).getName());
+						idMeta.setLore(idLore);
+						id.setItemMeta(idMeta);
+						// role identifier
+						ItemStack ti = new ItemStack(Material.WOOL, 1);
+						ItemMeta tiMeta = ti.getItemMeta();
+						if (playerRoles.get(p.getName()) == 0){
+							ti.setDurability((short)5);
+							tiMeta.setDisplayName("§2" + local.getMessage("innocent"));
+							List<String> tiLore = new ArrayList<String>();
+							tiLore.add(local.getMessage("innocent-id"));
+							tiMeta.setLore(tiLore);
+						}
+						else {
+							ti.setDurability((short)14);
+							tiMeta.setDisplayName("§4" + local.getMessage("traitor"));
+							List<String> lore = new ArrayList<String>();
+							lore.add(local.getMessage("traitor-id"));
+							tiMeta.setLore(lore);
+						}
+						ti.setItemMeta(tiMeta);
+						chest.getInventory().addItem(new ItemStack[]{id, ti});
+						bodies.add(new Body(p.getName(), playerRoles.get(p.getName()), FixedLocation.getFixedLocation(block)));
 					}
 					else
 						p.setHealth(20);
@@ -382,7 +384,7 @@ public class TTT extends JavaPlugin implements Listener {
 					if (deadPlayers.containsKey(((Player)ed.getDamager()).getName())){
 						e.setCancelled(true);
 					}
-					
+
 					if (joinedPlayers.containsKey(((Player)ed.getDamager()).getName())){
 						if (time.get(joinedPlayers.get(((Player)ed.getDamager()).getName())) != null)
 							e.setCancelled(true);
@@ -934,7 +936,7 @@ public class TTT extends JavaPlugin implements Listener {
 			e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-drop"));
 		}
 	}
-	
+
 	@EventHandler
 	public void onFoodDeplete(FoodLevelChangeEvent e){
 		if (e.getEntity().getType() == EntityType.PLAYER){
@@ -943,10 +945,35 @@ public class TTT extends JavaPlugin implements Listener {
 				e.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent e){
 		if (discreet.contains(e.getPlayer().getName()))
 			discreet.remove(e.getPlayer().getName());
+	}
+
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent e){
+		String p = e.getPlayer().getName();
+		joinedPlayers.remove(p);
+		deadPlayers.remove(p);
+		playerRoles.remove(p);
+	}
+
+	@EventHandler
+	public void onPlayerTeleport(PlayerTeleportEvent e){
+		String p = e.getPlayer().getName();
+		if (joinedPlayers.containsKey(p)){
+			if (e.getPlayer().getWorld().getName() != joinedPlayers.get(p)){
+				joinedPlayers.remove(p);
+				playerRoles.remove(p);
+			}
+		}
+		else if (deadPlayers.containsKey(p)){
+			if (e.getPlayer().getWorld().getName() != deadPlayers.get(p)){
+				deadPlayers.remove(p);
+				playerRoles.remove(p);
+			}
+		}
 	}
 }
