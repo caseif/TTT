@@ -14,8 +14,8 @@ minimum-players: 3
 #What should the ratio of traitors to innocents be (as a decimal)?
 traitor-ratio: 0.2
 
-#How much damage should crowbars do? (How many half-hearts?)
-crowbar-damage: 2
+#How much damage should crowbars do at full karma? (How many half-hearts?)
+crowbar-damage: 4
   
 #Should guns be functional outside of arenas?
 guns-outside-arenas: false

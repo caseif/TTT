@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import net.amigocraft.TTT.AutoUpdate;
 import net.amigocraft.TTT.Metrics;
 import net.amigocraft.TTT.localization.Localization;
+import net.amigocraft.TTT.utils.NumUtils;
 import net.amigocraft.TTT.utils.WorldUtils;
 
 import org.apache.commons.io.FileUtils;
@@ -50,6 +51,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -175,20 +177,31 @@ public class TTT extends JavaPlugin implements Listener {
 										((Player)sender).teleport(getServer().getWorld("TTT_" + worldName).getSpawnLocation());
 										joinedPlayers.put(((Player)sender).getName(), worldName);
 										File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + sender.getName() + ".yml");
+										Inventory inv = ((Player)sender).getInventory();
+										PlayerInventory pInv = (PlayerInventory)inv;
 										try {
 											if (!invF.exists())
 												invF.createNewFile();
 											YamlConfiguration invY = new YamlConfiguration();
 											invY.load(invF);
-											for (int i = 0; i < ((Player)sender).getInventory().getContents().length; i++)
-												invY.set(Integer.toString(i), ((Player)sender).getInventory().getContents()[i]);
+											for (int i = 0; i < inv.getContents().length; i++)
+												invY.set(Integer.toString(i), inv.getContents()[i]);
+											if (pInv.getHelmet() != null)
+												invY.set("h", pInv.getHelmet());
+											if (pInv.getHelmet() != null)
+												invY.set("c", pInv.getChestplate());
+											if (pInv.getHelmet() != null)
+												invY.set("l", pInv.getLeggings());
+											if (pInv.getHelmet() != null)
+												invY.set("b", pInv.getBoots());
 											invY.save(invF);
 										}
 										catch (Exception ex){
 											ex.printStackTrace();
 											sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-save-error"));
 										}
-										((Player)sender).getInventory().clear();
+										inv.clear();
+										pInv.setArmorContents(new ItemStack[3]);
 										sender.sendMessage(ChatColor.GREEN + local.getMessage("success-join") + " " + worldName);
 										List<String> testers = new ArrayList<String>();
 										testers.add("ZerosAce00000");
@@ -704,9 +717,18 @@ public class TTT extends JavaPlugin implements Listener {
 									invY.load(invF);
 									ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
 									for (String k : invY.getKeys(false)){
-										invI[Integer.parseInt(k)] = invY.getItemStack(k);
+										if (NumUtils.isInt(k))
+											invI[Integer.parseInt(k)] = invY.getItemStack(k);
 									}
 									p.getInventory().setContents(invI);
+									if (invY.getItemStack("h") != null)
+										p.getInventory().setHelmet(invY.getItemStack("h"));
+									if (invY.getItemStack("c") != null)
+										p.getInventory().setChestplate(invY.getItemStack("c"));
+									if (invY.getItemStack("l") != null)
+										p.getInventory().setLeggings(invY.getItemStack("l"));
+									if (invY.getItemStack("b") != null)
+										p.getInventory().setBoots(invY.getItemStack("b"));
 									p.updateInventory();
 									invF.delete();
 								}
