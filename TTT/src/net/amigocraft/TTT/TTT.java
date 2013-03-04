@@ -70,6 +70,8 @@ public class TTT extends JavaPlugin implements Listener {
 	public HashMap<String, String> deadPlayers = new HashMap<String, String>();
 	public List<Body> bodies = new ArrayList<Body>();
 	public List<Body> foundBodies = new ArrayList<Body>();
+	public HashMap<String, String> killers = new HashMap<String, String>();
+	public HashMap<String, String> tracking = new HashMap<String, String>();
 	public List<String> discreet = new ArrayList<String>();
 
 	@Override
@@ -84,7 +86,7 @@ public class TTT extends JavaPlugin implements Listener {
 			File config = new File(this.getDataFolder(), "config.yml");
 			config.delete();
 		}
-		
+
 		// create the default config
 		saveDefaultConfig();
 
@@ -358,7 +360,7 @@ public class TTT extends JavaPlugin implements Listener {
 						// player identifier
 						ItemStack id = new ItemStack(Material.PAPER, 1);
 						ItemMeta idMeta = id.getItemMeta();
-						idMeta.setDisplayName("ID");
+						idMeta.setDisplayName(local.getMessage("id"));
 						List<String> idLore = new ArrayList<String>();
 						idLore.add(local.getMessage("body-of"));
 						idLore.add(((Player)e.getEntity()).getName());
@@ -398,12 +400,12 @@ public class TTT extends JavaPlugin implements Listener {
 					if (((Player)ed.getDamager()).getItemInHand() != null)
 						if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
 							if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName() != null)
-								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("Crowbar"))
+								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("§5" + local.getMessage("crowbar")))
 									e.setDamage(getConfig().getInt("crowbar-damage"));
 					if (deadPlayers.containsKey(((Player)ed.getDamager()).getName())){
 						e.setCancelled(true);
 					}
-
+					
 					if (joinedPlayers.containsKey(((Player)ed.getDamager()).getName())){
 						if (time.get(joinedPlayers.get(((Player)ed.getDamager()).getName())) != null)
 							e.setCancelled(true);
@@ -501,13 +503,17 @@ public class TTT extends JavaPlugin implements Listener {
 						}
 						ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
 						ItemMeta cbMeta = crowbar.getItemMeta();
-						cbMeta.setDisplayName("Crowbar");
+						cbMeta.setDisplayName("§5" + local.getMessage("crowbar"));
 						crowbar.setItemMeta(cbMeta);
 						ItemStack gun = new ItemStack(Material.ANVIL, 1);
 						ItemMeta gunMeta = crowbar.getItemMeta();
-						gunMeta.setDisplayName("Gun");
+						gunMeta.setDisplayName("§5" + local.getMessage("gun"));
 						gun.setItemMeta(gunMeta);
 						ItemStack ammo = new ItemStack(Material.ARROW, 28);
+						ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
+						ItemMeta dnaMeta = dnaScanner.getItemMeta();
+						dnaMeta.setDisplayName("§1" + local.getMessage("dna-scanner"));
+						dnaScanner.setItemMeta(dnaMeta);
 						for (String p : joinedPlayers.keySet()){
 							Player pl = getServer().getPlayer(p);
 							if (innocents.contains(p)){
@@ -530,6 +536,7 @@ public class TTT extends JavaPlugin implements Listener {
 							else if (detectives.contains(p)){
 								playerRoles.put(p, 2);
 								pl.sendMessage(ChatColor.BLUE + local.getMessage("you-are-detective"));
+								pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo, dnaScanner});
 							}
 							pl.setHealth(20);
 							pl.setFoodLevel(20);
@@ -588,6 +595,15 @@ public class TTT extends JavaPlugin implements Listener {
 					if (deadPlayers.containsKey(p)){
 						deadPlayers.remove(p);
 					}
+				}
+
+				// set compass targets
+				for (String p : tracking.keySet()){
+					Player tracker = getServer().getPlayer(p);
+					Player killer = getServer().getPlayer(tracking.get(p));
+					if (tracker != null || killer != null)
+						if (!offlinePlayers.contains(tracker) && !offlinePlayers.contains(killer))
+							tracker.setCompassTarget(killer.getLocation());
 				}
 
 				// check if game is over
@@ -661,17 +677,6 @@ public class TTT extends JavaPlugin implements Listener {
 							}
 						}
 						gameTime.remove(worldName);
-						ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
-						ItemMeta cbMeta = crowbar.getItemMeta();
-						cbMeta.setDisplayName("Crowbar");
-						crowbar.setItemMeta(cbMeta);
-						ItemStack gun = new ItemStack(Material.ANVIL, 1);
-						ItemMeta gunMeta = crowbar.getItemMeta();
-						gunMeta.setDisplayName("Gun");
-						gun.setItemMeta(gunMeta);
-						p.getInventory().remove(crowbar);
-						p.getInventory().remove(gun);
-						p.getInventory().remove(Material.ARROW);
 						p.teleport(getServer().getWorlds().get(0).getSpawnLocation());
 					}
 					gameTime.remove(worldName);
@@ -761,17 +766,6 @@ public class TTT extends JavaPlugin implements Listener {
 								}
 							}
 							gameTime.remove(worldName);
-							ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
-							ItemMeta cbMeta = crowbar.getItemMeta();
-							cbMeta.setDisplayName("Crowbar");
-							crowbar.setItemMeta(cbMeta);
-							ItemStack gun = new ItemStack(Material.ANVIL, 1);
-							ItemMeta gunMeta = crowbar.getItemMeta();
-							gunMeta.setDisplayName("Gun");
-							gun.setItemMeta(gunMeta);
-							p.getInventory().remove(crowbar);
-							p.getInventory().remove(gun);
-							p.getInventory().remove(Material.ARROW);
 							p.teleport(getServer().getWorlds().get(0).getSpawnLocation());
 						}
 						Bukkit.getScheduler().cancelTask(tasks.get(worldName));
@@ -864,7 +858,7 @@ public class TTT extends JavaPlugin implements Listener {
 					e.getRecipients().remove(p);
 			}
 		}
-		
+
 		if (playerRoles.containsKey(e.getPlayer().getName())){
 			if (playerRoles.get(e.getPlayer().getName()) == 2){
 				final Player player = e.getPlayer();
@@ -896,8 +890,10 @@ public class TTT extends JavaPlugin implements Listener {
 					if (index != -1){
 						boolean found = false;
 						for (Body b : foundBodies){
-							if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock())))
+							if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
 								found = true;
+								break;
+							}
 						}
 						if (!found){
 							for (Player p : e.getPlayer().getWorld().getPlayers()){
@@ -908,6 +904,30 @@ public class TTT extends JavaPlugin implements Listener {
 							}
 							foundBodies.add(bodies.get(index));
 						}
+						if (playerRoles.get(e.getPlayer().getName()) == 2){
+							if (e.getPlayer().getItemInHand() != null){
+								if (e.getPlayer().getItemInHand().getType() == Material.COMPASS){
+									if (e.getPlayer().getItemInHand().getItemMeta() != null){
+										if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
+											if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§1" + local.getMessage("dna-scanner"))){
+												Player killer = getServer().getPlayer(killers.get(bodies.get(index)));
+												if (killer != null){
+													if (joinedPlayers.containsKey(killer.getName())){
+														tracking.remove(e.getPlayer().getName());
+														tracking.put(e.getPlayer().getName(), killer.getName());
+														e.getPlayer().sendMessage(ChatColor.BLUE + local.getMessage("collected-dna").replace("%", bodies.get(index).getName()));
+													}
+													else
+														e.getPlayer().sendMessage(ChatColor.BLUE + local.getMessage("killer-left"));
+												}
+												else
+													e.getPlayer().sendMessage(ChatColor.BLUE + local.getMessage("killer-left"));
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -915,7 +935,7 @@ public class TTT extends JavaPlugin implements Listener {
 				if (e.getPlayer().getItemInHand() != null){
 					if (e.getPlayer().getItemInHand().getItemMeta() != null){
 						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Gun")){
+							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5" + local.getMessage("gun"))){
 								if ((joinedPlayers.containsKey(e.getPlayer().getName()) || getConfig().getBoolean("guns-outside-arenas")) && !deadPlayers.containsKey(e.getPlayer().getName())){
 									e.setCancelled(true);
 									if (e.getPlayer().getInventory().contains(Material.ARROW) || !getConfig().getBoolean("require-ammo-for-guns")){
@@ -937,8 +957,8 @@ public class TTT extends JavaPlugin implements Listener {
 		else {
 			e.setCancelled(true);
 			if (deadPlayers.containsKey(e.getPlayer().getName())){
-				for (Body b : bodies){
-					if (e.getClickedBlock() != null){
+				if (e.getClickedBlock() != null){
+					for (Body b : bodies){
 						if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
 							if (e.getClickedBlock().getType() == Material.CHEST){
 								Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
