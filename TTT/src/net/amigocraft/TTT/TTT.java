@@ -82,7 +82,7 @@ public class TTT extends JavaPlugin implements Listener {
 
 		// check if config should be overwritten
 		saveDefaultConfig();
-		if (getConfig().getDouble("config-version") < 0.2){
+		if (getConfig().getString("config-version") != this.getDescription().getVersion()){
 			File config = new File(this.getDataFolder(), "config.yml");
 			config.delete();
 		}
