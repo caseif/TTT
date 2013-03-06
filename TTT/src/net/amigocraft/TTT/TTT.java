@@ -76,6 +76,12 @@ public class TTT extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable(){
+		// check if server is offline
+		if (!getServer().getOnlineMode()){
+			log.info("[TTT] This plugin does not support offline servers! Disabling...");
+			getServer().getPluginManager().disablePlugin(this);
+		}
+		
 		// register events and the plugin variable
 		getServer().getPluginManager().registerEvents(this, this);
 		TTT.plugin = this;
