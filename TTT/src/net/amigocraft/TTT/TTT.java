@@ -385,7 +385,7 @@ public class TTT extends JavaPlugin implements Listener {
 						}
 						ti.setItemMeta(tiMeta);
 						chest.getInventory().addItem(new ItemStack[]{id, ti});
-						bodies.add(new Body(p.getName(), playerRoles.get(p.getName()), FixedLocation.getFixedLocation(block)));
+						bodies.add(new Body(p.getName(), playerRoles.get(p.getName()), FixedLocation.getFixedLocation(block), System.currentTimeMillis()));
 					}
 					else
 						p.setHealth(20);

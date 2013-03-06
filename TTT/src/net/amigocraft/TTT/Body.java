@@ -5,11 +5,13 @@ public class Body {
 	private String name;
 	private int role;
 	private FixedLocation l;
+	private long time;
 
-	public Body(String name, int role, FixedLocation l){
+	public Body(String name, int role, FixedLocation l, long time){
 		this.name = name;
 		this.role = role;
 		this.l = l;
+		this.time = time;
 	}
 	
 	public String getName(){
@@ -22,6 +24,10 @@ public class Body {
 
 	public FixedLocation getLocation(){
 		return l;
+	}
+	
+	public long getTime(){
+		return time;
 	}
 	
 	public boolean equals(Object b){
