@@ -124,6 +124,7 @@ public class TTT extends JavaPlugin implements Listener {
 		log.info(this + " " + local.getMessage("disabled"));
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		if (commandLabel.equalsIgnoreCase("ttt")){
 			if (args.length > 0){
@@ -270,6 +271,26 @@ public class TTT extends JavaPlugin implements Listener {
 								joinedPlayers.remove(sender.getName());
 								deadPlayers.remove(sender.getName());
 								playerRoles.remove(sender.getName());
+								Player p = (Player)sender;
+								p.getInventory().clear();
+								File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".yml");
+								if (invF.exists()){
+									try {
+										YamlConfiguration invY = new YamlConfiguration();
+										invY.load(invF);
+										ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
+										for (String k : invY.getKeys(false)){
+											invI[Integer.parseInt(k)] = invY.getItemStack(k);
+										}
+										p.getInventory().setContents(invI);
+										p.updateInventory();
+										invF.delete();
+									}
+									catch (Exception ex){
+										ex.printStackTrace();
+										p.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-load-error"));
+									}
+								}
 							}
 							else
 								sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("not-in-game"));
@@ -679,7 +700,7 @@ public class TTT extends JavaPlugin implements Listener {
 							}
 							catch (Exception ex){
 								ex.printStackTrace();
-								p.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-load-fail"));
+								p.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-load-error"));
 							}
 						}
 						gameTime.remove(worldName);
