@@ -245,7 +245,7 @@ public class TTT extends JavaPlugin implements Listener {
 										}
 									}
 									else
-										sender.sendMessage(ChatColor.RED + local.getMessage("invalid-map"));
+										sender.sendMessage(ChatColor.RED + local.getMessage("map-invalid"));
 									folder = null;
 									tttFolder = null;
 								}
@@ -253,7 +253,7 @@ public class TTT extends JavaPlugin implements Listener {
 									sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("in-progress"));
 							}
 							else {
-								sender.sendMessage(ChatColor.RED + local.getMessage("invalid-2"));
+								sender.sendMessage(ChatColor.RED + local.getMessage("invalid-args-1"));
 								sender.sendMessage(ChatColor.RED + local.getMessage("usage-join"));
 							}
 						}
