@@ -38,6 +38,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -81,7 +82,7 @@ public class TTT extends JavaPlugin implements Listener {
 			log.info("[TTT] This plugin does not support offline servers! Disabling...");
 			getServer().getPluginManager().disablePlugin(this);
 		}
-		
+
 		// register events and the plugin variable
 		getServer().getPluginManager().registerEvents(this, this);
 		TTT.plugin = this;
@@ -191,7 +192,7 @@ public class TTT extends JavaPlugin implements Listener {
 										}
 										((Player)sender).teleport(getServer().getWorld("TTT_" + worldName).getSpawnLocation());
 										joinedPlayers.put(((Player)sender).getName(), worldName);
-										File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + sender.getName() + ".yml");
+										File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + sender.getName() + ".inv");
 										Inventory inv = ((Player)sender).getInventory();
 										PlayerInventory pInv = (PlayerInventory)inv;
 										try {
@@ -203,11 +204,11 @@ public class TTT extends JavaPlugin implements Listener {
 												invY.set(Integer.toString(i), inv.getContents()[i]);
 											if (pInv.getHelmet() != null)
 												invY.set("h", pInv.getHelmet());
-											if (pInv.getHelmet() != null)
+											if (pInv.getChestplate() != null)
 												invY.set("c", pInv.getChestplate());
-											if (pInv.getHelmet() != null)
+											if (pInv.getLeggings() != null)
 												invY.set("l", pInv.getLeggings());
-											if (pInv.getHelmet() != null)
+											if (pInv.getBoots() != null)
 												invY.set("b", pInv.getBoots());
 											invY.save(invF);
 										}
@@ -216,7 +217,7 @@ public class TTT extends JavaPlugin implements Listener {
 											sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-save-error"));
 										}
 										inv.clear();
-										pInv.setArmorContents(new ItemStack[3]);
+										pInv.setArmorContents(new ItemStack[]{null, null, null, null});
 										sender.sendMessage(ChatColor.GREEN + local.getMessage("success-join") + " " + worldName);
 										List<String> testers = new ArrayList<String>();
 										testers.add("ZerosAce00000");
@@ -273,14 +274,23 @@ public class TTT extends JavaPlugin implements Listener {
 								playerRoles.remove(sender.getName());
 								Player p = (Player)sender;
 								p.getInventory().clear();
-								File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".yml");
+								File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
 								if (invF.exists()){
 									try {
 										YamlConfiguration invY = new YamlConfiguration();
 										invY.load(invF);
 										ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
 										for (String k : invY.getKeys(false)){
-											invI[Integer.parseInt(k)] = invY.getItemStack(k);
+											if (NumUtils.isInt(k))
+												invI[Integer.parseInt(k)] = invY.getItemStack(k);
+											else if (k.equalsIgnoreCase("h"))
+												p.getInventory().setHelmet(invY.getItemStack(k));
+											else if (k.equalsIgnoreCase("c"))
+												p.getInventory().setChestplate(invY.getItemStack(k));
+											else if (k.equalsIgnoreCase("l"))
+												p.getInventory().setLeggings(invY.getItemStack(k));
+											else if (k.equalsIgnoreCase("b"))
+												p.getInventory().setBoots(invY.getItemStack(k));
 										}
 										p.getInventory().setContents(invI);
 										p.updateInventory();
@@ -323,9 +333,16 @@ public class TTT extends JavaPlugin implements Listener {
 				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-kits"));
 			}
 		}
+		else if (e.getMessage().startsWith("msg") || e.getMessage().startsWith("tell") || e.getMessage().startsWith("r") || e.getMessage().startsWith("msg") || e.getMessage().startsWith("me")){
+			String p = e.getPlayer().getName();
+			if (joinedPlayers.containsKey(p) || deadPlayers.containsKey(p)){
+				e.setCancelled(true);
+				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-pm"));
+			}
+		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent e){
 		if (e.getEntityType() == EntityType.PLAYER){
 			Player p = (Player)e.getEntity();
@@ -403,11 +420,18 @@ public class TTT extends JavaPlugin implements Listener {
 							tiLore.add(local.getMessage("innocent-id"));
 							tiMeta.setLore(tiLore);
 						}
-						else {
+						else if (playerRoles.get(p.getName()) == 1){
 							ti.setDurability((short)14);
 							tiMeta.setDisplayName("§4" + local.getMessage("traitor"));
 							List<String> lore = new ArrayList<String>();
 							lore.add(local.getMessage("traitor-id"));
+							tiMeta.setLore(lore);
+						}
+						else if (playerRoles.get(p.getName()) == 1){
+							ti.setDurability((short)11);
+							tiMeta.setDisplayName("§1" + local.getMessage("detective"));
+							List<String> lore = new ArrayList<String>();
+							lore.add(local.getMessage("detective-id"));
 							tiMeta.setLore(lore);
 						}
 						ti.setItemMeta(tiMeta);
@@ -432,9 +456,9 @@ public class TTT extends JavaPlugin implements Listener {
 					if (deadPlayers.containsKey(((Player)ed.getDamager()).getName())){
 						e.setCancelled(true);
 					}
-					
+
 					if (joinedPlayers.containsKey(((Player)ed.getDamager()).getName())){
-						if (time.get(joinedPlayers.get(((Player)ed.getDamager()).getName())) != null)
+						if (gameTime.get(joinedPlayers.get(((Player)ed.getDamager()).getName())) == null)
 							e.setCancelled(true);
 					}
 				}
@@ -685,7 +709,7 @@ public class TTT extends JavaPlugin implements Listener {
 							deadPlayers.remove(p.getName());
 						}
 						p.getInventory().clear();
-						File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".yml");
+						File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
 						if (invF.exists()){
 							try {
 								YamlConfiguration invY = new YamlConfiguration();
@@ -765,7 +789,7 @@ public class TTT extends JavaPlugin implements Listener {
 								deadPlayers.remove(p.getName());
 							}
 							p.getInventory().clear();
-							File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".yml");
+							File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
 							if (invF.exists()){
 								try {
 									YamlConfiguration invY = new YamlConfiguration();
@@ -928,6 +952,8 @@ public class TTT extends JavaPlugin implements Listener {
 									p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " + local.getMessage("found-body").replace("%", bodies.get(index).getName())  + ". " + local.getMessage("was-innocent"));
 								else if (bodies.get(index).getRole() == 1)
 									p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " + local.getMessage("found-body").replace("%", bodies.get(index).getName())  + ". " + local.getMessage("was-traitor"));
+								else if (bodies.get(index).getRole() == 2)
+									p.sendMessage(ChatColor.DARK_BLUE + e.getPlayer().getName() + " " + local.getMessage("found-body").replace("%", bodies.get(index).getName())  + ". " + local.getMessage("was-detective"));
 							}
 							foundBodies.add(bodies.get(index));
 						}
@@ -937,6 +963,7 @@ public class TTT extends JavaPlugin implements Listener {
 									if (e.getPlayer().getItemInHand().getItemMeta() != null){
 										if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
 											if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§1" + local.getMessage("dna-scanner"))){
+												e.setCancelled(true);
 												Player killer = getServer().getPlayer(killers.get(bodies.get(index)));
 												if (killer != null){
 													if (joinedPlayers.containsKey(killer.getName())){
@@ -1080,6 +1107,16 @@ public class TTT extends JavaPlugin implements Listener {
 			if (e.getPlayer().getWorld().getName() != deadPlayers.get(p)){
 				deadPlayers.remove(p);
 				playerRoles.remove(p);
+			}
+		}
+	}
+
+	public void onHealthRegenerate(EntityRegainHealthEvent e){
+		if (e.getEntity() instanceof Player){
+			Player p = (Player)e.getEntity();
+			if (joinedPlayers.containsKey(p.getName())){
+				if (gameTime.get(joinedPlayers.get(p.getName())) != null)
+					e.setCancelled(true);
 			}
 		}
 	}
