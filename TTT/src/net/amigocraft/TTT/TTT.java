@@ -269,9 +269,16 @@ public class TTT extends JavaPlugin implements Listener {
 						if (sender.hasPermission("ttt.quit")){
 							if (joinedPlayers.containsKey(sender.getName()) || deadPlayers.containsKey(sender.getName())){
 								((Player)sender).teleport(getServer().getWorlds().get(0).getSpawnLocation());
+								String worldName = "";
+								if (joinedPlayers.containsKey(((Player)sender).getName()))
+									worldName = joinedPlayers.get(((Player)sender).getName());
+								if (deadPlayers.containsKey(((Player)sender).getName()))
+										worldName = deadPlayers.get(((Player)sender).getName());
 								joinedPlayers.remove(sender.getName());
 								deadPlayers.remove(sender.getName());
 								playerRoles.remove(sender.getName());
+								for (Player pl : getServer().getWorld("TTT_" + worldName).getPlayers())
+									pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + local.getMessage("left-game").replace("%", worldName));
 								Player p = (Player)sender;
 								p.getInventory().clear();
 								File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
@@ -544,7 +551,7 @@ public class TTT extends JavaPlugin implements Listener {
 						if (players >= getConfig().getInt("minimum-players-for-detective") && dLimit == 0)
 							dLimit += 1;
 						int detectiveNum = 0;
-						while (detectiveNum < limit){
+						while (detectiveNum < dLimit){
 							Random randomGenerator = new Random();
 							int index = randomGenerator.nextInt(innocents.size());
 							String detective = innocents.get(index);
@@ -646,6 +653,8 @@ public class TTT extends JavaPlugin implements Listener {
 					if (deadPlayers.containsKey(p)){
 						deadPlayers.remove(p);
 					}
+					for (Player pl : getServer().getWorld("TTT_" + worldName).getPlayers())
+						pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + local.getMessage("left-game").replace("%", worldName));
 				}
 
 				// set compass targets
@@ -1089,24 +1098,41 @@ public class TTT extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e){
 		String p = e.getPlayer().getName();
-		joinedPlayers.remove(p);
-		deadPlayers.remove(p);
-		playerRoles.remove(p);
+		if (playerRoles.containsKey(p)){
+			String worldName = "";
+			if (joinedPlayers.containsKey(p)){
+				worldName = joinedPlayers.get(p);
+				joinedPlayers.remove(p);
+			}
+			if (deadPlayers.containsKey(p)){
+				worldName = deadPlayers.get(p);
+				deadPlayers.remove(p);
+			}
+			for (Player pl : getServer().getWorld("TTT_" + worldName).getPlayers())
+				pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + local.getMessage("left-game").replace("%", worldName));
+			playerRoles.remove(p);
+			for (Player pl : getServer().getWorld("TTT_" + worldName).getPlayers())
+				pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + local.getMessage("left-game").replace("%", worldName));
+		}
 	}
 
 	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent e){
 		String p = e.getPlayer().getName();
 		if (joinedPlayers.containsKey(p)){
-			if (e.getPlayer().getWorld().getName() != joinedPlayers.get(p)){
-				joinedPlayers.remove(p);
+			if (e.getPlayer().getWorld().getName().replace("TTT_", "") != joinedPlayers.get(p)){
 				playerRoles.remove(p);
+				for (Player pl : getServer().getWorld("TTT_" + joinedPlayers.get(p)).getPlayers())
+					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + local.getMessage("left-game").replace("%", joinedPlayers.get(p)));
+				joinedPlayers.remove(p);
 			}
 		}
 		else if (deadPlayers.containsKey(p)){
-			if (e.getPlayer().getWorld().getName() != deadPlayers.get(p)){
-				deadPlayers.remove(p);
+			if (e.getPlayer().getWorld().getName().replace("TTT_", "") != deadPlayers.get(p)){
 				playerRoles.remove(p);
+				for (Player pl : getServer().getWorld("TTT_" + joinedPlayers.get(p)).getPlayers())
+					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + local.getMessage("left-game").replace("%", deadPlayers.get(p)));
+				deadPlayers.remove(p);
 			}
 		}
 	}
