@@ -334,7 +334,7 @@ public class TTT extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e){
-		if (e.getMessage().substring(0, 3).equalsIgnoreCase("kit")){
+		if (e.getMessage().startsWith("kit")){
 			if (joinedPlayers.containsKey(e.getPlayer().getName()) || deadPlayers.containsKey(e.getPlayer().getName())){
 				e.setCancelled(true);
 				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-kits"));
