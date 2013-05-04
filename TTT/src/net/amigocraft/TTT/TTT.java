@@ -277,6 +277,7 @@ public class TTT extends JavaPlugin implements Listener {
 								joinedPlayers.remove(sender.getName());
 								deadPlayers.remove(sender.getName());
 								playerRoles.remove(sender.getName());
+								if (getServer().getWorld("TTT_" + worldName) != null)
 								for (Player pl : getServer().getWorld("TTT_" + worldName).getPlayers())
 									pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + local.getMessage("left-game").replace("%", worldName));
 								Player p = (Player)sender;
