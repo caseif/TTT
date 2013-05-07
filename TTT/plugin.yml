@@ -12,6 +12,9 @@ commands:
     join:
       description: Adds player to a specified game of TTT
       usage: /ttt join [map name]
+    setspawn:
+      description: Sets the location to teleport players to upon round end.
+      usage: /ttt setspawn
 permissions:
   ttt.*:
     description: Allows for full control and manipulation of the plugin

@@ -268,18 +268,18 @@ public class TTT extends JavaPlugin implements Listener {
 					if (sender instanceof Player){
 						if (sender.hasPermission("ttt.quit")){
 							if (joinedPlayers.containsKey(sender.getName()) || deadPlayers.containsKey(sender.getName())){
-								((Player)sender).teleport(getServer().getWorlds().get(0).getSpawnLocation());
+								WorldUtils.teleportPlayer((Player)sender);
 								String worldName = "";
 								if (joinedPlayers.containsKey(((Player)sender).getName()))
 									worldName = joinedPlayers.get(((Player)sender).getName());
 								if (deadPlayers.containsKey(((Player)sender).getName()))
-										worldName = deadPlayers.get(((Player)sender).getName());
+									worldName = deadPlayers.get(((Player)sender).getName());
 								joinedPlayers.remove(sender.getName());
 								deadPlayers.remove(sender.getName());
 								playerRoles.remove(sender.getName());
 								if (getServer().getWorld("TTT_" + worldName) != null)
-								for (Player pl : getServer().getWorld("TTT_" + worldName).getPlayers())
-									pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + local.getMessage("left-game").replace("%", worldName));
+									for (Player pl : getServer().getWorld("TTT_" + worldName).getPlayers())
+										pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + local.getMessage("left-game").replace("%", worldName));
 								Player p = (Player)sender;
 								p.getInventory().clear();
 								File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
@@ -318,6 +318,36 @@ public class TTT extends JavaPlugin implements Listener {
 					}
 					else
 						sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("must-be-ingame"));
+				}
+				else if (args[0].equalsIgnoreCase("setspawn")){
+					if (sender.hasPermission("ttt.setspawn")){
+						if (sender instanceof Player){
+							try {
+								File spawnFile = new File(getDataFolder() + File.separator + "spawn.yml");
+								if (!spawnFile.exists()){
+									log.info("No spawn.yml found, creating...");
+									spawnFile.createNewFile();
+								}
+								YamlConfiguration spawnYaml = new YamlConfiguration();
+								spawnYaml.load(spawnFile);
+								spawnYaml.set("world", ((Player)sender).getLocation().getWorld().getName());
+								spawnYaml.set("x", ((Player)sender).getLocation().getX());
+								spawnYaml.set("y", ((Player)sender).getLocation().getY());
+								spawnYaml.set("z", ((Player)sender).getLocation().getZ());
+								spawnYaml.set("pitch", ((Player)sender).getLocation().getPitch());
+								spawnYaml.set("yaw", ((Player)sender).getLocation().getYaw());
+								spawnYaml.save(spawnFile);
+							}
+							catch (Exception ex){
+								ex.printStackTrace();
+							}
+						}
+						else
+							sender.sendMessage(ChatColor.RED + local.getMessage("must-be-ingame"));
+					}
+					else
+						sender.sendMessage(ChatColor.RED + local.getMessage("no-permission"));
+
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("invalid-args-2"));
@@ -738,7 +768,7 @@ public class TTT extends JavaPlugin implements Listener {
 							}
 						}
 						gameTime.remove(worldName);
-						p.teleport(getServer().getWorlds().get(0).getSpawnLocation());
+						WorldUtils.teleportPlayer(p);
 					}
 					gameTime.remove(worldName);
 					getServer().getScheduler().cancelTask(tasks.get(worldName));
@@ -827,7 +857,7 @@ public class TTT extends JavaPlugin implements Listener {
 								}
 							}
 							gameTime.remove(worldName);
-							p.teleport(getServer().getWorlds().get(0).getSpawnLocation());
+							WorldUtils.teleportPlayer(p);
 						}
 						Bukkit.getScheduler().cancelTask(tasks.get(worldName));
 						getServer().unloadWorld("TTT_" + worldName, false);
