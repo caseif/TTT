@@ -96,7 +96,7 @@ public class TTT extends JavaPlugin implements Listener {
 
 		// check if config should be overwritten
 		saveDefaultConfig();
-		if (getConfig().getString("config-version").equals(this.getDescription().getVersion())){
+		if (!getConfig().getString("config-version").equals(this.getDescription().getVersion())){
 			File config = new File(this.getDataFolder(), "config.yml");
 			config.delete();
 		}
@@ -1121,7 +1121,7 @@ public class TTT extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent e){
 		String p = e.getPlayer().getName();
-		if (isPlayer(p)){
+		if (getTTTPlayer(p) != null){
 			if (e.getFrom().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getGame()){
 				for (Player pl : getServer().getWorld("TTT_" + getTTTPlayer(p).getGame()).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + local.getMessage("left-game").replace("%", getTTTPlayer(p).getGame()));
