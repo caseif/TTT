@@ -3,11 +3,11 @@ package net.amigocraft.TTT;
 
 public class Body {
 	private String name;
-	private int role;
+	private Role role;
 	private FixedLocation l;
 	private long time;
 
-	public Body(String name, int role, FixedLocation l, long time){
+	public Body(String name, Role role, FixedLocation l, long time){
 		this.name = name;
 		this.role = role;
 		this.l = l;
@@ -18,7 +18,7 @@ public class Body {
 		return name;
 	}
 	
-	public int getRole(){
+	public Role getRole(){
 		return role;
 	}
 
@@ -35,6 +35,6 @@ public class Body {
 	}
 	
 	public int hashCode(){
-		return 41 * (41 + name.hashCode() + role + l.hashCode());
+		return 41 * (41 + name.hashCode() + role.hashCode() + l.hashCode());
 	}
 }
