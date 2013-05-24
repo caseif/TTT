@@ -10,7 +10,10 @@ import java.util.logging.Logger;
 
 import net.amigocraft.TTT.AutoUpdate;
 import net.amigocraft.TTT.Metrics;
+import net.amigocraft.TTT.listeners.BlockListener;
+import net.amigocraft.TTT.listeners.PlayerListener;
 import net.amigocraft.TTT.localization.Localization;
+import net.amigocraft.TTT.managers.CommandManager;
 import static net.amigocraft.TTT.TTTPlayer.*;
 import net.amigocraft.TTT.utils.NumUtils;
 import net.amigocraft.TTT.utils.WorldUtils;
@@ -19,41 +22,19 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -65,7 +46,7 @@ public class TTT extends JavaPlugin implements Listener {
 
 	public static Logger log = Logger.getLogger("Minecraft");
 	public static TTT plugin = new TTT();
-	public static Localization local = new Localization();
+	public Localization local = new Localization();
 	public static String lang;
 
 	public HashMap<String, Integer> time = new HashMap<String, Integer>();
@@ -90,8 +71,10 @@ public class TTT extends JavaPlugin implements Listener {
 				log.info("[TTT] Server is probably using BungeeCord. Allowing plugin to load...");
 		}
 
-		// register events and the plugin variable
-		getServer().getPluginManager().registerEvents(this, this);
+		// register events, commands, and the plugin variable
+		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+		getServer().getPluginManager().registerEvents(new BlockListener(), this);
+		getCommand("ttt").setExecutor(new CommandManager());
 		TTT.plugin = this;
 
 		// check if config should be overwritten
@@ -130,381 +113,6 @@ public class TTT extends JavaPlugin implements Listener {
 	@Override
 	public void onDisable(){
 		log.info(this + " " + local.getMessage("disabled"));
-	}
-
-	@SuppressWarnings("deprecation")
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
-		if (commandLabel.equalsIgnoreCase("ttt")){
-			if (args.length > 0){
-				if (args[0].equalsIgnoreCase("import")){
-					if (sender.hasPermission("ttt.import")){
-						if (args.length > 1){
-							File folder = new File(args[1]);
-							if (folder.exists()){
-								if (!args[1].substring(0, 3).equalsIgnoreCase("TTT_")){
-									if (WorldUtils.isWorld(folder)){
-										File newFolder = new File("TTT_" + args[1]);
-										if (!newFolder.exists()){
-											try {
-												File sessionLock = new File(folder + File.separator + "session.lock");
-												File uidDat = new File(folder + File.separator + "uid.dat");
-												sessionLock.delete();
-												uidDat.delete();
-												FileUtils.copyDirectory(folder, newFolder);
-												sender.sendMessage(ChatColor.GREEN + "[TTT] " + local.getMessage("import-success"));
-											}
-											catch (IOException e){
-												sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("folder-error"));
-												e.printStackTrace();
-											}
-										}
-										else
-											sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("already-imported"));
-									}
-									else
-										sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("cannot-load-world"));
-								}
-								else
-									sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("start-error"));
-							}
-							else
-								sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("folder-not-found"));
-						}
-						else {
-							sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("invalid-args-1"));
-							sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("usage-import"));
-						}						
-					}
-					else
-						sender.sendMessage(ChatColor.RED + local.getMessage("no-permission-import"));
-				}
-				else if (args[0].equalsIgnoreCase("join")){
-					if (sender instanceof Player){
-						if (sender.hasPermission("ttt.join")){
-							if (args.length > 1){
-								if (gameTime.get(args[1]) == null){
-									File folder = new File(args[1]);
-									File tttFolder = new File("TTT_" + args[1]);
-									if (folder.exists() && tttFolder.exists()){
-										boolean loaded = false;
-										for (World w : Bukkit.getServer().getWorlds()){
-											if(w.getName().equals("TTT_" + args[1])){
-												loaded = true;
-												break;
-											}
-										}
-										final String worldName = args[1];
-										if (!loaded){
-											getServer().createWorld(new WorldCreator("TTT_" + worldName));
-										}
-										((Player)sender).teleport(getServer().getWorld("TTT_" + worldName).getSpawnLocation());
-										new TTTPlayer(((Player)sender).getName(), worldName);
-										File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + sender.getName() + ".inv");
-										Inventory inv = ((Player)sender).getInventory();
-										PlayerInventory pInv = (PlayerInventory)inv;
-										try {
-											if (!invF.exists())
-												invF.createNewFile();
-											YamlConfiguration invY = new YamlConfiguration();
-											invY.load(invF);
-											for (int i = 0; i < inv.getContents().length; i++)
-												invY.set(Integer.toString(i), inv.getContents()[i]);
-											if (pInv.getHelmet() != null)
-												invY.set("h", pInv.getHelmet());
-											if (pInv.getChestplate() != null)
-												invY.set("c", pInv.getChestplate());
-											if (pInv.getLeggings() != null)
-												invY.set("l", pInv.getLeggings());
-											if (pInv.getBoots() != null)
-												invY.set("b", pInv.getBoots());
-											invY.save(invF);
-										}
-										catch (Exception ex){
-											ex.printStackTrace();
-											sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-save-error"));
-										}
-										inv.clear();
-										pInv.setArmorContents(new ItemStack[]{null, null, null, null});
-										sender.sendMessage(ChatColor.GREEN + local.getMessage("success-join") + " " + worldName);
-										List<String> testers = new ArrayList<String>();
-										testers.add("ZerosAce00000");
-										testers.add("momhipie");
-										testers.add("xJHA929x");
-										testers.add("jmm1999");
-										testers.add("jon674");
-										testers.add("HardcoreBukkit");
-										testers.add("shiny3");
-										testers.add("jpf6368");
-										String addition = "";
-										if (sender.getName().equals("AngryNerd1"))
-											addition = ", " + ChatColor.DARK_RED + local.getMessage("creator") + ", " + ChatColor.DARK_PURPLE;
-										else if (testers.contains(sender.getName())){
-											addition = ", " + ChatColor.DARK_RED + local.getMessage("tester") + ", " + ChatColor.DARK_PURPLE;
-										}
-										Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + addition + " " + local.getMessage("joined-map") + " \"" + worldName + "\"");
-										int ingamePlayers = 0;
-										for (TTTPlayer p : players)
-											if (p.getGame().equals(worldName))
-												ingamePlayers += 1;
-										if (ingamePlayers >= getConfig().getInt("minimum-players") && !time.containsKey(worldName)){
-											for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers())
-												p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("round-starting"));
-											time.put(worldName, getConfig().getInt("setup-time"));
-											tasks.put(worldName, setupTimer(worldName));
-										}
-										else {
-											((Player)sender).sendMessage(ChatColor.DARK_PURPLE + local.getMessage("waiting"));
-										}
-									}
-									else
-										sender.sendMessage(ChatColor.RED + local.getMessage("map-invalid"));
-									folder = null;
-									tttFolder = null;
-								}
-								else
-									sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("in-progress"));
-							}
-							else {
-								sender.sendMessage(ChatColor.RED + local.getMessage("invalid-args-1"));
-								sender.sendMessage(ChatColor.RED + local.getMessage("usage-join"));
-							}
-						}
-						else
-							sender.sendMessage(ChatColor.RED + local.getMessage("no-permission-join"));
-					}
-					else
-						sender.sendMessage(ChatColor.RED + local.getMessage("must-be-ingame"));
-				}
-				else if (args[0].equalsIgnoreCase("quit")){
-					if (sender instanceof Player){
-						if (sender.hasPermission("ttt.quit")){
-							if (isPlayer(sender.getName())){
-								WorldUtils.teleportPlayer((Player)sender);
-								TTTPlayer tPlayer = getTTTPlayer(sender.getName());
-								getTTTPlayer(sender.getName()).destroy();
-								if (getServer().getWorld("TTT_" + tPlayer.getGame()) != null)
-									for (Player pl : getServer().getWorld("TTT_" + tPlayer.getGame()).getPlayers())
-										pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + local.getMessage("left-game").replace("%", tPlayer.getGame()));
-								Player p = (Player)sender;
-								p.getInventory().clear();
-								File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
-								if (invF.exists()){
-									try {
-										YamlConfiguration invY = new YamlConfiguration();
-										invY.load(invF);
-										ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
-										for (String k : invY.getKeys(false)){
-											if (NumUtils.isInt(k))
-												invI[Integer.parseInt(k)] = invY.getItemStack(k);
-											else if (k.equalsIgnoreCase("h"))
-												p.getInventory().setHelmet(invY.getItemStack(k));
-											else if (k.equalsIgnoreCase("c"))
-												p.getInventory().setChestplate(invY.getItemStack(k));
-											else if (k.equalsIgnoreCase("l"))
-												p.getInventory().setLeggings(invY.getItemStack(k));
-											else if (k.equalsIgnoreCase("b"))
-												p.getInventory().setBoots(invY.getItemStack(k));
-										}
-										p.getInventory().setContents(invI);
-										p.updateInventory();
-										invF.delete();
-									}
-									catch (Exception ex){
-										ex.printStackTrace();
-										p.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-load-error"));
-									}
-								}
-							}
-							else
-								sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("not-in-game"));
-						}
-						else
-							sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-permission-quit"));
-					}
-					else
-						sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("must-be-ingame"));
-				}
-				else if (args[0].equalsIgnoreCase("setspawn")){
-					if (sender.hasPermission("ttt.setspawn")){
-						if (sender instanceof Player){
-							try {
-								File spawnFile = new File(getDataFolder() + File.separator + "spawn.yml");
-								if (!spawnFile.exists()){
-									log.info("No spawn.yml found, creating...");
-									spawnFile.createNewFile();
-								}
-								YamlConfiguration spawnYaml = new YamlConfiguration();
-								spawnYaml.load(spawnFile);
-								spawnYaml.set("world", ((Player)sender).getLocation().getWorld().getName());
-								spawnYaml.set("x", ((Player)sender).getLocation().getX());
-								spawnYaml.set("y", ((Player)sender).getLocation().getY());
-								spawnYaml.set("z", ((Player)sender).getLocation().getZ());
-								spawnYaml.set("pitch", ((Player)sender).getLocation().getPitch());
-								spawnYaml.set("yaw", ((Player)sender).getLocation().getYaw());
-								spawnYaml.save(spawnFile);
-							}
-							catch (Exception ex){
-								ex.printStackTrace();
-							}
-						}
-						else
-							sender.sendMessage(ChatColor.RED + local.getMessage("must-be-ingame"));
-					}
-					else
-						sender.sendMessage(ChatColor.RED + local.getMessage("no-permission"));
-
-				}
-				else {
-					sender.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("invalid-args-2"));
-					sender.sendMessage(ChatColor.RED + local.getMessage("usage-1"));
-				}
-			}
-			else {
-				sender.sendMessage(ChatColor.RED + local.getMessage("invalid-args-1"));
-				sender.sendMessage(ChatColor.RED + local.getMessage("usage-1"));
-			}
-			return true;
-		}
-		return false;
-	}
-
-	@EventHandler
-	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e){
-		if (e.getMessage().startsWith("kit")){
-			if (isPlayer(e.getPlayer().getName())){
-				e.setCancelled(true);
-				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-kits"));
-			}
-		}
-		else if (e.getMessage().startsWith("msg") || e.getMessage().startsWith("tell") || e.getMessage().startsWith("r") || e.getMessage().startsWith("msg") || e.getMessage().startsWith("me")){
-			String p = e.getPlayer().getName();
-			if (isPlayer(p)){
-				e.setCancelled(true);
-				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-pm"));
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onEntityDamage(EntityDamageEvent e){
-		if (e.getEntityType() == EntityType.PLAYER){
-			Player p = (Player)e.getEntity();
-			int armor = 0;
-			if (e.getCause() == DamageCause.ENTITY_ATTACK ||
-					e.getCause() == DamageCause.PROJECTILE ||
-					e.getCause() == DamageCause.FIRE ||
-					e.getCause() == DamageCause.FIRE_TICK ||
-					e.getCause() == DamageCause.BLOCK_EXPLOSION || 
-					e.getCause() == DamageCause.CONTACT ||
-					e.getCause() == DamageCause.LAVA ||
-					e.getCause() == DamageCause.ENTITY_EXPLOSION){
-				HashMap<Material, Integer> protection = new HashMap<Material, Integer>();
-				protection.put(Material.LEATHER_HELMET, 1);
-				protection.put(Material.LEATHER_CHESTPLATE, 3);
-				protection.put(Material.LEATHER_LEGGINGS, 2);
-				protection.put(Material.LEATHER_BOOTS, 1);
-				protection.put(Material.IRON_HELMET, 2);
-				protection.put(Material.IRON_CHESTPLATE, 5);
-				protection.put(Material.IRON_LEGGINGS, 3);
-				protection.put(Material.IRON_BOOTS, 1);
-				protection.put(Material.CHAINMAIL_HELMET, 2);
-				protection.put(Material.CHAINMAIL_CHESTPLATE, 5);
-				protection.put(Material.CHAINMAIL_LEGGINGS, 3);
-				protection.put(Material.CHAINMAIL_BOOTS, 1);
-				protection.put(Material.GOLD_HELMET, 2);
-				protection.put(Material.GOLD_CHESTPLATE, 6);
-				protection.put(Material.GOLD_LEGGINGS, 5);
-				protection.put(Material.GOLD_BOOTS, 2);
-				protection.put(Material.DIAMOND_HELMET, 3);
-				protection.put(Material.DIAMOND_CHESTPLATE, 8);
-				protection.put(Material.DIAMOND_LEGGINGS, 6);
-				protection.put(Material.DIAMOND_BOOTS, 3);
-				if (p.getInventory().getArmorContents()[0] != null)
-					if (protection.containsKey(p.getInventory().getArmorContents()[0].getType()))
-						armor += protection.get(p.getInventory().getArmorContents()[0].getType());
-				if (p.getInventory().getArmorContents()[1] != null)
-					if (protection.containsKey(p.getInventory().getArmorContents()[1].getType()))
-						armor += protection.get(p.getInventory().getArmorContents()[1].getType());
-				if (p.getInventory().getArmorContents()[2] != null)
-					if (protection.containsKey(p.getInventory().getArmorContents()[2].getType()))
-						armor += protection.get(p.getInventory().getArmorContents()[2].getType());
-				if (p.getInventory().getArmorContents()[3] != null)
-					if (protection.containsKey(p.getInventory().getArmorContents()[3].getType()))
-						armor += protection.get(p.getInventory().getArmorContents()[3].getType());
-			}
-			if (e.getDamage() - ((armor * .04) * e.getDamage()) >= ((Player)e.getEntity()).getHealth()){
-				if (isPlayer(p.getName())){
-					if (getTTTPlayer(p.getName()).getRole() != null){
-						e.setCancelled(true);
-						p.setHealth(20);
-						p.sendMessage(ChatColor.DARK_PURPLE + local.getMessage("dead"));
-						getTTTPlayer(p.getName()).setDead(true);
-						Block block = p.getLocation().getBlock();
-						block.setType(Material.CHEST);
-						Chest chest = (Chest)block.getState();
-						// player identifier
-						ItemStack id = new ItemStack(Material.PAPER, 1);
-						ItemMeta idMeta = id.getItemMeta();
-						idMeta.setDisplayName(local.getMessage("id"));
-						List<String> idLore = new ArrayList<String>();
-						idLore.add(local.getMessage("body-of"));
-						idLore.add(((Player)e.getEntity()).getName());
-						idMeta.setLore(idLore);
-						id.setItemMeta(idMeta);
-						// role identifier
-						ItemStack ti = new ItemStack(Material.WOOL, 1);
-						ItemMeta tiMeta = ti.getItemMeta();
-						if (getTTTPlayer(p.getName()).getRole() == Role.INNOCENT){
-							ti.setDurability((short)5);
-							tiMeta.setDisplayName("§2" + local.getMessage("innocent"));
-							List<String> tiLore = new ArrayList<String>();
-							tiLore.add(local.getMessage("innocent-id"));
-							tiMeta.setLore(tiLore);
-						}
-						else if (getTTTPlayer(p.getName()).getRole() == Role.TRAITOR){
-							ti.setDurability((short)14);
-							tiMeta.setDisplayName("§4" + local.getMessage("traitor"));
-							List<String> lore = new ArrayList<String>();
-							lore.add(local.getMessage("traitor-id"));
-							tiMeta.setLore(lore);
-						}
-						else if (getTTTPlayer(p.getName()).getRole() == Role.DETECTIVE){
-							ti.setDurability((short)11);
-							tiMeta.setDisplayName("§1" + local.getMessage("detective"));
-							List<String> lore = new ArrayList<String>();
-							lore.add(local.getMessage("detective-id"));
-							tiMeta.setLore(lore);
-						}
-						ti.setItemMeta(tiMeta);
-						chest.getInventory().addItem(new ItemStack[]{id, ti});
-						bodies.add(new Body(p.getName(), getTTTPlayer(p.getName()).getRole(), FixedLocation.getFixedLocation(block), System.currentTimeMillis()));
-					}
-					else
-						p.setHealth(20);
-				}
-			}
-			if (getTTTPlayer(p.getName()).isDead()){
-				e.setCancelled(true);
-			}
-			if (e instanceof EntityDamageByEntityEvent){
-				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
-				if (ed.getDamager().getType() == EntityType.PLAYER){
-					if (((Player)ed.getDamager()).getItemInHand() != null)
-						if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
-							if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName() != null)
-								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("§5" + local.getMessage("crowbar")))
-									e.setDamage(getConfig().getInt("crowbar-damage"));
-					if (getTTTPlayer(((Player)ed.getDamager()).getName()).isDead()){
-						e.setCancelled(true);
-					}
-
-					if (isPlayer(((Player)ed.getDamager()).getName())){
-						if (gameTime.get(((Player)ed.getDamager()).getWorld().getName()) == null)
-							e.setCancelled(true);
-					}
-				}
-			}
-		}
 	}
 
 	public int setupTimer(final String worldName){
@@ -936,127 +544,6 @@ public class TTT extends JavaPlugin implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerInteract(PlayerInteractEvent e){
-		TTTPlayer tPlayer = getTTTPlayer(e.getPlayer().getName());
-		if (tPlayer != null){
-			if (!tPlayer.isDead()){
-				if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
-					if (e.getClickedBlock().getType() == Material.CHEST){
-						int index = -1;
-						for (int i = 0; i < bodies.size(); i++){
-							if (bodies.get(i).getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
-								index = i;
-								break;
-							}
-						}
-						if (index != -1){
-							boolean found = false;
-							for (Body b : foundBodies){
-								if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
-									found = true;
-									break;
-								}
-							}
-							if (!found){
-								for (Player p : e.getPlayer().getWorld().getPlayers()){
-									if (bodies.get(index).getRole() == Role.INNOCENT)
-										p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " + local.getMessage("found-body").replace("%", bodies.get(index).getName())  + ". " + local.getMessage("was-innocent"));
-									else if (bodies.get(index).getRole() == Role.TRAITOR)
-										p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " + local.getMessage("found-body").replace("%", bodies.get(index).getName())  + ". " + local.getMessage("was-traitor"));
-									else if (bodies.get(index).getRole() == Role.DETECTIVE)
-										p.sendMessage(ChatColor.DARK_BLUE + e.getPlayer().getName() + " " + local.getMessage("found-body").replace("%", bodies.get(index).getName())  + ". " + local.getMessage("was-detective"));
-								}
-								foundBodies.add(bodies.get(index));
-							}
-							if (tPlayer.getRole() == Role.DETECTIVE){
-								if (e.getPlayer().getItemInHand() != null){
-									if (e.getPlayer().getItemInHand().getType() == Material.COMPASS){
-										if (e.getPlayer().getItemInHand().getItemMeta() != null){
-											if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-												if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§1" + local.getMessage("dna-scanner"))){
-													e.setCancelled(true);
-													Player killer = getServer().getPlayer(getTTTPlayer(bodies.get(index).getName()).getKiller());
-													if (killer != null){
-														if (isPlayer(killer.getName())){
-															tPlayer.setTracking(killer.getName());
-															e.getPlayer().sendMessage(ChatColor.BLUE + local.getMessage("collected-dna").replace("%", bodies.get(index).getName()));
-														}
-														else
-															e.getPlayer().sendMessage(ChatColor.BLUE + local.getMessage("killer-left"));
-													}
-													else
-														e.getPlayer().sendMessage(ChatColor.BLUE + local.getMessage("killer-left"));
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-				if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
-					if (e.getPlayer().getItemInHand() != null){
-						if (e.getPlayer().getItemInHand().getItemMeta() != null){
-							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-								if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5" + local.getMessage("gun"))){
-									if ((getConfig().getBoolean("guns-outside-arenas"))){
-										if (tPlayer.isDead()){
-											e.setCancelled(true);
-											if (e.getPlayer().getInventory().contains(Material.ARROW) || !getConfig().getBoolean("require-ammo-for-guns")){
-												if (getConfig().getBoolean("require-ammo-for-guns")){
-													removeArrow(e.getPlayer().getInventory());
-													e.getPlayer().updateInventory();
-												}
-												e.getPlayer().launchProjectile(Arrow.class);
-											}
-											else
-												e.getPlayer().sendMessage(ChatColor.RED + local.getMessage("need-ammo"));
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-				else {
-					e.setCancelled(true);
-					if (tPlayer.isDead()){
-						if (e.getClickedBlock() != null){
-							for (Body b : bodies){
-								if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
-									if (e.getClickedBlock().getType() == Material.CHEST){
-										Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
-										Inventory inv = getServer().createInventory(null, chestinv.getSize());
-										inv.setContents(chestinv.getContents());
-										e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + local.getMessage("discreet"));
-										discreet.add(e.getPlayer().getName());
-										e.getPlayer().openInventory(inv);
-									}
-									break;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	@EventHandler
-	public void onBlockPlace(BlockPlaceEvent e){
-		if (isPlayer(e.getPlayer().getName()))
-			e.setCancelled(true);
-	}
-
-	@EventHandler
-	public void onBlockBreak(BlockBreakEvent e){
-		if (isPlayer(e.getPlayer().getName()))
-			e.setCancelled(true);
-	}
-
 	public void removeArrow(Inventory inv){
 		for (int i = 0; i < inv.getContents().length; i++){
 			ItemStack is = inv.getItem(i);
@@ -1068,74 +555,6 @@ public class TTT extends JavaPlugin implements Listener {
 						is.setAmount(is.getAmount() - 1);
 					break;
 				}
-			}
-		}
-	}
-
-	@EventHandler
-	public void onPlayerPickupItem(PlayerPickupItemEvent e){
-		if (getTTTPlayer(e.getPlayer().getName()) != null)
-			if (getTTTPlayer(e.getPlayer().getName()).isDead())
-				e.setCancelled(true);
-	}
-
-	@EventHandler
-	public void onPlayerDropItem(PlayerDropItemEvent e){
-		if (isPlayer(e.getPlayer().getName())){
-			e.setCancelled(true);
-			e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("no-drop"));
-		}
-	}
-
-	@EventHandler
-	public void onFoodDeplete(FoodLevelChangeEvent e){
-		if (e.getEntity().getType() == EntityType.PLAYER){
-			Player p = (Player)e.getEntity();
-			if (isPlayer(p.getName()))
-				e.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent e){
-		if (discreet.contains(e.getPlayer().getName()))
-			discreet.remove(e.getPlayer().getName());
-	}
-
-	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent e){
-		String p = e.getPlayer().getName();
-		if (getTTTPlayer(p).getRole() != null){
-			String worldName = "";
-			if (isPlayer(p)){
-				worldName = getTTTPlayer(p).getGame();
-				destroy(p);
-			}
-			for (Player pl : getServer().getWorld("TTT_" + worldName).getPlayers())
-				pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + local.getMessage("left-game").replace("%", worldName));
-			for (Player pl : getServer().getWorld("TTT_" + worldName).getPlayers())
-				pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + local.getMessage("left-game").replace("%", worldName));
-		}
-	}
-
-	@EventHandler
-	public void onPlayerTeleport(PlayerTeleportEvent e){
-		String p = e.getPlayer().getName();
-		if (getTTTPlayer(p) != null){
-			if (e.getFrom().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getGame()){
-				for (Player pl : getServer().getWorld("TTT_" + getTTTPlayer(p).getGame()).getPlayers())
-					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + local.getMessage("left-game").replace("%", getTTTPlayer(p).getGame()));
-				destroy(p);
-			}
-		}
-	}
-
-	public void onHealthRegenerate(EntityRegainHealthEvent e){
-		if (e.getEntity() instanceof Player){
-			Player p = (Player)e.getEntity();
-			if (isPlayer(p.getName())){
-				if (gameTime.get(getTTTPlayer(p.getName())) != null)
-					e.setCancelled(true);
 			}
 		}
 	}
