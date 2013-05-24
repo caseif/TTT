@@ -50,8 +50,8 @@ public class PlayerListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteract(PlayerInteractEvent e){
-		TTTPlayer tPlayer = getTTTPlayer(e.getPlayer().getName());
-		if (tPlayer != null){
+		if (isPlayer(e.getPlayer().getName())){
+			TTTPlayer tPlayer = getTTTPlayer(e.getPlayer().getName());
 			if (!tPlayer.isDead()){
 				if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
 					if (e.getClickedBlock().getType() == Material.CHEST){
@@ -175,56 +175,56 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent e){
 		if (e.getEntityType() == EntityType.PLAYER){
 			Player p = (Player)e.getEntity();
-			int armor = 0;
-			if (e.getCause() == DamageCause.ENTITY_ATTACK ||
-					e.getCause() == DamageCause.PROJECTILE ||
-					e.getCause() == DamageCause.FIRE ||
-					e.getCause() == DamageCause.FIRE_TICK ||
-					e.getCause() == DamageCause.BLOCK_EXPLOSION || 
-					e.getCause() == DamageCause.CONTACT ||
-					e.getCause() == DamageCause.LAVA ||
-					e.getCause() == DamageCause.ENTITY_EXPLOSION){
-				HashMap<Material, Integer> protection = new HashMap<Material, Integer>();
-				protection.put(Material.LEATHER_HELMET, 1);
-				protection.put(Material.LEATHER_CHESTPLATE, 3);
-				protection.put(Material.LEATHER_LEGGINGS, 2);
-				protection.put(Material.LEATHER_BOOTS, 1);
-				protection.put(Material.IRON_HELMET, 2);
-				protection.put(Material.IRON_CHESTPLATE, 5);
-				protection.put(Material.IRON_LEGGINGS, 3);
-				protection.put(Material.IRON_BOOTS, 1);
-				protection.put(Material.CHAINMAIL_HELMET, 2);
-				protection.put(Material.CHAINMAIL_CHESTPLATE, 5);
-				protection.put(Material.CHAINMAIL_LEGGINGS, 3);
-				protection.put(Material.CHAINMAIL_BOOTS, 1);
-				protection.put(Material.GOLD_HELMET, 2);
-				protection.put(Material.GOLD_CHESTPLATE, 6);
-				protection.put(Material.GOLD_LEGGINGS, 5);
-				protection.put(Material.GOLD_BOOTS, 2);
-				protection.put(Material.DIAMOND_HELMET, 3);
-				protection.put(Material.DIAMOND_CHESTPLATE, 8);
-				protection.put(Material.DIAMOND_LEGGINGS, 6);
-				protection.put(Material.DIAMOND_BOOTS, 3);
-				if (p.getInventory().getArmorContents()[0] != null)
-					if (protection.containsKey(p.getInventory().getArmorContents()[0].getType()))
-						armor += protection.get(p.getInventory().getArmorContents()[0].getType());
-				if (p.getInventory().getArmorContents()[1] != null)
-					if (protection.containsKey(p.getInventory().getArmorContents()[1].getType()))
-						armor += protection.get(p.getInventory().getArmorContents()[1].getType());
-				if (p.getInventory().getArmorContents()[2] != null)
-					if (protection.containsKey(p.getInventory().getArmorContents()[2].getType()))
-						armor += protection.get(p.getInventory().getArmorContents()[2].getType());
-				if (p.getInventory().getArmorContents()[3] != null)
-					if (protection.containsKey(p.getInventory().getArmorContents()[3].getType()))
-						armor += protection.get(p.getInventory().getArmorContents()[3].getType());
-			}
-			if (e.getDamage() - ((armor * .04) * e.getDamage()) >= ((Player)e.getEntity()).getHealth()){
-				if (isPlayer(p.getName())){
+			if (isPlayer(p.getName())){
+				int armor = 0;
+				if (e.getCause() == DamageCause.ENTITY_ATTACK ||
+						e.getCause() == DamageCause.PROJECTILE ||
+						e.getCause() == DamageCause.FIRE ||
+						e.getCause() == DamageCause.FIRE_TICK ||
+						e.getCause() == DamageCause.BLOCK_EXPLOSION || 
+						e.getCause() == DamageCause.CONTACT ||
+						e.getCause() == DamageCause.LAVA ||
+						e.getCause() == DamageCause.ENTITY_EXPLOSION){
+					HashMap<Material, Integer> protection = new HashMap<Material, Integer>();
+					protection.put(Material.LEATHER_HELMET, 1);
+					protection.put(Material.LEATHER_CHESTPLATE, 3);
+					protection.put(Material.LEATHER_LEGGINGS, 2);
+					protection.put(Material.LEATHER_BOOTS, 1);
+					protection.put(Material.IRON_HELMET, 2);
+					protection.put(Material.IRON_CHESTPLATE, 5);
+					protection.put(Material.IRON_LEGGINGS, 3);
+					protection.put(Material.IRON_BOOTS, 1);
+					protection.put(Material.CHAINMAIL_HELMET, 2);
+					protection.put(Material.CHAINMAIL_CHESTPLATE, 5);
+					protection.put(Material.CHAINMAIL_LEGGINGS, 3);
+					protection.put(Material.CHAINMAIL_BOOTS, 1);
+					protection.put(Material.GOLD_HELMET, 2);
+					protection.put(Material.GOLD_CHESTPLATE, 6);
+					protection.put(Material.GOLD_LEGGINGS, 5);
+					protection.put(Material.GOLD_BOOTS, 2);
+					protection.put(Material.DIAMOND_HELMET, 3);
+					protection.put(Material.DIAMOND_CHESTPLATE, 8);
+					protection.put(Material.DIAMOND_LEGGINGS, 6);
+					protection.put(Material.DIAMOND_BOOTS, 3);
+					if (p.getInventory().getArmorContents()[0] != null)
+						if (protection.containsKey(p.getInventory().getArmorContents()[0].getType()))
+							armor += protection.get(p.getInventory().getArmorContents()[0].getType());
+					if (p.getInventory().getArmorContents()[1] != null)
+						if (protection.containsKey(p.getInventory().getArmorContents()[1].getType()))
+							armor += protection.get(p.getInventory().getArmorContents()[1].getType());
+					if (p.getInventory().getArmorContents()[2] != null)
+						if (protection.containsKey(p.getInventory().getArmorContents()[2].getType()))
+							armor += protection.get(p.getInventory().getArmorContents()[2].getType());
+					if (p.getInventory().getArmorContents()[3] != null)
+						if (protection.containsKey(p.getInventory().getArmorContents()[3].getType()))
+							armor += protection.get(p.getInventory().getArmorContents()[3].getType());
+				}
+				if (e.getDamage() - ((armor * .04) * e.getDamage()) >= ((Player)e.getEntity()).getHealth()){
 					if (getTTTPlayer(p.getName()).getRole() != null){
 						e.setCancelled(true);
 						p.setHealth(20);
@@ -273,25 +273,25 @@ public class PlayerListener implements Listener {
 					else
 						p.setHealth(20);
 				}
-			}
-			if (getTTTPlayer(p.getName()).isDead()){
-				e.setCancelled(true);
-			}
-			if (e instanceof EntityDamageByEntityEvent){
-				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
-				if (ed.getDamager().getType() == EntityType.PLAYER){
-					if (((Player)ed.getDamager()).getItemInHand() != null)
-						if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
-							if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName() != null)
-								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("crowbar")))
-									e.setDamage(plugin.getConfig().getInt("crowbar-damage"));
-					if (getTTTPlayer(((Player)ed.getDamager()).getName()).isDead()){
-						e.setCancelled(true);
-					}
-
-					if (isPlayer(((Player)ed.getDamager()).getName())){
-						if (plugin.gameTime.get(((Player)ed.getDamager()).getWorld().getName()) == null)
+				if (getTTTPlayer(p.getName()).isDead()){
+					e.setCancelled(true);
+				}
+				if (e instanceof EntityDamageByEntityEvent){
+					EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
+					if (ed.getDamager().getType() == EntityType.PLAYER){
+						if (((Player)ed.getDamager()).getItemInHand() != null)
+							if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
+								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName() != null)
+									if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("crowbar")))
+										e.setDamage(plugin.getConfig().getInt("crowbar-damage"));
+						if (getTTTPlayer(((Player)ed.getDamager()).getName()).isDead()){
 							e.setCancelled(true);
+						}
+
+						if (isPlayer(((Player)ed.getDamager()).getName())){
+							if (plugin.gameTime.get(((Player)ed.getDamager()).getWorld().getName()) == null)
+								e.setCancelled(true);
+						}
 					}
 				}
 			}
@@ -300,7 +300,7 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerPickupItem(PlayerPickupItemEvent e){
-		if (getTTTPlayer(e.getPlayer().getName()) != null)
+		if (isPlayer(e.getPlayer().getName()))
 			if (getTTTPlayer(e.getPlayer().getName()).isDead())
 				e.setCancelled(true);
 	}
@@ -321,27 +321,29 @@ public class PlayerListener implements Listener {
 				e.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e){
 		String p = e.getPlayer().getName();
-		if (getTTTPlayer(p).getRole() != null){
-			String worldName = "";
-			if (isPlayer(p)){
-				worldName = getTTTPlayer(p).getGame();
-				destroy(p);
+		if (isPlayer(e.getPlayer().getName())){
+			if (getTTTPlayer(p).getRole() != null){
+				String worldName = "";
+				if (isPlayer(p)){
+					worldName = getTTTPlayer(p).getGame();
+					destroy(p);
+				}
+				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
+					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", worldName));
+				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
+					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", worldName));
 			}
-			for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
-				pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", worldName));
-			for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
-				pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", worldName));
 		}
 	}
 
 	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent e){
 		String p = e.getPlayer().getName();
-		if (getTTTPlayer(p) != null){
+		if (isPlayer(p)){
 			if (e.getFrom().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getGame()){
 				for (Player pl : plugin.getServer().getWorld("TTT_" + getTTTPlayer(p).getGame()).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", getTTTPlayer(p).getGame()));
