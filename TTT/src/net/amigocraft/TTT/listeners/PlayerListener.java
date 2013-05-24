@@ -13,6 +13,7 @@ import net.amigocraft.TTT.FixedLocation;
 import net.amigocraft.TTT.Role;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
+import net.amigocraft.TTT.utils.InventoryUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -31,6 +32,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -119,7 +121,7 @@ public class PlayerListener implements Listener {
 											e.setCancelled(true);
 											if (e.getPlayer().getInventory().contains(Material.ARROW) || !plugin.getConfig().getBoolean("require-ammo-for-guns")){
 												if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
-													plugin.removeArrow(e.getPlayer().getInventory());
+													InventoryUtils.removeArrow(e.getPlayer().getInventory());
 													e.getPlayer().updateInventory();
 												}
 												e.getPlayer().launchProjectile(Arrow.class);
@@ -362,5 +364,44 @@ public class PlayerListener implements Listener {
 	public void onInventoryClose(InventoryCloseEvent e){
 		if (plugin.discreet.contains(e.getPlayer().getName()))
 			plugin.discreet.remove(e.getPlayer().getName());
+	}
+
+	@SuppressWarnings("deprecation")
+	@EventHandler (priority = EventPriority.HIGH)
+	public void onPlayerChat(AsyncPlayerChatEvent e){
+		for (Player p : plugin.getServer().getOnlinePlayers()){
+			// check if sender is in TTT game
+			if (getTTTPlayer(e.getPlayer().getName()) != null){
+				if (!p.getWorld().getName().equals(e.getPlayer().getWorld().getName()))
+					e.getRecipients().remove(p);
+			}
+
+			// check if sender is dead
+			else if (getTTTPlayer(p.getName()).isDead()){
+				if (getTTTPlayer(p.getName()).isDead()){
+					if (!p.getWorld().getName().equals("TTT_" + getTTTPlayer(p.getName()).getGame()))
+						e.getRecipients().remove(p);
+				}
+				else
+					e.getRecipients().remove(p);
+			}
+		}
+
+		if (getTTTPlayer(e.getPlayer().getName()) != null){
+			TTTPlayer tPlayer = getTTTPlayer(e.getPlayer().getName());
+			if (tPlayer.getRole() != null){
+				if (tPlayer.getRole() == Role.DETECTIVE){
+					final Player player = e.getPlayer();
+					e.getPlayer().setDisplayName(ChatColor.BLUE + "[Detective] " + e.getPlayer().getDisplayName());
+					plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
+						public void run(){
+							String name = player.getDisplayName();
+							name = name.replace(ChatColor.BLUE + "[Detective] ", "");
+							player.setDisplayName(name);
+						}
+					}, 1L);
+				}
+			}
+		}
 	}
 }

@@ -2,14 +2,19 @@ package net.amigocraft.TTT.utils;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 
 import net.amigocraft.TTT.TTT;
 
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class WorldUtils {
+	
+	private TTT plugin = TTT.plugin;
+	
 	// world checking method from Multiverse
 	public static boolean isWorld(File worldFolder){
 		File[] files = worldFolder.listFiles(new FilenameFilter(){
@@ -45,5 +50,28 @@ public class WorldUtils {
 		catch (Exception ex){
 			ex.printStackTrace();
 		}
+	}
+
+	public void rollbackWorld(final String worldName){
+		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+			public void run(){
+				File folder = new File(worldName);
+				if (folder.exists()){
+					if (WorldUtils.isWorld(folder)){
+						File newFolder = new File("TTT_" + worldName);
+						try {
+							FileUtils.copyDirectory(folder, newFolder);
+							TTT.log.info("[TTT] " + plugin.local.getMessage("rollback") + " \"" + worldName + "\"!");
+						}
+						catch (IOException ex){
+							TTT.log.info("[TTT] " + plugin.local.getMessage("folder-error") + " " + worldName);
+							ex.printStackTrace();
+						}
+					}
+					else
+						TTT.log.info("[TTT] " + plugin.local.getMessage("cannot-load-world"));
+				}
+			}
+		}, 100L);
 	}
 }

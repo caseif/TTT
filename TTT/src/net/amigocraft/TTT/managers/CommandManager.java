@@ -150,7 +150,7 @@ public class CommandManager implements CommandExecutor {
 											for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
 												p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("round-starting"));
 											plugin.time.put(worldName, plugin.getConfig().getInt("setup-time"));
-											plugin.tasks.put(worldName, plugin.setupTimer(worldName));
+											plugin.tasks.put(worldName, SetupManager.setupTimer(worldName));
 										}
 										else {
 											((Player)sender).sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("waiting"));
