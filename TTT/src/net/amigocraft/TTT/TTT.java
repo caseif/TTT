@@ -62,7 +62,7 @@ public class TTT extends JavaPlugin implements Listener {
 	public static final String ANSI_RED = "\u001B[31m";
 	public static final String ANSI_GREEN = "\u001B[32m";
 	public static final String ANSI_WHITE = "\u001B[37m";
-	
+
 	public static Logger log = Logger.getLogger("Minecraft");
 	public static TTT plugin = new TTT();
 	public static Localization local = new Localization();
@@ -74,7 +74,7 @@ public class TTT extends JavaPlugin implements Listener {
 	public List<Body> bodies = new ArrayList<Body>();
 	public List<Body> foundBodies = new ArrayList<Body>();
 	public List<String> discreet = new ArrayList<String>();
-	
+
 	public int tries = 0;
 
 	@Override
@@ -96,7 +96,7 @@ public class TTT extends JavaPlugin implements Listener {
 
 		// check if config should be overwritten
 		saveDefaultConfig();
-		if (getConfig().getString("config-version") != this.getDescription().getVersion()){
+		if (getConfig().getString("config-version").equals(this.getDescription().getVersion())){
 			File config = new File(this.getDataFolder(), "config.yml");
 			config.delete();
 		}
@@ -712,30 +712,32 @@ public class TTT extends JavaPlugin implements Listener {
 					for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
 						if (isPlayer(p.getName())){
 							TTTPlayer tp = getTTTPlayer(p.getName());
-							if (tp.isDead()){
-								p.setAllowFlight(false);
-								for (Player pl : getServer().getOnlinePlayers()){
-									pl.showPlayer(p);
-								}
-							}
-							tp.destroy();
-							p.getInventory().clear();
-							File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
-							if (invF.exists()){
-								try {
-									YamlConfiguration invY = new YamlConfiguration();
-									invY.load(invF);
-									ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
-									for (String k : invY.getKeys(false)){
-										invI[Integer.parseInt(k)] = invY.getItemStack(k);
+							if (tp != null){
+								if (tp.isDead()){
+									p.setAllowFlight(false);
+									for (Player pl : getServer().getOnlinePlayers()){
+										pl.showPlayer(p);
 									}
-									p.getInventory().setContents(invI);
-									p.updateInventory();
-									invF.delete();
 								}
-								catch (Exception ex){
-									ex.printStackTrace();
-									p.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-load-error"));
+								tp.destroy();
+								p.getInventory().clear();
+								File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
+								if (invF.exists()){
+									try {
+										YamlConfiguration invY = new YamlConfiguration();
+										invY.load(invF);
+										ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
+										for (String k : invY.getKeys(false)){
+											invI[Integer.parseInt(k)] = invY.getItemStack(k);
+										}
+										p.getInventory().setContents(invI);
+										p.updateInventory();
+										invF.delete();
+									}
+									catch (Exception ex){
+										ex.printStackTrace();
+										p.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-load-error"));
+									}
 								}
 							}
 						}
@@ -1120,7 +1122,7 @@ public class TTT extends JavaPlugin implements Listener {
 	public void onPlayerTeleport(PlayerTeleportEvent e){
 		String p = e.getPlayer().getName();
 		if (isPlayer(p)){
-			if (e.getPlayer().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getGame()){
+			if (e.getFrom().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getGame()){
 				for (Player pl : getServer().getWorld("TTT_" + getTTTPlayer(p).getGame()).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + local.getMessage("left-game").replace("%", getTTTPlayer(p).getGame()));
 				destroy(p);
