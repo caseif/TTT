@@ -59,6 +59,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class TTT extends JavaPlugin implements Listener {
 
+	public static final String ANSI_RED = "\u001B[31m";
+	public static final String ANSI_GREEN = "\u001B[32m";
+	public static final String ANSI_WHITE = "\u001B[37m";
+	
 	public static Logger log = Logger.getLogger("Minecraft");
 	public static TTT plugin = new TTT();
 	public static Localization local = new Localization();
@@ -70,13 +74,20 @@ public class TTT extends JavaPlugin implements Listener {
 	public List<Body> bodies = new ArrayList<Body>();
 	public List<Body> foundBodies = new ArrayList<Body>();
 	public List<String> discreet = new ArrayList<String>();
+	
+	public int tries = 0;
 
 	@Override
 	public void onEnable(){
 		// check if server is offline
 		if (!getServer().getOnlineMode()){
-			log.info("[TTT] This plugin does not support offline servers! Disabling...");
-			getServer().getPluginManager().disablePlugin(this);
+			if (!getServer().getIp().equals("127.0.0.1") && !getServer().getIp().equals("localhost")){
+				log.info("[TTT] This plugin does not support offline servers! Disabling...");
+				getServer().getPluginManager().disablePlugin(this);
+				return;
+			}
+			else
+				log.info("[TTT] Server is probably using BungeeCord. Allowing plugin to load...");
 		}
 
 		// register events and the plugin variable
@@ -699,34 +710,35 @@ public class TTT extends JavaPlugin implements Listener {
 					if (!iLeft)
 						Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " + local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
 					for (Player p : getServer().getWorld("TTT_" + worldName).getPlayers()){
-						TTTPlayer tp = getTTTPlayer(p.getName());
-						if (tp.isDead()){
-							p.setAllowFlight(false);
-							for (Player pl : getServer().getOnlinePlayers()){
-								pl.showPlayer(p);
-							}
-						}
-						tp.destroy();
-						p.getInventory().clear();
-						File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
-						if (invF.exists()){
-							try {
-								YamlConfiguration invY = new YamlConfiguration();
-								invY.load(invF);
-								ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
-								for (String k : invY.getKeys(false)){
-									invI[Integer.parseInt(k)] = invY.getItemStack(k);
+						if (isPlayer(p.getName())){
+							TTTPlayer tp = getTTTPlayer(p.getName());
+							if (tp.isDead()){
+								p.setAllowFlight(false);
+								for (Player pl : getServer().getOnlinePlayers()){
+									pl.showPlayer(p);
 								}
-								p.getInventory().setContents(invI);
-								p.updateInventory();
-								invF.delete();
 							}
-							catch (Exception ex){
-								ex.printStackTrace();
-								p.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-load-error"));
+							tp.destroy();
+							p.getInventory().clear();
+							File invF = new File(getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
+							if (invF.exists()){
+								try {
+									YamlConfiguration invY = new YamlConfiguration();
+									invY.load(invF);
+									ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
+									for (String k : invY.getKeys(false)){
+										invI[Integer.parseInt(k)] = invY.getItemStack(k);
+									}
+									p.getInventory().setContents(invI);
+									p.updateInventory();
+									invF.delete();
+								}
+								catch (Exception ex){
+									ex.printStackTrace();
+									p.sendMessage(ChatColor.RED + "[TTT] " + local.getMessage("inv-load-error"));
+								}
 							}
 						}
-						gameTime.remove(worldName);
 						WorldUtils.teleportPlayer(p);
 					}
 					gameTime.remove(worldName);
@@ -866,15 +878,17 @@ public class TTT extends JavaPlugin implements Listener {
 	public void onInventoryClick(InventoryClickEvent e){
 		for (HumanEntity he : e.getViewers()){
 			Player p = (Player)he;
-			if (getTTTPlayer(p.getName()).isDead()){
-				e.setCancelled(true);
-			}
-			else if (e.getInventory().getType() == InventoryType.CHEST){
-				Block block = ((Chest)e.getInventory().getHolder()).getBlock();
-				for (Body b : bodies){
-					if (b.getLocation().equals(FixedLocation.getFixedLocation(block))){
-						e.setCancelled(true);
-						break;
+			if (isPlayer(p.getName())){
+				if (getTTTPlayer(p.getName()).isDead()){
+					e.setCancelled(true);
+				}
+				else if (e.getInventory().getType() == InventoryType.CHEST){
+					Block block = ((Chest)e.getInventory().getHolder()).getBlock();
+					for (Body b : bodies){
+						if (b.getLocation().equals(FixedLocation.getFixedLocation(block))){
+							e.setCancelled(true);
+							break;
+						}
 					}
 				}
 			}
