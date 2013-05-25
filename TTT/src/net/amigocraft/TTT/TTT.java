@@ -19,9 +19,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class TTT extends JavaPlugin implements Listener {
 
-	public static final String ANSI_RED = "\u001B[31m";
-	public static final String ANSI_GREEN = "\u001B[32m";
-	public static final String ANSI_WHITE = "\u001B[37m";
+	public static String ANSI_RED = "\u001B[31m";
+	public static String ANSI_GREEN = "\u001B[32m";
+	public static String ANSI_WHITE = "\u001B[37m";
 
 	public Logger log = this.getLogger();
 	public static TTT plugin = new TTT();
@@ -91,6 +91,11 @@ public class TTT extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable(){
+		ANSI_RED = null;
+		ANSI_GREEN = null;
+		ANSI_WHITE = null;
+		plugin = null;
+		lang = null;
 		log.info(this + " " + local.getMessage("disabled"));
 	}
 }
