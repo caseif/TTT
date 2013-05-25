@@ -23,8 +23,8 @@ public class TTT extends JavaPlugin implements Listener {
 	public static String ANSI_GREEN = "\u001B[32m";
 	public static String ANSI_WHITE = "\u001B[37m";
 
-	public Logger log = this.getLogger();
-	public static TTT plugin = new TTT();
+	public Logger log;
+	public static TTT plugin;
 	public Localization local = new Localization();
 	public static String lang;
 
@@ -39,6 +39,8 @@ public class TTT extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable(){
+		log = this.getLogger();
+		plugin = this;
 		// check if server is offline
 		if (!getServer().getOnlineMode()){
 			if (!getServer().getIp().equals("127.0.0.1") && !getServer().getIp().equals("localhost")){
@@ -54,7 +56,6 @@ public class TTT extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		getServer().getPluginManager().registerEvents(new BlockListener(), this);
 		getCommand("ttt").setExecutor(new CommandManager());
-		TTT.plugin = this;
 
 		// check if config should be overwritten
 		saveDefaultConfig();
