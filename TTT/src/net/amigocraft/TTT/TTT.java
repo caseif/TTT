@@ -92,9 +92,9 @@ public class TTT extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable(){
-		lang = null;
 		if (plugin.getConfig().getBoolean("verbose-logging"))
 			log.info(this + " " + local.getMessage("disabled"));
 		plugin = null;
+		lang = null;
 	}
 }
