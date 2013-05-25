@@ -29,6 +29,9 @@ detective-ratio: 0.15
 #If at least this many players are in a game, there is guaranteed to be a detective.
 minimum-players-for-detective: 5
 
+#Should potentially unnecessary information be logged?
+verbose-logging: true
+
 #Should the plugin allow auto-updating?
 enable-auto-update: true
 

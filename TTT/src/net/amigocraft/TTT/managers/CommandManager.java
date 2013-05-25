@@ -230,7 +230,8 @@ public class CommandManager implements CommandExecutor {
 							try {
 								File spawnFile = new File(plugin.getDataFolder() + File.separator + "spawn.yml");
 								if (!spawnFile.exists()){
-									plugin.log.info("No spawn.yml found, creating...");
+									if (plugin.getConfig().getBoolean("verbose-logging"))
+										plugin.log.info("No spawn.yml found, creating...");
 									spawnFile.createNewFile();
 								}
 								YamlConfiguration spawnYaml = new YamlConfiguration();

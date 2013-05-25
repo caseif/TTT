@@ -46,7 +46,7 @@ public class TTT extends JavaPlugin implements Listener {
 				getServer().getPluginManager().disablePlugin(this);
 				return;
 			}
-			else
+			else if (plugin.getConfig().getBoolean("verbose-logging"))
 				log.info("Server is probably using BungeeCord. Allowing plugin to load...");
 		}
 
@@ -80,13 +80,17 @@ public class TTT extends JavaPlugin implements Listener {
 				Metrics metrics = new Metrics(this);
 				metrics.start();
 			}
-			catch (IOException e) {log.warning("[TTT] " + local.getMessage("metrics-fail"));}
+			catch (IOException e) {
+				if (plugin.getConfig().getBoolean("verbose-logging"))
+					log.warning(local.getMessage("metrics-fail"));
+			}
 		}
 
 		File invDir = new File(this.getDataFolder() + File.separator + "inventories");
 		invDir.mkdir();
 
-		log.info(this + " " + local.getMessage("enabled"));
+		if (plugin.getConfig().getBoolean("verbose-logging"))
+			log.info(this + " " + local.getMessage("enabled"));
 	}
 
 	@Override
@@ -96,6 +100,7 @@ public class TTT extends JavaPlugin implements Listener {
 		ANSI_WHITE = null;
 		plugin = null;
 		lang = null;
-		log.info(this + " " + local.getMessage("disabled"));
+		if (plugin.getConfig().getBoolean("verbose-logging"))
+			log.info(this + " " + local.getMessage("disabled"));
 	}
 }

@@ -61,7 +61,8 @@ public class WorldUtils {
 						File newFolder = new File("TTT_" + worldName);
 						try {
 							FileUtils.copyDirectory(folder, newFolder);
-							plugin.log.info(plugin.local.getMessage("rollback") + " \"" + worldName + "\"!");
+							if (plugin.getConfig().getBoolean("verbose-logging"))
+								plugin.log.info(plugin.local.getMessage("rollback") + " \"" + worldName + "\"!");
 						}
 						catch (IOException ex){
 							plugin.log.info(plugin.local.getMessage("folder-error") + " " + worldName);
