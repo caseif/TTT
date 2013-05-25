@@ -23,7 +23,7 @@ public class TTT extends JavaPlugin implements Listener {
 	public static final String ANSI_GREEN = "\u001B[32m";
 	public static final String ANSI_WHITE = "\u001B[37m";
 
-	public static Logger log = Logger.getLogger("Minecraft");
+	public Logger log = this.getLogger();
 	public static TTT plugin = new TTT();
 	public Localization local = new Localization();
 	public static String lang;
@@ -42,12 +42,12 @@ public class TTT extends JavaPlugin implements Listener {
 		// check if server is offline
 		if (!getServer().getOnlineMode()){
 			if (!getServer().getIp().equals("127.0.0.1") && !getServer().getIp().equals("localhost")){
-				log.info("[TTT] This plugin does not support offline servers! Disabling...");
+				log.info("This plugin does not support offline servers! Disabling...");
 				getServer().getPluginManager().disablePlugin(this);
 				return;
 			}
 			else
-				log.info("[TTT] Server is probably using BungeeCord. Allowing plugin to load...");
+				log.info("Server is probably using BungeeCord. Allowing plugin to load...");
 		}
 
 		// register events, commands, and the plugin variable

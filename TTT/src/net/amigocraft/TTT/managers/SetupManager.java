@@ -32,7 +32,7 @@ public class SetupManager {
 						if (p != null){
 							if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 								offlinePlayers.add(tp);
-								Bukkit.broadcastMessage("[TTT]" + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
+								Bukkit.broadcastMessage("[TTT] " + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
 							}
 						}
 					}

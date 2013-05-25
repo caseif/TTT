@@ -61,15 +61,15 @@ public class WorldUtils {
 						File newFolder = new File("TTT_" + worldName);
 						try {
 							FileUtils.copyDirectory(folder, newFolder);
-							TTT.log.info("[TTT] " + plugin.local.getMessage("rollback") + " \"" + worldName + "\"!");
+							plugin.log.info(plugin.local.getMessage("rollback") + " \"" + worldName + "\"!");
 						}
 						catch (IOException ex){
-							TTT.log.info("[TTT] " + plugin.local.getMessage("folder-error") + " " + worldName);
+							plugin.log.info(plugin.local.getMessage("folder-error") + " " + worldName);
 							ex.printStackTrace();
 						}
 					}
 					else
-						TTT.log.info("[TTT] " + plugin.local.getMessage("cannot-load-world"));
+						plugin.log.info(plugin.local.getMessage("cannot-load-world"));
 				}
 			}
 		}, 100L);
