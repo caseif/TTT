@@ -19,10 +19,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class TTT extends JavaPlugin implements Listener {
 
-	public static String ANSI_RED = "\u001B[31m";
-	public static String ANSI_GREEN = "\u001B[32m";
-	public static String ANSI_WHITE = "\u001B[37m";
-
 	public Logger log;
 	public static TTT plugin;
 	public Localization local = new Localization();
@@ -96,12 +92,9 @@ public class TTT extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable(){
-		ANSI_RED = null;
-		ANSI_GREEN = null;
-		ANSI_WHITE = null;
-		plugin = null;
 		lang = null;
 		if (plugin.getConfig().getBoolean("verbose-logging"))
 			log.info(this + " " + local.getMessage("disabled"));
+		plugin = null;
 	}
 }
