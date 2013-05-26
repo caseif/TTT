@@ -25,7 +25,6 @@ public class TTT extends JavaPlugin implements Listener {
 	public static String lang;
 
 	public HashMap<String, Integer> time = new HashMap<String, Integer>();
-	public HashMap<String, Integer> tasks = new HashMap<String, Integer>();
 	public HashMap<String, Integer> gameTime = new HashMap<String, Integer>();
 	public List<Body> bodies = new ArrayList<Body>();
 	public List<Body> foundBodies = new ArrayList<Body>();
