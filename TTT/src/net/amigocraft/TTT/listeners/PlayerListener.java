@@ -344,7 +344,9 @@ public class PlayerListener implements Listener {
 	public void onPlayerTeleport(PlayerTeleportEvent e){
 		String p = e.getPlayer().getName();
 		if (isPlayer(p)){
-			if (e.getFrom().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getGame()){
+			if (getTTTPlayer(p) == null)
+				plugin.log.info("derp");
+			if (e.getPlayer().getLocation().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getGame()){
 				for (Player pl : plugin.getServer().getWorld("TTT_" + getTTTPlayer(p).getGame()).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", getTTTPlayer(p).getGame()));
 				destroy(p);

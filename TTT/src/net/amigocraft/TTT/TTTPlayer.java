@@ -100,9 +100,8 @@ public class TTTPlayer {
 	}
 	
 	public static boolean isPlayer(String p){
-		for (TTTPlayer t : players)
-			if (t.getName().equals(p))
-				return true;
+		if (getTTTPlayer(p) != null)
+			return true;
 		return false;
 	}
 
