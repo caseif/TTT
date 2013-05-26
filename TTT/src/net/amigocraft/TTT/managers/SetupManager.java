@@ -146,7 +146,12 @@ public class SetupManager {
 				p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("waiting"));
 			}
 		}
-		if (!stopTask)
-			setupTimer(worldName);
+		if (!stopTask){
+			Bukkit.getScheduler().runTaskLater(plugin, new Runnable(){
+				public void run(){
+					setupTimer(worldName);
+				}
+			}, 20L);
+		}
 	}
 }

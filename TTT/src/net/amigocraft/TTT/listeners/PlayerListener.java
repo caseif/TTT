@@ -179,6 +179,24 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent e){
 		if (e.getEntityType() == EntityType.PLAYER){
+			if (e instanceof EntityDamageByEntityEvent){
+				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
+				if (ed.getDamager().getType() == EntityType.PLAYER){
+					if (getTTTPlayer(((Player)ed.getDamager()).getName()).isDead()){
+						e.setCancelled(true);
+					}
+
+					if (isPlayer(((Player)ed.getDamager()).getName())){
+						if (plugin.gameTime.get(((Player)ed.getDamager()).getWorld().getName()) == null)
+							e.setCancelled(true);
+					}
+					if (((Player)ed.getDamager()).getItemInHand() != null)
+						if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
+							if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName() != null)
+								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("crowbar")))
+									e.setDamage(plugin.getConfig().getInt("crowbar-damage"));
+				}
+			}
 			Player p = (Player)e.getEntity();
 			if (isPlayer(p.getName())){
 				int armor = 0;
@@ -276,24 +294,6 @@ public class PlayerListener implements Listener {
 				if (getTTTPlayer(p.getName()).isDead()){
 					e.setCancelled(true);
 				}
-				if (e instanceof EntityDamageByEntityEvent){
-					EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
-					if (ed.getDamager().getType() == EntityType.PLAYER){
-						if (((Player)ed.getDamager()).getItemInHand() != null)
-							if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
-								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName() != null)
-									if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("crowbar")))
-										e.setDamage(plugin.getConfig().getInt("crowbar-damage"));
-						if (getTTTPlayer(((Player)ed.getDamager()).getName()).isDead()){
-							e.setCancelled(true);
-						}
-
-						if (isPlayer(((Player)ed.getDamager()).getName())){
-							if (plugin.gameTime.get(((Player)ed.getDamager()).getWorld().getName()) == null)
-								e.setCancelled(true);
-						}
-					}
-				}
 			}
 		}
 	}
@@ -344,8 +344,6 @@ public class PlayerListener implements Listener {
 	public void onPlayerTeleport(PlayerTeleportEvent e){
 		String p = e.getPlayer().getName();
 		if (isPlayer(p)){
-			if (getTTTPlayer(p) == null)
-				plugin.log.info("derp");
 			if (e.getPlayer().getLocation().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getGame()){
 				for (Player pl : plugin.getServer().getWorld("TTT_" + getTTTPlayer(p).getGame()).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", getTTTPlayer(p).getGame()));

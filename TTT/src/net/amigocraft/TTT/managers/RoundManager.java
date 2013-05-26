@@ -234,7 +234,12 @@ public class RoundManager {
 				}
 			}
 		}
-		if (!stopTask)
-			gameTimer(worldName);
+		if (!stopTask){
+			Bukkit.getScheduler().runTaskLater(plugin, new Runnable(){
+				public void run(){
+					gameTimer(worldName);
+				}
+			}, 20L);
+		}
 	}
 }
