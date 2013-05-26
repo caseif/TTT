@@ -42,4 +42,4 @@ enable-metrics: true
 localization: enUS
 
 #Don't touch this. Please.
-config-version: 0.3.0.22
+config-version: 0.3.0.22.1
