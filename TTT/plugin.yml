@@ -1,5 +1,5 @@
 name: Trouble In Terrorist Town
-version: 0.3.0.19
+version: 0.3.0.20
 main: net.amigocraft.TTT.TTT
 author: Maxim Roncace
 website: http://www.headswilllol.com/
@@ -15,6 +15,9 @@ commands:
     setspawn:
       description: Sets the location to teleport players to upon round end.
       usage: /ttt setspawn
+    help:
+      description: Displays available commands to the sender
+      usage: /ttt help
 permissions:
   ttt.*:
     description: Allows for full control and manipulation of the plugin
@@ -22,6 +25,9 @@ permissions:
     children:
       ttt.import: true
       ttt.join: true
+      ttt.quit: true
+      ttt.setspawn: true
+      ttt.help: true
   ttt.import:
     description: Allows player to import worlds into the plugin
     default: op
@@ -30,4 +36,10 @@ permissions:
     default: true
   ttt.quit:
     description: Allows player to leave TTT matches
+    default: true
+  ttt.setspawn:
+    description: Sets the spawn upon round exit to the sender's current location
+    default: op
+  ttt.help:
+    description: Allows use of /ttt help
     default: true

@@ -31,7 +31,7 @@ import org.bukkit.inventory.PlayerInventory;
 public class CommandManager implements CommandExecutor {
 
 	private TTT plugin = TTT.plugin;
-	
+
 	@SuppressWarnings("deprecation")
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		if (commandLabel.equalsIgnoreCase("ttt")){
@@ -255,6 +255,22 @@ public class CommandManager implements CommandExecutor {
 						sender.sendMessage(ChatColor.RED + plugin.local.getMessage("no-permission"));
 
 				}
+				else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")){
+					if (sender.hasPermission("ttt.help")){
+						if (sender.hasPermission("ttt.join"))
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt join -- " + plugin.local.getMessage("join-help"));
+						if (sender.hasPermission("ttt.quit"))
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt quit -- " + plugin.local.getMessage("quit-help"));
+						if (sender.hasPermission("ttt.import"))
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt import -- " + plugin.local.getMessage("import-help"));
+						if (sender.hasPermission("ttt.setspawn"))
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt setspawn -- " + plugin.local.getMessage("spawn-help"));
+						if (sender.hasPermission("ttt.help"))
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt help, ? -- " + plugin.local.getMessage("help-help"));
+					}
+					else
+						sender.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("no-permission"));
+				}
 				else {
 					sender.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("invalid-args-2"));
 					sender.sendMessage(ChatColor.RED + plugin.local.getMessage("usage-1"));
@@ -268,5 +284,5 @@ public class CommandManager implements CommandExecutor {
 		}
 		return false;
 	}
-	
+
 }
