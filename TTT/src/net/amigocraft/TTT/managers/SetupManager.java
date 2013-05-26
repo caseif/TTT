@@ -104,32 +104,45 @@ public class SetupManager {
 				ItemMeta dnaMeta = dnaScanner.getItemMeta();
 				dnaMeta.setDisplayName("§1" + plugin.local.getMessage("dna-scanner"));
 				dnaScanner.setItemMeta(dnaMeta);
-				for (TTTPlayer tp : TTTPlayer.players){
-					Player pl = plugin.getServer().getPlayer(tp.getName());
-					if (innocents.contains(tp.getName())){
-						tp.setRole(Role.INNOCENT);
+				for (String s : innocents){
+					Player pl = plugin.getServer().getPlayer(s);
+					TTTPlayer t = TTTPlayer.getTTTPlayer(s);
+					if (pl != null && t != null){
+						t.setRole(Role.INNOCENT);
 						pl.sendMessage(ChatColor.DARK_GREEN + plugin.local.getMessage("you-are-innocent"));
 						pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo});
+						pl.setHealth(20);
+						pl.setFoodLevel(20);
 					}
-					else if (traitors.contains(tp.getName())){
-						tp.setRole(Role.TRAITOR);
+				}
+				for (String s : traitors){
+					Player pl = plugin.getServer().getPlayer(s);
+					TTTPlayer t = TTTPlayer.getTTTPlayer(s);
+					if (pl != null && t != null){
 						pl.sendMessage(ChatColor.DARK_RED + plugin.local.getMessage("you-are-traitor"));
 						if (traitors.size() > 1){
 							pl.sendMessage(ChatColor.DARK_RED + plugin.local.getMessage("allies"));
-							for (String t : traitors)
-								pl.sendMessage("- " + t);
+							for (String tr : traitors){
+								if (!tr.equals(s))
+									pl.sendMessage("- " + t);
+							}
 						}
 						else
 							pl.sendMessage(ChatColor.DARK_RED + plugin.local.getMessage("alone"));
 						pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo});
+						pl.setHealth(20);
+						pl.setFoodLevel(20);
 					}
-					else if (detectives.contains(tp.getName())){
-						tp.setRole(Role.DETECTIVE);
+				}
+				for (String s : detectives){
+					Player pl = plugin.getServer().getPlayer(s);
+					TTTPlayer t = TTTPlayer.getTTTPlayer(s);
+					if (pl != null && t != null){
 						pl.sendMessage(ChatColor.BLUE + plugin.local.getMessage("you-are-detective"));
 						pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo, dnaScanner});
+						pl.setHealth(20);
+						pl.setFoodLevel(20);
 					}
-					pl.setHealth(20);
-					pl.setFoodLevel(20);
 				}
 				plugin.time.remove(worldName);
 				plugin.gameTime.put(worldName, plugin.getConfig().getInt("time-limit"));

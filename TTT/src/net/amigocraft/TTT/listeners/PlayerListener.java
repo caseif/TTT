@@ -182,8 +182,10 @@ public class PlayerListener implements Listener {
 			if (e instanceof EntityDamageByEntityEvent){
 				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
 				if (ed.getDamager().getType() == EntityType.PLAYER){
-					if (getTTTPlayer(((Player)ed.getDamager()).getName()).isDead()){
-						e.setCancelled(true);
+					if (isPlayer(((Player)ed.getDamager()).getName())){
+						if (getTTTPlayer(((Player)ed.getDamager()).getName()).isDead()){
+							e.setCancelled(true);
+						}
 					}
 
 					if (isPlayer(((Player)ed.getDamager()).getName())){
@@ -373,19 +375,21 @@ public class PlayerListener implements Listener {
 	public void onPlayerChat(AsyncPlayerChatEvent e){
 		for (Player p : plugin.getServer().getOnlinePlayers()){
 			// check if sender is in TTT game
-			if (getTTTPlayer(e.getPlayer().getName()) != null){
-				if (!p.getWorld().getName().equals(e.getPlayer().getWorld().getName()))
-					e.getRecipients().remove(p);
-			}
-
-			// check if sender is dead
-			else if (getTTTPlayer(p.getName()).isDead()){
-				if (getTTTPlayer(p.getName()).isDead()){
-					if (!p.getWorld().getName().equals("TTT_" + getTTTPlayer(p.getName()).getGame()))
+			if (isPlayer(p.getName())){
+				if (getTTTPlayer(e.getPlayer().getName()) != null){
+					if (!p.getWorld().getName().equals(e.getPlayer().getWorld().getName()))
 						e.getRecipients().remove(p);
 				}
-				else
-					e.getRecipients().remove(p);
+
+				// check if sender is dead
+				else if (getTTTPlayer(p.getName()).isDead()){
+					if (getTTTPlayer(p.getName()).isDead()){
+						if (!p.getWorld().getName().equals("TTT_" + getTTTPlayer(p.getName()).getGame()))
+							e.getRecipients().remove(p);
+					}
+					else
+						e.getRecipients().remove(p);
+				}
 			}
 		}
 
