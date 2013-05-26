@@ -141,7 +141,7 @@ public class CommandManager implements CommandExecutor {
 										else if (testers.contains(sender.getName())){
 											addition = ", " + ChatColor.DARK_RED + plugin.local.getMessage("tester") + ", " + ChatColor.DARK_PURPLE;
 										}
-										Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + addition + " " + plugin.local.getMessage("joined-map") + " \"" + worldName + "\"");
+										Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + addition + plugin.local.getMessage("joined-map") + " \"" + worldName + "\"");
 										int ingamePlayers = 0;
 										for (TTTPlayer p : players)
 											if (p.getGame().equals(worldName))

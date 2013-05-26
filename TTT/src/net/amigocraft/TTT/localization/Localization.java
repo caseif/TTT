@@ -26,7 +26,7 @@ public class Localization {
 			for (int i = 0; i < lines.length; i++){
 				String[] params = lines[i].split("\\|");
 				if (params[0].equalsIgnoreCase(key))
-					return params[1];
+					return params[1].replace("\r", "");
 			}
 		}
 		catch (IOException e){
@@ -40,7 +40,7 @@ public class Localization {
 			for (int i = 0; i < lines.length; i++){
 				String[] params = lines[i].split("\\|");
 				if (params[0].equalsIgnoreCase(key))
-					return params[1];
+					return params[1].replace("\r", "");
 			}
 		}
 		catch (IOException e){
