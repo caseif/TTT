@@ -30,8 +30,6 @@ public class TTT extends JavaPlugin implements Listener {
 	public List<Body> foundBodies = new ArrayList<Body>();
 	public List<String> discreet = new ArrayList<String>();
 
-	public int tries = 0;
-
 	@Override
 	public void onEnable(){
 		log = this.getLogger();

@@ -80,7 +80,7 @@ public class TTTPlayer {
 
 	public static TTTPlayer getTTTPlayer(String player){
 		for (TTTPlayer p : players){
-			if (p.equals(player))
+			if (p.getName().equals(player))
 				return p;
 		}
 		return null;
