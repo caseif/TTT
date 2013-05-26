@@ -36,7 +36,7 @@ public class CommandManager implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		if (commandLabel.equalsIgnoreCase("ttt")){
 			if (args.length > 0){
-				if (args[0].equalsIgnoreCase("import")){
+				if (args[0].equalsIgnoreCase("import") || args[0].equalsIgnoreCase("i")){
 					if (sender.hasPermission("ttt.import")){
 						if (args.length > 1){
 							File folder = new File(args[1]);
@@ -78,7 +78,7 @@ public class CommandManager implements CommandExecutor {
 					else
 						sender.sendMessage(ChatColor.RED + plugin.local.getMessage("no-permission-import"));
 				}
-				else if (args[0].equalsIgnoreCase("join")){
+				else if (args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("j")){
 					if (sender instanceof Player){
 						if (sender.hasPermission("ttt.join")){
 							if (args.length > 1){
@@ -175,7 +175,7 @@ public class CommandManager implements CommandExecutor {
 					else
 						sender.sendMessage(ChatColor.RED + plugin.local.getMessage("must-be-ingame"));
 				}
-				else if (args[0].equalsIgnoreCase("quit")){
+				else if (args[0].equalsIgnoreCase("quit") || args[0].equalsIgnoreCase("q")){
 					if (sender instanceof Player){
 						if (sender.hasPermission("ttt.quit")){
 							if (isPlayer(sender.getName())){
@@ -224,7 +224,7 @@ public class CommandManager implements CommandExecutor {
 					else
 						sender.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("must-be-ingame"));
 				}
-				else if (args[0].equalsIgnoreCase("setspawn")){
+				else if (args[0].equalsIgnoreCase("setspawn") || args[0].equalsIgnoreCase("ss")){
 					if (sender.hasPermission("ttt.setspawn")){
 						if (sender instanceof Player){
 							try {
@@ -257,16 +257,18 @@ public class CommandManager implements CommandExecutor {
 				}
 				else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")){
 					if (sender.hasPermission("ttt.help")){
+						sender.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + plugin.local.getMessage("commands"));
+						sender.sendMessage("");
 						if (sender.hasPermission("ttt.join"))
-							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt join -- " + plugin.local.getMessage("join-help"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt join, j " + ChatColor.GREEN + plugin.local.getMessage("join-help"));
 						if (sender.hasPermission("ttt.quit"))
-							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt quit -- " + plugin.local.getMessage("quit-help"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt quit, q " + ChatColor.GREEN + plugin.local.getMessage("quit-help"));
 						if (sender.hasPermission("ttt.import"))
-							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt import -- " + plugin.local.getMessage("import-help"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt import, i " + ChatColor.GREEN + plugin.local.getMessage("import-help"));
 						if (sender.hasPermission("ttt.setspawn"))
-							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt setspawn -- " + plugin.local.getMessage("spawn-help"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt setspawn, ss " + ChatColor.GREEN + plugin.local.getMessage("spawn-help"));
 						if (sender.hasPermission("ttt.help"))
-							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt help, ? -- " + plugin.local.getMessage("help-help"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt help, ? " + ChatColor.GREEN + plugin.local.getMessage("help-help"));
 					}
 					else
 						sender.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("no-permission"));
