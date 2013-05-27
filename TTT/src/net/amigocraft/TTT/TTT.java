@@ -25,7 +25,6 @@ public class TTT extends JavaPlugin implements Listener {
 
 	public List<Body> bodies = new ArrayList<Body>();
 	public List<Body> foundBodies = new ArrayList<Body>();
-	public List<String> discreet = new ArrayList<String>();
 
 	@Override
 	public void onEnable(){

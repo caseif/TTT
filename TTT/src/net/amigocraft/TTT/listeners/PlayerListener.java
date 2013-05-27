@@ -1,8 +1,6 @@
 package net.amigocraft.TTT.listeners;
 
-import static net.amigocraft.TTT.TTTPlayer.destroy;
-import static net.amigocraft.TTT.TTTPlayer.getTTTPlayer;
-import static net.amigocraft.TTT.TTTPlayer.isPlayer;
+import static net.amigocraft.TTT.TTTPlayer.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,53 +55,70 @@ public class PlayerListener implements Listener {
 			if (!tPlayer.isDead()){
 				if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
 					if (e.getClickedBlock().getType() == Material.CHEST){
-						int index = -1;
-						for (int i = 0; i < plugin.bodies.size(); i++){
-							if (plugin.bodies.get(i).getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
-								index = i;
-								break;
-							}
-						}
-						if (index != -1){
-							boolean found = false;
-							for (Body b : plugin.foundBodies){
+						if (tPlayer.isDead()){
+							for (Body b : plugin.bodies){
 								if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
-									found = true;
+									if (e.getClickedBlock().getType() == Material.CHEST){
+										Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
+										Inventory inv = plugin.getServer().createInventory(null, chestinv.getSize());
+										inv.setContents(chestinv.getContents());
+										e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("discreet"));
+										tPlayer.setDiscreet(true);
+										e.getPlayer().openInventory(inv);
+									}
 									break;
 								}
 							}
-							if (!found){
-								for (Player p : e.getPlayer().getWorld().getPlayers()){
-									if (plugin.bodies.get(index).getRole() == Role.INNOCENT)
-										p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
-												plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getName())  + ". " + plugin.local.getMessage("was-innocent"));
-									else if (plugin.bodies.get(index).getRole() == Role.TRAITOR)
-										p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
-												plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getName())  + ". " + plugin.local.getMessage("was-traitor"));
-									else if (plugin.bodies.get(index).getRole() == Role.DETECTIVE)
-										p.sendMessage(ChatColor.DARK_BLUE + e.getPlayer().getName() + " " +
-												plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getName())  + ". " + plugin.local.getMessage("was-detective"));
+						}
+						else {
+							int index = -1;
+							for (int i = 0; i < plugin.bodies.size(); i++){
+								if (plugin.bodies.get(i).getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
+									index = i;
+									break;
 								}
-								plugin.foundBodies.add(plugin.bodies.get(index));
 							}
-							if (tPlayer.getRole() == Role.DETECTIVE){
-								if (e.getPlayer().getItemInHand() != null){
-									if (e.getPlayer().getItemInHand().getType() == Material.COMPASS){
-										if (e.getPlayer().getItemInHand().getItemMeta() != null){
-											if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-												if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§1" + plugin.local.getMessage("dna-scanner"))){
-													e.setCancelled(true);
-													Player killer = plugin.getServer().getPlayer(getTTTPlayer(plugin.bodies.get(index).getName()).getKiller());
-													if (killer != null){
-														if (isPlayer(killer.getName())){
-															tPlayer.setTracking(killer.getName());
-															e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("collected-dna").replace("%", plugin.bodies.get(index).getName()));
+							if (index != -1){
+								boolean found = false;
+								for (Body b : plugin.foundBodies){
+									if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
+										found = true;
+										break;
+									}
+								}
+								if (!found){
+									for (Player p : e.getPlayer().getWorld().getPlayers()){
+										if (plugin.bodies.get(index).getRole() == Role.INNOCENT)
+											p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
+													plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getName())  + ". " + plugin.local.getMessage("was-innocent"));
+										else if (plugin.bodies.get(index).getRole() == Role.TRAITOR)
+											p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
+													plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getName())  + ". " + plugin.local.getMessage("was-traitor"));
+										else if (plugin.bodies.get(index).getRole() == Role.DETECTIVE)
+											p.sendMessage(ChatColor.DARK_BLUE + e.getPlayer().getName() + " " +
+													plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getName())  + ". " + plugin.local.getMessage("was-detective"));
+									}
+									plugin.foundBodies.add(plugin.bodies.get(index));
+								}
+								if (tPlayer.getRole() == Role.DETECTIVE){
+									if (e.getPlayer().getItemInHand() != null){
+										if (e.getPlayer().getItemInHand().getType() == Material.COMPASS){
+											if (e.getPlayer().getItemInHand().getItemMeta() != null){
+												if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
+													if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§1" + plugin.local.getMessage("dna-scanner"))){
+														e.setCancelled(true);
+														Player killer = plugin.getServer().getPlayer(getTTTPlayer(plugin.bodies.get(index).getName()).getKiller());
+														if (killer != null){
+															if (isPlayer(killer.getName())){
+																tPlayer.setTracking(killer.getName());
+																e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("collected-dna").replace("%", plugin.bodies.get(index).getName()));
+															}
+															else
+																e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("killer-left"));
 														}
 														else
 															e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("killer-left"));
 													}
-													else
-														e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("killer-left"));
 												}
 											}
 										}
@@ -130,26 +145,6 @@ public class PlayerListener implements Listener {
 										else
 											e.getPlayer().sendMessage(ChatColor.RED + plugin.local.getMessage("need-ammo"));
 									}
-								}
-							}
-						}
-					}
-				}
-				else {
-					e.setCancelled(true);
-					if (tPlayer.isDead()){
-						if (e.getClickedBlock() != null){
-							for (Body b : plugin.bodies){
-								if (b.getLocation().equals(FixedLocation.getFixedLocation(e.getClickedBlock()))){
-									if (e.getClickedBlock().getType() == Material.CHEST){
-										Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
-										Inventory inv = plugin.getServer().createInventory(null, chestinv.getSize());
-										inv.setContents(chestinv.getContents());
-										e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("discreet"));
-										plugin.discreet.add(e.getPlayer().getName());
-										e.getPlayer().openInventory(inv);
-									}
-									break;
 								}
 							}
 						}
@@ -185,7 +180,6 @@ public class PlayerListener implements Listener {
 					if (isPlayer(((Player)ed.getDamager()).getName())){
 						if (getTTTPlayer(((Player)ed.getDamager()).getName()).isDead()){
 							e.setCancelled(true);
-							plugin.log.info("damager dead");
 						}
 					}
 
@@ -367,8 +361,8 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent e){
-		if (plugin.discreet.contains(e.getPlayer().getName()))
-			plugin.discreet.remove(e.getPlayer().getName());
+		if (isPlayer(e.getPlayer().getName()))
+			TTTPlayer.getTTTPlayer(e.getPlayer().getName()).setDiscreet(false);
 	}
 
 	@SuppressWarnings("deprecation")

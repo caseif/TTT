@@ -8,6 +8,7 @@ public class TTTPlayer {
 	private String world;
 	private Role role;
 	private boolean dead;
+	private boolean discreet = false;
 	private String tracking;
 	private String killer;
 	public static ArrayList<TTTPlayer> players = new ArrayList<TTTPlayer>();
@@ -33,6 +34,10 @@ public class TTTPlayer {
 	public boolean isDead(){
 		return dead;
 	}
+	
+	public boolean isDiscreet(){
+		return discreet;
+	}
 
 	public String getTracking(){
 		return tracking;
@@ -52,6 +57,10 @@ public class TTTPlayer {
 
 	public void setDead(boolean dead){
 		this.dead = dead;
+	}
+	
+	public void setDiscreet(boolean discreet){
+		this.discreet = discreet;
 	}
 
 	public void setTracking(String tracking){
