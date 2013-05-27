@@ -64,4 +64,13 @@ public class Round {
 		}
 		return null;
 	}
+	
+	public boolean equals(Object p){
+		Round r = (Round)p;
+		return world.equals(r.getWorld());
+	}
+	
+	public int hashCode(){
+		return 41 * (world.hashCode() + 41);
+	}
 }

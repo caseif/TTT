@@ -4,7 +4,7 @@ import static net.amigocraft.TTT.TTTPlayer.getTTTPlayer;
 import static net.amigocraft.TTT.TTTPlayer.isPlayer;
 
 import net.amigocraft.TTT.Body;
-import net.amigocraft.TTT.FixedLocation;
+import net.amigocraft.TTT.Location2i;
 import net.amigocraft.TTT.TTT;
 
 import org.bukkit.block.Block;
@@ -46,7 +46,7 @@ public class BlockListener implements Listener {
 				else if (e.getInventory().getType() == InventoryType.CHEST){
 					Block block = ((Chest)e.getInventory().getHolder()).getBlock();
 					for (Body b : plugin.bodies){
-						if (b.getLocation().equals(FixedLocation.getFixedLocation(block))){
+						if (b.getLocation().equals(Location2i.getLocation(block))){
 							e.setCancelled(true);
 							break;
 						}

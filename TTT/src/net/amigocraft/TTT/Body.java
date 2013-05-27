@@ -2,27 +2,21 @@ package net.amigocraft.TTT;
 // the class
 
 public class Body {
-	private String name;
-	private Role role;
-	private FixedLocation l;
+	private TTTPlayer player;
+	private Location2i l;
 	private long time;
 
-	public Body(String name, Role role, FixedLocation l, long time){
-		this.name = name;
-		this.role = role;
+	public Body(TTTPlayer player, Location2i l, long time){
+		this.player = player;
 		this.l = l;
 		this.time = time;
 	}
 	
-	public String getName(){
-		return name;
-	}
-	
-	public Role getRole(){
-		return role;
+	public TTTPlayer getPlayer(){
+		return player;
 	}
 
-	public FixedLocation getLocation(){
+	public Location2i getLocation(){
 		return l;
 	}
 	
@@ -31,10 +25,10 @@ public class Body {
 	}
 	
 	public boolean equals(Object b){
-		return name.equals(((Body)b).getName()) && role == ((Body)b).getRole() && l.equals(((Body)b).getLocation());
+		return player.equals(((Body)b).getPlayer()) && l.equals(((Body)b).getLocation());
 	}
 	
 	public int hashCode(){
-		return 41 * (41 + name.hashCode() + role.hashCode() + l.hashCode());
+		return 41 * (41 + player.hashCode() + l.hashCode());
 	}
 }

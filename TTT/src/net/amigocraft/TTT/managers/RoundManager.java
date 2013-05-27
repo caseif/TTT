@@ -74,8 +74,8 @@ public class RoundManager {
 			List<Body> removeBodies = new ArrayList<Body>();
 			List<Body> removeFoundBodies = new ArrayList<Body>(); 
 			for (Body b : plugin.bodies){
-				if (getTTTPlayer(b.getName()).isDead()){
-					if (getTTTPlayer(b.getName()).getWorld().equals(worldName)){
+				if (getTTTPlayer(b.getPlayer().getName()).isDead()){
+					if (getTTTPlayer(b.getPlayer().getName()).getWorld().equals(worldName)){
 						removeBodies.add(b);
 						if (plugin.foundBodies.contains(b))
 							removeFoundBodies.add(b);
@@ -160,8 +160,8 @@ public class RoundManager {
 				List<Body> removeBodies = new ArrayList<Body>();
 				List<Body> removeFoundBodies = new ArrayList<Body>(); 
 				for (Body b : plugin.bodies){
-					if (getTTTPlayer(b.getName()).isDead()){
-						if (getTTTPlayer(b.getName()).getWorld().equals(worldName)){
+					if (getTTTPlayer(b.getPlayer().getName()).isDead()){
+						if (getTTTPlayer(b.getPlayer().getName()).getWorld().equals(worldName)){
 							removeBodies.add(b);
 							if (plugin.foundBodies.contains(b))
 								removeFoundBodies.add(b);
