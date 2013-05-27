@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 
 import net.amigocraft.TTT.Role;
+import net.amigocraft.TTT.Round;
+import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
 
@@ -23,10 +25,13 @@ public class SetupManager {
 
 	public static void setupTimer(final String worldName){
 		boolean stopTask = false;
+
+		Round r = Round.getRound(worldName);
+		
 		// verify that all players are still online
 		List<TTTPlayer> offlinePlayers = new ArrayList<TTTPlayer>();
 		for (TTTPlayer tp : players){
-			if (tp.getGame().equals(worldName)){
+			if (tp.getRound().getWorld().equals(worldName)){
 				Player p = plugin.getServer().getPlayer(tp.getName());
 				if (p != null){
 					if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
@@ -39,10 +44,10 @@ public class SetupManager {
 		for (TTTPlayer p : offlinePlayers){
 			p.destroy();
 		}
-		int currentTime = plugin.time.get(worldName);
+		int currentTime = r.getTime();
 		int playerCount = 0; 
 		for (TTTPlayer tp : players){
-			if (tp.getGame().equals(worldName))
+			if (tp.getRound().getWorld().equals(worldName))
 				playerCount += 1;
 		}
 		if (playerCount >= plugin.getConfig().getInt("minimum-players")){
@@ -145,16 +150,18 @@ public class SetupManager {
 						pl.setFoodLevel(20);
 					}
 				}
-				plugin.time.remove(worldName);
-				plugin.gameTime.put(worldName, plugin.getConfig().getInt("time-limit"));
+				
+				r.setTime(plugin.getConfig().getInt("time-limit"));
+				r.setStage(Stage.PLAYING);
 				stopTask = true;
 				new RoundManager().gameTimer(worldName);
 			}
 			if (currentTime > 0)
-				plugin.time.put(worldName, currentTime - 1);
+				r.tickDown();
 		}
 		else {
-			plugin.time.remove(worldName);
+			r.setTime(0);
+			r.setStage(Stage.WAITING);
 			stopTask = true;
 			for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 				p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("waiting"));

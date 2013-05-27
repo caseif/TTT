@@ -3,7 +3,6 @@ package net.amigocraft.TTT;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -24,8 +23,6 @@ public class TTT extends JavaPlugin implements Listener {
 	public Localization local = new Localization();
 	public static String lang;
 
-	public HashMap<String, Integer> time = new HashMap<String, Integer>();
-	public HashMap<String, Integer> gameTime = new HashMap<String, Integer>();
 	public List<Body> bodies = new ArrayList<Body>();
 	public List<Body> foundBodies = new ArrayList<Body>();
 	public List<String> discreet = new ArrayList<String>();

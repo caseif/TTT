@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.amigocraft.TTT.Round;
+import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
 import net.amigocraft.TTT.utils.NumUtils;
@@ -82,7 +84,12 @@ public class CommandManager implements CommandExecutor {
 					if (sender instanceof Player){
 						if (sender.hasPermission("ttt.join")){
 							if (args.length > 1){
-								if (plugin.gameTime.get(args[1]) == null){
+								boolean valid = false;
+								if (Round.getRound(args[1]) == null)
+									valid = true;
+								else if (Round.getRound(args[1]).getStage() != Stage.PLAYING)
+									valid = true;
+								if (valid){
 									File folder = new File(args[1]);
 									File tttFolder = new File("TTT_" + args[1]);
 									if (folder.exists() && tttFolder.exists()){
@@ -94,11 +101,12 @@ public class CommandManager implements CommandExecutor {
 											}
 										}
 										final String worldName = args[1];
+										Round r = Round.getRound(worldName);
 										if (!loaded){
 											plugin.getServer().createWorld(new WorldCreator("TTT_" + worldName));
 										}
 										((Player)sender).teleport(plugin.getServer().getWorld("TTT_" + worldName).getSpawnLocation());
-										new TTTPlayer(((Player)sender).getName(), worldName);
+										new TTTPlayer(((Player)sender).getName(), r);
 										File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + sender.getName() + ".inv");
 										Inventory inv = ((Player)sender).getInventory();
 										PlayerInventory pInv = (PlayerInventory)inv;
@@ -137,19 +145,20 @@ public class CommandManager implements CommandExecutor {
 										testers.add("jpf6368");
 										String addition = "";
 										if (sender.getName().equals("AngryNerd1"))
-											addition = ", " + ChatColor.DARK_RED + plugin.local.getMessage("creator") + ", " + ChatColor.DARK_PURPLE;
+											addition = ", " + ChatColor.DARK_RED + plugin.local.getMessage("creator") + "," + ChatColor.DARK_PURPLE;
 										else if (testers.contains(sender.getName())){
-											addition = ", " + ChatColor.DARK_RED + plugin.local.getMessage("tester") + ", " + ChatColor.DARK_PURPLE;
+											addition = ", " + ChatColor.DARK_RED + plugin.local.getMessage("tester") + "," + ChatColor.DARK_PURPLE;
 										}
-										Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + addition + plugin.local.getMessage("joined-map") + " \"" + worldName + "\"");
+										Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + addition + " " + plugin.local.getMessage("joined-map") + " \"" + worldName + "\"");
 										int ingamePlayers = 0;
 										for (TTTPlayer p : players)
-											if (p.getGame().equals(worldName))
+											if (p.getRound().getWorld().equals(worldName))
 												ingamePlayers += 1;
-										if (ingamePlayers >= plugin.getConfig().getInt("minimum-players") && !plugin.time.containsKey(worldName)){
+										if (ingamePlayers >= plugin.getConfig().getInt("minimum-players") && r.getStage() != Stage.PREPARING){
 											for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
 												p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("round-starting"));
-											plugin.time.put(worldName, plugin.getConfig().getInt("setup-time"));
+											r.setTime(plugin.getConfig().getInt("setup-time"));
+											r.setStage(Stage.PREPARING);
 											SetupManager.setupTimer(worldName);
 										}
 										else {
@@ -182,9 +191,9 @@ public class CommandManager implements CommandExecutor {
 								WorldUtils.teleportPlayer((Player)sender);
 								TTTPlayer tPlayer = getTTTPlayer(sender.getName());
 								getTTTPlayer(sender.getName()).destroy();
-								if (plugin.getServer().getWorld("TTT_" + tPlayer.getGame()) != null)
-									for (Player pl : plugin.getServer().getWorld("TTT_" + tPlayer.getGame()).getPlayers())
-										pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + plugin.local.getMessage("left-game").replace("%", tPlayer.getGame()));
+								if (plugin.getServer().getWorld("TTT_" + tPlayer.getRound().getWorld()) != null)
+									for (Player pl : plugin.getServer().getWorld("TTT_" + tPlayer.getRound().getWorld()).getPlayers())
+										pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + " " + plugin.local.getMessage("left-game").replace("%", tPlayer.getRound().getWorld()));
 								Player p = (Player)sender;
 								p.getInventory().clear();
 								File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");

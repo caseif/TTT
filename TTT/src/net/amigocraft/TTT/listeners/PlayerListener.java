@@ -11,6 +11,8 @@ import java.util.List;
 import net.amigocraft.TTT.Body;
 import net.amigocraft.TTT.FixedLocation;
 import net.amigocraft.TTT.Role;
+import net.amigocraft.TTT.Round;
+import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
 import net.amigocraft.TTT.utils.InventoryUtils;
@@ -185,12 +187,15 @@ public class PlayerListener implements Listener {
 					if (isPlayer(((Player)ed.getDamager()).getName())){
 						if (getTTTPlayer(((Player)ed.getDamager()).getName()).isDead()){
 							e.setCancelled(true);
+							plugin.log.info("damager dead");
 						}
 					}
 
 					if (isPlayer(((Player)ed.getDamager()).getName())){
-						if (plugin.gameTime.get(((Player)ed.getDamager()).getWorld().getName()) == null)
+						if (Round.getRound(((Player)ed.getDamager()).getWorld().getName()).getStage() != Stage.PLAYING){
 							e.setCancelled(true);
+							plugin.log.info("preparation");
+						}
 					}
 					if (((Player)ed.getDamager()).getItemInHand() != null)
 						if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
@@ -247,6 +252,7 @@ public class PlayerListener implements Listener {
 				if (e.getDamage() - ((armor * .04) * e.getDamage()) >= ((Player)e.getEntity()).getHealth()){
 					if (getTTTPlayer(p.getName()).getRole() != null){
 						e.setCancelled(true);
+						plugin.log.info("dying");
 						p.setHealth(20);
 						p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("dead"));
 						getTTTPlayer(p.getName()).setDead(true);
@@ -295,6 +301,7 @@ public class PlayerListener implements Listener {
 				}
 				if (getTTTPlayer(p.getName()).isDead()){
 					e.setCancelled(true);
+					plugin.log.info("damagee dead");
 				}
 			}
 		}
@@ -331,7 +338,7 @@ public class PlayerListener implements Listener {
 			if (getTTTPlayer(p).getRole() != null){
 				String worldName = "";
 				if (isPlayer(p)){
-					worldName = getTTTPlayer(p).getGame();
+					worldName = getTTTPlayer(p).getRound().getWorld();
 					destroy(p);
 				}
 				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
@@ -346,9 +353,9 @@ public class PlayerListener implements Listener {
 	public void onPlayerTeleport(PlayerTeleportEvent e){
 		String p = e.getPlayer().getName();
 		if (isPlayer(p)){
-			if (e.getPlayer().getLocation().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getGame()){
-				for (Player pl : plugin.getServer().getWorld("TTT_" + getTTTPlayer(p).getGame()).getPlayers())
-					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", getTTTPlayer(p).getGame()));
+			if (e.getPlayer().getLocation().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getRound().getWorld()){
+				for (Player pl : plugin.getServer().getWorld("TTT_" + getTTTPlayer(p).getRound().getWorld()).getPlayers())
+					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", getTTTPlayer(p).getRound().getWorld()));
 				destroy(p);
 			}
 		}
@@ -358,7 +365,6 @@ public class PlayerListener implements Listener {
 		if (e.getEntity() instanceof Player){
 			Player p = (Player)e.getEntity();
 			if (isPlayer(p.getName())){
-				if (plugin.gameTime.get(getTTTPlayer(p.getName())) != null)
 					e.setCancelled(true);
 			}
 		}
@@ -384,7 +390,7 @@ public class PlayerListener implements Listener {
 				// check if sender is dead
 				else if (getTTTPlayer(p.getName()).isDead()){
 					if (getTTTPlayer(p.getName()).isDead()){
-						if (!p.getWorld().getName().equals("TTT_" + getTTTPlayer(p.getName()).getGame()))
+						if (!p.getWorld().getName().equals("TTT_" + getTTTPlayer(p.getName()).getRound().getWorld()))
 							e.getRecipients().remove(p);
 					}
 					else

@@ -5,16 +5,17 @@ import java.util.ArrayList;
 public class TTTPlayer {
 
 	private String name;
-	private String game;
+	private String world;
+	private Round round;
 	private Role role;
 	private boolean dead;
 	private String tracking;
 	private String killer;
 	public static ArrayList<TTTPlayer> players = new ArrayList<TTTPlayer>();
 
-	public TTTPlayer(String name, String game){
+	public TTTPlayer(String name, Round round){
 		this.name = name;
-		this.game = game;
+		this.round = round;
 		players.add(this);
 	}
 	
@@ -22,8 +23,12 @@ public class TTTPlayer {
 		return name;
 	}
 
-	public String getGame(){
-		return game;
+	public String getWorld(){
+		return world;
+	}
+	
+	public Round getRound(){
+		return round;
 	}
 
 	public Role getRole(){
@@ -48,9 +53,9 @@ public class TTTPlayer {
 		players.add(this);
 	}
 	
-	public void setGame(String game){
+	public void setRound(Round round){
 		players.remove(this);
-		this.game = game;
+		this.round = round;
 		players.add(this);
 	}
 

@@ -10,6 +10,7 @@ import java.util.List;
 
 import net.amigocraft.TTT.Body;
 import net.amigocraft.TTT.Role;
+import net.amigocraft.TTT.Round;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
 import net.amigocraft.TTT.utils.NumUtils;
@@ -31,7 +32,7 @@ public class RoundManager {
 		// verify that all players are still online
 		List<TTTPlayer> offlinePlayers = new ArrayList<TTTPlayer>();
 		for (TTTPlayer tp : players){
-			if (tp.getGame().equals(worldName)){
+			if (tp.getRound().getWorld().equals(worldName)){
 				Player p = plugin.getServer().getPlayer(tp.getName());
 				if (p != null){
 					if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
@@ -60,7 +61,7 @@ public class RoundManager {
 		boolean iLeft = false;
 		boolean tLeft = false;
 		for (TTTPlayer tp : players){
-			if (tp.getGame().equals(worldName)){
+			if (tp.getRound().getWorld().equals(worldName)){
 				if (tp.getRole() == Role.INNOCENT){
 					iLeft = true;
 				}
@@ -74,7 +75,7 @@ public class RoundManager {
 			List<Body> removeFoundBodies = new ArrayList<Body>(); 
 			for (Body b : plugin.bodies){
 				if (getTTTPlayer(b.getName()).isDead()){
-					if (getTTTPlayer(b.getName()).getGame().equals(worldName)){
+					if (getTTTPlayer(b.getName()).getRound().getWorld().equals(worldName)){
 						removeBodies.add(b);
 						if (plugin.foundBodies.contains(b))
 							removeFoundBodies.add(b);
@@ -129,36 +130,35 @@ public class RoundManager {
 				}
 				WorldUtils.teleportPlayer(p);
 			}
-			plugin.gameTime.remove(worldName);
+			Round.getRound(worldName).destroy();
 			stopTask = true;
 			plugin.getServer().unloadWorld("TTT_" + worldName, false);
 			new WorldUtils().rollbackWorld(worldName);
 		}
 		else {
-			int newTime = plugin.gameTime.get(worldName) - 1;
-			plugin.gameTime.remove(worldName);
-			plugin.gameTime.put(worldName, newTime);
-			if (newTime % 60 == 0 && newTime >= 60){
+			Round r = Round.getRound(worldName);
+			int rTime = r.getTime();
+			if (rTime % 60 == 0 && rTime >= 60){
 				for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-					p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(newTime / 60) + " " + plugin.local.getMessage("minutes") + " " + plugin.local.getMessage("left"));
+					p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime / 60) + " " + plugin.local.getMessage("minutes") + " " + plugin.local.getMessage("left"));
 				}
 			}
-			else if (newTime % 10 == 0 && newTime > 10 && newTime < 60){
+			else if (rTime % 10 == 0 && rTime > 10 && rTime < 60){
 				for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-					p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(newTime) + " " + plugin.local.getMessage("seconds") + " " + plugin.local.getMessage("left"));
+					p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " + plugin.local.getMessage("seconds") + " " + plugin.local.getMessage("left"));
 				}
 			}
-			else if (newTime < 10 && newTime > 0){
+			else if (rTime < 10 && rTime > 0){
 				for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-					p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(newTime) + " " + plugin.local.getMessage("seconds") + " " + plugin.local.getMessage("left"));
+					p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " + plugin.local.getMessage("seconds") + " " + plugin.local.getMessage("left"));
 				}
 			}
-			else if (newTime <= 0){
+			else if (rTime <= 0){
 				List<Body> removeBodies = new ArrayList<Body>();
 				List<Body> removeFoundBodies = new ArrayList<Body>(); 
 				for (Body b : plugin.bodies){
 					if (getTTTPlayer(b.getName()).isDead()){
-						if (getTTTPlayer(b.getName()).getGame().equals(worldName)){
+						if (getTTTPlayer(b.getName()).getRound().getWorld().equals(worldName)){
 							removeBodies.add(b);
 							if (plugin.foundBodies.contains(b))
 								removeFoundBodies.add(b);
@@ -212,9 +212,9 @@ public class RoundManager {
 							p.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("inv-load-fail"));
 						}
 					}
-					plugin.gameTime.remove(worldName);
 					WorldUtils.teleportPlayer(p);
 				}
+				r.destroy();
 				stopTask = true;
 				plugin.getServer().unloadWorld("TTT_" + worldName, false);
 				new WorldUtils().rollbackWorld(worldName);
@@ -227,7 +227,7 @@ public class RoundManager {
 					if (plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(plugin.getServer().getPlayer(p.getName()))){
 						plugin.getServer().getPlayer(p.getName()).setAllowFlight(true);
 						for (TTTPlayer other : players){
-							if (other.getGame().equals(worldName))
+							if (other.getRound().getWorld().equals(worldName))
 								plugin.getServer().getPlayer(other.getName()).hidePlayer(plugin.getServer().getPlayer(p.getName()));
 						}
 					}
