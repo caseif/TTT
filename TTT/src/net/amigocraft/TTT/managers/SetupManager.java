@@ -119,6 +119,7 @@ public class SetupManager {
 					Player pl = plugin.getServer().getPlayer(s);
 					TTTPlayer t = TTTPlayer.getTTTPlayer(s);
 					if (pl != null && t != null){
+						t.setRole(Role.TRAITOR);
 						pl.sendMessage(ChatColor.DARK_RED + plugin.local.getMessage("you-are-traitor"));
 						if (traitors.size() > 1){
 							pl.sendMessage(ChatColor.DARK_RED + plugin.local.getMessage("allies"));
