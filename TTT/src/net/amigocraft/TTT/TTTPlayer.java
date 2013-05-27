@@ -48,39 +48,27 @@ public class TTTPlayer {
 	}
 
 	public void setName(String name){
-		players.remove(this);
 		this.name = name;
-		players.add(this);
 	}
 	
 	public void setRound(Round round){
-		players.remove(this);
 		this.round = round;
-		players.add(this);
 	}
 
 	public void setRole(Role role){
-		players.remove(this);
 		this.role = role;
-		players.add(this);
 	}
 
 	public void setDead(boolean dead){
-		players.remove(this);
 		this.dead = dead;
-		players.add(this);
 	}
 
 	public void setTracking(String tracking){
-		players.remove(this);
 		this.tracking = tracking;
-		players.add(this);
 	}
 
 	public void setKiller(String killer){
-		players.remove(this);
 		this.killer = killer;
-		players.add(this);
 	}
 
 	public static TTTPlayer getTTTPlayer(String player){

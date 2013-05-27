@@ -29,39 +29,27 @@ public class Round {
 	}
 	
 	public void setWorld(String world){
-		rounds.remove(this);
 		this.world = world;
-		rounds.add(this);
 	}
 	
 	public void setStage(Stage s){
-		rounds.remove(this);
 		stage = s;
-		rounds.add(this);
 	}
 	
 	public void setTime(int t){
-		rounds.remove(this);
 		time = t;
-		rounds.add(this);
 	}
 	
 	public void tickDown(){
-		rounds.remove(this);
 		time -= 1;
-		rounds.add(this);
 	}
 	
 	public void subtractTime(int t){
-		rounds.remove(this);
 		time -= t;
-		rounds.add(this);
 	}
 	
 	public void addTime(int t){
-		rounds.remove(this);
 		time += t;
-		rounds.add(this);
 	}
 	
 	public void destroy(){
