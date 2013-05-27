@@ -31,7 +31,7 @@ public class SetupManager {
 		// verify that all players are still online
 		List<TTTPlayer> offlinePlayers = new ArrayList<TTTPlayer>();
 		for (TTTPlayer tp : players){
-			if (tp.getRound().getWorld().equals(worldName)){
+			if (tp.getWorld().equals(worldName)){
 				Player p = plugin.getServer().getPlayer(tp.getName());
 				if (p != null){
 					if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
@@ -47,7 +47,7 @@ public class SetupManager {
 		int currentTime = r.getTime();
 		int playerCount = 0; 
 		for (TTTPlayer tp : players){
-			if (tp.getRound().getWorld().equals(worldName))
+			if (tp.getWorld().equals(worldName))
 				playerCount += 1;
 		}
 		if (playerCount >= plugin.getConfig().getInt("minimum-players")){

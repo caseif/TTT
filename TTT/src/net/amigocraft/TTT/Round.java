@@ -8,11 +8,12 @@ public class Round {
 	public static List<Round> rounds = new ArrayList<Round>();
 	
 	private int time = 0;
-	private Stage stage = Stage.WAITING;
+	private Stage stage;
 	private String world;
 	
 	public Round(String world){
 		this.world = world;
+		stage = Stage.WAITING;
 		rounds.add(this);
 	}
 	
@@ -61,7 +62,6 @@ public class Round {
 			if (r.getWorld().equals(n))
 				return r;
 		}
-		return new Round(n);
+		return null;
 	}
-	
 }

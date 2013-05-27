@@ -118,19 +118,17 @@ public class PlayerListener implements Listener {
 						if (e.getPlayer().getItemInHand().getItemMeta() != null){
 							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
 								if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("gun"))){
-									if ((plugin.getConfig().getBoolean("guns-outside-arenas"))){
-										if (tPlayer.isDead()){
-											e.setCancelled(true);
-											if (e.getPlayer().getInventory().contains(Material.ARROW) || !plugin.getConfig().getBoolean("require-ammo-for-guns")){
-												if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
-													InventoryUtils.removeArrow(e.getPlayer().getInventory());
-													e.getPlayer().updateInventory();
-												}
-												e.getPlayer().launchProjectile(Arrow.class);
+									if (tPlayer.isDead() || plugin.getConfig().getBoolean("guns-outside-arenas")){
+										e.setCancelled(true);
+										if (e.getPlayer().getInventory().contains(Material.ARROW) || !plugin.getConfig().getBoolean("require-ammo-for-guns")){
+											if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
+												InventoryUtils.removeArrow(e.getPlayer().getInventory());
+												e.getPlayer().updateInventory();
 											}
-											else
-												e.getPlayer().sendMessage(ChatColor.RED + plugin.local.getMessage("need-ammo"));
+											e.getPlayer().launchProjectile(Arrow.class);
 										}
+										else
+											e.getPlayer().sendMessage(ChatColor.RED + plugin.local.getMessage("need-ammo"));
 									}
 								}
 							}
@@ -192,9 +190,8 @@ public class PlayerListener implements Listener {
 					}
 
 					if (isPlayer(((Player)ed.getDamager()).getName())){
-						if (Round.getRound(((Player)ed.getDamager()).getWorld().getName()).getStage() != Stage.PLAYING){
+						if (Round.getRound(((Player)ed.getDamager()).getWorld().getName().replace("TTT_", "")).getStage() != Stage.PLAYING){
 							e.setCancelled(true);
-							plugin.log.info("preparation");
 						}
 					}
 					if (((Player)ed.getDamager()).getItemInHand() != null)
@@ -252,7 +249,6 @@ public class PlayerListener implements Listener {
 				if (e.getDamage() - ((armor * .04) * e.getDamage()) >= ((Player)e.getEntity()).getHealth()){
 					if (getTTTPlayer(p.getName()).getRole() != null){
 						e.setCancelled(true);
-						plugin.log.info("dying");
 						p.setHealth(20);
 						p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("dead"));
 						getTTTPlayer(p.getName()).setDead(true);
@@ -301,7 +297,6 @@ public class PlayerListener implements Listener {
 				}
 				if (getTTTPlayer(p.getName()).isDead()){
 					e.setCancelled(true);
-					plugin.log.info("damagee dead");
 				}
 			}
 		}
@@ -338,7 +333,7 @@ public class PlayerListener implements Listener {
 			if (getTTTPlayer(p).getRole() != null){
 				String worldName = "";
 				if (isPlayer(p)){
-					worldName = getTTTPlayer(p).getRound().getWorld();
+					worldName = getTTTPlayer(p).getWorld();
 					destroy(p);
 				}
 				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
@@ -353,9 +348,9 @@ public class PlayerListener implements Listener {
 	public void onPlayerTeleport(PlayerTeleportEvent e){
 		String p = e.getPlayer().getName();
 		if (isPlayer(p)){
-			if (e.getPlayer().getLocation().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getRound().getWorld()){
-				for (Player pl : plugin.getServer().getWorld("TTT_" + getTTTPlayer(p).getRound().getWorld()).getPlayers())
-					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", getTTTPlayer(p).getRound().getWorld()));
+			if (e.getPlayer().getLocation().getWorld().getName().replace("TTT_", "") != getTTTPlayer(p).getWorld()){
+				for (Player pl : plugin.getServer().getWorld("TTT_" + getTTTPlayer(p).getWorld()).getPlayers())
+					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", getTTTPlayer(p).getWorld()));
 				destroy(p);
 			}
 		}
@@ -365,7 +360,7 @@ public class PlayerListener implements Listener {
 		if (e.getEntity() instanceof Player){
 			Player p = (Player)e.getEntity();
 			if (isPlayer(p.getName())){
-					e.setCancelled(true);
+				e.setCancelled(true);
 			}
 		}
 	}
@@ -390,7 +385,7 @@ public class PlayerListener implements Listener {
 				// check if sender is dead
 				else if (getTTTPlayer(p.getName()).isDead()){
 					if (getTTTPlayer(p.getName()).isDead()){
-						if (!p.getWorld().getName().equals("TTT_" + getTTTPlayer(p.getName()).getRound().getWorld()))
+						if (!p.getWorld().getName().equals("TTT_" + getTTTPlayer(p.getName()).getWorld()))
 							e.getRecipients().remove(p);
 					}
 					else

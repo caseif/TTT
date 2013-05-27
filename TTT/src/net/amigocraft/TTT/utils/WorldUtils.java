@@ -7,13 +7,13 @@ import java.io.IOException;
 import net.amigocraft.TTT.TTT;
 
 import org.apache.commons.io.FileUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class WorldUtils {
-	
-	private TTT plugin = TTT.plugin;
 	
 	// world checking method from Multiverse
 	public static boolean isWorld(File worldFolder){
@@ -52,8 +52,8 @@ public class WorldUtils {
 		}
 	}
 
-	public void rollbackWorld(final String worldName){
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable(){
+	public static void rollbackWorld(final String worldName){
+		TTT.plugin.getServer().getScheduler().scheduleSyncDelayedTask(TTT.plugin, new Runnable(){
 			public void run(){
 				File folder = new File(worldName);
 				if (folder.exists()){
@@ -61,18 +61,51 @@ public class WorldUtils {
 						File newFolder = new File("TTT_" + worldName);
 						try {
 							FileUtils.copyDirectory(folder, newFolder);
-							if (plugin.getConfig().getBoolean("verbose-logging"))
-								plugin.log.info(plugin.local.getMessage("rollback") + " \"" + worldName + "\"!");
+							if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
+								TTT.plugin.log.info(TTT.plugin.local.getMessage("rollback") + " \"" + worldName + "\"!");
 						}
 						catch (IOException ex){
-							plugin.log.info(plugin.local.getMessage("folder-error") + " " + worldName);
+							TTT.plugin.log.info(TTT.plugin.local.getMessage("folder-error") + " " + worldName);
 							ex.printStackTrace();
 						}
 					}
 					else
-						plugin.log.info(plugin.local.getMessage("cannot-load-world"));
+						TTT.plugin.log.info(TTT.plugin.local.getMessage("cannot-load-world"));
 				}
 			}
 		}, 100L);
+	}
+	
+	public static void importWorld(CommandSender sender, String worldName){
+		File folder = new File(worldName);
+		if (folder.exists()){
+			if (!worldName.substring(0, 3).equalsIgnoreCase("TTT_")){
+				if (isWorld(folder)){
+					File newFolder = new File("TTT_" + worldName);
+					if (!newFolder.exists()){
+						try {
+							File sessionLock = new File(folder + File.separator + "session.lock");
+							File uidDat = new File(folder + File.separator + "uid.dat");
+							sessionLock.delete();
+							uidDat.delete();
+							FileUtils.copyDirectory(folder, newFolder);
+							sender.sendMessage(ChatColor.GREEN + "[TTT] " + TTT.plugin.local.getMessage("import-success"));
+						}
+						catch (IOException e){
+							sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("folder-error"));
+							e.printStackTrace();
+						}
+					}
+					else
+						sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("already-imported"));
+				}
+				else
+					sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("cannot-load-world"));
+			}
+			else
+				sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("start-error"));
+		}
+		else
+			sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("folder-not-found"));
 	}
 }

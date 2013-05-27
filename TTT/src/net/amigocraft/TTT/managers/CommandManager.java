@@ -5,7 +5,6 @@ import static net.amigocraft.TTT.TTTPlayer.isPlayer;
 import static net.amigocraft.TTT.TTTPlayer.players;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,6 @@ import net.amigocraft.TTT.TTTPlayer;
 import net.amigocraft.TTT.utils.NumUtils;
 import net.amigocraft.TTT.utils.WorldUtils;
 
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -41,36 +39,7 @@ public class CommandManager implements CommandExecutor {
 				if (args[0].equalsIgnoreCase("import") || args[0].equalsIgnoreCase("i")){
 					if (sender.hasPermission("ttt.import")){
 						if (args.length > 1){
-							File folder = new File(args[1]);
-							if (folder.exists()){
-								if (!args[1].substring(0, 3).equalsIgnoreCase("TTT_")){
-									if (WorldUtils.isWorld(folder)){
-										File newFolder = new File("TTT_" + args[1]);
-										if (!newFolder.exists()){
-											try {
-												File sessionLock = new File(folder + File.separator + "session.lock");
-												File uidDat = new File(folder + File.separator + "uid.dat");
-												sessionLock.delete();
-												uidDat.delete();
-												FileUtils.copyDirectory(folder, newFolder);
-												sender.sendMessage(ChatColor.GREEN + "[TTT] " + plugin.local.getMessage("import-success"));
-											}
-											catch (IOException e){
-												sender.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("folder-error"));
-												e.printStackTrace();
-											}
-										}
-										else
-											sender.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("already-imported"));
-									}
-									else
-										sender.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("cannot-load-world"));
-								}
-								else
-									sender.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("start-error"));
-							}
-							else
-								sender.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("folder-not-found"));
+							WorldUtils.importWorld(sender, args[1]);
 						}
 						else {
 							sender.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("invalid-args-1"));
@@ -101,12 +70,18 @@ public class CommandManager implements CommandExecutor {
 											}
 										}
 										final String worldName = args[1];
+										for (Round r : Round.rounds){
+											plugin.log.info(r.getWorld());
+										}
 										Round r = Round.getRound(worldName);
+										if (r == null){
+											r = new Round(worldName);
+										}
 										if (!loaded){
 											plugin.getServer().createWorld(new WorldCreator("TTT_" + worldName));
 										}
 										((Player)sender).teleport(plugin.getServer().getWorld("TTT_" + worldName).getSpawnLocation());
-										new TTTPlayer(((Player)sender).getName(), r);
+										new TTTPlayer(((Player)sender).getName(), worldName);
 										File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + sender.getName() + ".inv");
 										Inventory inv = ((Player)sender).getInventory();
 										PlayerInventory pInv = (PlayerInventory)inv;
@@ -152,7 +127,7 @@ public class CommandManager implements CommandExecutor {
 										Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + addition + " " + plugin.local.getMessage("joined-map") + " \"" + worldName + "\"");
 										int ingamePlayers = 0;
 										for (TTTPlayer p : players)
-											if (p.getRound().getWorld().equals(worldName))
+											if (p.getWorld().equals(worldName))
 												ingamePlayers += 1;
 										if (ingamePlayers >= plugin.getConfig().getInt("minimum-players") && r.getStage() != Stage.PREPARING){
 											for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
@@ -191,9 +166,9 @@ public class CommandManager implements CommandExecutor {
 								WorldUtils.teleportPlayer((Player)sender);
 								TTTPlayer tPlayer = getTTTPlayer(sender.getName());
 								getTTTPlayer(sender.getName()).destroy();
-								if (plugin.getServer().getWorld("TTT_" + tPlayer.getRound().getWorld()) != null)
-									for (Player pl : plugin.getServer().getWorld("TTT_" + tPlayer.getRound().getWorld()).getPlayers())
-										pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + " " + plugin.local.getMessage("left-game").replace("%", tPlayer.getRound().getWorld()));
+								if (plugin.getServer().getWorld("TTT_" + tPlayer.getWorld()) != null)
+									for (Player pl : plugin.getServer().getWorld("TTT_" + tPlayer.getWorld()).getPlayers())
+										pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + " " + plugin.local.getMessage("left-game").replace("%", tPlayer.getWorld()));
 								Player p = (Player)sender;
 								p.getInventory().clear();
 								File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");

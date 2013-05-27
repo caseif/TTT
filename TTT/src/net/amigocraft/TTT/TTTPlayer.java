@@ -6,16 +6,15 @@ public class TTTPlayer {
 
 	private String name;
 	private String world;
-	private Round round;
 	private Role role;
 	private boolean dead;
 	private String tracking;
 	private String killer;
 	public static ArrayList<TTTPlayer> players = new ArrayList<TTTPlayer>();
 
-	public TTTPlayer(String name, Round round){
+	public TTTPlayer(String name, String world){
 		this.name = name;
-		this.round = round;
+		this.world = world;
 		players.add(this);
 	}
 	
@@ -25,10 +24,6 @@ public class TTTPlayer {
 
 	public String getWorld(){
 		return world;
-	}
-	
-	public Round getRound(){
-		return round;
 	}
 
 	public Role getRole(){
@@ -49,10 +44,6 @@ public class TTTPlayer {
 
 	public void setName(String name){
 		this.name = name;
-	}
-	
-	public void setRound(Round round){
-		this.round = round;
 	}
 
 	public void setRole(Role role){
