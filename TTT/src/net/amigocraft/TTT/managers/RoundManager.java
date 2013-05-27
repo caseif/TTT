@@ -33,11 +33,13 @@ public class RoundManager {
 		List<TTTPlayer> offlinePlayers = new ArrayList<TTTPlayer>();
 		for (TTTPlayer tp : players){
 			if (tp.getWorld().equals(worldName)){
-				Player p = plugin.getServer().getPlayer(tp.getName());
-				if (p != null){
-					if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
-						Bukkit.broadcastMessage("[TTT]" + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
-						offlinePlayers.add(tp);
+				if (Round.getRound(worldName) != null){
+					Player p = plugin.getServer().getPlayer(tp.getName());
+					if (p != null){
+						if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
+							Bukkit.broadcastMessage("[TTT]" + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
+							offlinePlayers.add(tp);
+						}
 					}
 				}
 			}
@@ -61,7 +63,7 @@ public class RoundManager {
 		boolean iLeft = false;
 		boolean tLeft = false;
 		for (TTTPlayer tp : players){
-			if (tp.getWorld().equals(worldName)){
+			if (tp.getWorld().equals(worldName) && !tp.isDead()){
 				if (tp.getRole() == Role.INNOCENT){
 					iLeft = true;
 				}
@@ -221,17 +223,20 @@ public class RoundManager {
 				stopTask = true;
 				plugin.getServer().unloadWorld("TTT_" + worldName, false);
 				WorldUtils.rollbackWorld(worldName);
+				return;
 			}
 		}
 		// hide dead players
 		for (TTTPlayer p : players){
 			if (p.isDead()){
 				if (plugin.getServer().getPlayer(p.getName()) != null){
-					if (plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(plugin.getServer().getPlayer(p.getName()))){
-						plugin.getServer().getPlayer(p.getName()).setAllowFlight(true);
-						for (TTTPlayer other : players){
-							if (other.getWorld().equals(worldName))
-								plugin.getServer().getPlayer(other.getName()).hidePlayer(plugin.getServer().getPlayer(p.getName()));
+					if (plugin.getServer().getWorld("TTT_" + worldName) != null){
+						if (plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(plugin.getServer().getPlayer(p.getName()))){
+							plugin.getServer().getPlayer(p.getName()).setAllowFlight(true);
+							for (TTTPlayer other : players){
+								if (other.getWorld().equals(worldName) && plugin.getServer().getPlayer(other.getName()) != null)
+									plugin.getServer().getPlayer(other.getName()).hidePlayer(plugin.getServer().getPlayer(p.getName()));
+							}
 						}
 					}
 				}
