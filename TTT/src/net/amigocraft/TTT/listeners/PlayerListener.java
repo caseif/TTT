@@ -326,12 +326,10 @@ public class PlayerListener implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent e){
 		String p = e.getPlayer().getName();
 		if (isPlayer(e.getPlayer().getName())){
-			if (getTTTPlayer(p).getRole() != null){
-				String worldName = "";
-				if (isPlayer(p)){
-					worldName = getTTTPlayer(p).getWorld();
-					destroy(p);
-				}
+			String worldName = "";
+			if (isPlayer(p)){
+				worldName = getTTTPlayer(p).getWorld();
+				destroy(p);
 				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", worldName));
 				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
