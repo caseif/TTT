@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import net.amigocraft.TTT.AutoUpdate;
 import net.amigocraft.TTT.Metrics;
 import net.amigocraft.TTT.listeners.BlockListener;
+import net.amigocraft.TTT.listeners.EntityListener;
 import net.amigocraft.TTT.listeners.PlayerListener;
 import net.amigocraft.TTT.localization.Localization;
 import net.amigocraft.TTT.managers.CommandManager;
@@ -44,6 +45,7 @@ public class TTT extends JavaPlugin implements Listener {
 		// register events, commands, and the plugin variable
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		getServer().getPluginManager().registerEvents(new BlockListener(), this);
+		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getCommand("ttt").setExecutor(new CommandManager());
 
 		// check if config should be overwritten
