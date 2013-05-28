@@ -70,9 +70,6 @@ public class CommandManager implements CommandExecutor {
 											}
 										}
 										final String worldName = args[1];
-										for (Round r : Round.rounds){
-											plugin.log.info(r.getWorld());
-										}
 										Round r = Round.getRound(worldName);
 										if (r == null){
 											r = new Round(worldName);

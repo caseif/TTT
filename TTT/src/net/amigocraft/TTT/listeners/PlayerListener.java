@@ -352,6 +352,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 
+	@EventHandler
 	public void onHealthRegenerate(EntityRegainHealthEvent e){
 		if (e.getEntity() instanceof Player){
 			Player p = (Player)e.getEntity();
