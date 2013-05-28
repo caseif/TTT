@@ -117,7 +117,16 @@ public class RoundManager {
 								invY.load(invF);
 								ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
 								for (String k : invY.getKeys(false)){
-									invI[Integer.parseInt(k)] = invY.getItemStack(k);
+									if (NumUtils.isInt(k))
+										invI[Integer.parseInt(k)] = invY.getItemStack(k);
+									else if (k.equalsIgnoreCase("h"))
+										p.getInventory().setHelmet(invY.getItemStack(k));
+									else if (k.equalsIgnoreCase("c"))
+										p.getInventory().setChestplate(invY.getItemStack(k));
+									else if (k.equalsIgnoreCase("l"))
+										p.getInventory().setLeggings(invY.getItemStack(k));
+									else if (k.equalsIgnoreCase("b"))
+										p.getInventory().setBoots(invY.getItemStack(k));
 								}
 								p.getInventory().setContents(invI);
 								p.updateInventory();

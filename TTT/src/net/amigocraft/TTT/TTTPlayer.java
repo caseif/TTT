@@ -101,19 +101,25 @@ public class TTTPlayer {
 	public boolean equals(Object p){
 		TTTPlayer t = (TTTPlayer)p;
 		boolean trackingEquals = false;
-		if (tracking == null && t.getTracking() != null)
+		if (tracking == null && t.getTracking() == null)
 			trackingEquals = true;
 		else if (tracking != null && t.getTracking() != null)
 			if (tracking.equals(t.getTracking()))
 				trackingEquals = true;
 		boolean killerEquals = false;
-		if (killer == null && t.getKiller() != null)
+		if (killer == null && t.getKiller() == null)
 			killerEquals = true;
 		else if (killer != null && t.getKiller() != null)
 			if (killer.equals(t.getKiller()))
 				killerEquals = true;
+		boolean roleEquals = false;
+		if (role == null && t.getRole() == null)
+			roleEquals = true;
+		else if (role != null && t.getRole() != null)
+			if (role.equals(t.getRole()))
+				roleEquals = true;
 		return name.equals(t.getName()) && world.equals(t.getWorld()) &&
-				role.equals(t.getRole()) && dead == t.isDead() &&
+				roleEquals && dead == t.isDead() &&
 				discreet == t.isDiscreet() && trackingEquals && killerEquals;
 	}
 	

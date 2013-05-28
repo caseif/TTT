@@ -21,6 +21,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -31,7 +32,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -58,14 +61,13 @@ public class PlayerListener implements Listener {
 						if (tPlayer.isDead()){
 							for (Body b : plugin.bodies){
 								if (b.getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
-									if (e.getClickedBlock().getType() == Material.CHEST){
-										Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
-										Inventory inv = plugin.getServer().createInventory(null, chestinv.getSize());
-										inv.setContents(chestinv.getContents());
-										e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("discreet"));
-										tPlayer.setDiscreet(true);
-										e.getPlayer().openInventory(inv);
-									}
+									e.setCancelled(true);
+									Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
+									Inventory inv = plugin.getServer().createInventory(null, chestinv.getSize());
+									inv.setContents(chestinv.getContents());
+									e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("discreet"));
+									tPlayer.setDiscreet(true);
+									e.getPlayer().openInventory(inv);
 									break;
 								}
 							}
@@ -132,8 +134,8 @@ public class PlayerListener implements Listener {
 					if (e.getPlayer().getItemInHand() != null){
 						if (e.getPlayer().getItemInHand().getItemMeta() != null){
 							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-								if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("gun"))){
-									if (tPlayer.isDead() || plugin.getConfig().getBoolean("guns-outside-arenas")){
+								if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("Gun"))){
+									if (Round.getRound(tPlayer.getWorld()).getStage() == Stage.PLAYING || plugin.getConfig().getBoolean("guns-outside-arenas")){
 										e.setCancelled(true);
 										if (e.getPlayer().getInventory().contains(Material.ARROW) || !plugin.getConfig().getBoolean("require-ammo-for-guns")){
 											if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
@@ -401,6 +403,27 @@ public class PlayerListener implements Listener {
 							player.setDisplayName(name);
 						}
 					}, 1L);
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onInventoryClick(InventoryClickEvent e){
+		for (HumanEntity he : e.getViewers()){
+			Player p = (Player)he;
+			if (isPlayer(p.getName())){
+				if (getTTTPlayer(p.getName()).isDead()){
+					e.setCancelled(true);
+				}
+				else if (e.getInventory().getType() == InventoryType.CHEST){
+					Block block = ((Chest)e.getInventory().getHolder()).getBlock();
+					for (Body b : plugin.bodies){
+						if (b.getLocation().equals(Location2i.getLocation(block))){
+							e.setCancelled(true);
+							break;
+						}
+					}
 				}
 			}
 		}
