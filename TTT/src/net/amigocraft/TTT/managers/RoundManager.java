@@ -27,7 +27,9 @@ public class RoundManager {
 
 	private TTT plugin = TTT.plugin;
 	
-	private static HashMap<String, Integer> tasks = new HashMap<String, Integer>(); 
+	private static HashMap<String, Integer> tasks = new HashMap<String, Integer>();
+	
+	private static List<String> checkPlayers = new ArrayList<String>();
 
 	@SuppressWarnings("deprecation")
 	public void gameTimer(final String worldName){
@@ -44,8 +46,15 @@ public class RoundManager {
 							Player p = plugin.getServer().getPlayer(tp.getName());
 							if (p != null){
 								if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
-									Bukkit.broadcastMessage("[TTT]" + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
-									offlinePlayers.add(tp);
+									if (checkPlayers.contains(tp.getName())){
+										if (plugin.getConfig().getBoolean("verbose-logging"))
+											plugin.log.info(tp.getName() + " was missing from TTT world for 2 ticks, removing...");
+										checkPlayers.remove(tp.getName());
+										offlinePlayers.add(tp);
+										Bukkit.broadcastMessage("[TTT] " + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
+									}
+									else
+										checkPlayers.add(tp.getName());
 								}
 							}
 						}

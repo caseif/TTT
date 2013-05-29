@@ -23,8 +23,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class SetupManager {
 
 	private static TTT plugin = TTT.plugin;
-	
-	private static HashMap<String, Integer> tasks = new HashMap<String, Integer>(); 
+
+	private static HashMap<String, Integer> tasks = new HashMap<String, Integer>();
+
+	private static List<String> checkPlayers = new ArrayList<String>();
 
 	public static void setupTimer(final String worldName){
 
@@ -41,8 +43,15 @@ public class SetupManager {
 						Player p = plugin.getServer().getPlayer(tp.getName());
 						if (p != null){
 							if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
-								offlinePlayers.add(tp);
-								Bukkit.broadcastMessage("[TTT] " + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
+								if (checkPlayers.contains(tp.getName())){
+									if (plugin.getConfig().getBoolean("verbose-logging"))
+										plugin.log.info(tp.getName() + " was missing from TTT world for 2 ticks, removing...");
+									checkPlayers.remove(tp.getName());
+									offlinePlayers.add(tp);
+									Bukkit.broadcastMessage("[TTT] " + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
+								}
+								else
+									checkPlayers.add(tp.getName());
 							}
 						}
 					}
