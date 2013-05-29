@@ -6,6 +6,7 @@ import static net.amigocraft.TTT.TTTPlayer.players;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.amigocraft.TTT.Body;
@@ -25,243 +26,246 @@ import org.bukkit.inventory.ItemStack;
 public class RoundManager {
 
 	private TTT plugin = TTT.plugin;
+	
+	private static HashMap<String, Integer> tasks = new HashMap<String, Integer>(); 
 
 	@SuppressWarnings("deprecation")
 	public void gameTimer(final String worldName){
-		boolean stopTask = false;
-		// verify that all players are still online
-		List<TTTPlayer> offlinePlayers = new ArrayList<TTTPlayer>();
-		for (TTTPlayer tp : players){
-			if (tp.getWorld().equals(worldName)){
-				if (Round.getRound(worldName) != null){
-					Player p = plugin.getServer().getPlayer(tp.getName());
-					if (p != null){
-						if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
-							Bukkit.broadcastMessage("[TTT]" + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
-							offlinePlayers.add(tp);
-						}
-					}
-				}
-			}
-		}
-		for (TTTPlayer tp : offlinePlayers){
-			tp.destroy();
-		}
-
-		// set compass targets
-		for (TTTPlayer p : players){
-			if (p.getKiller() != null){
-				Player tracker = plugin.getServer().getPlayer(p.getName());
-				Player killer = plugin.getServer().getPlayer(p.getKiller());
-				if (tracker != null || killer != null)
-					if (!offlinePlayers.contains(tracker) && !offlinePlayers.contains(killer))
-						tracker.setCompassTarget(killer.getLocation());
-			}
-		}
-
-		// check if game is over
-		boolean iLeft = false;
-		boolean tLeft = false;
-		for (TTTPlayer tp : players){
-			if (tp.getWorld().equals(worldName) && !tp.isDead()){
-				if (tp.getRole() == Role.INNOCENT){
-					iLeft = true;
-				}
-				if (tp.getRole() == Role.TRAITOR){
-					tLeft = true;
-				}
-			}
-		}
-		if (!(tLeft && iLeft)){
-			List<Body> removeBodies = new ArrayList<Body>();
-			List<Body> removeFoundBodies = new ArrayList<Body>(); 
-			for (Body b : plugin.bodies){
-				if (b.getPlayer().isDead()){
-					if (getTTTPlayer(b.getPlayer().getName()).getWorld().equals(worldName)){
-						removeBodies.add(b);
-						if (plugin.foundBodies.contains(b))
-							removeFoundBodies.add(b);
-					}
-				}
-				else {
-					removeBodies.add(b);
-					if (plugin.foundBodies.contains(b))
-						removeFoundBodies.add(b);
-				}
-			}
-
-			for (Body b : removeBodies)
-				plugin.bodies.remove(b);
-
-			for (Body b : removeFoundBodies)
-				plugin.foundBodies.remove(b);
-
-			removeBodies.clear();
-			removeFoundBodies.clear();
-
-			if (!tLeft)
-				Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " + plugin.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
-			if (!iLeft)
-				Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " + plugin.local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
-			for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-				if (isPlayer(p.getName())){
-					TTTPlayer tp = getTTTPlayer(p.getName());
-					if (tp != null){
-						if (tp.isDead()){
-							p.setAllowFlight(false);
-							for (Player pl : plugin.getServer().getOnlinePlayers()){
-								pl.showPlayer(p);
-							}
-						}
-						tp.destroy();
-						p.getInventory().clear();
-						File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
-						if (invF.exists()){
-							try {
-								YamlConfiguration invY = new YamlConfiguration();
-								invY.load(invF);
-								ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
-								for (String k : invY.getKeys(false)){
-									if (NumUtils.isInt(k))
-										invI[Integer.parseInt(k)] = invY.getItemStack(k);
-									else if (k.equalsIgnoreCase("h"))
-										p.getInventory().setHelmet(invY.getItemStack(k));
-									else if (k.equalsIgnoreCase("c"))
-										p.getInventory().setChestplate(invY.getItemStack(k));
-									else if (k.equalsIgnoreCase("l"))
-										p.getInventory().setLeggings(invY.getItemStack(k));
-									else if (k.equalsIgnoreCase("b"))
-										p.getInventory().setBoots(invY.getItemStack(k));
+		
+		plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable(){
+			
+			public void run(){
+				
+				// verify that all players are still online
+				List<TTTPlayer> offlinePlayers = new ArrayList<TTTPlayer>();
+				for (TTTPlayer tp : players){
+					if (tp.getWorld().equals(worldName)){
+						if (Round.getRound(worldName) != null){
+							Player p = plugin.getServer().getPlayer(tp.getName());
+							if (p != null){
+								if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
+									Bukkit.broadcastMessage("[TTT]" + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
+									offlinePlayers.add(tp);
 								}
-								p.getInventory().setContents(invI);
-								p.updateInventory();
-								invF.delete();
-							}
-							catch (Exception ex){
-								ex.printStackTrace();
-								p.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("inv-load-error"));
 							}
 						}
 					}
 				}
-				WorldUtils.teleportPlayer(p);
-			}
-			Round.getRound(worldName).destroy();
-			stopTask = true;
-			plugin.getServer().unloadWorld("TTT_" + worldName, false);
-			WorldUtils.rollbackWorld(worldName);
-		}
-		else {
-			Round r = Round.getRound(worldName);
-			int rTime = r.getTime();
-			if (rTime % 60 == 0 && rTime >= 60){
-				for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-					p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime / 60) + " " + plugin.local.getMessage("minutes") + " " + plugin.local.getMessage("left"));
+				for (TTTPlayer tp : offlinePlayers){
+					tp.destroy();
 				}
-				r.tickDown();
-			}
-			else if (rTime % 10 == 0 && rTime > 10 && rTime < 60){
-				for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-					p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " + plugin.local.getMessage("seconds") + " " + plugin.local.getMessage("left"));
+
+				// set compass targets
+				for (TTTPlayer p : players){
+					if (p.getKiller() != null){
+						Player tracker = plugin.getServer().getPlayer(p.getName());
+						Player killer = plugin.getServer().getPlayer(p.getKiller());
+						if (tracker != null || killer != null)
+							if (!offlinePlayers.contains(tracker) && !offlinePlayers.contains(killer))
+								tracker.setCompassTarget(killer.getLocation());
+					}
 				}
-				r.tickDown();
-			}
-			else if (rTime < 10 && rTime > 0){
-				for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-					p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " + plugin.local.getMessage("seconds") + " " + plugin.local.getMessage("left"));
+
+				// check if game is over
+				boolean iLeft = false;
+				boolean tLeft = false;
+				for (TTTPlayer tp : players){
+					if (tp.getWorld().equals(worldName) && !tp.isDead()){
+						if (tp.getRole() == Role.INNOCENT){
+							iLeft = true;
+						}
+						if (tp.getRole() == Role.TRAITOR){
+							tLeft = true;
+						}
+					}
 				}
-				r.tickDown();
-			}
-			else if (rTime <= 0){
-				List<Body> removeBodies = new ArrayList<Body>();
-				List<Body> removeFoundBodies = new ArrayList<Body>(); 
-				for (Body b : plugin.bodies){
-					if (getTTTPlayer(b.getPlayer().getName()).isDead()){
-						if (getTTTPlayer(b.getPlayer().getName()).getWorld().equals(worldName)){
+				if (!(tLeft && iLeft)){
+					List<Body> removeBodies = new ArrayList<Body>();
+					List<Body> removeFoundBodies = new ArrayList<Body>(); 
+					for (Body b : plugin.bodies){
+						if (b.getPlayer().isDead()){
+							if (getTTTPlayer(b.getPlayer().getName()).getWorld().equals(worldName)){
+								removeBodies.add(b);
+								if (plugin.foundBodies.contains(b))
+									removeFoundBodies.add(b);
+							}
+						}
+						else {
 							removeBodies.add(b);
 							if (plugin.foundBodies.contains(b))
 								removeFoundBodies.add(b);
 						}
 					}
-				}
 
-				for (Body b : removeBodies)
-					plugin.bodies.remove(b);
+					for (Body b : removeBodies)
+						plugin.bodies.remove(b);
 
-				for (Body b : removeFoundBodies)
-					plugin.foundBodies.remove(b);
+					for (Body b : removeFoundBodies)
+						plugin.foundBodies.remove(b);
 
-				removeBodies.clear();
-				removeFoundBodies.clear();
+					removeBodies.clear();
+					removeFoundBodies.clear();
 
-				for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-					p.sendMessage(ChatColor.DARK_GREEN + "[TTT] " + plugin.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
-					if (getTTTPlayer(p.getName()).isDead()){
-						p.setAllowFlight(false);
-						for (Player pl : plugin.getServer().getOnlinePlayers()){
-							pl.showPlayer(p);
-						}
-					}
-					getTTTPlayer(p.getName()).destroy();
-					p.getInventory().clear();
-					File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
-					if (invF.exists()){
-						try {
-							YamlConfiguration invY = new YamlConfiguration();
-							invY.load(invF);
-							ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
-							for (String k : invY.getKeys(false)){
-								if (NumUtils.isInt(k))
-									invI[Integer.parseInt(k)] = invY.getItemStack(k);
-							}
-							p.getInventory().setContents(invI);
-							if (invY.getItemStack("h") != null)
-								p.getInventory().setHelmet(invY.getItemStack("h"));
-							if (invY.getItemStack("c") != null)
-								p.getInventory().setChestplate(invY.getItemStack("c"));
-							if (invY.getItemStack("l") != null)
-								p.getInventory().setLeggings(invY.getItemStack("l"));
-							if (invY.getItemStack("b") != null)
-								p.getInventory().setBoots(invY.getItemStack("b"));
-							p.updateInventory();
-							invF.delete();
-						}
-						catch (Exception ex){
-							ex.printStackTrace();
-							p.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("inv-load-fail"));
-						}
-					}
-					WorldUtils.teleportPlayer(p);
-				}
-				r.destroy();
-				stopTask = true;
-				plugin.getServer().unloadWorld("TTT_" + worldName, false);
-				WorldUtils.rollbackWorld(worldName);
-				return;
-			}
-		}
-		// hide dead players
-		for (TTTPlayer p : players){
-			if (p.isDead()){
-				if (plugin.getServer().getPlayer(p.getName()) != null){
-					if (plugin.getServer().getWorld("TTT_" + worldName) != null){
-						if (plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(plugin.getServer().getPlayer(p.getName()))){
-							plugin.getServer().getPlayer(p.getName()).setAllowFlight(true);
-							for (TTTPlayer other : players){
-								if (other.getWorld().equals(worldName) && plugin.getServer().getPlayer(other.getName()) != null)
-									plugin.getServer().getPlayer(other.getName()).hidePlayer(plugin.getServer().getPlayer(p.getName()));
+					if (!tLeft)
+						Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " + plugin.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
+					if (!iLeft)
+						Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " + plugin.local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
+					for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
+						if (isPlayer(p.getName())){
+							TTTPlayer tp = getTTTPlayer(p.getName());
+							if (tp != null){
+								if (tp.isDead()){
+									p.setAllowFlight(false);
+									for (Player pl : plugin.getServer().getOnlinePlayers()){
+										pl.showPlayer(p);
+									}
+								}
+								tp.destroy();
+								p.getInventory().clear();
+								File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
+								if (invF.exists()){
+									try {
+										YamlConfiguration invY = new YamlConfiguration();
+										invY.load(invF);
+										ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
+										for (String k : invY.getKeys(false)){
+											if (NumUtils.isInt(k))
+												invI[Integer.parseInt(k)] = invY.getItemStack(k);
+											else if (k.equalsIgnoreCase("h"))
+												p.getInventory().setHelmet(invY.getItemStack(k));
+											else if (k.equalsIgnoreCase("c"))
+												p.getInventory().setChestplate(invY.getItemStack(k));
+											else if (k.equalsIgnoreCase("l"))
+												p.getInventory().setLeggings(invY.getItemStack(k));
+											else if (k.equalsIgnoreCase("b"))
+												p.getInventory().setBoots(invY.getItemStack(k));
+										}
+										p.getInventory().setContents(invI);
+										p.updateInventory();
+										invF.delete();
+									}
+									catch (Exception ex){
+										ex.printStackTrace();
+										p.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("inv-load-error"));
+									}
+								}
 							}
 						}
+						WorldUtils.teleportPlayer(p);
+					}
+					Round.getRound(worldName).destroy();
+					plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
+					tasks.remove(worldName);
+					plugin.getServer().unloadWorld("TTT_" + worldName, false);
+					WorldUtils.rollbackWorld(worldName);
+				}
+				else {
+					Round r = Round.getRound(worldName);
+					int rTime = r.getTime();
+					if (rTime % 60 == 0 && rTime >= 60){
+						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
+							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime / 60) + " " + plugin.local.getMessage("minutes") + " " + plugin.local.getMessage("left"));
+						}
+						r.tickDown();
+					}
+					else if (rTime % 10 == 0 && rTime > 10 && rTime < 60){
+						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
+							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " + plugin.local.getMessage("seconds") + " " + plugin.local.getMessage("left"));
+						}
+						r.tickDown();
+					}
+					else if (rTime < 10 && rTime > 0){
+						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
+							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " + plugin.local.getMessage("seconds") + " " + plugin.local.getMessage("left"));
+						}
+						r.tickDown();
+					}
+					else if (rTime <= 0){
+						List<Body> removeBodies = new ArrayList<Body>();
+						List<Body> removeFoundBodies = new ArrayList<Body>(); 
+						for (Body b : plugin.bodies){
+							if (getTTTPlayer(b.getPlayer().getName()).isDead()){
+								if (getTTTPlayer(b.getPlayer().getName()).getWorld().equals(worldName)){
+									removeBodies.add(b);
+									if (plugin.foundBodies.contains(b))
+										removeFoundBodies.add(b);
+								}
+							}
+						}
+
+						for (Body b : removeBodies)
+							plugin.bodies.remove(b);
+
+						for (Body b : removeFoundBodies)
+							plugin.foundBodies.remove(b);
+
+						removeBodies.clear();
+						removeFoundBodies.clear();
+
+						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
+							p.sendMessage(ChatColor.DARK_GREEN + "[TTT] " + plugin.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
+							if (getTTTPlayer(p.getName()).isDead()){
+								p.setAllowFlight(false);
+								for (Player pl : plugin.getServer().getOnlinePlayers()){
+									pl.showPlayer(p);
+								}
+							}
+							getTTTPlayer(p.getName()).destroy();
+							p.getInventory().clear();
+							File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
+							if (invF.exists()){
+								try {
+									YamlConfiguration invY = new YamlConfiguration();
+									invY.load(invF);
+									ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
+									for (String k : invY.getKeys(false)){
+										if (NumUtils.isInt(k))
+											invI[Integer.parseInt(k)] = invY.getItemStack(k);
+									}
+									p.getInventory().setContents(invI);
+									if (invY.getItemStack("h") != null)
+										p.getInventory().setHelmet(invY.getItemStack("h"));
+									if (invY.getItemStack("c") != null)
+										p.getInventory().setChestplate(invY.getItemStack("c"));
+									if (invY.getItemStack("l") != null)
+										p.getInventory().setLeggings(invY.getItemStack("l"));
+									if (invY.getItemStack("b") != null)
+										p.getInventory().setBoots(invY.getItemStack("b"));
+									p.updateInventory();
+									invF.delete();
+								}
+								catch (Exception ex){
+									ex.printStackTrace();
+									p.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("inv-load-fail"));
+								}
+							}
+							WorldUtils.teleportPlayer(p);
+						}
+						r.destroy();
+						plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
+						tasks.remove(worldName);
+						plugin.getServer().unloadWorld("TTT_" + worldName, false);
+						WorldUtils.rollbackWorld(worldName);
+						return;
+					}
+				}
+				// hide dead players
+				for (TTTPlayer p : players){
+					if (p.isDead()){
+						if (plugin.getServer().getPlayer(p.getName()) != null){
+							if (plugin.getServer().getWorld("TTT_" + worldName) != null){
+								if (plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(plugin.getServer().getPlayer(p.getName()))){
+									plugin.getServer().getPlayer(p.getName()).setAllowFlight(true);
+									for (TTTPlayer other : players){
+										if (other.getWorld().equals(worldName) && plugin.getServer().getPlayer(other.getName()) != null)
+											plugin.getServer().getPlayer(other.getName()).hidePlayer(plugin.getServer().getPlayer(p.getName()));
+									}
+								}
+							}
+						}
 					}
 				}
 			}
-		}
-		if (!stopTask){
-			Bukkit.getScheduler().runTaskLater(plugin, new Runnable(){
-				public void run(){
-					gameTimer(worldName);
-				}
-			}, 20L);
-		}
+		}, 0L, 20L);
 	}
 }
