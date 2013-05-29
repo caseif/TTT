@@ -59,9 +59,9 @@ public class PlayerListener implements Listener {
 				if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
 					if (e.getClickedBlock().getType() == Material.CHEST){
 						if (tPlayer.isDead()){
+							e.setCancelled(true);
 							for (Body b : plugin.bodies){
 								if (b.getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
-									e.setCancelled(true);
 									Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
 									Inventory inv = plugin.getServer().createInventory(null, chestinv.getSize());
 									inv.setContents(chestinv.getContents());
@@ -303,8 +303,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerPickupItem(PlayerPickupItemEvent e){
 		if (isPlayer(e.getPlayer().getName()))
-			if (getTTTPlayer(e.getPlayer().getName()).isDead())
-				e.setCancelled(true);
+			e.setCancelled(true);
 	}
 
 	@EventHandler
@@ -429,4 +428,6 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
+	
+	
 }

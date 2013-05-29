@@ -161,38 +161,41 @@ public class CommandManager implements CommandExecutor {
 						if (sender.hasPermission("ttt.quit")){
 							if (isPlayer(sender.getName())){
 								WorldUtils.teleportPlayer((Player)sender);
-								TTTPlayer tPlayer = getTTTPlayer(sender.getName());
-								getTTTPlayer(sender.getName()).destroy();
-								if (plugin.getServer().getWorld("TTT_" + tPlayer.getWorld()) != null)
-									for (Player pl : plugin.getServer().getWorld("TTT_" + tPlayer.getWorld()).getPlayers())
-										pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + " " + plugin.local.getMessage("left-game").replace("%", tPlayer.getWorld()));
-								Player p = (Player)sender;
-								p.getInventory().clear();
-								File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
-								if (invF.exists()){
-									try {
-										YamlConfiguration invY = new YamlConfiguration();
-										invY.load(invF);
-										ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
-										for (String k : invY.getKeys(false)){
-											if (NumUtils.isInt(k))
-												invI[Integer.parseInt(k)] = invY.getItemStack(k);
-											else if (k.equalsIgnoreCase("h"))
-												p.getInventory().setHelmet(invY.getItemStack(k));
-											else if (k.equalsIgnoreCase("c"))
-												p.getInventory().setChestplate(invY.getItemStack(k));
-											else if (k.equalsIgnoreCase("l"))
-												p.getInventory().setLeggings(invY.getItemStack(k));
-											else if (k.equalsIgnoreCase("b"))
-												p.getInventory().setBoots(invY.getItemStack(k));
+								if (isPlayer(sender.getName())){
+									TTTPlayer tPlayer = getTTTPlayer(sender.getName());
+									String worldName = tPlayer.getWorld();
+									tPlayer.destroy();
+									if (plugin.getServer().getWorld("TTT_" + worldName) != null)
+										for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
+											pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + " " + plugin.local.getMessage("left-game").replace("%", worldName));
+									Player p = (Player)sender;
+									p.getInventory().clear();
+									File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
+									if (invF.exists()){
+										try {
+											YamlConfiguration invY = new YamlConfiguration();
+											invY.load(invF);
+											ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
+											for (String k : invY.getKeys(false)){
+												if (NumUtils.isInt(k))
+													invI[Integer.parseInt(k)] = invY.getItemStack(k);
+												else if (k.equalsIgnoreCase("h"))
+													p.getInventory().setHelmet(invY.getItemStack(k));
+												else if (k.equalsIgnoreCase("c"))
+													p.getInventory().setChestplate(invY.getItemStack(k));
+												else if (k.equalsIgnoreCase("l"))
+													p.getInventory().setLeggings(invY.getItemStack(k));
+												else if (k.equalsIgnoreCase("b"))
+													p.getInventory().setBoots(invY.getItemStack(k));
+											}
+											p.getInventory().setContents(invI);
+											p.updateInventory();
+											invF.delete();
 										}
-										p.getInventory().setContents(invI);
-										p.updateInventory();
-										invF.delete();
-									}
-									catch (Exception ex){
-										ex.printStackTrace();
-										p.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("inv-load-error"));
+										catch (Exception ex){
+											ex.printStackTrace();
+											p.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("inv-load-error"));
+										}
 									}
 								}
 							}
