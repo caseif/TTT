@@ -162,11 +162,14 @@ public class RoundManager {
 						}
 						WorldUtils.teleportPlayer(p);
 					}
-					Round.getRound(worldName).destroy();
 					plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 					tasks.remove(worldName);
 					plugin.getServer().unloadWorld("TTT_" + worldName, false);
 					WorldUtils.rollbackWorld(worldName);
+					if (Round.getRound(worldName) != null)
+						Round.getRound(worldName).destroy();
+					else if (plugin.getConfig().getBoolean("verbose-logging"))
+						plugin.log.warning("That's odd, the round has already been destroyed...");
 				}
 				else {
 					Round r = Round.getRound(worldName);
