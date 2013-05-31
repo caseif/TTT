@@ -371,26 +371,17 @@ public class PlayerListener implements Listener {
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onPlayerChat(AsyncPlayerChatEvent e){
 		for (Player p : plugin.getServer().getOnlinePlayers()){
-			// check if sender is in TTT game
-			if (isPlayer(p.getName())){
-				if (getTTTPlayer(e.getPlayer().getName()) != null){
-					if (!p.getWorld().getName().equals(e.getPlayer().getWorld().getName()))
-						e.getRecipients().remove(p);
-				}
-
-				// check if sender is dead
-				else if (getTTTPlayer(p.getName()).isDead()){
-					if (getTTTPlayer(p.getName()).isDead()){
-						if (!p.getWorld().getName().equals("TTT_" + getTTTPlayer(p.getName()).getWorld()))
-							e.getRecipients().remove(p);
-					}
-					else
-						e.getRecipients().remove(p);
-				}
+			// check if recipient is in TTT game
+			if (isPlayer(p.getName())){ // recipient is in game
+				if (!p.getWorld().getName().equals(e.getPlayer().getWorld().getName())) // sender is not in game
+					e.getRecipients().remove(p);
+				else if (getTTTPlayer(p.getName()).isDead() !=
+						getTTTPlayer(e.getPlayer().getName()).isDead()) // one is dead; the other is not
+					e.getRecipients().remove(p);
 			}
 		}
 
-		if (getTTTPlayer(e.getPlayer().getName()) != null){
+		if (isPlayer(e.getPlayer().getName())){
 			TTTPlayer tPlayer = getTTTPlayer(e.getPlayer().getName());
 			if (tPlayer.getRole() != null){
 				if (tPlayer.getRole() == Role.DETECTIVE){
@@ -428,6 +419,6 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
-	
-	
+
+
 }
