@@ -55,72 +55,70 @@ public class PlayerListener implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent e){
 		if (isPlayer(e.getPlayer().getName())){
 			TTTPlayer tPlayer = getTTTPlayer(e.getPlayer().getName());
-			if (!tPlayer.isDead()){
-				if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
-					if (e.getClickedBlock().getType() == Material.CHEST){
-						if (tPlayer.isDead()){
-							e.setCancelled(true);
-							for (Body b : plugin.bodies){
-								if (b.getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
-									Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
-									Inventory inv = plugin.getServer().createInventory(null, chestinv.getSize());
-									inv.setContents(chestinv.getContents());
-									e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("discreet"));
-									tPlayer.setDiscreet(true);
-									e.getPlayer().openInventory(inv);
-									break;
-								}
+			if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
+				if (e.getClickedBlock().getType() == Material.CHEST){
+					if (tPlayer.isDead()){
+						e.setCancelled(true);
+						for (Body b : plugin.bodies){
+							if (b.getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
+								Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
+								Inventory inv = plugin.getServer().createInventory(null, chestinv.getSize());
+								inv.setContents(chestinv.getContents());
+								e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("discreet"));
+								tPlayer.setDiscreet(true);
+								e.getPlayer().openInventory(inv);
+								break;
 							}
 						}
-						else {
-							int index = -1;
-							for (int i = 0; i < plugin.bodies.size(); i++){
-								if (plugin.bodies.get(i).getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
-									index = i;
+					}
+					else {
+						int index = -1;
+						for (int i = 0; i < plugin.bodies.size(); i++){
+							if (plugin.bodies.get(i).getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
+								index = i;
+								break;
+							}
+						}
+						if (index != -1){
+							boolean found = false;
+							for (Body b : plugin.foundBodies){
+								if (b.getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
+									found = true;
 									break;
 								}
 							}
-							if (index != -1){
-								boolean found = false;
-								for (Body b : plugin.foundBodies){
-									if (b.getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
-										found = true;
-										break;
-									}
+							if (!found){
+								for (Player p : e.getPlayer().getWorld().getPlayers()){
+									if (plugin.bodies.get(index).getPlayer().getRole() == Role.INNOCENT)
+										p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
+												plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-innocent"));
+									else if (plugin.bodies.get(index).getPlayer().getRole() == Role.TRAITOR)
+										p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
+												plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-traitor"));
+									else if (plugin.bodies.get(index).getPlayer().getRole() == Role.DETECTIVE)
+										p.sendMessage(ChatColor.DARK_BLUE + e.getPlayer().getName() + " " +
+												plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-detective"));
 								}
-								if (!found){
-									for (Player p : e.getPlayer().getWorld().getPlayers()){
-										if (plugin.bodies.get(index).getPlayer().getRole() == Role.INNOCENT)
-											p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
-													plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-innocent"));
-										else if (plugin.bodies.get(index).getPlayer().getRole() == Role.TRAITOR)
-											p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
-													plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-traitor"));
-										else if (plugin.bodies.get(index).getPlayer().getRole() == Role.DETECTIVE)
-											p.sendMessage(ChatColor.DARK_BLUE + e.getPlayer().getName() + " " +
-													plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-detective"));
-									}
-									plugin.foundBodies.add(plugin.bodies.get(index));
-								}
-								if (tPlayer.getRole() == Role.DETECTIVE){
-									if (e.getPlayer().getItemInHand() != null){
-										if (e.getPlayer().getItemInHand().getType() == Material.COMPASS){
-											if (e.getPlayer().getItemInHand().getItemMeta() != null){
-												if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-													if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§1" + plugin.local.getMessage("dna-scanner"))){
-														e.setCancelled(true);
-														Player killer = plugin.getServer().getPlayer(getTTTPlayer(plugin.bodies.get(index).getPlayer().getName()).getKiller());
-														if (killer != null){
-															if (isPlayer(killer.getName())){
-																tPlayer.setTracking(killer.getName());
-																e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("collected-dna").replace("%", plugin.bodies.get(index).getPlayer().getName()));
-															}
-															else
-																e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("killer-left"));
+								plugin.foundBodies.add(plugin.bodies.get(index));
+							}
+							if (tPlayer.getRole() == Role.DETECTIVE){
+								if (e.getPlayer().getItemInHand() != null){
+									if (e.getPlayer().getItemInHand().getType() == Material.COMPASS){
+										if (e.getPlayer().getItemInHand().getItemMeta() != null){
+											if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
+												if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§1" + plugin.local.getMessage("dna-scanner"))){
+													e.setCancelled(true);
+													Player killer = plugin.getServer().getPlayer(getTTTPlayer(plugin.bodies.get(index).getPlayer().getName()).getKiller());
+													if (killer != null){
+														if (isPlayer(killer.getName())){
+															tPlayer.setTracking(killer.getName());
+															e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("collected-dna").replace("%", plugin.bodies.get(index).getPlayer().getName()));
 														}
 														else
 															e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("killer-left"));
 													}
+													else
+														e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("killer-left"));
 												}
 											}
 										}
@@ -130,23 +128,23 @@ public class PlayerListener implements Listener {
 						}
 					}
 				}
-				if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
-					if (e.getPlayer().getItemInHand() != null){
-						if (e.getPlayer().getItemInHand().getItemMeta() != null){
-							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-								if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("Gun"))){
-									if (Round.getRound(tPlayer.getWorld()).getStage() == Stage.PLAYING || plugin.getConfig().getBoolean("guns-outside-arenas")){
-										e.setCancelled(true);
-										if (e.getPlayer().getInventory().contains(Material.ARROW) || !plugin.getConfig().getBoolean("require-ammo-for-guns")){
-											if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
-												InventoryUtils.removeArrow(e.getPlayer().getInventory());
-												e.getPlayer().updateInventory();
-											}
-											e.getPlayer().launchProjectile(Arrow.class);
+			}
+			if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
+				if (e.getPlayer().getItemInHand() != null){
+					if (e.getPlayer().getItemInHand().getItemMeta() != null){
+						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
+							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("Gun"))){
+								if (Round.getRound(tPlayer.getWorld()).getStage() == Stage.PLAYING || plugin.getConfig().getBoolean("guns-outside-arenas")){
+									e.setCancelled(true);
+									if (e.getPlayer().getInventory().contains(Material.ARROW) || !plugin.getConfig().getBoolean("require-ammo-for-guns")){
+										if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
+											InventoryUtils.removeArrow(e.getPlayer().getInventory());
+											e.getPlayer().updateInventory();
 										}
-										else
-											e.getPlayer().sendMessage(ChatColor.RED + plugin.local.getMessage("need-ammo"));
+										e.getPlayer().launchProjectile(Arrow.class);
 									}
+									else
+										e.getPlayer().sendMessage(ChatColor.RED + plugin.local.getMessage("need-ammo"));
 								}
 							}
 						}

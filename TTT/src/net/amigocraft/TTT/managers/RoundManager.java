@@ -34,7 +34,7 @@ public class RoundManager {
 	@SuppressWarnings("deprecation")
 	public void gameTimer(final String worldName){
 		
-		plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable(){
+		tasks.put(worldName, plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable(){
 			
 			public void run(){
 				
@@ -162,7 +162,6 @@ public class RoundManager {
 						}
 						WorldUtils.teleportPlayer(p);
 					}
-					plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 					tasks.remove(worldName);
 					plugin.getServer().unloadWorld("TTT_" + worldName, false);
 					WorldUtils.rollbackWorld(worldName);
@@ -170,6 +169,7 @@ public class RoundManager {
 						Round.getRound(worldName).destroy();
 					else if (plugin.getConfig().getBoolean("verbose-logging"))
 						plugin.log.warning("That's odd, the round has already been destroyed...");
+					plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 				}
 				else {
 					Round r = Round.getRound(worldName);
@@ -278,6 +278,6 @@ public class RoundManager {
 					}
 				}
 			}
-		}, 0L, 20L);
+		}, 0L, 20L).getTaskId());
 	}
 }
