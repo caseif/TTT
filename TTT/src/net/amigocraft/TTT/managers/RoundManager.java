@@ -178,19 +178,16 @@ public class RoundManager {
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime / 60) + " " + plugin.local.getMessage("minutes") + " " + plugin.local.getMessage("left"));
 						}
-						r.tickDown();
 					}
 					else if (rTime % 10 == 0 && rTime > 10 && rTime < 60){
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " + plugin.local.getMessage("seconds") + " " + plugin.local.getMessage("left"));
 						}
-						r.tickDown();
 					}
 					else if (rTime < 10 && rTime > 0){
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " + plugin.local.getMessage("seconds") + " " + plugin.local.getMessage("left"));
 						}
-						r.tickDown();
 					}
 					else if (rTime <= 0){
 						List<Body> removeBodies = new ArrayList<Body>();
@@ -260,6 +257,8 @@ public class RoundManager {
 						WorldUtils.rollbackWorld(worldName);
 						return;
 					}
+					if (rTime > 0)
+						r.tickDown();
 				}
 				// hide dead players
 				for (TTTPlayer p : players){
