@@ -89,6 +89,7 @@ public class RoundManager {
 					}
 				}
 				if (!(tLeft && iLeft)){
+					plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 					tasks.remove(worldName);
 					List<Body> removeBodies = new ArrayList<Body>();
 					List<Body> removeFoundBodies = new ArrayList<Body>(); 
@@ -169,7 +170,6 @@ public class RoundManager {
 						Round.getRound(worldName).destroy();
 					else if (plugin.getConfig().getBoolean("verbose-logging"))
 						plugin.log.warning("That's odd, the round has already been destroyed...");
-					plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 				}
 				else {
 					Round r = Round.getRound(worldName);
