@@ -19,6 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
@@ -56,6 +57,10 @@ public class PlayerListener implements Listener {
 		if (isPlayer(e.getPlayer().getName())){
 			TTTPlayer tPlayer = getTTTPlayer(e.getPlayer().getName());
 			if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
+				if (e.getClickedBlock().getType() == Material.ENDER_CHEST){
+					e.setCancelled(true);
+					return;
+				}
 				if (e.getClickedBlock().getType() == Material.CHEST){
 					if (tPlayer.isDead()){
 						e.setCancelled(true);
@@ -408,11 +413,29 @@ public class PlayerListener implements Listener {
 					e.setCancelled(true);
 				}
 				else if (e.getInventory().getType() == InventoryType.CHEST){
-					Block block = ((Chest)e.getInventory().getHolder()).getBlock();
+					Block block = null;
+					Block block2 = null;
+					if (e.getInventory().getHolder() instanceof Chest)
+						block = ((Chest)e.getInventory().getHolder()).getBlock();
+					else if (e.getInventory().getHolder() instanceof DoubleChest){
+						block = ((Chest)((DoubleChest)e.getInventory().getHolder()).getLeftSide()).getBlock();
+						block2 = ((Chest)((DoubleChest)e.getInventory().getHolder()).getRightSide()).getBlock();
+					}
+					boolean found1 = false;
+					boolean found2 = false;
 					for (Body b : plugin.bodies){
 						if (b.getLocation().equals(Location2i.getLocation(block))){
+							found1 = true;
 							e.setCancelled(true);
-							break;
+							if (block2 == null || found2)
+								break;
+						}
+						if (block2 != null){
+							if (b.getLocation().equals(Location2i.getLocation(block2))){
+								e.setCancelled(true);
+								if (!found1)
+									break;
+							}
 						}
 					}
 				}

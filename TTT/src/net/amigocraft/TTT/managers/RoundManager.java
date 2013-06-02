@@ -26,18 +26,18 @@ import org.bukkit.inventory.ItemStack;
 public class RoundManager {
 
 	private TTT plugin = TTT.plugin;
-	
+
 	private static HashMap<String, Integer> tasks = new HashMap<String, Integer>();
-	
+
 	private static List<String> checkPlayers = new ArrayList<String>();
 
 	@SuppressWarnings("deprecation")
 	public void gameTimer(final String worldName){
-		
+
 		tasks.put(worldName, plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable(){
-			
+
 			public void run(){
-				
+
 				// verify that all players are still online
 				List<TTTPlayer> offlinePlayers = new ArrayList<TTTPlayer>();
 				for (TTTPlayer tp : players){
@@ -95,7 +95,14 @@ public class RoundManager {
 					List<Body> removeFoundBodies = new ArrayList<Body>(); 
 					for (Body b : plugin.bodies){
 						if (b.getPlayer().isDead()){
-							if (b.getPlayer().getWorld().equals(worldName)){
+							if (b.getPlayer().getWorld() != null){
+								if (b.getPlayer().getWorld().equals(worldName)){
+									removeBodies.add(b);
+									if (plugin.foundBodies.contains(b))
+										removeFoundBodies.add(b);
+								}
+							}
+							else {
 								removeBodies.add(b);
 								if (plugin.foundBodies.contains(b))
 									removeFoundBodies.add(b);
