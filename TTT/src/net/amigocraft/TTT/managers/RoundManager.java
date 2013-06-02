@@ -95,7 +95,7 @@ public class RoundManager {
 					List<Body> removeFoundBodies = new ArrayList<Body>(); 
 					for (Body b : plugin.bodies){
 						if (b.getPlayer().isDead()){
-							if (getTTTPlayer(b.getPlayer().getName()).getWorld().equals(worldName)){
+							if (b.getPlayer().getWorld().equals(worldName)){
 								removeBodies.add(b);
 								if (plugin.foundBodies.contains(b))
 									removeFoundBodies.add(b);

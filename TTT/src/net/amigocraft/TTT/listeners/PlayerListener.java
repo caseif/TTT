@@ -373,9 +373,11 @@ public class PlayerListener implements Listener {
 			if (isPlayer(p.getName())){ // recipient is in game
 				if (!p.getWorld().getName().equals(e.getPlayer().getWorld().getName())) // sender is not in game
 					e.getRecipients().remove(p);
-				else if (getTTTPlayer(p.getName()).isDead() !=
-						getTTTPlayer(e.getPlayer().getName()).isDead()) // one is dead; the other is not
-					e.getRecipients().remove(p);
+				else if (isPlayer(e.getPlayer().getName())){
+					if (getTTTPlayer(p.getName()).isDead() !=
+							getTTTPlayer(e.getPlayer().getName()).isDead()) // one is dead; the other is not
+						e.getRecipients().remove(p);
+				}
 			}
 		}
 
