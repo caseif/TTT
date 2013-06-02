@@ -89,6 +89,7 @@ public class RoundManager {
 					}
 				}
 				if (!(tLeft && iLeft)){
+					tasks.remove(worldName);
 					List<Body> removeBodies = new ArrayList<Body>();
 					List<Body> removeFoundBodies = new ArrayList<Body>(); 
 					for (Body b : plugin.bodies){
@@ -117,7 +118,7 @@ public class RoundManager {
 
 					if (!tLeft)
 						Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " + plugin.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
-					if (!iLeft)
+					else if (!iLeft)
 						Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " + plugin.local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
 					for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 						if (isPlayer(p.getName())){
@@ -162,7 +163,6 @@ public class RoundManager {
 						}
 						WorldUtils.teleportPlayer(p);
 					}
-					tasks.remove(worldName);
 					plugin.getServer().unloadWorld("TTT_" + worldName, false);
 					WorldUtils.rollbackWorld(worldName);
 					if (Round.getRound(worldName) != null)
