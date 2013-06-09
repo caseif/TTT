@@ -1,14 +1,15 @@
 package net.amigocraft.TTT.localization;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 import net.amigocraft.TTT.TTT;
 
-import org.apache.commons.io.IOUtils;
 import org.bukkit.ChatColor;
 
 public class Localization {
@@ -29,14 +30,12 @@ public class Localization {
 					TTT.plugin.log.info("Locale defined in config not found in JAR or plugin folder; defaulting to enUS");
 			}
 		}
-		StringWriter writer = new StringWriter();
 		try {
-			IOUtils.copy(is, writer, "ISO-8859-1");
-			is.close();
-			String contents = writer.toString();
-			String[] lines = contents.split("\n");
-			for (int i = 0; i < lines.length; i++){
-				String[] params = lines[i].split("\\|");
+			BufferedReader br;
+			String line;
+			br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			while ((line = br.readLine()) != null) {
+				String[] params = line.split("\\|");
 				if (params[0].equalsIgnoreCase(key))
 					return params[1].replace("\r", "");
 			}
@@ -46,11 +45,11 @@ public class Localization {
 		}
 		is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/enUS.properties");
 		try {
-			IOUtils.copy(is, writer, "ISO-8859-1");
-			String contents = writer.toString();
-			String[] lines = contents.split("\n");
-			for (int i = 0; i < lines.length; i++){
-				String[] params = lines[i].split("\\|");
+			BufferedReader br;
+			String line;
+			br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+			while ((line = br.readLine()) != null) {
+				String[] params = line.split("\\|");
 				if (params[0].equalsIgnoreCase(key))
 					return params[1].replace("\r", "");
 			}
