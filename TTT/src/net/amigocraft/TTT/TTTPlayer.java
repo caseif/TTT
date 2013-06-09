@@ -11,11 +11,15 @@ public class TTTPlayer {
 	private boolean discreet = false;
 	private String tracking;
 	private String killer;
+	private int karma;
+	private int dispKarma;
 	public static ArrayList<TTTPlayer> players = new ArrayList<TTTPlayer>();
 
 	public TTTPlayer(String name, String world){
 		this.name = name;
 		this.world = world;
+		karma = 1000;
+		dispKarma = 1000;
 		players.add(this);
 	}
 	
@@ -46,6 +50,14 @@ public class TTTPlayer {
 	public String getKiller(){
 		return killer;
 	}
+	
+	public int getKarma(){
+		return karma;
+	}
+	
+	public int getDisplayedKarma(){
+		return dispKarma;
+	}
 
 	public void setName(String name){
 		this.name = name;
@@ -69,6 +81,22 @@ public class TTTPlayer {
 
 	public void setKiller(String killer){
 		this.killer = killer;
+	}
+	
+	public void setKarma(int karma){
+		this.karma = karma;
+	}
+	
+	public void setDisplayedKarma(int karma){
+		this.dispKarma = karma;
+	}
+	
+	public void addKarma(int karma){
+		this.karma += karma;
+	}
+	
+	public void subtractKarma(int karma){
+		this.karma -= karma;
 	}
 
 	public static TTTPlayer getTTTPlayer(String player){
