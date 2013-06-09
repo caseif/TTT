@@ -29,22 +29,36 @@ public class SbManager {
 	public Objective iObj;
 	public Objective tObj;
 	public String r;
-	public Team teamI;
-	public Team teamT;
+	public Team iTeamI;
+	public Team iTeamT;
+	public Team iTeamD;
+	public Team tTeamI;
+	public Team tTeamT;
+	public Team tTeamD;
 
 	public SbManager(String r){
+		
 		this.r = r;
 		innocent = manager.getNewScoreboard();
 		traitor = manager.getNewScoreboard();
+		
 		iObj = innocent.registerNewObjective("p", "dummy");
 		tObj = traitor.registerNewObjective("p", "dummy");
 		iObj.setDisplayName("Players");
 		tObj.setDisplayName("Players");
 		iObj.setDisplaySlot(DisplaySlot.SIDEBAR);
 		tObj.setDisplaySlot(DisplaySlot.SIDEBAR);
-		teamI = innocent.registerNewTeam("p");
-		teamT = traitor.registerNewTeam("p");
-
+		
+		iTeamI = innocent.registerNewTeam("i");
+		iTeamT = innocent.registerNewTeam("t");
+		iTeamD = innocent.registerNewTeam("d");
+		tTeamI= traitor.registerNewTeam("i");
+		tTeamT = traitor.registerNewTeam("t");
+		tTeamD = traitor.registerNewTeam("d");
+		iTeamD.setPrefix(ChatColor.DARK_BLUE + "");
+		tTeamT.setPrefix(ChatColor.DARK_RED + "");
+		tTeamD.setPrefix(ChatColor.DARK_BLUE + "");
+		
 	}
 
 	public void manage(){
@@ -56,9 +70,17 @@ public class SbManager {
 			if (TTTPlayer.isPlayer(p.getName())){
 				TTTPlayer t = TTTPlayer.getTTTPlayer(p.getName());
 				if (t.getWorld().equalsIgnoreCase(r)){
-					if (teamI.hasPlayer(Bukkit.getOfflinePlayer(p.getName()))){
-						teamI.addPlayer(Bukkit.getOfflinePlayer(p.getName()));
-						teamT.addPlayer(Bukkit.getOfflinePlayer(p.getName()));
+					if (t.getRole() == Role.INNOCENT && iTeamI.hasPlayer(Bukkit.getOfflinePlayer(p.getName()))){
+						iTeamI.addPlayer(Bukkit.getOfflinePlayer(p.getName()));
+						tTeamI.addPlayer(Bukkit.getOfflinePlayer(p.getName()));
+					}
+					else if (t.getRole() == Role.TRAITOR && iTeamT.hasPlayer(Bukkit.getOfflinePlayer(p.getName()))){
+						iTeamI.addPlayer(Bukkit.getOfflinePlayer(p.getName()));
+						tTeamI.addPlayer(Bukkit.getOfflinePlayer(p.getName()));
+					}
+					else if (t.getRole() == Role.DETECTIVE && iTeamD.hasPlayer(Bukkit.getOfflinePlayer(p.getName()))){
+						iTeamI.addPlayer(Bukkit.getOfflinePlayer(p.getName()));
+						tTeamI.addPlayer(Bukkit.getOfflinePlayer(p.getName()));
 					}
 					if (t.isDead()){
 						for (Body b : TTT.foundBodies){
@@ -76,63 +98,49 @@ public class SbManager {
 		}
 
 		for (String s : deadPlayers){
+			s = ChatColor.STRIKETHROUGH + s;
 			Role role = TTTPlayer.getTTTPlayer(s).getRole();
 			if (role != null)
 				if (role == Role.TRAITOR)
-					s = ChatColor.RED + s;
-				else if (role == Role.DETECTIVE)
-					s = ChatColor.DARK_BLUE + s;
+					s = ChatColor.DARK_RED + s;
 			Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
-			score1.setScore(0);
+			score1.setScore(1000);
 			Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
-			score2.setScore(0);
+			score2.setScore(1000);
 			//TODO: Set score to karma
 		}
 
-		Score deadLabel1 = iObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "Confirmed Dead"));
+		/*Score deadLabel1 = iObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "Confirmed Dead"));
 		deadLabel1.setScore(deadPlayers.size());
 		Score deadLabel2 = tObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "Confirmed Dead"));
-		deadLabel2.setScore(deadPlayers.size());
+		deadLabel2.setScore(deadPlayers.size());*/
 
 		for (String s : miaPlayers){
-			Role role = TTTPlayer.getTTTPlayer(s).getRole();
-			String ts = s;
-			if (role != null)
-				if (role == Role.TRAITOR)
-					ts = ChatColor.RED + s;
-				else if (role == Role.DETECTIVE)
-					s = ChatColor.DARK_BLUE + s;
 			Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
-			score1.setScore(0);
-			Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(ts));
-			score2.setScore(0);
+			score1.setScore(1000);
+			Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
+			score2.setScore(1000);
 			//TODO: Set score to karma
 		}
 
-		Score miaLabel1 = iObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "MIA"));
+		/*Score miaLabel1 = iObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "MIA"));
 		miaLabel1.setScore(miaPlayers.size());
 		Score miaLabel2 = tObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "MIA"));
-		miaLabel2.setScore(miaPlayers.size());
+		miaLabel2.setScore(miaPlayers.size());*/
 
 		for (String s : alivePlayers){
-			Role role = TTTPlayer.getTTTPlayer(s).getRole();
-			String ts = s;
-			if (role != null)
-				if (role == Role.TRAITOR)
-					ts = ChatColor.RED + s;
-				else if (role == Role.DETECTIVE)
-					s = ChatColor.DARK_BLUE + s;
+			s = ChatColor.BOLD + s;
 			Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
-			score1.setScore(0);
-			Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(ts));
-			score2.setScore(0);
+			score1.setScore(1000);
+			Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
+			score2.setScore(1000);
 			//TODO: Set score to karma
 		}
 
-		Score aliveLabel1 = iObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "Terrorists"));
+		/*Score aliveLabel1 = iObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "Terrorists"));
 		aliveLabel1.setScore(alivePlayers.size());
 		Score aliveLabel2 = tObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "Terrorists"));
-		aliveLabel2.setScore(alivePlayers.size());
+		aliveLabel2.setScore(alivePlayers.size());*/
 
 		for (Player p : Bukkit.getOnlinePlayers()){
 			if (TTTPlayer.isPlayer(p.getName())){
