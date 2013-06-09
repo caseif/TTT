@@ -63,6 +63,9 @@ public class RoundManager {
 				for (TTTPlayer tp : offlinePlayers){
 					tp.destroy();
 				}
+				
+				// manage scoreboards
+				SbManager.manage(worldName);
 
 				// set compass targets
 				for (TTTPlayer p : players){
@@ -93,33 +96,33 @@ public class RoundManager {
 					tasks.remove(worldName);
 					List<Body> removeBodies = new ArrayList<Body>();
 					List<Body> removeFoundBodies = new ArrayList<Body>(); 
-					for (Body b : plugin.bodies){
+					for (Body b : TTT.bodies){
 						if (b.getPlayer().isDead()){
 							if (b.getPlayer().getWorld() != null){
 								if (b.getPlayer().getWorld().equals(worldName)){
 									removeBodies.add(b);
-									if (plugin.foundBodies.contains(b))
+									if (TTT.foundBodies.contains(b))
 										removeFoundBodies.add(b);
 								}
 							}
 							else {
 								removeBodies.add(b);
-								if (plugin.foundBodies.contains(b))
+								if (TTT.foundBodies.contains(b))
 									removeFoundBodies.add(b);
 							}
 						}
 						else {
 							removeBodies.add(b);
-							if (plugin.foundBodies.contains(b))
+							if (TTT.foundBodies.contains(b))
 								removeFoundBodies.add(b);
 						}
 					}
 
 					for (Body b : removeBodies)
-						plugin.bodies.remove(b);
+						TTT.bodies.remove(b);
 
 					for (Body b : removeFoundBodies)
-						plugin.foundBodies.remove(b);
+						TTT.foundBodies.remove(b);
 
 					removeBodies.clear();
 					removeFoundBodies.clear();
@@ -199,21 +202,21 @@ public class RoundManager {
 					else if (rTime <= 0){
 						List<Body> removeBodies = new ArrayList<Body>();
 						List<Body> removeFoundBodies = new ArrayList<Body>(); 
-						for (Body b : plugin.bodies){
+						for (Body b : TTT.bodies){
 							if (getTTTPlayer(b.getPlayer().getName()).isDead()){
 								if (getTTTPlayer(b.getPlayer().getName()).getWorld().equals(worldName)){
 									removeBodies.add(b);
-									if (plugin.foundBodies.contains(b))
+									if (TTT.foundBodies.contains(b))
 										removeFoundBodies.add(b);
 								}
 							}
 						}
 
 						for (Body b : removeBodies)
-							plugin.bodies.remove(b);
+							TTT.bodies.remove(b);
 
 						for (Body b : removeFoundBodies)
-							plugin.foundBodies.remove(b);
+							TTT.foundBodies.remove(b);
 
 						removeBodies.clear();
 						removeFoundBodies.clear();

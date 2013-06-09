@@ -24,8 +24,8 @@ public class TTT extends JavaPlugin implements Listener {
 	public Localization local = new Localization();
 	public static String lang;
 
-	public List<Body> bodies = new ArrayList<Body>();
-	public List<Body> foundBodies = new ArrayList<Body>();
+	public static List<Body> bodies = new ArrayList<Body>();
+	public static List<Body> foundBodies = new ArrayList<Body>();
 
 	@Override
 	public void onEnable(){

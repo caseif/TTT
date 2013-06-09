@@ -59,6 +59,10 @@ public class SetupManager {
 				for (TTTPlayer p : offlinePlayers){
 					p.destroy();
 				}
+				
+				// manage scoreboards
+				SbManager.manage(worldName);
+				
 				int currentTime = r.getTime();
 				int playerCount = 0; 
 				for (TTTPlayer tp : players){
