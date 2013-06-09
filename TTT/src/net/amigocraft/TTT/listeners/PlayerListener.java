@@ -253,6 +253,8 @@ public class PlayerListener implements Listener {
 						p.setHealth(20);
 						p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("dead"));
 						getTTTPlayer(p.getName()).setDead(true);
+						if (e instanceof EntityDamageByEntityEvent)
+							getTTTPlayer(p.getName()).setKiller(((Player)((EntityDamageByEntityEvent)e).getDamager()).getName());
 						Block block = p.getLocation().getBlock();
 						block.setType(Material.CHEST);
 						Chest chest = (Chest)block.getState();
@@ -292,6 +294,21 @@ public class PlayerListener implements Listener {
 						ti.setItemMeta(tiMeta);
 						chest.getInventory().addItem(new ItemStack[]{id, ti});
 						TTT.bodies.add(new Body(getTTTPlayer(p.getName()), Location2i.getLocation(block), System.currentTimeMillis()));
+
+						if (e instanceof EntityDamageByEntityEvent){
+							// set killer's karma
+							TTTPlayer victim = getTTTPlayer(p.getName());
+							TTTPlayer killer = getTTTPlayer(((Player)((EntityDamageByEntityEvent)e).getDamager()).getName());
+							if (victim.getRole() != Role.TRAITOR && killer.getRole() != Role.TRAITOR){
+								killer.subtractKarma((int)(0.05 * victim.getKarma()));
+							}
+							else if (victim.getRole() != Role.TRAITOR && killer.getRole() == Role.TRAITOR){
+								killer.addKarma((int)(0.015 * victim.getKarma()));
+							}
+							else if (victim.getRole() == Role.TRAITOR && killer.getRole() != Role.TRAITOR){
+								killer.addKarma((int)(0.05 * victim.getKarma()));
+							}
+						}
 					}
 					else
 						p.setHealth(20);
