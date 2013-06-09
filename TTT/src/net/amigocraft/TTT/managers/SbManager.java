@@ -105,10 +105,9 @@ public class SbManager {
 				if (role == Role.TRAITOR)
 					s = ChatColor.DARK_RED + s;
 			Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
-			score1.setScore(t.getKarma());
+			score1.setScore(t.getDisplayKarma());
 			Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
-			score2.setScore(t.getKarma());
-			//TODO: Set score to karma
+			score2.setScore(t.getDisplayKarma());
 		}
 
 		/*Score deadLabel1 = iObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "Confirmed Dead"));
@@ -119,10 +118,9 @@ public class SbManager {
 		for (String s : miaPlayers){
 			TTTPlayer t = TTTPlayer.getTTTPlayer(s);
 			Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
-			score1.setScore(t.getKarma());
+			score1.setScore(t.getDisplayKarma());
 			Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
-			score2.setScore(t.getKarma());
-			//TODO: Set score to karma
+			score2.setScore(t.getDisplayKarma());
 		}
 
 		/*Score miaLabel1 = iObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "MIA"));
@@ -134,10 +132,9 @@ public class SbManager {
 			TTTPlayer t = TTTPlayer.getTTTPlayer(s);
 			s = ChatColor.BOLD + s;
 			Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
-			score1.setScore(t.getKarma());
+			score1.setScore(t.getDisplayKarma());
 			Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
-			score2.setScore(t.getKarma());
-			//TODO: Set score to karma
+			score2.setScore(t.getDisplayKarma());
 		}
 
 		/*Score aliveLabel1 = iObj.getScore(Bukkit.getOfflinePlayer(ChatColor.DARK_PURPLE + "Terrorists"));

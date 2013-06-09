@@ -13,6 +13,7 @@ import net.amigocraft.TTT.Round;
 import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
+import net.amigocraft.TTT.managers.KarmaManager;
 import net.amigocraft.TTT.utils.InventoryUtils;
 
 import org.bukkit.ChatColor;
@@ -40,6 +41,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -342,6 +344,12 @@ public class PlayerListener implements Listener {
 				e.setCancelled(true);
 		}
 	}
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent e){
+		if (TTT.plugin.getConfig().getBoolean("karma-persistence"))
+			KarmaManager.loadKarma(e.getPlayer().getName())
+	}
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e){
@@ -357,6 +365,8 @@ public class PlayerListener implements Listener {
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", worldName));
 			}
 		}
+		if (!TTT.plugin.getConfig().getBoolean("karma-persistence"))
+			KarmaManager.playerKarma.remove(e.getPlayer().getName());
 	}
 
 	@EventHandler

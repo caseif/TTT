@@ -55,7 +55,7 @@ public class TTTPlayer {
 		return karma;
 	}
 	
-	public int getDisplayedKarma(){
+	public int getDisplayKarma(){
 		return dispKarma;
 	}
 
@@ -87,7 +87,7 @@ public class TTTPlayer {
 		this.karma = karma;
 	}
 	
-	public void setDisplayedKarma(int karma){
+	public void setDisplayKarma(int karma){
 		this.dispKarma = karma;
 	}
 	

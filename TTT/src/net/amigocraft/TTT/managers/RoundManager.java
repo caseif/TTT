@@ -180,6 +180,8 @@ public class RoundManager {
 						Round.getRound(worldName).destroy();
 					else if (plugin.getConfig().getBoolean("verbose-logging"))
 						plugin.log.warning("That's odd, the round has already been destroyed...");
+					KarmaManager.saveKarma(worldName);
+					KarmaManager.swapDisplayKarma(worldName);
 				}
 				else {
 					Round r = Round.getRound(worldName);

@@ -29,6 +29,13 @@ public class SetupManager {
 	private static List<String> checkPlayers = new ArrayList<String>();
 
 	public static void setupTimer(final String worldName){
+		
+		for (TTTPlayer t : players)
+			if (t.getWorld().equals(worldName))
+				if (!KarmaManager.playerKarma.containsKey(t.getName()) &&
+						TTT.plugin.getConfig().getBoolean("karma-persistence"))
+					KarmaManager.loadKarma(t.getName());
+					
 
 		SbManager.sbManagers.put(worldName, new SbManager(worldName));
 		

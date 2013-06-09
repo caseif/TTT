@@ -59,6 +59,20 @@ public class TTT extends JavaPlugin implements Listener {
 		saveDefaultConfig();
 
 		TTT.lang = getConfig().getString("localization");
+		
+		// create karma file
+		File karmaFile = new File(TTT.plugin.getDataFolder(), "karma.yml");
+		if (!karmaFile.exists()){
+			if (getConfig().getBoolean("verbose-logging"))
+				log.info("karma.yml not found, creating...");
+			try {
+				karmaFile.createNewFile();
+			}
+			catch (Exception ex){
+				ex.printStackTrace();
+				log.warning("Failed to write to karma.yml!");
+			}
+		}
 
 		// autoupdate
 		if (getConfig().getBoolean("enable-auto-update")){
