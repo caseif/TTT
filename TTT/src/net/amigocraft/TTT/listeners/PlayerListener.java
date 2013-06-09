@@ -348,7 +348,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
 		if (TTT.plugin.getConfig().getBoolean("karma-persistence"))
-			KarmaManager.loadKarma(e.getPlayer().getName())
+			KarmaManager.loadKarma(e.getPlayer().getName());
 	}
 
 	@EventHandler

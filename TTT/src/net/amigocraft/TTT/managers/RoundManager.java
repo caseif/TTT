@@ -182,6 +182,10 @@ public class RoundManager {
 						plugin.log.warning("That's odd, the round has already been destroyed...");
 					KarmaManager.saveKarma(worldName);
 					KarmaManager.swapDisplayKarma(worldName);
+					for (TTTPlayer t : players)
+						if (t.getWorld().equals(worldName))
+							TTT.plugin.getServer().getPlayer(t.getName()).setScoreboard(
+									TTT.plugin.getServer().getScoreboardManager().getNewScoreboard());
 				}
 				else {
 					Round r = Round.getRound(worldName);
