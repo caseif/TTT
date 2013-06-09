@@ -65,7 +65,7 @@ public class RoundManager {
 				}
 				
 				// manage scoreboards
-				SbManager.manage(worldName);
+				SbManager.sbManagers.get(worldName).manage();
 
 				// set compass targets
 				for (TTTPlayer p : players){

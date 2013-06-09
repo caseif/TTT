@@ -64,7 +64,7 @@ public class PlayerListener implements Listener {
 				if (e.getClickedBlock().getType() == Material.CHEST){
 					if (tPlayer.isDead()){
 						e.setCancelled(true);
-						for (Body b : plugin.bodies){
+						for (Body b : TTT.bodies){
 							if (b.getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
 								Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
 								Inventory inv = plugin.getServer().createInventory(null, chestinv.getSize());
@@ -78,15 +78,15 @@ public class PlayerListener implements Listener {
 					}
 					else {
 						int index = -1;
-						for (int i = 0; i < plugin.bodies.size(); i++){
-							if (plugin.bodies.get(i).getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
+						for (int i = 0; i < TTT.bodies.size(); i++){
+							if (TTT.bodies.get(i).getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
 								index = i;
 								break;
 							}
 						}
 						if (index != -1){
 							boolean found = false;
-							for (Body b : plugin.foundBodies){
+							for (Body b : TTT.foundBodies){
 								if (b.getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
 									found = true;
 									break;
@@ -94,17 +94,17 @@ public class PlayerListener implements Listener {
 							}
 							if (!found){
 								for (Player p : e.getPlayer().getWorld().getPlayers()){
-									if (plugin.bodies.get(index).getPlayer().getRole() == Role.INNOCENT)
+									if (TTT.bodies.get(index).getPlayer().getRole() == Role.INNOCENT)
 										p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
-												plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-innocent"));
-									else if (plugin.bodies.get(index).getPlayer().getRole() == Role.TRAITOR)
+												plugin.local.getMessage("found-body").replace("%", TTT.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-innocent"));
+									else if (TTT.bodies.get(index).getPlayer().getRole() == Role.TRAITOR)
 										p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
-												plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-traitor"));
-									else if (plugin.bodies.get(index).getPlayer().getRole() == Role.DETECTIVE)
+												plugin.local.getMessage("found-body").replace("%", TTT.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-traitor"));
+									else if (TTT.bodies.get(index).getPlayer().getRole() == Role.DETECTIVE)
 										p.sendMessage(ChatColor.DARK_BLUE + e.getPlayer().getName() + " " +
-												plugin.local.getMessage("found-body").replace("%", plugin.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-detective"));
+												plugin.local.getMessage("found-body").replace("%", TTT.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-detective"));
 								}
-								plugin.foundBodies.add(plugin.bodies.get(index));
+								TTT.foundBodies.add(TTT.bodies.get(index));
 							}
 							if (tPlayer.getRole() == Role.DETECTIVE){
 								if (e.getPlayer().getItemInHand() != null){
@@ -113,11 +113,11 @@ public class PlayerListener implements Listener {
 											if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
 												if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§1" + plugin.local.getMessage("dna-scanner"))){
 													e.setCancelled(true);
-													Player killer = plugin.getServer().getPlayer(getTTTPlayer(plugin.bodies.get(index).getPlayer().getName()).getKiller());
+													Player killer = plugin.getServer().getPlayer(getTTTPlayer(TTT.bodies.get(index).getPlayer().getName()).getKiller());
 													if (killer != null){
 														if (isPlayer(killer.getName())){
 															tPlayer.setTracking(killer.getName());
-															e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("collected-dna").replace("%", plugin.bodies.get(index).getPlayer().getName()));
+															e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("collected-dna").replace("%", TTT.bodies.get(index).getPlayer().getName()));
 														}
 														else
 															e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("killer-left"));
@@ -291,7 +291,7 @@ public class PlayerListener implements Listener {
 						}
 						ti.setItemMeta(tiMeta);
 						chest.getInventory().addItem(new ItemStack[]{id, ti});
-						plugin.bodies.add(new Body(getTTTPlayer(p.getName()), Location2i.getLocation(block), System.currentTimeMillis()));
+						TTT.bodies.add(new Body(getTTTPlayer(p.getName()), Location2i.getLocation(block), System.currentTimeMillis()));
 					}
 					else
 						p.setHealth(20);
@@ -423,7 +423,7 @@ public class PlayerListener implements Listener {
 					}
 					boolean found1 = false;
 					boolean found2 = false;
-					for (Body b : plugin.bodies){
+					for (Body b : TTT.bodies){
 						if (b.getLocation().equals(Location2i.getLocation(block))){
 							found1 = true;
 							e.setCancelled(true);
