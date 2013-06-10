@@ -2,6 +2,8 @@ package net.amigocraft.TTT;
 
 import java.util.ArrayList;
 
+import net.amigocraft.TTT.managers.KarmaManager;
+
 public class TTTPlayer {
 
 	private String name;
@@ -18,8 +20,8 @@ public class TTTPlayer {
 	public TTTPlayer(String name, String world){
 		this.name = name;
 		this.world = world;
-		karma = 1000;
-		dispKarma = 1000;
+		karma = KarmaManager.playerKarma.get(name);
+		dispKarma = KarmaManager.playerKarma.get(name);
 		players.add(this);
 	}
 	

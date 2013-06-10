@@ -13,7 +13,6 @@ public class KarmaManager {
 	public static HashMap<String, Integer> playerKarma = new HashMap<String, Integer>();
 	
 	public static void saveKarma(String worldName){
-		
 		for (TTTPlayer t : TTTPlayer.players){
 			if (t.getWorld().equals(worldName)){
 				playerKarma.remove(t.getName());
@@ -31,6 +30,7 @@ public class KarmaManager {
 				YamlConfiguration karmaYaml = new YamlConfiguration();
 				karmaYaml.load(karmaFile);
 				karmaYaml.set(t.getName(), t.getKarma());
+				karmaYaml.save(karmaFile);
 			}
 		}
 		catch (Exception ex){

@@ -127,6 +127,14 @@ public class RoundManager {
 					removeBodies.clear();
 					removeFoundBodies.clear();
 
+					KarmaManager.saveKarma(worldName);
+					KarmaManager.swapDisplayKarma(worldName);
+					
+					for (TTTPlayer t : players)
+						if (t.getWorld().equals(worldName))
+							TTT.plugin.getServer().getPlayer(t.getName()).setScoreboard(
+									TTT.plugin.getServer().getScoreboardManager().getNewScoreboard());
+
 					if (!tLeft)
 						Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " + plugin.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
 					else if (!iLeft)
@@ -180,12 +188,6 @@ public class RoundManager {
 						Round.getRound(worldName).destroy();
 					else if (plugin.getConfig().getBoolean("verbose-logging"))
 						plugin.log.warning("That's odd, the round has already been destroyed...");
-					KarmaManager.saveKarma(worldName);
-					KarmaManager.swapDisplayKarma(worldName);
-					for (TTTPlayer t : players)
-						if (t.getWorld().equals(worldName))
-							TTT.plugin.getServer().getPlayer(t.getName()).setScoreboard(
-									TTT.plugin.getServer().getScoreboardManager().getNewScoreboard());
 				}
 				else {
 					Round r = Round.getRound(worldName);
@@ -226,6 +228,14 @@ public class RoundManager {
 
 						removeBodies.clear();
 						removeFoundBodies.clear();
+						
+						KarmaManager.saveKarma(worldName);
+						KarmaManager.swapDisplayKarma(worldName);
+						
+						for (TTTPlayer t : players)
+							if (t.getWorld().equals(worldName))
+								TTT.plugin.getServer().getPlayer(t.getName()).setScoreboard(
+										TTT.plugin.getServer().getScoreboardManager().getNewScoreboard());
 
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_GREEN + "[TTT] " + plugin.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");

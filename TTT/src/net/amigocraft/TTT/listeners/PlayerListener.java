@@ -256,7 +256,8 @@ public class PlayerListener implements Listener {
 						p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("dead"));
 						getTTTPlayer(p.getName()).setDead(true);
 						if (e instanceof EntityDamageByEntityEvent)
-							getTTTPlayer(p.getName()).setKiller(((Player)((EntityDamageByEntityEvent)e).getDamager()).getName());
+							if (((EntityDamageByEntityEvent)e).getDamager() instanceof Player)
+								getTTTPlayer(p.getName()).setKiller(((Player)((EntityDamageByEntityEvent)e).getDamager()).getName());
 						Block block = p.getLocation().getBlock();
 						block.setType(Material.CHEST);
 						Chest chest = (Chest)block.getState();
@@ -298,17 +299,19 @@ public class PlayerListener implements Listener {
 						TTT.bodies.add(new Body(getTTTPlayer(p.getName()), Location2i.getLocation(block), System.currentTimeMillis()));
 
 						if (e instanceof EntityDamageByEntityEvent){
-							// set killer's karma
-							TTTPlayer victim = getTTTPlayer(p.getName());
-							TTTPlayer killer = getTTTPlayer(((Player)((EntityDamageByEntityEvent)e).getDamager()).getName());
-							if (victim.getRole() != Role.TRAITOR && killer.getRole() != Role.TRAITOR){
-								killer.subtractKarma((int)(0.05 * victim.getKarma()));
-							}
-							else if (victim.getRole() != Role.TRAITOR && killer.getRole() == Role.TRAITOR){
-								killer.addKarma((int)(0.015 * victim.getKarma()));
-							}
-							else if (victim.getRole() == Role.TRAITOR && killer.getRole() != Role.TRAITOR){
-								killer.addKarma((int)(0.05 * victim.getKarma()));
+							if (((EntityDamageByEntityEvent)e).getDamager() instanceof Player){
+								// set killer's karma
+								TTTPlayer victim = getTTTPlayer(p.getName());
+								TTTPlayer killer = getTTTPlayer(((Player)((EntityDamageByEntityEvent)e).getDamager()).getName());
+								if (victim.getRole() != Role.TRAITOR && killer.getRole() != Role.TRAITOR){
+									killer.subtractKarma((int)(0.025 * victim.getKarma()));
+								}
+								else if (victim.getRole() != Role.TRAITOR && killer.getRole() == Role.TRAITOR){
+									killer.addKarma((int)(0.015 * victim.getKarma()));
+								}
+								else if (victim.getRole() == Role.TRAITOR && killer.getRole() != Role.TRAITOR){
+									killer.addKarma((int)(0.05 * victim.getKarma()));
+								}
 							}
 						}
 					}
@@ -344,7 +347,7 @@ public class PlayerListener implements Listener {
 				e.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
 		if (TTT.plugin.getConfig().getBoolean("karma-persistence"))
