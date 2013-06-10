@@ -34,6 +34,12 @@ public class RoundManager {
 	@SuppressWarnings("deprecation")
 	public void gameTimer(final String worldName){
 
+		for (TTTPlayer t : players)
+			if (t.getWorld().equals(worldName))
+				if (!KarmaManager.playerKarma.containsKey(t.getName()) &&
+						TTT.plugin.getConfig().getBoolean("karma-persistence"))
+					KarmaManager.loadKarma(t.getName());
+
 		tasks.put(worldName, plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable(){
 
 			public void run(){
@@ -63,7 +69,7 @@ public class RoundManager {
 				for (TTTPlayer tp : offlinePlayers){
 					tp.destroy();
 				}
-				
+
 				// manage scoreboards
 				SbManager.sbManagers.get(worldName).manage();
 
@@ -127,9 +133,10 @@ public class RoundManager {
 					removeBodies.clear();
 					removeFoundBodies.clear();
 
+					//KarmaManager.allocateKarma(worldName);
 					KarmaManager.saveKarma(worldName);
 					KarmaManager.swapDisplayKarma(worldName);
-					
+
 					for (TTTPlayer t : players)
 						if (t.getWorld().equals(worldName))
 							TTT.plugin.getServer().getPlayer(t.getName()).setScoreboard(
@@ -228,10 +235,11 @@ public class RoundManager {
 
 						removeBodies.clear();
 						removeFoundBodies.clear();
-						
+
+						//KarmaManager.allocateKarma(worldName);
 						KarmaManager.saveKarma(worldName);
 						KarmaManager.swapDisplayKarma(worldName);
-						
+
 						for (TTTPlayer t : players)
 							if (t.getWorld().equals(worldName))
 								TTT.plugin.getServer().getPlayer(t.getName()).setScoreboard(

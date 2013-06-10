@@ -82,13 +82,17 @@ public class SbManager {
 					tTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				}
 				if (t.isDead()){
+					boolean confirmed = true;
 					for (Body b : TTT.foundBodies){
 						if (b.getPlayer().getName().equalsIgnoreCase(t.getName())){
-							handleDeadPlayer(t);
+							confirmed = true;
 							break;
 						}
-						handleMIAPlayer(t);
 					}
+					if (confirmed)
+						handleDeadPlayer(t);
+					else
+						handleMIAPlayer(t);
 				}
 				else
 					handleAlivePlayer(t);
@@ -115,21 +119,6 @@ public class SbManager {
 
 	private void handleAlivePlayer(TTTPlayer t){
 		String s = ChatColor.BOLD + t.getName();
-		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
-		score1.setScore(t.getDisplayKarma());
-		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
-		score2.setScore(t.getDisplayKarma());
-	}
-
-	private void handleMIAPlayer(TTTPlayer t){
-		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(t.getName()));
-		score1.setScore(t.getDisplayKarma());
-		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(t.getName()));
-		score2.setScore(t.getDisplayKarma());
-	}
-
-	private void handleDeadPlayer(TTTPlayer t){
-		String s = ChatColor.STRIKETHROUGH + t.getName();
 		String ts = s;
 		Role role = t.getRole();
 		if (role != null)
@@ -138,6 +127,28 @@ public class SbManager {
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(ts));
+		score2.setScore(t.getDisplayKarma());
+	}
+
+	private void handleMIAPlayer(TTTPlayer t){
+		String s = t.getName();
+		System.out.println(t.getName());
+		String ts = s;
+		Role role = t.getRole();
+		if (role != null)
+			if (role == Role.TRAITOR)
+				ts = ChatColor.DARK_RED + s;
+		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
+		score1.setScore(t.getDisplayKarma());
+		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(ts));
+		score2.setScore(t.getDisplayKarma());
+	}
+
+	private void handleDeadPlayer(TTTPlayer t){
+		String s = ChatColor.STRIKETHROUGH + t.getName();
+		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
+		score1.setScore(t.getDisplayKarma());
+		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
 		score2.setScore(t.getDisplayKarma());
 	}
 

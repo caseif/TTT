@@ -137,21 +137,23 @@ public class PlayerListener implements Listener {
 				}
 			}
 			if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
-				if (e.getPlayer().getItemInHand() != null){
-					if (e.getPlayer().getItemInHand().getItemMeta() != null){
-						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("Gun"))){
-								if (Round.getRound(tPlayer.getWorld()).getStage() == Stage.PLAYING || plugin.getConfig().getBoolean("guns-outside-arenas")){
-									e.setCancelled(true);
-									if (e.getPlayer().getInventory().contains(Material.ARROW) || !plugin.getConfig().getBoolean("require-ammo-for-guns")){
-										if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
-											InventoryUtils.removeArrow(e.getPlayer().getInventory());
-											e.getPlayer().updateInventory();
+				if (!tPlayer.isDead()){
+					if (e.getPlayer().getItemInHand() != null){
+						if (e.getPlayer().getItemInHand().getItemMeta() != null){
+							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
+								if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("Gun"))){
+									if (Round.getRound(tPlayer.getWorld()).getStage() == Stage.PLAYING || plugin.getConfig().getBoolean("guns-outside-arenas")){
+										e.setCancelled(true);
+										if (e.getPlayer().getInventory().contains(Material.ARROW) || !plugin.getConfig().getBoolean("require-ammo-for-guns")){
+											if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
+												InventoryUtils.removeArrow(e.getPlayer().getInventory());
+												e.getPlayer().updateInventory();
+											}
+											e.getPlayer().launchProjectile(Arrow.class);
 										}
-										e.getPlayer().launchProjectile(Arrow.class);
+										else
+											e.getPlayer().sendMessage(ChatColor.RED + plugin.local.getMessage("need-ammo"));
 									}
-									else
-										e.getPlayer().sendMessage(ChatColor.RED + plugin.local.getMessage("need-ammo"));
 								}
 							}
 						}
@@ -303,14 +305,15 @@ public class PlayerListener implements Listener {
 								// set killer's karma
 								TTTPlayer victim = getTTTPlayer(p.getName());
 								TTTPlayer killer = getTTTPlayer(((Player)((EntityDamageByEntityEvent)e).getDamager()).getName());
-								if (victim.getRole() != Role.TRAITOR && killer.getRole() != Role.TRAITOR){
-									killer.subtractKarma((int)(0.025 * victim.getKarma()));
+								if (victim.getRole() != Role.TRAITOR && killer.getRole() != Role.TRAITOR ||
+										victim.getRole() == killer.getRole()){
+									killer.subtractKarma((int)(0.035 * victim.getKarma()));
 								}
 								else if (victim.getRole() != Role.TRAITOR && killer.getRole() == Role.TRAITOR){
-									killer.addKarma((int)(0.015 * victim.getKarma()));
-								}
+									killer.addKarma((int)(0.01 * victim.getKarma()));
+									}
 								else if (victim.getRole() == Role.TRAITOR && killer.getRole() != Role.TRAITOR){
-									killer.addKarma((int)(0.05 * victim.getKarma()));
+									killer.addKarma((int)(0.025 * victim.getKarma()));
 								}
 							}
 						}

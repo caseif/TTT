@@ -63,4 +63,11 @@ public class KarmaManager {
 		}
 	}
 	
+	public static void allocateKarma(String worldName){
+		for (TTTPlayer t : TTTPlayer.players){
+			if (t.getWorld().equals(worldName)){
+				t.addKarma((int)(1 / ((double)t.getKarma() / 1000) * 15));
+			}
+		}
+	}
 }

@@ -20,6 +20,7 @@ public class TTTPlayer {
 	public TTTPlayer(String name, String world){
 		this.name = name;
 		this.world = world;
+		KarmaManager.loadKarma(name);
 		karma = KarmaManager.playerKarma.get(name);
 		dispKarma = KarmaManager.playerKarma.get(name);
 		players.add(this);
