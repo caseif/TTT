@@ -1,8 +1,12 @@
 package net.amigocraft.TTT.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import net.amigocraft.TTT.TTT;
 
@@ -14,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class WorldUtils {
-	
+
 	// world checking method from Multiverse
 	public static boolean isWorld(File worldFolder){
 		File[] files = worldFolder.listFiles(new FilenameFilter(){
@@ -28,7 +32,7 @@ public class WorldUtils {
 		}
 		return false;
 	}
-	
+
 	public static void teleportPlayer(Player p){
 		try {
 			File spawnFile = new File(TTT.plugin.getDataFolder() + File.separator + "spawn.yml");
@@ -75,7 +79,7 @@ public class WorldUtils {
 			}
 		}, 100L);
 	}
-	
+
 	public static void importWorld(CommandSender sender, String worldName){
 		File folder = new File(worldName);
 		if (folder.exists()){
@@ -88,7 +92,7 @@ public class WorldUtils {
 							File uidDat = new File(folder + File.separator + "uid.dat");
 							sessionLock.delete();
 							uidDat.delete();
-							FileUtils.copyDirectory(folder, newFolder);
+							copyDirectory(folder, newFolder);
 							sender.sendMessage(ChatColor.GREEN + "[TTT] " + TTT.plugin.local.getMessage("import-success"));
 						}
 						catch (IOException e){
@@ -107,5 +111,29 @@ public class WorldUtils {
 		}
 		else
 			sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("folder-not-found"));
+	}
+
+	public static void copyDirectory(File sourceLocation , File targetLocation) throws IOException {
+		if (sourceLocation.isDirectory()){
+			if (!targetLocation.exists()){
+				targetLocation.mkdir();
+			}
+			String[] children = sourceLocation.list();
+			for (int i=0; i<children.length; i++){
+				copyDirectory(new File(sourceLocation, children[i]),
+						new File(targetLocation, children[i]));
+			}
+		}
+		else {
+			InputStream in = new FileInputStream(sourceLocation);
+			OutputStream out = new FileOutputStream(targetLocation);
+			byte[] buf = new byte[1024];
+			int len;
+			while ((len = in.read(buf)) > 0){
+				out.write(buf, 0, len);
+			}
+			in.close();
+			out.close();
+		}
 	}
 }
