@@ -199,11 +199,12 @@ public class PlayerListener implements Listener {
 							return;
 						}
 					}
-					if (((Player)ed.getDamager()).getItemInHand() != null)
-						if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
-							if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName() != null)
-								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("crowbar")))
-									e.setDamage(plugin.getConfig().getInt("crowbar-damage"));
+					if (isPlayer(((Player)ed.getDamager()).getName()))
+						if (((Player)ed.getDamager()).getItemInHand() != null)
+							if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
+								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName() != null)
+									if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("crowbar")))
+										e.setDamage(plugin.getConfig().getInt("crowbar-damage"));
 				}
 			}
 			Player p = (Player)e.getEntity();
@@ -251,7 +252,16 @@ public class PlayerListener implements Listener {
 						if (protection.containsKey(p.getInventory().getArmorContents()[3].getType()))
 							armor += protection.get(p.getInventory().getArmorContents()[3].getType());
 				}
-				if (e.getDamage() - ((armor * .04) * e.getDamage()) >= ((Player)e.getEntity()).getHealth()){
+				int actualDamage = (int)(e.getDamage() - ((armor * .04) * e.getDamage()));
+				if (e instanceof EntityDamageByEntityEvent)
+					KarmaManager.handleDamageKarma(getTTTPlayer(
+							((Player)(
+									(EntityDamageByEntityEvent)e)
+									.getDamager())
+									.getName()),
+									getTTTPlayer(((Player)e.getEntity()).getName()),
+									actualDamage);
+				if (actualDamage >= ((Player)e.getEntity()).getHealth()){
 					if (getTTTPlayer(p.getName()).getRole() != null){
 						e.setCancelled(true);
 						p.setHealth(20);
@@ -305,16 +315,7 @@ public class PlayerListener implements Listener {
 								// set killer's karma
 								TTTPlayer victim = getTTTPlayer(p.getName());
 								TTTPlayer killer = getTTTPlayer(((Player)((EntityDamageByEntityEvent)e).getDamager()).getName());
-								if (victim.getRole() != Role.TRAITOR && killer.getRole() != Role.TRAITOR ||
-										victim.getRole() == killer.getRole()){
-									killer.subtractKarma((int)(0.035 * victim.getKarma()));
-								}
-								else if (victim.getRole() != Role.TRAITOR && killer.getRole() == Role.TRAITOR){
-									killer.addKarma((int)(0.01 * victim.getKarma()));
-									}
-								else if (victim.getRole() == Role.TRAITOR && killer.getRole() != Role.TRAITOR){
-									killer.addKarma((int)(0.025 * victim.getKarma()));
-								}
+								KarmaManager.handleKillKarma(killer, victim);
 							}
 						}
 					}

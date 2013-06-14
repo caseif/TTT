@@ -32,6 +32,21 @@ minimum-players-for-detective: 5
 #Should karma persist through reloads and PlayerQuitEvents (players leaving)? (If false, karma will reset when the plugin is reloaded and when players leave the server.)
 karma-persistence: true
 
+#What karma should players initially be given?
+default-karma: 1000
+
+#What ratio should be used when determining the karma taken when a player damages their ally? (0-1)
+player-damages-ally: 0.001
+
+#What ratio should be used when determining the karma taken when a player kills their ally? (0-1)
+player-kills-ally: 0.001
+
+#What ratio should be used when determining the karma given when an innocent damages a traitor? (0-1)
+i-damages-t-ratio: 0.0003
+
+#How much karma should be given when a traitor kills an innocent?
+tbonus: 20
+
 #Should potentially unnecessary information be logged?
 verbose-logging: true
 

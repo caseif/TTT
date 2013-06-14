@@ -165,5 +165,9 @@ public class TTTPlayer {
 				((Boolean)dead).hashCode() + ((Boolean)discreet).hashCode() +
 				trackingHash + killerHash);
 	}
+	
+	public boolean isTraitor(){
+		return role == Role.TRAITOR;
+	}
 
 }
