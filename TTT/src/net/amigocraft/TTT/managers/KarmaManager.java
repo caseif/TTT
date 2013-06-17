@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import net.amigocraft.TTT.Role;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
 
@@ -76,7 +75,7 @@ public class KarmaManager {
 		if (damager.isTraitor() == victim.isTraitor())
 			damager.subtractKarma((int)(
 					victim.getKarma() * (damage * TTT.plugin.getConfig().getDouble("player-damages-ally-ratio"))));
-		else if (damager.getRole() == Role.INNOCENT && victim.getRole() == Role.TRAITOR)
+		else if (!damager.isTraitor() && victim.isTraitor())
 			damager.addKarma((int)(TTT.plugin.getConfig().getInt("max-karma") *
 					damage * TTT.plugin.getConfig().getDouble("i-damages-t-ratio")));
 	}
@@ -84,7 +83,7 @@ public class KarmaManager {
 	public static void handleKillKarma(TTTPlayer killer, TTTPlayer victim){
 		if (killer.isTraitor() == victim.isTraitor())
 			killer.subtractKarma((int)(victim.getKarma() * 15 * TTT.plugin.getConfig().getDouble("player-kills-ally")));
-		else if (killer.getRole() == Role.TRAITOR && victim.getRole() == Role.INNOCENT)
+		else if (killer.isTraitor() && !victim.isTraitor())
 			killer.addKarma(TTT.plugin.getConfig().getInt("tbonus"));
 	}
 }
