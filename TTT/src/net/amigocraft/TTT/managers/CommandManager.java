@@ -215,7 +215,7 @@ public class CommandManager implements CommandExecutor {
 								File spawnFile = new File(plugin.getDataFolder() + File.separator + "spawn.yml");
 								if (!spawnFile.exists()){
 									if (plugin.getConfig().getBoolean("verbose-logging"))
-										plugin.log.info("No spawn.yml found, creating...");
+										TTT.log.info("No spawn.yml found, creating...");
 									spawnFile.createNewFile();
 								}
 								YamlConfiguration spawnYaml = new YamlConfiguration();

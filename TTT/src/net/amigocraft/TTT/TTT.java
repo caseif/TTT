@@ -19,7 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class TTT extends JavaPlugin implements Listener {
 
-	public Logger log;
+	public static Logger log;
 	public static TTT plugin;
 	public Localization local = new Localization();
 	public static String lang;

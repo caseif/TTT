@@ -10,7 +10,6 @@ import java.io.OutputStream;
 
 import net.amigocraft.TTT.TTT;
 
-import org.apache.commons.io.FileUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -64,17 +63,17 @@ public class WorldUtils {
 					if (WorldUtils.isWorld(folder)){
 						File newFolder = new File("TTT_" + worldName);
 						try {
-							FileUtils.copyDirectory(folder, newFolder);
+							copyDirectory(folder, newFolder);
 							if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
-								TTT.plugin.log.info(TTT.plugin.local.getMessage("rollback") + " \"" + worldName + "\"!");
+								TTT.log.info(TTT.plugin.local.getMessage("rollback") + " \"" + worldName + "\"!");
 						}
 						catch (IOException ex){
-							TTT.plugin.log.info(TTT.plugin.local.getMessage("folder-error") + " " + worldName);
+							TTT.log.info(TTT.plugin.local.getMessage("folder-error") + " " + worldName);
 							ex.printStackTrace();
 						}
 					}
 					else
-						TTT.plugin.log.info(TTT.plugin.local.getMessage("cannot-load-world"));
+						TTT.log.info(TTT.plugin.local.getMessage("cannot-load-world"));
 				}
 			}
 		}, 100L);

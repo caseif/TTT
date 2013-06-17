@@ -47,7 +47,7 @@ public class SetupManager {
 							if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 								if (checkPlayers.contains(tp.getName())){
 									if (plugin.getConfig().getBoolean("verbose-logging"))
-										plugin.log.info(tp.getName() + " was missing from TTT world for 2 ticks, removing...");
+										TTT.log.info(tp.getName() + " was missing from TTT world for 2 ticks, removing...");
 									checkPlayers.remove(tp.getName());
 									offlinePlayers.add(tp);
 									Bukkit.broadcastMessage("[TTT] " + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");

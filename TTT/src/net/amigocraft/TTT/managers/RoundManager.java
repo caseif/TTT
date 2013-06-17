@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.amigocraft.TTT.Body;
-import net.amigocraft.TTT.Role;
 import net.amigocraft.TTT.Round;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
@@ -54,7 +53,7 @@ public class RoundManager {
 								if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 									if (checkPlayers.contains(tp.getName())){
 										if (plugin.getConfig().getBoolean("verbose-logging"))
-											plugin.log.info(tp.getName() + " was missing from TTT world for 2 ticks, removing...");
+											TTT.log.info(tp.getName() + " was missing from TTT world for 2 ticks, removing...");
 										checkPlayers.remove(tp.getName());
 										offlinePlayers.add(tp);
 										Bukkit.broadcastMessage("[TTT] " + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
@@ -88,14 +87,18 @@ public class RoundManager {
 				boolean iLeft = false;
 				boolean tLeft = false;
 				for (TTTPlayer tp : players){
-					if (tp.getWorld().equals(worldName) && !tp.isDead()){
-						if (tp.getRole() == Role.INNOCENT){
-							iLeft = true;
-						}
-						if (tp.getRole() == Role.TRAITOR){
-							tLeft = true;
+					if (!tLeft || !iLeft){
+						if (tp.getWorld().equals(worldName) && !tp.isDead()){
+							if (!iLeft)
+								if (!tp.isTraitor())
+									iLeft = true;
+							if (!tLeft)
+								if (tp.isTraitor())
+									tLeft = true;
 						}
 					}
+					else
+						break;
 				}
 				if (!(tLeft && iLeft)){
 					plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
@@ -194,7 +197,7 @@ public class RoundManager {
 					if (Round.getRound(worldName) != null)
 						Round.getRound(worldName).destroy();
 					else if (plugin.getConfig().getBoolean("verbose-logging"))
-						plugin.log.warning("That's odd, the round has already been destroyed...");
+						TTT.log.warning("That's odd, the round has already been destroyed...");
 				}
 				else {
 					Round r = Round.getRound(worldName);

@@ -22,12 +22,12 @@ public class Localization {
 				File file = new File(TTT.plugin.getDataFolder() + File.separator + "locales" + File.separator + TTT.lang + ".properties");
 				is = new FileInputStream(file);
 				if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
-					TTT.plugin.log.info("Loaded locale from " + file.getAbsolutePath());
+					TTT.log.info("Loaded locale from " + file.getAbsolutePath());
 			}
 			catch (Exception ex){
 				is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/enUS.properties");
 				if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
-					TTT.plugin.log.info("Locale defined in config not found in JAR or plugin folder; defaulting to enUS");
+					TTT.log.info("Locale defined in config not found in JAR or plugin folder; defaulting to enUS");
 			}
 		}
 		try {

@@ -254,13 +254,14 @@ public class PlayerListener implements Listener {
 				}
 				int actualDamage = (int)(e.getDamage() - ((armor * .04) * e.getDamage()));
 				if (e instanceof EntityDamageByEntityEvent)
-					KarmaManager.handleDamageKarma(getTTTPlayer(
-							((Player)(
-									(EntityDamageByEntityEvent)e)
-									.getDamager())
-									.getName()),
-									getTTTPlayer(((Player)e.getEntity()).getName()),
-									actualDamage);
+					if (((EntityDamageByEntityEvent)e).getDamager() instanceof Player)
+						KarmaManager.handleDamageKarma(getTTTPlayer(
+								((Player)(
+										(EntityDamageByEntityEvent)e)
+										.getDamager())
+										.getName()),
+										getTTTPlayer(((Player)e.getEntity()).getName()),
+										actualDamage);
 				if (actualDamage >= ((Player)e.getEntity()).getHealth()){
 					if (getTTTPlayer(p.getName()).getRole() != null){
 						e.setCancelled(true);
