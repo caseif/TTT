@@ -165,6 +165,7 @@ public class SetupManager {
 							Player pl = plugin.getServer().getPlayer(s);
 							TTTPlayer t = TTTPlayer.getTTTPlayer(s);
 							if (pl != null && t != null){
+								t.setRole(Role.DETECTIVE);
 								pl.sendMessage(ChatColor.BLUE + plugin.local.getMessage("you-are-detective"));
 								pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo, dnaScanner});
 								pl.setHealth(20);
