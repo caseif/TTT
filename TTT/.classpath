@@ -8,6 +8,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Maxim/workspace/APIs/default/craftbukkit.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Maxim/workspace/APIs/Commons_IO.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

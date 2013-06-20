@@ -16,7 +16,7 @@ public class Localization {
 
 	public String getMessage(String key){
 		InputStream is = null;
-		is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/" + TTT.lang + ".properties");
+		is = Localization.class.getClassLoader().getResourceAsStream("net/amigocraft/TTT/localization/" + TTT.lang + ".properties");
 		if (is == null){
 			try {
 				File file = new File(TTT.plugin.getDataFolder() + File.separator + "locales" + File.separator + TTT.lang + ".properties");
@@ -25,7 +25,7 @@ public class Localization {
 					TTT.log.info("Loaded locale from " + file.getAbsolutePath());
 			}
 			catch (Exception ex){
-				is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/enUS.properties");
+				is = Localization.class.getClassLoader().getResourceAsStream("net/amigocraft/TTT/localization/enUS.properties");
 				if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
 					TTT.log.info("Locale defined in config not found in JAR or plugin folder; defaulting to enUS");
 			}
