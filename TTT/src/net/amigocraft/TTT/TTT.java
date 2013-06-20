@@ -31,16 +31,6 @@ public class TTT extends JavaPlugin implements Listener {
 	public void onEnable(){
 		log = this.getLogger();
 		plugin = this;
-		// check if server is offline
-		if (!getServer().getOnlineMode()){
-			if (!getServer().getIp().equals("127.0.0.1") && !getServer().getIp().equals("localhost")){
-				log.info("This plugin does not support offline servers! Disabling...");
-				getServer().getPluginManager().disablePlugin(this);
-				return;
-			}
-			else if (plugin.getConfig().getBoolean("verbose-logging"))
-				log.info("Server is probably using BungeeCord. Allowing plugin to load...");
-		}
 
 		// register events, commands, and the plugin variable
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
