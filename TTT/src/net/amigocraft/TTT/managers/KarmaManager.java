@@ -66,7 +66,9 @@ public class KarmaManager {
 	public static void allocateKarma(String worldName){
 		for (TTTPlayer t : TTTPlayer.players){
 			if (t.getWorld().equals(worldName)){
-				t.addKarma((int)(1 / ((double)t.getKarma() / 1000) * 15));
+				t.addKarma(TTT.plugin.getConfig().getInt("karma-heal"));
+				if (!t.hasTeamKilled())
+					t.addKarma(TTT.plugin.getConfig().getInt("karma-clean-bonus"));
 			}
 		}
 	}
@@ -81,8 +83,10 @@ public class KarmaManager {
 	}
 
 	public static void handleKillKarma(TTTPlayer killer, TTTPlayer victim){
-		if (killer.isTraitor() == victim.isTraitor())
+		if (killer.isTraitor() == victim.isTraitor()){
 			killer.subtractKarma((int)(victim.getKarma() * 15 * TTT.plugin.getConfig().getDouble("player-kills-ally")));
+			handleDamageKarma(killer, victim, TTT.plugin.getConfig().getInt("kill-penalty"));
+		}
 		else if (!killer.isTraitor() && victim.isTraitor())
 			killer.addKarma(TTT.plugin.getConfig().getInt("tbonus"));
 	}

@@ -15,6 +15,7 @@ public class TTTPlayer {
 	private String killer;
 	private int karma;
 	private int dispKarma;
+	private boolean teamKill = false;
 	public static ArrayList<TTTPlayer> players = new ArrayList<TTTPlayer>();
 
 	public TTTPlayer(String name, String world){
@@ -61,6 +62,10 @@ public class TTTPlayer {
 	public int getDisplayKarma(){
 		return dispKarma;
 	}
+	
+	public boolean hasTeamKilled(){
+		return teamKill;
+	}
 
 	public void setName(String name){
 		this.name = name;
@@ -103,6 +108,11 @@ public class TTTPlayer {
 	
 	public void subtractKarma(int karma){
 		this.karma -= karma;
+		teamKill = true;
+	}
+	
+	public void setTeamKill(boolean t){
+		teamKill = t;
 	}
 
 	public static TTTPlayer getTTTPlayer(String player){

@@ -136,7 +136,7 @@ public class RoundManager {
 					removeBodies.clear();
 					removeFoundBodies.clear();
 
-					//KarmaManager.allocateKarma(worldName);
+					KarmaManager.allocateKarma(worldName);
 					KarmaManager.saveKarma(worldName);
 					KarmaManager.swapDisplayKarma(worldName);
 
