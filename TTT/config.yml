@@ -63,17 +63,20 @@ tbonus: 40
 #if you dealt 200 damage.
 kill-penalty: 100
 
+#When true, karma changes will be logged to the console. Note that this will typically cause /massive/ log spam!
+karma-debug: false
+
 #Should potentially unnecessary information be logged?
 verbose-logging: true
 
 #Should the plugin allow auto-updating?
 enable-auto-update: true
 
-#Allow me to collect anonymous usage imformation (pretty please)?
+#Allow me to collect anonymous usage information (pretty please)?
 enable-metrics: true
 
 #What language would you like to use? (If language is undefined, this will default to enUS.)
 localization: enUS
 
 #Don't touch this. Please.
-config-version: 0.4.0.14
+config-version: 0.4.0.15

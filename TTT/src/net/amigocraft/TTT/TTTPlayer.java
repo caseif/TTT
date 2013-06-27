@@ -104,11 +104,15 @@ public class TTTPlayer {
 			this.karma += karma;
 		else if (this.karma < TTT.maxKarma)
 			this.karma = TTT.maxKarma;
+		if (TTT.plugin.getConfig().getBoolean("karma-debug"))
+			TTT.kLog.info(this.getName() + ": +" + karma);
 	}
 	
 	public void subtractKarma(int karma){
 		this.karma -= karma;
 		teamKill = true;
+		if (TTT.plugin.getConfig().getBoolean("karma-debug"))
+			TTT.kLog.info(this.getName() + ": -" + karma);
 	}
 	
 	public void setTeamKill(boolean t){

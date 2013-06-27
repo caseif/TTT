@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class TTT extends JavaPlugin implements Listener {
 
 	public static Logger log;
+	public static Logger kLog;
 	public static TTT plugin;
 	public Localization local = new Localization();
 	public static String lang;
@@ -32,6 +33,7 @@ public class TTT extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable(){
 		log = this.getLogger();
+		kLog = Logger.getLogger("TTT Karma Debug");
 		plugin = this;
 
 		// register events, commands, and the plugin variable

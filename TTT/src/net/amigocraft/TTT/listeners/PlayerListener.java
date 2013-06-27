@@ -426,11 +426,11 @@ public class PlayerListener implements Listener {
 			if (tPlayer.getRole() != null){
 				if (tPlayer.getRole() == Role.DETECTIVE){
 					final Player player = e.getPlayer();
-					e.getPlayer().setDisplayName(ChatColor.BLUE + "[Detective] " + e.getPlayer().getDisplayName());
+					e.getPlayer().setDisplayName(ChatColor.DARK_BLUE + "[Detective] " + e.getPlayer().getDisplayName());
 					plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
 						public void run(){
 							String name = player.getDisplayName();
-							name = name.replace(ChatColor.BLUE + "[Detective] ", "");
+							name = name.replace(ChatColor.DARK_BLUE + "[Detective] ", "");
 							player.setDisplayName(name);
 						}
 					}, 1L);
