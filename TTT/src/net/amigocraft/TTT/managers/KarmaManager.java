@@ -83,7 +83,7 @@ public class KarmaManager {
 	public static void handleKillKarma(TTTPlayer killer, TTTPlayer victim){
 		if (killer.isTraitor() == victim.isTraitor())
 			killer.subtractKarma((int)(victim.getKarma() * 15 * TTT.plugin.getConfig().getDouble("player-kills-ally")));
-		else if (killer.isTraitor() && !victim.isTraitor())
+		else if (!killer.isTraitor() && victim.isTraitor())
 			killer.addKarma(TTT.plugin.getConfig().getInt("tbonus"));
 	}
 }

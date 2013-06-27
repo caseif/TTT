@@ -26,6 +26,8 @@ public class TTT extends JavaPlugin implements Listener {
 
 	public static List<Body> bodies = new ArrayList<Body>();
 	public static List<Body> foundBodies = new ArrayList<Body>();
+	
+	public static int maxKarma = 1000;
 
 	@Override
 	public void onEnable(){
@@ -39,17 +41,16 @@ public class TTT extends JavaPlugin implements Listener {
 		getCommand("ttt").setExecutor(new CommandManager());
 
 		// check if config should be overwritten
-		saveDefaultConfig();
-		if (!getConfig().getString("config-version").equals(this.getDescription().getVersion())){
+		if (!new File(getDataFolder(), "config.yml").exists())
+			saveDefaultConfig();
+		else if (!getConfig().getString("config-version").equals(this.getDescription().getVersion())){
 			File config = new File(this.getDataFolder(), "config.yml");
 			config.delete();
+			saveDefaultConfig();
 		}
 
-		// create the default config
-		saveDefaultConfig();
+		lang = getConfig().getString("localization");
 
-		TTT.lang = getConfig().getString("localization");
-		
 		// create karma file
 		File karmaFile = new File(TTT.plugin.getDataFolder(), "karma.yml");
 		if (!karmaFile.exists()){
@@ -84,14 +85,16 @@ public class TTT extends JavaPlugin implements Listener {
 
 		File invDir = new File(this.getDataFolder() + File.separator + "inventories");
 		invDir.mkdir();
+		
+		maxKarma = getConfig().getInt("max-karma");
 
-		if (plugin.getConfig().getBoolean("verbose-logging"))
+		if (getConfig().getBoolean("verbose-logging"))
 			log.info(this + " " + local.getMessage("enabled"));
 	}
 
 	@Override
 	public void onDisable(){
-		if (plugin.getConfig().getBoolean("verbose-logging"))
+		if (getConfig().getBoolean("verbose-logging"))
 			log.info(this + " " + local.getMessage("disabled"));
 		plugin = null;
 		lang = null;

@@ -95,7 +95,10 @@ public class TTTPlayer {
 	}
 	
 	public void addKarma(int karma){
-		this.karma += karma;
+		if (this.karma + karma < TTT.maxKarma)
+			this.karma += karma;
+		else if (this.karma < TTT.maxKarma)
+			this.karma = TTT.maxKarma;
 	}
 	
 	public void subtractKarma(int karma){
