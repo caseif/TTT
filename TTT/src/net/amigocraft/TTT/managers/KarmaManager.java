@@ -74,7 +74,7 @@ public class KarmaManager {
 					if (t.getKarma() > TTT.plugin.getConfig().getInt("default-karma")){
 						int above = t.getKarma() - TTT.plugin.getConfig().getInt("default-karma");
 						double percentage = above /
-								(TTT.plugin.getConfig().getInt("maximum-karma") -
+								(TTT.plugin.getConfig().getInt("max-karma") -
 										TTT.plugin.getConfig().getInt("default-karma"));
 						double divide = percentage / TTT.plugin.getConfig().getInt("karma-clean-half");
 						add /= 2 * divide;
