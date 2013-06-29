@@ -3,7 +3,9 @@ package net.amigocraft.TTT.managers;
 import java.io.File;
 import java.util.HashMap;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
@@ -88,5 +90,17 @@ public class KarmaManager {
 		else if (!killer.isTraitor() && victim.isTraitor())
 			killer.addKarma(TTT.plugin.getConfig().getInt("tbonus") *
 					TTT.plugin.getConfig().getInt("t-damage-bonus") * victim.getKarma());
+	}
+
+	public static void handleKick(TTTPlayer t){
+		Player p = TTT.plugin.getServer().getPlayer(t.getName());
+		if (p != null){
+			RoundManager.resetPlayer(p);
+			p.sendMessage(ChatColor.DARK_PURPLE + "You have been automatically removed from the round " +
+					"because your karma has fallen below " + TTT.plugin.getConfig().getInt("karma-kick"));
+		}
+		else
+			TTT.log.warning("Could not remove \"" + t.getName() + "\" from round \"" + t.getWorld() +
+					"\" because an instance of the player could not be created.");
 	}
 }

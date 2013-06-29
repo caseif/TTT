@@ -26,7 +26,7 @@ public class TTTPlayer {
 		dispKarma = KarmaManager.playerKarma.get(name);
 		players.add(this);
 	}
-	
+
 	public String getName(){
 		return name;
 	}
@@ -42,7 +42,7 @@ public class TTTPlayer {
 	public boolean isDead(){
 		return dead;
 	}
-	
+
 	public boolean isDiscreet(){
 		return discreet;
 	}
@@ -54,15 +54,15 @@ public class TTTPlayer {
 	public String getKiller(){
 		return killer;
 	}
-	
+
 	public int getKarma(){
 		return karma;
 	}
-	
+
 	public int getDisplayKarma(){
 		return dispKarma;
 	}
-	
+
 	public boolean hasTeamKilled(){
 		return teamKill;
 	}
@@ -78,7 +78,7 @@ public class TTTPlayer {
 	public void setDead(boolean dead){
 		this.dead = dead;
 	}
-	
+
 	public void setDiscreet(boolean discreet){
 		this.discreet = discreet;
 	}
@@ -90,15 +90,15 @@ public class TTTPlayer {
 	public void setKiller(String killer){
 		this.killer = killer;
 	}
-	
+
 	public void setKarma(int karma){
 		this.karma = karma;
 	}
-	
+
 	public void setDisplayKarma(int karma){
 		this.dispKarma = karma;
 	}
-	
+
 	public void addKarma(int karma){
 		if (this.karma + karma < TTT.maxKarma)
 			this.karma += karma;
@@ -107,14 +107,18 @@ public class TTTPlayer {
 		if (TTT.plugin.getConfig().getBoolean("karma-debug"))
 			TTT.kLog.info(this.getName() + ": +" + karma);
 	}
-	
+
 	public void subtractKarma(int karma){
-		this.karma -= karma;
-		teamKill = true;
+		if (this.karma - karma < TTT.plugin.getConfig().getInt("karma-kick"))
+			KarmaManager.handleKick(this);
+		else {
+			this.karma -= karma;
+			teamKill = true;
+		}
 		if (TTT.plugin.getConfig().getBoolean("karma-debug"))
 			TTT.kLog.info(this.getName() + ": -" + karma);
 	}
-	
+
 	public void setTeamKill(boolean t){
 		teamKill = t;
 	}
@@ -126,11 +130,11 @@ public class TTTPlayer {
 		}
 		return null;
 	}
-	
+
 	public void destroy(){
 		players.remove(this);
 	}
-	
+
 	public static void destroy(String p){
 		TTTPlayer remove = null;
 		for (TTTPlayer t : players)
@@ -139,13 +143,13 @@ public class TTTPlayer {
 		if (remove != null)
 			players.remove(remove);
 	}
-	
+
 	public static boolean isPlayer(String p){
 		if (getTTTPlayer(p) != null)
 			return true;
 		return false;
 	}
-	
+
 	public boolean equals(Object p){
 		TTTPlayer t = (TTTPlayer)p;
 		boolean trackingEquals = false;
@@ -170,7 +174,7 @@ public class TTTPlayer {
 				roleEquals && dead == t.isDead() &&
 				discreet == t.isDiscreet() && trackingEquals && killerEquals;
 	}
-	
+
 	public int hashCode(){
 		int trackingHash = 0;
 		if (tracking != null)
@@ -182,7 +186,7 @@ public class TTTPlayer {
 				((Boolean)dead).hashCode() + ((Boolean)discreet).hashCode() +
 				trackingHash + killerHash);
 	}
-	
+
 	public boolean isTraitor(){
 		return role == Role.TRAITOR;
 	}

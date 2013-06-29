@@ -60,6 +60,15 @@ t-damage-reward: 0.0003
 #How much karma should be given when an innocent kills a traitor (scaled by t-damage-reward and the victim's karma)?
 tbonus: 40
 
+#Players will be kicked from the round once they reach or go under this karma level. (Set to -1 for no autokick.)
+karma-kick: -1
+
+#Should player's be temporarily banned from using the plugin rather than kicked?
+karma-ban: false
+
+#How long in minutes should users be banned from using the plugin for? (Set to -1 for a permanent ban.)
+karma-ban-time: 30
+
 #When true, karma changes will be logged to the console. Note that this will typically cause /massive/ log spam!
 karma-debug: false
 
@@ -76,4 +85,4 @@ enable-metrics: true
 localization: enUS
 
 #Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.4.0.17
+config-version: 0.4.0.18

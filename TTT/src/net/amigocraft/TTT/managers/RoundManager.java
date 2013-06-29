@@ -150,47 +150,7 @@ public class RoundManager {
 					else if (!iLeft)
 						Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " + plugin.local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
 					for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-						if (isPlayer(p.getName())){
-							TTTPlayer tp = getTTTPlayer(p.getName());
-							if (tp != null){
-								if (tp.isDead()){
-									p.setAllowFlight(false);
-									for (Player pl : plugin.getServer().getOnlinePlayers()){
-										pl.showPlayer(p);
-									}
-								}
-								tp.destroy();
-								p.getInventory().clear();
-								File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
-								if (invF.exists()){
-									try {
-										YamlConfiguration invY = new YamlConfiguration();
-										invY.load(invF);
-										ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
-										for (String k : invY.getKeys(false)){
-											if (NumUtils.isInt(k))
-												invI[Integer.parseInt(k)] = invY.getItemStack(k);
-											else if (k.equalsIgnoreCase("h"))
-												p.getInventory().setHelmet(invY.getItemStack(k));
-											else if (k.equalsIgnoreCase("c"))
-												p.getInventory().setChestplate(invY.getItemStack(k));
-											else if (k.equalsIgnoreCase("l"))
-												p.getInventory().setLeggings(invY.getItemStack(k));
-											else if (k.equalsIgnoreCase("b"))
-												p.getInventory().setBoots(invY.getItemStack(k));
-										}
-										p.getInventory().setContents(invI);
-										p.updateInventory();
-										invF.delete();
-									}
-									catch (Exception ex){
-										ex.printStackTrace();
-										p.sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("inv-load-error"));
-									}
-								}
-							}
-						}
-						WorldUtils.teleportPlayer(p);
+						resetPlayer(p);
 					}
 					plugin.getServer().unloadWorld("TTT_" + worldName, false);
 					WorldUtils.rollbackWorld(worldName);
@@ -315,5 +275,50 @@ public class RoundManager {
 				}
 			}
 		}, 0L, 20L).getTaskId());
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static void resetPlayer(Player p){
+		if (isPlayer(p.getName())){
+			TTTPlayer tp = getTTTPlayer(p.getName());
+			if (tp != null){
+				if (tp.isDead()){
+					p.setAllowFlight(false);
+					for (Player pl : TTT.plugin.getServer().getOnlinePlayers()){
+						pl.showPlayer(p);
+					}
+				}
+				tp.destroy();
+				p.getInventory().clear();
+				File invF = new File(TTT.plugin.getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
+				if (invF.exists()){
+					try {
+						YamlConfiguration invY = new YamlConfiguration();
+						invY.load(invF);
+						ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
+						for (String k : invY.getKeys(false)){
+							if (NumUtils.isInt(k))
+								invI[Integer.parseInt(k)] = invY.getItemStack(k);
+							else if (k.equalsIgnoreCase("h"))
+								p.getInventory().setHelmet(invY.getItemStack(k));
+							else if (k.equalsIgnoreCase("c"))
+								p.getInventory().setChestplate(invY.getItemStack(k));
+							else if (k.equalsIgnoreCase("l"))
+								p.getInventory().setLeggings(invY.getItemStack(k));
+							else if (k.equalsIgnoreCase("b"))
+								p.getInventory().setBoots(invY.getItemStack(k));
+						}
+						p.getInventory().setContents(invI);
+						p.updateInventory();
+						invF.delete();
+					}
+					catch (Exception ex){
+						ex.printStackTrace();
+						p.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("inv-load-error"));
+					}
+				}
+			}
+		}
+		WorldUtils.teleportPlayer(p);
 	}
 }
