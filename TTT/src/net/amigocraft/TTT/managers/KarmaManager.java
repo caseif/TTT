@@ -69,8 +69,18 @@ public class KarmaManager {
 		for (TTTPlayer t : TTTPlayer.players){
 			if (t.getWorld().equals(worldName)){
 				t.addKarma(TTT.plugin.getConfig().getInt("karma-heal"));
-				if (!t.hasTeamKilled())
-					t.addKarma(TTT.plugin.getConfig().getInt("karma-clean-bonus"));
+				if (!t.hasTeamKilled()){
+					int add = TTT.plugin.getConfig().getInt("karma-clean-bonus");
+					if (t.getKarma() > TTT.plugin.getConfig().getInt("default-karma")){
+						int above = t.getKarma() - TTT.plugin.getConfig().getInt("default-karma");
+						double percentage = above /
+								(TTT.plugin.getConfig().getInt("maximum-karma") -
+										TTT.plugin.getConfig().getInt("default-karma"));
+						double divide = percentage / TTT.plugin.getConfig().getInt("karma-clean-half");
+						add /= 2 * divide;
+					}
+					t.addKarma(add);
+				}
 			}
 		}
 	}

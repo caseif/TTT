@@ -45,6 +45,10 @@ karma-heal: 5
 #How much karma should be allocated to players who avoided damaging or killing teammates during a round at the end?
 karma-clean-bonus: 30
 
+#At what point should the clean bonus be halved? (The default value of 0.25 sets it a quarter of the way between
+#the starting karma and the maximum.)
+karma-clean-half: 0.25
+
 #What ratio should be used when determining the karma taken when a player damages their ally? (0-1)
 damage-penalty: 0.001
 
@@ -86,4 +90,4 @@ enable-metrics: true
 localization: enUS
 
 #Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.4.0.19
+config-version: 0.4.0.20
