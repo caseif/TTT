@@ -27,7 +27,7 @@ public class SbManager {
 	public Scoreboard traitor;
 	public Objective iObj;
 	public Objective tObj;
-	public String r;
+	public String worldName;
 	public Team iTeamI;
 	public Team iTeamT;
 	public Team iTeamD;
@@ -35,9 +35,9 @@ public class SbManager {
 	public Team tTeamT;
 	public Team tTeamD;
 
-	public SbManager(String r){
+	public SbManager(String worldName){
 
-		this.r = r;
+		this.worldName = worldName;
 		innocent = manager.getNewScoreboard();
 		traitor = manager.getNewScoreboard();
 
@@ -61,28 +61,28 @@ public class SbManager {
 	}
 
 	public void manage(){
-		
+
 		for (OfflinePlayer o : innocent.getPlayers())
 			innocent.resetScores(o);
 		for (OfflinePlayer o : traitor.getPlayers())
 			traitor.resetScores(o);
-		
+
 		for (TTTPlayer t : TTTPlayer.players){
-			if (t.getWorld().equalsIgnoreCase(r)){
+			if (t.getWorld().equalsIgnoreCase(worldName)){
 				if (t.getRole() == Role.INNOCENT && iTeamI.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
 					iTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 					tTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				}
 				else if (t.getRole() == Role.TRAITOR && iTeamT.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
-					iTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-					tTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+					iTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+					tTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				}
 				else if (t.getRole() == Role.DETECTIVE && iTeamD.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
-					iTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-					tTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+					iTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+					tTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				}
 				if (t.isDead()){
-					boolean confirmed = true;
+					boolean confirmed = false;
 					for (Body b : TTT.foundBodies){
 						if (b.getPlayer().getName().equalsIgnoreCase(t.getName())){
 							confirmed = true;
@@ -102,12 +102,12 @@ public class SbManager {
 		for (Player p : Bukkit.getOnlinePlayers()){
 			if (TTTPlayer.isPlayer(p.getName())){
 				TTTPlayer t = TTTPlayer.getTTTPlayer(p.getName());
-				if (t.getWorld().equalsIgnoreCase(r)){
+				if (t.getWorld().equalsIgnoreCase(worldName)){
 					// set scoreboards
 					if (t.getRole() != null){
-						if (t.getRole() == Role.INNOCENT || t.getRole() == Role.DETECTIVE)
+						if (!t.isTraitor())
 							p.setScoreboard(innocent);
-						else if (t.getRole() == Role.TRAITOR)
+						else
 							p.setScoreboard(traitor);
 					}
 					else
@@ -119,28 +119,17 @@ public class SbManager {
 
 	private void handleAlivePlayer(TTTPlayer t){
 		String s = ChatColor.BOLD + t.getName();
-		String ts = s;
-		Role role = t.getRole();
-		if (role != null)
-			if (role == Role.TRAITOR)
-				ts = ChatColor.DARK_RED + s;
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
-		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(ts));
+		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
 		score2.setScore(t.getDisplayKarma());
 	}
 
 	private void handleMIAPlayer(TTTPlayer t){
 		String s = t.getName();
-		System.out.println(t.getName());
-		String ts = s;
-		Role role = t.getRole();
-		if (role != null)
-			if (role == Role.TRAITOR)
-				ts = ChatColor.DARK_RED + s;
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
-		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(ts));
+		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
 		score2.setScore(t.getDisplayKarma());
 	}
 
@@ -148,6 +137,7 @@ public class SbManager {
 		String s = ChatColor.STRIKETHROUGH + t.getName();
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
+		//TODO: Add prefix ChatColor.DARK_RED to dead traitors
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
 		score2.setScore(t.getDisplayKarma());
 	}
