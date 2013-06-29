@@ -46,22 +46,19 @@ karma-heal: 5
 karma-clean-bonus: 30
 
 #What ratio should be used when determining the karma taken when a player damages their ally? (0-1)
-player-damages-ally: 0.001
-
-#What ratio should be used when determining the karma taken when a player kills their ally? (0-1)
-player-kills-ally: 0.001
-
-#What ratio should be used when determining the karma given when an innocent damages a traitor? (0-1)
-i-damages-t-ratio: 0.0003
-
-#How much karma should be given when an innocent kills a traitor?
-tbonus: 40
+damage-penalty: 0.001
 
 #From the official TTT documentation:
 #All karma penalties are based on damage dealt. The kill penalty is just an extra amount of "damage" dealt
 #when you kill someone. So if this was 100, and you headshot someone with a rifle, it would penalise you as
 #if you dealt 200 damage.
-kill-penalty: 100
+kill-penalty: 15
+
+#What ratio should be used when determining the karma given when an innocent damages a traitor? (0-1)
+t-damage-reward: 0.0003
+
+#How much karma should be given when an innocent kills a traitor (scaled by t-damage-reward and the victim's karma)?
+tbonus: 40
 
 #When true, karma changes will be logged to the console. Note that this will typically cause /massive/ log spam!
 karma-debug: false
@@ -78,5 +75,5 @@ enable-metrics: true
 #What language would you like to use? (If language is undefined, this will default to enUS.)
 localization: enUS
 
-#Don't touch this. Please.
-config-version: 0.4.0.16.1
+#Please don't touch this unless you want your current configuration overwritten.
+config-version: 0.4.0.17

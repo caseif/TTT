@@ -76,18 +76,17 @@ public class KarmaManager {
 	public static void handleDamageKarma(TTTPlayer damager, TTTPlayer victim, int damage){
 		if (damager.isTraitor() == victim.isTraitor())
 			damager.subtractKarma((int)(
-					victim.getKarma() * (damage * TTT.plugin.getConfig().getDouble("player-damages-ally-ratio"))));
+					victim.getKarma() * (damage * TTT.plugin.getConfig().getDouble("damage-penalty"))));
 		else if (!damager.isTraitor() && victim.isTraitor())
 			damager.addKarma((int)(TTT.plugin.getConfig().getInt("max-karma") *
-					damage * TTT.plugin.getConfig().getDouble("i-damages-t-ratio")));
+					damage * TTT.plugin.getConfig().getDouble("t-damage-reward")));
 	}
 
 	public static void handleKillKarma(TTTPlayer killer, TTTPlayer victim){
-		if (killer.isTraitor() == victim.isTraitor()){
-			killer.subtractKarma((int)(victim.getKarma() * 15 * TTT.plugin.getConfig().getDouble("player-kills-ally")));
+		if (killer.isTraitor() == victim.isTraitor())
 			handleDamageKarma(killer, victim, TTT.plugin.getConfig().getInt("kill-penalty"));
-		}
 		else if (!killer.isTraitor() && victim.isTraitor())
-			killer.addKarma(TTT.plugin.getConfig().getInt("tbonus"));
+			killer.addKarma(TTT.plugin.getConfig().getInt("tbonus") *
+					TTT.plugin.getConfig().getInt("t-damage-bonus") * victim.getKarma());
 	}
 }
