@@ -96,8 +96,38 @@ public class KarmaManager {
 		Player p = TTT.plugin.getServer().getPlayer(t.getName());
 		if (p != null){
 			RoundManager.resetPlayer(p);
-			p.sendMessage(ChatColor.DARK_PURPLE + "You have been automatically removed from the round " +
-					"because your karma has fallen below " + TTT.plugin.getConfig().getInt("karma-kick"));
+			if (TTT.plugin.getConfig().getBoolean("karma-ban")){
+				File f = new File(TTT.plugin.getDataFolder(), "bans.yml");
+				YamlConfiguration y = new YamlConfiguration();
+				try {
+					y.load(f);
+					if (TTT.plugin.getConfig().getInt("karma-ban-time") < 0){
+						y.set(t.getName(), -1);
+						y.save(f);
+						p.sendMessage(ChatColor.DARK_PURPLE + "You have been permanently banned from using TTT " +
+								"on this server because your karma has fallen below " +
+								TTT.plugin.getConfig().getInt("karma-ban") + ".");
+					}
+					else {
+						// store unban time as a Unix timestamp
+						int unbanTime = (int)System.currentTimeMillis() / 1000 +
+								(TTT.plugin.getConfig().getInt("karma-ban-time") * 60);
+						y.set(t.getName(), unbanTime);
+						y.save(f);
+						p.sendMessage(ChatColor.DARK_PURPLE + "You have been banned from using TTT " +
+								"on this server for " + TTT.plugin.getConfig().getInt("karma-ban-time") +
+								" because your karma has fallen below " +
+								TTT.plugin.getConfig().getInt("karma-ban") + ".");
+					}
+				}
+				catch (Exception ex){
+					ex.printStackTrace();
+					TTT.log.warning("Failed to register player ban for " + t.getName());
+				}
+			}
+			else
+				p.sendMessage(ChatColor.DARK_PURPLE + "You have been automatically removed from the round " +
+						"because your karma has fallen below " + TTT.plugin.getConfig().getInt("karma-kick"));
 		}
 		else
 			TTT.log.warning("Could not remove \"" + t.getName() + "\" from round \"" + t.getWorld() +

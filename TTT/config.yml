@@ -67,6 +67,7 @@ karma-kick: -1
 karma-ban: false
 
 #How long in minutes should users be banned from using the plugin for? (Set to -1 for a permanent ban.)
+#Note: this value is not retroactively applied to previous bans.
 karma-ban-time: 30
 
 #When true, karma changes will be logged to the console. Note that this will typically cause /massive/ log spam!
@@ -85,4 +86,4 @@ enable-metrics: true
 localization: enUS
 
 #Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.4.0.18
+config-version: 0.4.0.19

@@ -27,7 +27,7 @@ public class TTT extends JavaPlugin implements Listener {
 
 	public static List<Body> bodies = new ArrayList<Body>();
 	public static List<Body> foundBodies = new ArrayList<Body>();
-	
+
 	public static int maxKarma = 1000;
 
 	@Override
@@ -53,19 +53,8 @@ public class TTT extends JavaPlugin implements Listener {
 
 		lang = getConfig().getString("localization");
 
-		// create karma file
-		File karmaFile = new File(TTT.plugin.getDataFolder(), "karma.yml");
-		if (!karmaFile.exists()){
-			if (getConfig().getBoolean("verbose-logging"))
-				log.info("karma.yml not found, creating...");
-			try {
-				karmaFile.createNewFile();
-			}
-			catch (Exception ex){
-				ex.printStackTrace();
-				log.warning("Failed to write to karma.yml!");
-			}
-		}
+		createFile("karma.yml");
+		createFile("bans.yml");
 
 		// autoupdate
 		if (getConfig().getBoolean("enable-auto-update")){
@@ -87,7 +76,7 @@ public class TTT extends JavaPlugin implements Listener {
 
 		File invDir = new File(this.getDataFolder() + File.separator + "inventories");
 		invDir.mkdir();
-		
+
 		maxKarma = getConfig().getInt("max-karma");
 
 		if (getConfig().getBoolean("verbose-logging"))
@@ -101,4 +90,20 @@ public class TTT extends JavaPlugin implements Listener {
 		plugin = null;
 		lang = null;
 	}
+
+	public void createFile(String s){
+		File f = new File(TTT.plugin.getDataFolder(), "s");
+		if (!f.exists()){
+			if (getConfig().getBoolean("verbose-logging"))
+				log.info(s + " not found, creating...");
+			try {
+				f.createNewFile();
+			}
+			catch (Exception ex){
+				ex.printStackTrace();
+				log.warning("Failed to write to " + s + "!");
+			}
+		}
+	}
+
 }

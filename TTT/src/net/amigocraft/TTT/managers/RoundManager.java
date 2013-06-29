@@ -6,11 +6,13 @@ import static net.amigocraft.TTT.TTTPlayer.players;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
 import net.amigocraft.TTT.Body;
 import net.amigocraft.TTT.Round;
+import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
 import net.amigocraft.TTT.utils.NumUtils;
@@ -18,9 +20,13 @@ import net.amigocraft.TTT.utils.WorldUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 public class RoundManager {
 
@@ -276,7 +282,7 @@ public class RoundManager {
 			}
 		}, 0L, 20L).getTaskId());
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public static void resetPlayer(Player p){
 		if (isPlayer(p.getName())){
@@ -320,5 +326,136 @@ public class RoundManager {
 			}
 		}
 		WorldUtils.teleportPlayer(p);
+	}
+
+	public static void handleJoin(Player p, String worldName){
+		File f = new File(TTT.plugin.getDataFolder(), "bans.yml");
+		YamlConfiguration y = new YamlConfiguration();
+		try {
+			y.load(f);
+			if (y.isSet(p.getName())){
+				int unbanTime = y.getInt(p.getName());
+				if (unbanTime > System.currentTimeMillis() / 1000){
+					y.set(p.getName(), null);
+					y.save(f);
+					if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
+						TTT.log.info(p.getName() + "'s ban has been lifted");
+				}
+				else {
+					String m = ChatColor.DARK_PURPLE + "[TTT] ";
+					if (unbanTime == -1)
+						m += "You are permanently banned from using TTT on this server.";
+					Calendar cal = Calendar.getInstance();
+					cal.setTimeInMillis(unbanTime * 1000);
+					String year = Integer.toString(cal.get(Calendar.YEAR) + 1);
+					String month = Integer.toString(cal.get(Calendar.MONTH) + 1);
+					String day = Integer.toString(cal.get(Calendar.DAY_OF_MONTH));
+					String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
+					String min = Integer.toString(cal.get(Calendar.MINUTE));
+					String sec = Integer.toString(cal.get(Calendar.SECOND));
+					m += "You are banned from using TTT on this server until " +
+					hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + ".";
+					p.sendMessage(m);
+				}
+			}
+		}
+		catch (Exception ex){
+			ex.printStackTrace();
+			TTT.log.warning("Failed to load bans from disk!");
+		}
+		boolean valid = false;
+		if (Round.getRound(worldName) == null)
+			valid = true;
+		else if (Round.getRound(worldName).getStage() != Stage.PLAYING)
+			valid = true;
+		if (valid){
+			File folder = new File(worldName);
+			File tttFolder = new File("TTT_" + worldName);
+			if (folder.exists() && tttFolder.exists()){
+				boolean loaded = false;
+				for (World w : Bukkit.getServer().getWorlds()){
+					if(w.getName().equals("TTT_" + worldName)){
+						loaded = true;
+						break;
+					}
+				}
+				Round r = Round.getRound(worldName);
+				if (r == null){
+					r = new Round(worldName);
+				}
+				if (!loaded){
+					TTT.plugin.getServer().createWorld(new WorldCreator("TTT_" + worldName));
+				}
+				p.teleport(TTT.plugin.getServer().getWorld("TTT_" + worldName).getSpawnLocation());
+				new TTTPlayer(p.getName(), worldName);
+				File invF = new File(TTT.plugin.getDataFolder() + File.separator + "inventories" + File.separator +
+						p.getName() + ".inv");
+				Inventory inv = p.getInventory();
+				PlayerInventory pInv = (PlayerInventory)inv;
+				try {
+					if (!invF.exists())
+						invF.createNewFile();
+					YamlConfiguration invY = new YamlConfiguration();
+					invY.load(invF);
+					for (int i = 0; i < inv.getContents().length; i++)
+						invY.set(Integer.toString(i), inv.getContents()[i]);
+					if (pInv.getHelmet() != null)
+						invY.set("h", pInv.getHelmet());
+					if (pInv.getChestplate() != null)
+						invY.set("c", pInv.getChestplate());
+					if (pInv.getLeggings() != null)
+						invY.set("l", pInv.getLeggings());
+					if (pInv.getBoots() != null)
+						invY.set("b", pInv.getBoots());
+					invY.save(invF);
+				}
+				catch (Exception ex){
+					ex.printStackTrace();
+					p.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("inv-save-error"));
+				}
+				inv.clear();
+				pInv.setArmorContents(new ItemStack[]{null, null, null, null});
+				p.sendMessage(ChatColor.GREEN + TTT.plugin.local.getMessage("success-join") + " " + worldName);
+				List<String> testers = new ArrayList<String>();
+				testers.add("ZerosAce00000");
+				testers.add("momhipie");
+				testers.add("xJHA929x");
+				testers.add("jmm1999");
+				testers.add("jon674");
+				testers.add("HardcoreBukkit");
+				testers.add("shiny3");
+				testers.add("jpf6368");
+				String addition = "";
+				if (p.getName().equals("AngryNerd1"))
+					addition = ", " + ChatColor.DARK_RED + TTT.plugin.local.getMessage("creator") + "," +
+							ChatColor.DARK_PURPLE;
+				else if (testers.contains(p.getName())){
+					addition = ", " + ChatColor.DARK_RED + TTT.plugin.local.getMessage("tester") + "," +
+							ChatColor.DARK_PURPLE;
+				}
+				Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + p.getName() + addition + " " +
+						TTT.plugin.local.getMessage("joined-map") + " \"" + worldName + "\"");
+				int ingamePlayers = 0;
+				for (TTTPlayer t : players)
+					if (t.getWorld().equals(worldName))
+						ingamePlayers += 1;
+				if (ingamePlayers >= TTT.plugin.getConfig().getInt("minimum-players") && r.getStage() != Stage.PREPARING){
+					for (Player pl : TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
+						pl.sendMessage(ChatColor.DARK_PURPLE + TTT.plugin.local.getMessage("round-starting"));
+					r.setTime(TTT.plugin.getConfig().getInt("setup-time"));
+					r.setStage(Stage.PREPARING);
+					SetupManager.setupTimer(worldName);
+				}
+				else {
+					p.sendMessage(ChatColor.DARK_PURPLE + TTT.plugin.local.getMessage("waiting"));
+				}
+			}
+			else
+				p.sendMessage(ChatColor.RED + TTT.plugin.local.getMessage("map-invalid"));
+			folder = null;
+			tttFolder = null;
+		}
+		else
+			p.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("in-progress"));
 	}
 }
