@@ -114,8 +114,7 @@ public class KarmaManager {
 					if (TTT.plugin.getConfig().getInt("karma-ban-time") < 0){
 						y.set(t.getName(), -1);
 						y.save(f);
-						p.sendMessage(ChatColor.DARK_PURPLE + "You have been permanently banned from using TTT " +
-								"on this server because your karma has fallen below " +
+						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-permaban") + " " +
 								TTT.plugin.getConfig().getInt("karma-ban") + ".");
 					}
 					else {
@@ -124,23 +123,19 @@ public class KarmaManager {
 								(TTT.plugin.getConfig().getInt("karma-ban-time") * 60);
 						y.set(t.getName(), unbanTime);
 						y.save(f);
-						p.sendMessage(ChatColor.DARK_PURPLE + "You have been banned from using TTT " +
-								"on this server for " + TTT.plugin.getConfig().getInt("karma-ban-time") +
-								" because your karma has fallen below " +
-								TTT.plugin.getConfig().getInt("karma-ban") + ".");
+						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-ban")
+								.replace("%", Integer.toString(TTT.plugin.getConfig().getInt("karma-ban-time"))) +
+								" " + TTT.plugin.getConfig().getInt("karma-ban") + ".");
 					}
 				}
 				catch (Exception ex){
 					ex.printStackTrace();
-					TTT.log.warning("Failed to register player ban for " + t.getName());
+					TTT.log.warning(TTT.local.getMessage("ban-fail") + " " + t.getName());
 				}
 			}
 			else
-				p.sendMessage(ChatColor.DARK_PURPLE + "You have been automatically removed from the round " +
-						"because your karma has fallen below " + TTT.plugin.getConfig().getInt("karma-kick"));
+				p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-kick") + " " +
+						TTT.plugin.getConfig().getInt("karma-kick"));
 		}
-		else
-			TTT.log.warning("Could not remove \"" + t.getName() + "\" from round \"" + t.getWorld() +
-					"\" because an instance of the player could not be created.");
 	}
 }
