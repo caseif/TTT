@@ -74,6 +74,9 @@ karma-ban: false
 #Note: this value is not retroactively applied to previous bans.
 karma-ban-time: 30
 
+#Should damage dealt by users be negatively impacted by karma? (Full damage is done at 1000.)
+damage-reduction: true
+
 #When true, karma changes will be logged to the console. Note that this will typically cause /massive/ log spam!
 karma-debug: false
 
@@ -90,4 +93,4 @@ enable-metrics: true
 localization: enUS
 
 #Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.4.0.20.1
+config-version: 0.4.0.21

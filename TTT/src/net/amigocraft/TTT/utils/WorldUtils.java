@@ -65,15 +65,15 @@ public class WorldUtils {
 						try {
 							copyDirectory(folder, newFolder);
 							if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
-								TTT.log.info(TTT.plugin.local.getMessage("rollback") + " \"" + worldName + "\"!");
+								TTT.log.info(TTT.local.getMessage("rollback") + " \"" + worldName + "\"!");
 						}
 						catch (IOException ex){
-							TTT.log.info(TTT.plugin.local.getMessage("folder-error") + " " + worldName);
+							TTT.log.info(TTT.local.getMessage("folder-error") + " " + worldName);
 							ex.printStackTrace();
 						}
 					}
 					else
-						TTT.log.info(TTT.plugin.local.getMessage("cannot-load-world"));
+						TTT.log.info(TTT.local.getMessage("cannot-load-world"));
 				}
 			}
 		}, 100L);
@@ -92,24 +92,24 @@ public class WorldUtils {
 							sessionLock.delete();
 							uidDat.delete();
 							copyDirectory(folder, newFolder);
-							sender.sendMessage(ChatColor.GREEN + "[TTT] " + TTT.plugin.local.getMessage("import-success"));
+							sender.sendMessage(ChatColor.GREEN + "[TTT] " + TTT.local.getMessage("import-success"));
 						}
 						catch (IOException e){
-							sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("folder-error"));
+							sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("folder-error"));
 							e.printStackTrace();
 						}
 					}
 					else
-						sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("already-imported"));
+						sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("already-imported"));
 				}
 				else
-					sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("cannot-load-world"));
+					sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("cannot-load-world"));
 			}
 			else
-				sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("start-error"));
+				sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("start-error"));
 		}
 		else
-			sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.plugin.local.getMessage("folder-not-found"));
+			sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("folder-not-found"));
 	}
 
 	public static void copyDirectory(File sourceLocation , File targetLocation) throws IOException {

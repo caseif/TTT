@@ -71,7 +71,7 @@ public class PlayerListener implements Listener {
 								Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
 								Inventory inv = plugin.getServer().createInventory(null, chestinv.getSize());
 								inv.setContents(chestinv.getContents());
-								e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("discreet"));
+								e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("discreet"));
 								tPlayer.setDiscreet(true);
 								e.getPlayer().openInventory(inv);
 								break;
@@ -98,13 +98,13 @@ public class PlayerListener implements Listener {
 								for (Player p : e.getPlayer().getWorld().getPlayers()){
 									if (TTT.bodies.get(index).getPlayer().getRole() == Role.INNOCENT)
 										p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
-												plugin.local.getMessage("found-body").replace("%", TTT.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-innocent"));
+												TTT.local.getMessage("found-body").replace("%", TTT.bodies.get(index).getPlayer().getName())  + ". " + TTT.local.getMessage("was-innocent"));
 									else if (TTT.bodies.get(index).getPlayer().getRole() == Role.TRAITOR)
 										p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
-												plugin.local.getMessage("found-body").replace("%", TTT.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-traitor"));
+												TTT.local.getMessage("found-body").replace("%", TTT.bodies.get(index).getPlayer().getName())  + ". " + TTT.local.getMessage("was-traitor"));
 									else if (TTT.bodies.get(index).getPlayer().getRole() == Role.DETECTIVE)
 										p.sendMessage(ChatColor.DARK_BLUE + e.getPlayer().getName() + " " +
-												plugin.local.getMessage("found-body").replace("%", TTT.bodies.get(index).getPlayer().getName())  + ". " + plugin.local.getMessage("was-detective"));
+												TTT.local.getMessage("found-body").replace("%", TTT.bodies.get(index).getPlayer().getName())  + ". " + TTT.local.getMessage("was-detective"));
 								}
 								TTT.foundBodies.add(TTT.bodies.get(index));
 							}
@@ -113,19 +113,19 @@ public class PlayerListener implements Listener {
 									if (e.getPlayer().getItemInHand().getType() == Material.COMPASS){
 										if (e.getPlayer().getItemInHand().getItemMeta() != null){
 											if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-												if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§1" + plugin.local.getMessage("dna-scanner"))){
+												if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§1" + TTT.local.getMessage("dna-scanner"))){
 													e.setCancelled(true);
 													Player killer = plugin.getServer().getPlayer(getTTTPlayer(TTT.bodies.get(index).getPlayer().getName()).getKiller());
 													if (killer != null){
 														if (isPlayer(killer.getName())){
 															tPlayer.setTracking(killer.getName());
-															e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("collected-dna").replace("%", TTT.bodies.get(index).getPlayer().getName()));
+															e.getPlayer().sendMessage(ChatColor.BLUE + TTT.local.getMessage("collected-dna").replace("%", TTT.bodies.get(index).getPlayer().getName()));
 														}
 														else
-															e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("killer-left"));
+															e.getPlayer().sendMessage(ChatColor.BLUE + TTT.local.getMessage("killer-left"));
 													}
 													else
-														e.getPlayer().sendMessage(ChatColor.BLUE + plugin.local.getMessage("killer-left"));
+														e.getPlayer().sendMessage(ChatColor.BLUE + TTT.local.getMessage("killer-left"));
 												}
 											}
 										}
@@ -141,7 +141,7 @@ public class PlayerListener implements Listener {
 					if (e.getPlayer().getItemInHand() != null){
 						if (e.getPlayer().getItemInHand().getItemMeta() != null){
 							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-								if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("Gun"))){
+								if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5" + TTT.local.getMessage("Gun"))){
 									if (Round.getRound(tPlayer.getWorld()).getStage() == Stage.PLAYING || plugin.getConfig().getBoolean("guns-outside-arenas")){
 										e.setCancelled(true);
 										if (e.getPlayer().getInventory().contains(Material.ARROW) || !plugin.getConfig().getBoolean("require-ammo-for-guns")){
@@ -152,7 +152,7 @@ public class PlayerListener implements Listener {
 											e.getPlayer().launchProjectile(Arrow.class);
 										}
 										else
-											e.getPlayer().sendMessage(ChatColor.RED + plugin.local.getMessage("need-ammo"));
+											e.getPlayer().sendMessage(ChatColor.RED + TTT.local.getMessage("need-ammo"));
 									}
 								}
 							}
@@ -168,14 +168,14 @@ public class PlayerListener implements Listener {
 		if (e.getMessage().startsWith("kit")){
 			if (isPlayer(e.getPlayer().getName())){
 				e.setCancelled(true);
-				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("no-kits"));
+				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("no-kits"));
 			}
 		}
 		else if (e.getMessage().startsWith("msg") || e.getMessage().startsWith("tell") || e.getMessage().startsWith("r") || e.getMessage().startsWith("msg") || e.getMessage().startsWith("me")){
 			String p = e.getPlayer().getName();
 			if (isPlayer(p)){
 				e.setCancelled(true);
-				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("no-pm"));
+				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("no-pm"));
 			}
 		}
 	}
@@ -203,12 +203,14 @@ public class PlayerListener implements Listener {
 						if (((Player)ed.getDamager()).getItemInHand() != null)
 							if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
 								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName() != null)
-									if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("§5" + plugin.local.getMessage("crowbar")))
+									if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName().equals("§5" + TTT.local.getMessage("crowbar")))
 										e.setDamage(plugin.getConfig().getInt("crowbar-damage"));
 				}
 			}
 			Player p = (Player)e.getEntity();
 			if (isPlayer(p.getName())){
+				TTTPlayer t = getTTTPlayer(p.getName());
+				e.setDamage((int)(e.getDamage() * t.getDamageReduction()));
 				int armor = 0;
 				if (e.getCause() == DamageCause.ENTITY_ATTACK ||
 						e.getCause() == DamageCause.PROJECTILE ||
@@ -260,61 +262,61 @@ public class PlayerListener implements Listener {
 										(EntityDamageByEntityEvent)e)
 										.getDamager())
 										.getName()),
-										getTTTPlayer(((Player)e.getEntity()).getName()),
+										t,
 										actualDamage);
 				if (actualDamage >= ((Player)e.getEntity()).getHealth()){
-					if (getTTTPlayer(p.getName()).getRole() != null){
+					if (t.getRole() != null){
 						e.setCancelled(true);
 						p.setHealth(20);
-						p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("dead"));
-						getTTTPlayer(p.getName()).setDead(true);
+						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("dead"));
+						t.setDead(true);
 						if (e instanceof EntityDamageByEntityEvent)
 							if (((EntityDamageByEntityEvent)e).getDamager() instanceof Player)
-								getTTTPlayer(p.getName()).setKiller(((Player)((EntityDamageByEntityEvent)e).getDamager()).getName());
+								t.setKiller(((Player)((EntityDamageByEntityEvent)e).getDamager()).getName());
 						Block block = p.getLocation().getBlock();
 						block.setType(Material.CHEST);
 						Chest chest = (Chest)block.getState();
 						// player identifier
 						ItemStack id = new ItemStack(Material.PAPER, 1);
 						ItemMeta idMeta = id.getItemMeta();
-						idMeta.setDisplayName(plugin.local.getMessage("id"));
+						idMeta.setDisplayName(TTT.local.getMessage("id"));
 						List<String> idLore = new ArrayList<String>();
-						idLore.add(plugin.local.getMessage("body-of"));
-						idLore.add(((Player)e.getEntity()).getName());
+						idLore.add(TTT.local.getMessage("body-of"));
+						idLore.add(t.getName());
 						idMeta.setLore(idLore);
 						id.setItemMeta(idMeta);
 						// role identifier
 						ItemStack ti = new ItemStack(Material.WOOL, 1);
 						ItemMeta tiMeta = ti.getItemMeta();
-						if (getTTTPlayer(p.getName()).getRole() == Role.INNOCENT){
+						if (t.getRole() == Role.INNOCENT){
 							ti.setDurability((short)5);
-							tiMeta.setDisplayName("§2" + plugin.local.getMessage("innocent"));
+							tiMeta.setDisplayName("§2" + TTT.local.getMessage("innocent"));
 							List<String> tiLore = new ArrayList<String>();
-							tiLore.add(plugin.local.getMessage("innocent-id"));
+							tiLore.add(TTT.local.getMessage("innocent-id"));
 							tiMeta.setLore(tiLore);
 						}
-						else if (getTTTPlayer(p.getName()).getRole() == Role.TRAITOR){
+						else if (t.getRole() == Role.TRAITOR){
 							ti.setDurability((short)14);
-							tiMeta.setDisplayName("§4" + plugin.local.getMessage("traitor"));
+							tiMeta.setDisplayName("§4" + TTT.local.getMessage("traitor"));
 							List<String> lore = new ArrayList<String>();
-							lore.add(plugin.local.getMessage("traitor-id"));
+							lore.add(TTT.local.getMessage("traitor-id"));
 							tiMeta.setLore(lore);
 						}
-						else if (getTTTPlayer(p.getName()).getRole() == Role.DETECTIVE){
+						else if (t.getRole() == Role.DETECTIVE){
 							ti.setDurability((short)11);
-							tiMeta.setDisplayName("§1" + plugin.local.getMessage("detective"));
+							tiMeta.setDisplayName("§1" + TTT.local.getMessage("detective"));
 							List<String> lore = new ArrayList<String>();
-							lore.add(plugin.local.getMessage("detective-id"));
+							lore.add(TTT.local.getMessage("detective-id"));
 							tiMeta.setLore(lore);
 						}
 						ti.setItemMeta(tiMeta);
 						chest.getInventory().addItem(new ItemStack[]{id, ti});
-						TTT.bodies.add(new Body(getTTTPlayer(p.getName()), Location2i.getLocation(block), System.currentTimeMillis()));
+						TTT.bodies.add(new Body(t, Location2i.getLocation(block), System.currentTimeMillis()));
 
 						if (e instanceof EntityDamageByEntityEvent){
 							if (((EntityDamageByEntityEvent)e).getDamager() instanceof Player){
 								// set killer's karma
-								TTTPlayer victim = getTTTPlayer(p.getName());
+								TTTPlayer victim = t;
 								TTTPlayer killer = getTTTPlayer(((Player)((EntityDamageByEntityEvent)e).getDamager()).getName());
 								KarmaManager.handleKillKarma(killer, victim);
 							}
@@ -323,7 +325,7 @@ public class PlayerListener implements Listener {
 					else
 						p.setHealth(20);
 				}
-				if (getTTTPlayer(p.getName()).isDead()){
+				if (t.isDead()){
 					e.setCancelled(true);
 				}
 			}
@@ -340,7 +342,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerDropItem(PlayerDropItemEvent e){
 		if (isPlayer(e.getPlayer().getName())){
 			e.setCancelled(true);
-			e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + plugin.local.getMessage("no-drop"));
+			e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("no-drop"));
 		}
 	}
 
@@ -368,9 +370,9 @@ public class PlayerListener implements Listener {
 				worldName = getTTTPlayer(p).getWorld();
 				destroy(p);
 				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
-					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", worldName));
+					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + TTT.local.getMessage("left-game").replace("%", worldName));
 				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
-					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + plugin.local.getMessage("left-game").replace("%", worldName));
+					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + TTT.local.getMessage("left-game").replace("%", worldName));
 			}
 		}
 		if (!TTT.plugin.getConfig().getBoolean("karma-persistence"))
@@ -383,7 +385,7 @@ public class PlayerListener implements Listener {
 		if (isPlayer(p)){
 			if (!e.getFrom().getWorld().getName().equals(e.getTo().getWorld().getName())){
 				for (Player pl : plugin.getServer().getWorld("TTT_" + getTTTPlayer(p).getWorld()).getPlayers())
-					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + plugin.local.getMessage("left-game").replace("%", getTTTPlayer(p).getWorld()));
+					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game").replace("%", getTTTPlayer(p).getWorld()));
 				destroy(p);
 			}
 		}

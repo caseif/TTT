@@ -31,7 +31,7 @@ public class SetupManager {
 	public static void setupTimer(final String worldName){
 
 		SbManager.sbManagers.put(worldName, new SbManager(worldName));
-		
+
 		tasks.put(worldName, plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable(){
 
 			public void run(){
@@ -47,10 +47,12 @@ public class SetupManager {
 							if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 								if (checkPlayers.contains(tp.getName())){
 									if (plugin.getConfig().getBoolean("verbose-logging"))
-										TTT.log.info(tp.getName() + " was missing from TTT world for 2 ticks, removing...");
+										TTT.log.info(tp.getName() +
+												" was missing from TTT world for 2 ticks, removing...");
 									checkPlayers.remove(tp.getName());
 									offlinePlayers.add(tp);
-									Bukkit.broadcastMessage("[TTT] " + tp.getName() + " " + plugin.local.getMessage("left-map") + " \"" + worldName + "\"");
+									Bukkit.broadcastMessage("[TTT] " + tp.getName() + " " +
+											TTT.local.getMessage("left-map") + " \"" + worldName + "\"");
 								}
 								else
 									checkPlayers.add(tp.getName());
@@ -61,10 +63,10 @@ public class SetupManager {
 				for (TTTPlayer p : offlinePlayers){
 					p.destroy();
 				}
-				
+
 				// manage scoreboards
 				SbManager.sbManagers.get(worldName).manage();
-				
+
 				int currentTime = r.getTime();
 				int playerCount = 0; 
 				for (TTTPlayer tp : players){
@@ -74,12 +76,14 @@ public class SetupManager {
 				if (playerCount >= plugin.getConfig().getInt("minimum-players")){
 					if((currentTime % 10) == 0 && currentTime > 0){
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("begin") + " " + currentTime + " " + plugin.local.getMessage("seconds") + "!");
+							p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("begin") + " " +
+									currentTime + " " + TTT.local.getMessage("seconds") + "!");
 						}
 					}
 					else if (currentTime > 0 && currentTime < 10){
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("begin") + " " + currentTime + " " + plugin.local.getMessage("seconds") + "!");
+							p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("begin") + " " +
+									currentTime + " " + TTT.local.getMessage("seconds") + "!");
 						}
 					}
 					else if (currentTime <= 0){
@@ -93,7 +97,7 @@ public class SetupManager {
 						List<String> detectives = new ArrayList<String>();
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							innocents.add(p.getName());
-							p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("begun"));
+							p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("begun"));
 						}
 						while (traitorNum < limit){
 							Random randomGenerator = new Random();
@@ -119,23 +123,23 @@ public class SetupManager {
 						}
 						ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
 						ItemMeta cbMeta = crowbar.getItemMeta();
-						cbMeta.setDisplayName("§5" + plugin.local.getMessage("crowbar"));
+						cbMeta.setDisplayName("§5" + TTT.local.getMessage("crowbar"));
 						crowbar.setItemMeta(cbMeta);
 						ItemStack gun = new ItemStack(Material.ANVIL, 1);
 						ItemMeta gunMeta = crowbar.getItemMeta();
-						gunMeta.setDisplayName("§5" + plugin.local.getMessage("gun"));
+						gunMeta.setDisplayName("§5" + TTT.local.getMessage("gun"));
 						gun.setItemMeta(gunMeta);
 						ItemStack ammo = new ItemStack(Material.ARROW, 28);
 						ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
 						ItemMeta dnaMeta = dnaScanner.getItemMeta();
-						dnaMeta.setDisplayName("§1" + plugin.local.getMessage("dna-scanner"));
+						dnaMeta.setDisplayName("§1" + TTT.local.getMessage("dna-scanner"));
 						dnaScanner.setItemMeta(dnaMeta);
 						for (String s : innocents){
 							Player pl = plugin.getServer().getPlayer(s);
 							TTTPlayer t = TTTPlayer.getTTTPlayer(s);
 							if (pl != null && t != null){
 								t.setRole(Role.INNOCENT);
-								pl.sendMessage(ChatColor.DARK_GREEN + plugin.local.getMessage("you-are-innocent"));
+								pl.sendMessage(ChatColor.DARK_GREEN + TTT.local.getMessage("you-are-innocent"));
 								pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo});
 								pl.setHealth(20);
 								pl.setFoodLevel(20);
@@ -146,16 +150,16 @@ public class SetupManager {
 							TTTPlayer t = TTTPlayer.getTTTPlayer(s);
 							if (pl != null && t != null){
 								t.setRole(Role.TRAITOR);
-								pl.sendMessage(ChatColor.DARK_RED + plugin.local.getMessage("you-are-traitor"));
+								pl.sendMessage(ChatColor.DARK_RED + TTT.local.getMessage("you-are-traitor"));
 								if (traitors.size() > 1){
-									pl.sendMessage(ChatColor.DARK_RED + plugin.local.getMessage("allies"));
+									pl.sendMessage(ChatColor.DARK_RED + TTT.local.getMessage("allies"));
 									for (String tr : traitors){
 										if (!tr.equals(s))
 											pl.sendMessage("- " + t);
 									}
 								}
 								else
-									pl.sendMessage(ChatColor.DARK_RED + plugin.local.getMessage("alone"));
+									pl.sendMessage(ChatColor.DARK_RED + TTT.local.getMessage("alone"));
 								pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo});
 								pl.setHealth(20);
 								pl.setFoodLevel(20);
@@ -166,10 +170,27 @@ public class SetupManager {
 							TTTPlayer t = TTTPlayer.getTTTPlayer(s);
 							if (pl != null && t != null){
 								t.setRole(Role.DETECTIVE);
-								pl.sendMessage(ChatColor.BLUE + plugin.local.getMessage("you-are-detective"));
+								pl.sendMessage(ChatColor.BLUE + TTT.local.getMessage("you-are-detective"));
 								pl.getInventory().addItem(new ItemStack[]{crowbar, gun, ammo, dnaScanner});
 								pl.setHealth(20);
 								pl.setFoodLevel(20);
+							}
+						}
+
+						if (TTT.plugin.getConfig().getBoolean("damage-reduction")){
+							for (Player p : plugin.getServer().getOnlinePlayers()){
+								if (TTTPlayer.isPlayer(p.getName())){
+									TTTPlayer t = TTTPlayer.getTTTPlayer(p.getName());
+									t.calculateDamageReduction();
+									String percentage = TTT.local.getMessage("full");
+									if (t.getDamageReduction() < 1)
+										percentage =
+										Integer.toString((int)(1 - t.getDamageReduction() * 100)) + "%";
+									p.sendMessage(ChatColor.DARK_PURPLE +
+											TTT.local.getMessage("karma-damage")
+											.replace("%", Integer.toString(t.getKarma()))
+											.replace("&", percentage));
+								}
 							}
 						}
 
@@ -186,7 +207,7 @@ public class SetupManager {
 					r.setTime(0);
 					r.setStage(Stage.WAITING);
 					for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-						p.sendMessage(ChatColor.DARK_PURPLE + plugin.local.getMessage("waiting"));
+						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("waiting"));
 					}
 					plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 					tasks.remove(worldName);

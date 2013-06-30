@@ -22,7 +22,7 @@ public class TTT extends JavaPlugin implements Listener {
 	public static Logger log;
 	public static Logger kLog;
 	public static TTT plugin;
-	public Localization local = new Localization();
+	public static Localization local = new Localization();
 	public static String lang;
 
 	public static List<Body> bodies = new ArrayList<Body>();
