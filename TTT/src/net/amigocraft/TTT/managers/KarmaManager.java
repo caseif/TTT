@@ -114,8 +114,8 @@ public class KarmaManager {
 					if (TTT.plugin.getConfig().getInt("karma-ban-time") < 0){
 						y.set(t.getName(), -1);
 						y.save(f);
-						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-permaban") + " " +
-								TTT.plugin.getConfig().getInt("karma-ban") + ".");
+						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-permaban")
+								.replace("%", TTT.plugin.getConfig().getInt("karma-ban") + "."));
 					}
 					else {
 						// store unban time as a Unix timestamp
@@ -124,18 +124,18 @@ public class KarmaManager {
 						y.set(t.getName(), unbanTime);
 						y.save(f);
 						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-ban")
-								.replace("%", Integer.toString(TTT.plugin.getConfig().getInt("karma-ban-time"))) +
-								" " + TTT.plugin.getConfig().getInt("karma-ban") + ".");
+								.replace("%", Integer.toString(TTT.plugin.getConfig().getInt("karma-ban-time")))
+								.replace("%", TTT.plugin.getConfig().getInt("karma-ban") + "."));
 					}
 				}
 				catch (Exception ex){
 					ex.printStackTrace();
-					TTT.log.warning(TTT.local.getMessage("ban-fail") + " " + t.getName());
+					TTT.log.warning(TTT.local.getMessage("ban-fail").replace("%", t.getName()));
 				}
 			}
 			else
-				p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-kick") + " " +
-						TTT.plugin.getConfig().getInt("karma-kick"));
+				p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-kick")
+						.replace("%", Integer.toString(TTT.plugin.getConfig().getInt("karma-kick"))));
 		}
 	}
 }

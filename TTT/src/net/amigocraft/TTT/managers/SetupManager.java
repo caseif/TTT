@@ -76,8 +76,8 @@ public class SetupManager {
 				if (playerCount >= plugin.getConfig().getInt("minimum-players")){
 					if((currentTime % 10) == 0 && currentTime > 0){
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("begin") + " " +
-									currentTime + " " + TTT.local.getMessage("seconds") + "!");
+							p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("begin")
+									.replace("%", currentTime + " " + TTT.local.getMessage("seconds") + "!"));
 						}
 					}
 					else if (currentTime > 0 && currentTime < 10){
