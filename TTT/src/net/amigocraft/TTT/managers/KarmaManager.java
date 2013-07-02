@@ -15,17 +15,14 @@ public class KarmaManager {
 	public static HashMap<String, Integer> playerKarma = new HashMap<String, Integer>();
 
 	public static void saveKarma(String worldName){
-		for (TTTPlayer t : TTTPlayer.players){
-			if (t.getWorld().equals(worldName)){
-				playerKarma.remove(t.getName());
-				playerKarma.put(t.getName(), t.getKarma());
+		for (TTTPlayer t : TTTPlayer.players)
+			if (t.getWorld().equals(worldName))
 				saveKarma(t);
-			}
-		}
-
 	}
 
 	public static void saveKarma(TTTPlayer t){
+		playerKarma.remove(t.getName());
+		playerKarma.put(t.getName(), t.getKarma());
 		File karmaFile = new File(TTT.plugin.getDataFolder(), "karma.yml");
 		try {
 			if (karmaFile.exists()){
@@ -37,14 +34,6 @@ public class KarmaManager {
 		}
 		catch (Exception ex){
 			ex.printStackTrace();
-		}
-	}
-
-	public static void swapDisplayKarma(String worldName){
-		for (TTTPlayer t : TTTPlayer.players){
-			if (t.getWorld().equals(worldName)){
-				t.setDisplayKarma(t.getKarma());
-			}
 		}
 	}
 

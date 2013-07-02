@@ -36,7 +36,6 @@ public class RoundManager {
 
 	private static List<String> checkPlayers = new ArrayList<String>();
 
-	@SuppressWarnings("deprecation")
 	public void gameTimer(final String worldName){
 
 		for (TTTPlayer t : players)
@@ -109,65 +108,7 @@ public class RoundManager {
 						break;
 				}
 				if (!(tLeft && iLeft)){
-					plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
-					tasks.remove(worldName);
-					List<Body> removeBodies = new ArrayList<Body>();
-					List<Body> removeFoundBodies = new ArrayList<Body>(); 
-					for (Body b : TTT.bodies){
-						if (b.getPlayer().isDead()){
-							if (b.getPlayer().getWorld() != null){
-								if (b.getPlayer().getWorld().equals(worldName)){
-									removeBodies.add(b);
-									if (TTT.foundBodies.contains(b))
-										removeFoundBodies.add(b);
-								}
-							}
-							else {
-								removeBodies.add(b);
-								if (TTT.foundBodies.contains(b))
-									removeFoundBodies.add(b);
-							}
-						}
-						else {
-							removeBodies.add(b);
-							if (TTT.foundBodies.contains(b))
-								removeFoundBodies.add(b);
-						}
-					}
-
-					for (Body b : removeBodies)
-						TTT.bodies.remove(b);
-
-					for (Body b : removeFoundBodies)
-						TTT.foundBodies.remove(b);
-
-					removeBodies.clear();
-					removeFoundBodies.clear();
-
-					KarmaManager.allocateKarma(worldName);
-					KarmaManager.saveKarma(worldName);
-					KarmaManager.swapDisplayKarma(worldName);
-
-					for (TTTPlayer t : players)
-						if (t.getWorld().equals(worldName))
-							TTT.plugin.getServer().getPlayer(t.getName()).setScoreboard(
-									TTT.plugin.getServer().getScoreboardManager().getNewScoreboard());
-
-					if (!tLeft)
-						Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " +
-								TTT.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
-					else if (!iLeft)
-						Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " +
-								TTT.local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
-					for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-						resetPlayer(p);
-					}
-					plugin.getServer().unloadWorld("TTT_" + worldName, false);
-					WorldUtils.rollbackWorld(worldName);
-					if (Round.getRound(worldName) != null)
-						Round.getRound(worldName).destroy();
-					else if (plugin.getConfig().getBoolean("verbose-logging"))
-						TTT.log.warning("That's odd, the round has already been destroyed...");
+					resetRound(worldName, iLeft);
 				}
 				else {
 					Round r = Round.getRound(worldName);
@@ -191,78 +132,7 @@ public class RoundManager {
 						}
 					}
 					else if (rTime <= 0){
-						List<Body> removeBodies = new ArrayList<Body>();
-						List<Body> removeFoundBodies = new ArrayList<Body>(); 
-						for (Body b : TTT.bodies){
-							if (getTTTPlayer(b.getPlayer().getName()).isDead()){
-								if (getTTTPlayer(b.getPlayer().getName()).getWorld().equals(worldName)){
-									removeBodies.add(b);
-									if (TTT.foundBodies.contains(b))
-										removeFoundBodies.add(b);
-								}
-							}
-						}
-
-						for (Body b : removeBodies)
-							TTT.bodies.remove(b);
-
-						for (Body b : removeFoundBodies)
-							TTT.foundBodies.remove(b);
-
-						removeBodies.clear();
-						removeFoundBodies.clear();
-
-						//KarmaManager.allocateKarma(worldName);
-						KarmaManager.saveKarma(worldName);
-						KarmaManager.swapDisplayKarma(worldName);
-
-						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_GREEN + "[TTT] " + TTT.local.getMessage("innocent-win").
-									replace("%", "\"" + worldName + "\"") + "!");
-							if (getTTTPlayer(p.getName()).isDead()){
-								p.setAllowFlight(false);
-								for (Player pl : plugin.getServer().getOnlinePlayers()){
-									pl.showPlayer(p);
-								}
-							}
-							getTTTPlayer(p.getName()).destroy();
-							p.getInventory().clear();
-							File invF = new File(plugin.getDataFolder() + File.separator + "inventories" +
-									File.separator + p.getName() + ".inv");
-							if (invF.exists()){
-								try {
-									YamlConfiguration invY = new YamlConfiguration();
-									invY.load(invF);
-									ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
-									for (String k : invY.getKeys(false)){
-										if (NumUtils.isInt(k))
-											invI[Integer.parseInt(k)] = invY.getItemStack(k);
-									}
-									p.getInventory().setContents(invI);
-									if (invY.getItemStack("h") != null)
-										p.getInventory().setHelmet(invY.getItemStack("h"));
-									if (invY.getItemStack("c") != null)
-										p.getInventory().setChestplate(invY.getItemStack("c"));
-									if (invY.getItemStack("l") != null)
-										p.getInventory().setLeggings(invY.getItemStack("l"));
-									if (invY.getItemStack("b") != null)
-										p.getInventory().setBoots(invY.getItemStack("b"));
-									p.updateInventory();
-									invF.delete();
-								}
-								catch (Exception ex){
-									ex.printStackTrace();
-									p.sendMessage(ChatColor.RED + "[TTT] " +
-											TTT.local.getMessage("inv-load-fail"));
-								}
-							}
-							WorldUtils.teleportPlayer(p);
-						}
-						r.destroy();
-						plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
-						tasks.remove(worldName);
-						plugin.getServer().unloadWorld("TTT_" + worldName, false);
-						WorldUtils.rollbackWorld(worldName);
+						resetRound(worldName, true);
 						return;
 					}
 					if (rTime > 0)
@@ -302,6 +172,8 @@ public class RoundManager {
 						pl.showPlayer(p);
 					}
 				}
+				KarmaManager.saveKarma(tp);
+				tp.setDisplayKarma(tp.getKarma());
 				tp.destroy();
 				p.getInventory().clear();
 				File invF = new File(TTT.plugin.getDataFolder() + File.separator + "inventories" + File.separator +
@@ -475,5 +347,63 @@ public class RoundManager {
 		}
 		else
 			p.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("in-progress"));
+	}
+	
+	public static void resetRound(String worldName, boolean inno){
+		plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
+		tasks.remove(worldName);
+		List<Body> removeBodies = new ArrayList<Body>();
+		List<Body> removeFoundBodies = new ArrayList<Body>(); 
+		for (Body b : TTT.bodies){
+			if (b.getPlayer().isDead()){
+				if (b.getPlayer().getWorld() != null){
+					if (b.getPlayer().getWorld().equals(worldName)){
+						removeBodies.add(b);
+						if (TTT.foundBodies.contains(b))
+							removeFoundBodies.add(b);
+					}
+				}
+				else {
+					removeBodies.add(b);
+					if (TTT.foundBodies.contains(b))
+						removeFoundBodies.add(b);
+				}
+			}
+			else {
+				removeBodies.add(b);
+				if (TTT.foundBodies.contains(b))
+					removeFoundBodies.add(b);
+			}
+		}
+
+		for (Body b : removeBodies)
+			TTT.bodies.remove(b);
+
+		for (Body b : removeFoundBodies)
+			TTT.foundBodies.remove(b);
+
+		removeBodies.clear();
+		removeFoundBodies.clear();
+
+		KarmaManager.allocateKarma(worldName);
+
+		if (inno)
+			Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " +
+					TTT.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
+		else
+			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " +
+					TTT.local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
+
+		for (TTTPlayer t : TTTPlayer.players)
+			if (t.getWorld().equals(worldName))
+				if (plugin.getServer().getPlayer(t.getName()) != null)
+					resetPlayer(plugin.getServer().getPlayer(t.getName()));
+		
+		plugin.getServer().unloadWorld("TTT_" + worldName, false);
+		WorldUtils.rollbackWorld(worldName);
+		if (Round.getRound(worldName) != null)
+			Round.getRound(worldName).destroy();
+		else if (plugin.getConfig().getBoolean("verbose-logging"))
+			TTT.log.warning("That's odd, the round has already been destroyed...");
 	}
 }
