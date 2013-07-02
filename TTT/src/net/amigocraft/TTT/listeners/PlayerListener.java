@@ -14,6 +14,7 @@ import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
 import net.amigocraft.TTT.managers.KarmaManager;
+import net.amigocraft.TTT.managers.RoundManager;
 import net.amigocraft.TTT.utils.InventoryUtils;
 
 import org.bukkit.ChatColor;
@@ -390,11 +391,11 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e){
 		String p = e.getPlayer().getName();
-		if (isPlayer(e.getPlayer().getName())){
+		if (isPlayer(p)){
 			String worldName = "";
 			if (isPlayer(p)){
 				worldName = getTTTPlayer(p).getWorld();
-				destroy(p);
+				RoundManager.resetPlayer(e.getPlayer());
 				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
 							.replace("%", worldName));
@@ -412,7 +413,7 @@ public class PlayerListener implements Listener {
 		String p = e.getPlayer().getName();
 		if (isPlayer(p)){
 			if (!e.getFrom().getWorld().getName().equals(e.getTo().getWorld().getName())){
-				destroy(p);
+				RoundManager.resetPlayer(e.getPlayer());
 				for (Player pl : plugin.getServer().getWorld("TTT_" + getTTTPlayer(p).getWorld()).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
 							.replace("%", getTTTPlayer(p).getWorld()));

@@ -69,15 +69,15 @@ public class SbManager {
 
 		for (TTTPlayer t : TTTPlayer.players){
 			if (t.getWorld().equalsIgnoreCase(worldName)){
-				if (t.getRole() == Role.INNOCENT && iTeamI.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
+				if (t.getRole() == Role.INNOCENT && !iTeamI.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
 					iTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 					tTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				}
-				else if (t.getRole() == Role.TRAITOR && iTeamT.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
+				else if (t.getRole() == Role.TRAITOR && !iTeamT.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
 					iTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 					tTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				}
-				else if (t.getRole() == Role.DETECTIVE && iTeamD.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
+				else if (t.getRole() == Role.DETECTIVE && !iTeamD.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
 					iTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 					tTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				}

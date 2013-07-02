@@ -150,15 +150,6 @@ public class TTTPlayer {
 		players.remove(this);
 	}
 
-	public static void destroy(String p){
-		TTTPlayer remove = null;
-		for (TTTPlayer t : players)
-			if (t.getName().equals(p))
-				remove = t;
-		if (remove != null)
-			players.remove(remove);
-	}
-
 	public static boolean isPlayer(String p){
 		if (getTTTPlayer(p) != null)
 			return true;

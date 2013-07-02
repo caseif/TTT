@@ -5,7 +5,6 @@ import static net.amigocraft.TTT.TTTPlayer.*;
 import java.io.File;
 
 import net.amigocraft.TTT.TTT;
-import net.amigocraft.TTT.TTTPlayer;
 import net.amigocraft.TTT.utils.WorldUtils;
 
 import org.bukkit.ChatColor;
@@ -56,7 +55,7 @@ public class CommandManager implements CommandExecutor {
 					if (sender instanceof Player){
 						if (sender.hasPermission("ttt.quit")){
 							if (isPlayer(sender.getName())){
-								TTTPlayer.destroy(sender.getName());
+								RoundManager.resetPlayer((Player)sender);
 								sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + " " +
 								TTT.local.getMessage("left-game").replace("%", getTTTPlayer(sender.getName()).getWorld()));
 							}

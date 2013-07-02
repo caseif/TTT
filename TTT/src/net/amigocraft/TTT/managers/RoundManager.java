@@ -30,7 +30,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class RoundManager {
 
-	private TTT plugin = TTT.plugin;
+	private static TTT plugin = TTT.plugin;
 
 	private static HashMap<String, Integer> tasks = new HashMap<String, Integer>();
 
@@ -216,11 +216,6 @@ public class RoundManager {
 						KarmaManager.saveKarma(worldName);
 						KarmaManager.swapDisplayKarma(worldName);
 
-						for (TTTPlayer t : players)
-							if (t.getWorld().equals(worldName))
-								TTT.plugin.getServer().getPlayer(t.getName()).setScoreboard(
-										TTT.plugin.getServer().getScoreboardManager().getNewScoreboard());
-
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_GREEN + "[TTT] " + TTT.local.getMessage("innocent-win").
 									replace("%", "\"" + worldName + "\"") + "!");
@@ -339,6 +334,7 @@ public class RoundManager {
 				}
 			}
 		}
+		p.setScoreboard(plugin.getServer().getScoreboardManager().getNewScoreboard());
 		WorldUtils.teleportPlayer(p);
 	}
 
