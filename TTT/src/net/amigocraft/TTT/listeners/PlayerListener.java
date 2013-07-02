@@ -412,10 +412,10 @@ public class PlayerListener implements Listener {
 		String p = e.getPlayer().getName();
 		if (isPlayer(p)){
 			if (!e.getFrom().getWorld().getName().equals(e.getTo().getWorld().getName())){
+				destroy(p);
 				for (Player pl : plugin.getServer().getWorld("TTT_" + getTTTPlayer(p).getWorld()).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
 							.replace("%", getTTTPlayer(p).getWorld()));
-				destroy(p);
 			}
 		}
 	}

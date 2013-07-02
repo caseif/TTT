@@ -6,7 +6,6 @@ import java.io.File;
 
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
-import net.amigocraft.TTT.utils.NumUtils;
 import net.amigocraft.TTT.utils.WorldUtils;
 
 import org.bukkit.ChatColor;
@@ -15,13 +14,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class CommandManager implements CommandExecutor {
 
 	private TTT plugin = TTT.plugin;
 
-	@SuppressWarnings("deprecation")
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		if (commandLabel.equalsIgnoreCase("ttt")){
 			if (args.length > 0){
@@ -59,44 +56,9 @@ public class CommandManager implements CommandExecutor {
 					if (sender instanceof Player){
 						if (sender.hasPermission("ttt.quit")){
 							if (isPlayer(sender.getName())){
-								WorldUtils.teleportPlayer((Player)sender);
-								if (isPlayer(sender.getName())){
-									TTTPlayer tPlayer = getTTTPlayer(sender.getName());
-									String worldName = tPlayer.getWorld();
-									tPlayer.destroy();
-									if (plugin.getServer().getWorld("TTT_" + worldName) != null)
-										for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
-											pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + ((Player)sender).getName() + " " + TTT.local.getMessage("left-game").replace("%", worldName));
-									Player p = (Player)sender;
-									p.getInventory().clear();
-									File invF = new File(plugin.getDataFolder() + File.separator + "inventories" + File.separator + p.getName() + ".inv");
-									if (invF.exists()){
-										try {
-											YamlConfiguration invY = new YamlConfiguration();
-											invY.load(invF);
-											ItemStack[] invI = new ItemStack[p.getInventory().getSize()];
-											for (String k : invY.getKeys(false)){
-												if (NumUtils.isInt(k))
-													invI[Integer.parseInt(k)] = invY.getItemStack(k);
-												else if (k.equalsIgnoreCase("h"))
-													p.getInventory().setHelmet(invY.getItemStack(k));
-												else if (k.equalsIgnoreCase("c"))
-													p.getInventory().setChestplate(invY.getItemStack(k));
-												else if (k.equalsIgnoreCase("l"))
-													p.getInventory().setLeggings(invY.getItemStack(k));
-												else if (k.equalsIgnoreCase("b"))
-													p.getInventory().setBoots(invY.getItemStack(k));
-											}
-											p.getInventory().setContents(invI);
-											p.updateInventory();
-											invF.delete();
-										}
-										catch (Exception ex){
-											ex.printStackTrace();
-											p.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("inv-load-error"));
-										}
-									}
-								}
+								TTTPlayer.destroy(sender.getName());
+								sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + " " +
+								TTT.local.getMessage("left-game").replace("%", getTTTPlayer(sender.getName()).getWorld()));
 							}
 							else
 								sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("not-in-game"));

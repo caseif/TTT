@@ -155,7 +155,7 @@ public class SetupManager {
 									pl.sendMessage(ChatColor.DARK_RED + TTT.local.getMessage("allies"));
 									for (String tr : traitors){
 										if (!tr.equals(s))
-											pl.sendMessage("- " + t);
+											pl.sendMessage("- " + t.getName());
 									}
 								}
 								else

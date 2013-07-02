@@ -54,9 +54,9 @@ public class SbManager {
 		tTeamI= traitor.registerNewTeam("i");
 		tTeamT = traitor.registerNewTeam("t");
 		tTeamD = traitor.registerNewTeam("d");
-		iTeamD.setPrefix(ChatColor.DARK_BLUE + "");
-		tTeamT.setPrefix(ChatColor.DARK_RED + "");
-		tTeamD.setPrefix(ChatColor.DARK_BLUE + "");
+		iTeamD.setPrefix("§1");
+		tTeamT.setPrefix("§4");
+		tTeamD.setPrefix("§1");
 
 	}
 
