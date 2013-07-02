@@ -72,12 +72,15 @@ public class KarmaManager {
 				if (!t.hasTeamKilled()){
 					int add = TTT.plugin.getConfig().getInt("karma-clean-bonus");
 					if (t.getKarma() > TTT.plugin.getConfig().getInt("default-karma")){
-						int above = t.getKarma() - TTT.plugin.getConfig().getInt("default-karma");
-						double percentage = above /
-								(TTT.plugin.getConfig().getInt("max-karma") -
-										TTT.plugin.getConfig().getInt("default-karma"));
-						double divide = percentage / TTT.plugin.getConfig().getInt("karma-clean-half");
-						add /= 2 * divide;
+						if ((TTT.plugin.getConfig().getInt("max-karma") -
+								TTT.plugin.getConfig().getInt("default-karma")) > 0){
+							int above = t.getKarma() - TTT.plugin.getConfig().getInt("default-karma");
+							double percentage = above /
+									(TTT.plugin.getConfig().getInt("max-karma") -
+											TTT.plugin.getConfig().getInt("default-karma"));
+							double divide = percentage / TTT.plugin.getConfig().getInt("karma-clean-half");
+							add /= 2 * divide;
+						}
 					}
 					t.addKarma(add);
 				}
@@ -86,12 +89,14 @@ public class KarmaManager {
 	}
 
 	public static void handleDamageKarma(TTTPlayer damager, TTTPlayer victim, int damage){
-		if (damager.isTraitor() == victim.isTraitor())
-			damager.subtractKarma((int)(
-					victim.getKarma() * (damage * TTT.plugin.getConfig().getDouble("damage-penalty"))));
-		else if (!damager.isTraitor() && victim.isTraitor())
-			damager.addKarma((int)(TTT.plugin.getConfig().getInt("max-karma") *
-					damage * TTT.plugin.getConfig().getDouble("t-damage-reward")));
+		if (damager != null && victim != null){
+			if (damager.isTraitor() == victim.isTraitor())
+				damager.subtractKarma((int)(
+						victim.getKarma() * (damage * TTT.plugin.getConfig().getDouble("damage-penalty"))));
+			else if (!damager.isTraitor() && victim.isTraitor())
+				damager.addKarma((int)(TTT.plugin.getConfig().getInt("max-karma") *
+						damage * TTT.plugin.getConfig().getDouble("t-damage-reward")));
+		}
 	}
 
 	public static void handleKillKarma(TTTPlayer killer, TTTPlayer victim){

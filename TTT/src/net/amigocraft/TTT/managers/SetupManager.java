@@ -82,8 +82,8 @@ public class SetupManager {
 					}
 					else if (currentTime > 0 && currentTime < 10){
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
-							p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("begin") + " " +
-									currentTime + " " + TTT.local.getMessage("seconds") + "!");
+							p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("begin")
+									.replace("%", currentTime + " " + TTT.local.getMessage("seconds") + "!"));
 						}
 					}
 					else if (currentTime <= 0){

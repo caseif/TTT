@@ -136,7 +136,7 @@ public class SbManager {
 	private void handleDeadPlayer(TTTPlayer t){
 		String s = ChatColor.STRIKETHROUGH + t.getName();
 		if (t.isTraitor())
-			s = ChatColor.DARK_RED + t.getName();
+			s = ChatColor.STRIKETHROUGH + "" + ChatColor.DARK_RED + t.getName();
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));

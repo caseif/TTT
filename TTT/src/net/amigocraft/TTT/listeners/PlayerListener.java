@@ -101,17 +101,17 @@ public class PlayerListener implements Listener {
 										p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
 												TTT.local.getMessage("found-body").replace("%",
 														TTT.bodies.get(index).getPlayer().getName())  + ". " +
-												TTT.local.getMessage("was-innocent"));
+														TTT.local.getMessage("was-innocent"));
 									else if (TTT.bodies.get(index).getPlayer().getRole() == Role.TRAITOR)
 										p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
 												TTT.local.getMessage("found-body").replace("%",
 														TTT.bodies.get(index).getPlayer().getName())  + ". " +
-												TTT.local.getMessage("was-traitor"));
+														TTT.local.getMessage("was-traitor"));
 									else if (TTT.bodies.get(index).getPlayer().getRole() == Role.DETECTIVE)
 										p.sendMessage(ChatColor.DARK_BLUE + e.getPlayer().getName() + " " +
 												TTT.local.getMessage("found-body").replace("%",
 														TTT.bodies.get(index).getPlayer().getName())  + ". " +
-												TTT.local.getMessage("was-detective"));
+														TTT.local.getMessage("was-detective"));
 								}
 								TTT.foundBodies.add(TTT.bodies.get(index));
 							}
@@ -131,7 +131,7 @@ public class PlayerListener implements Listener {
 														if (isPlayer(killer.getName())){
 															tPlayer.setTracking(killer.getName());
 															e.getPlayer().sendMessage(ChatColor.BLUE +
-																	TTT.local.getMessage("collected-dna")
+																	TTT.local.getMessage("collected-sample")
 																	.replace("%", TTT.bodies.get(index).getPlayer()
 																			.getName()));
 														}
@@ -142,6 +142,7 @@ public class PlayerListener implements Listener {
 													else
 														e.getPlayer().sendMessage(ChatColor.BLUE +
 																TTT.local.getMessage("killer-left"));
+													return;
 												}
 											}
 										}
@@ -395,10 +396,10 @@ public class PlayerListener implements Listener {
 				worldName = getTTTPlayer(p).getWorld();
 				destroy(p);
 				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
-					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + TTT.local.getMessage("left-game")
+					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
 							.replace("%", worldName));
 				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
-					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + TTT.local.getMessage("left-game")
+					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
 							.replace("%", worldName));
 			}
 		}
@@ -456,12 +457,12 @@ public class PlayerListener implements Listener {
 			if (tPlayer.getRole() != null){
 				if (tPlayer.getRole() == Role.DETECTIVE){
 					final Player player = e.getPlayer();
-					e.getPlayer().setDisplayName(ChatColor.DARK_BLUE + "[Detective] " + e.getPlayer()
+					e.getPlayer().setDisplayName(ChatColor.DARK_BLUE + "[Detective] " + ChatColor.DARK_BLUE + e.getPlayer()
 							.getDisplayName());
 					plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
 						public void run(){
 							String name = player.getDisplayName();
-							name = name.replace(ChatColor.DARK_BLUE + "[Detective] ", "");
+							name = name.replace(ChatColor.DARK_BLUE + "[Detective] " + ChatColor.DARK_BLUE, "");
 							player.setDisplayName(name);
 						}
 					}, 1L);

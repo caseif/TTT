@@ -64,7 +64,7 @@ public class RoundManager {
 										checkPlayers.remove(tp.getName());
 										offlinePlayers.add(tp);
 										Bukkit.broadcastMessage("[TTT] " + tp.getName() + " " +
-										TTT.local.getMessage("left-map") + " \"" + worldName + "\"");
+												TTT.local.getMessage("left-map") + " \"" + worldName + "\"");
 									}
 									else
 										checkPlayers.add(tp.getName());
@@ -155,10 +155,10 @@ public class RoundManager {
 
 					if (!tLeft)
 						Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " +
-					TTT.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
+								TTT.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
 					else if (!iLeft)
 						Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " +
-					TTT.local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
+								TTT.local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
 					for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 						resetPlayer(p);
 					}
@@ -175,19 +175,19 @@ public class RoundManager {
 					if (rTime % 60 == 0 && rTime >= 60){
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime / 60) + " " +
-						TTT.local.getMessage("minutes") + " " + TTT.local.getMessage("left"));
+									TTT.local.getMessage("minutes") + " " + TTT.local.getMessage("left"));
 						}
 					}
 					else if (rTime % 10 == 0 && rTime > 10 && rTime < 60){
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " +
-						TTT.local.getMessage("seconds") + " " + TTT.local.getMessage("left"));
+									TTT.local.getMessage("seconds") + " " + TTT.local.getMessage("left"));
 						}
 					}
 					else if (rTime < 10 && rTime > 0){
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " +
-						TTT.local.getMessage("seconds") + " " + TTT.local.getMessage("left"));
+									TTT.local.getMessage("seconds") + " " + TTT.local.getMessage("left"));
 						}
 					}
 					else if (rTime <= 0){
@@ -233,7 +233,7 @@ public class RoundManager {
 							getTTTPlayer(p.getName()).destroy();
 							p.getInventory().clear();
 							File invF = new File(plugin.getDataFolder() + File.separator + "inventories" +
-							File.separator + p.getName() + ".inv");
+									File.separator + p.getName() + ".inv");
 							if (invF.exists()){
 								try {
 									YamlConfiguration invY = new YamlConfiguration();
@@ -258,7 +258,7 @@ public class RoundManager {
 								catch (Exception ex){
 									ex.printStackTrace();
 									p.sendMessage(ChatColor.RED + "[TTT] " +
-									TTT.local.getMessage("inv-load-fail"));
+											TTT.local.getMessage("inv-load-fail"));
 								}
 							}
 							WorldUtils.teleportPlayer(p);
@@ -368,7 +368,7 @@ public class RoundManager {
 					String min = Integer.toString(cal.get(Calendar.MINUTE));
 					String sec = Integer.toString(cal.get(Calendar.SECOND));
 					m += "You are banned from using TTT on this server until " +
-					hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + ".";
+							hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + ".";
 					p.sendMessage(m);
 				}
 			}
@@ -397,73 +397,80 @@ public class RoundManager {
 				if (r == null){
 					r = new Round(worldName);
 				}
-				if (!loaded){
-					TTT.plugin.getServer().createWorld(new WorldCreator("TTT_" + worldName));
+				boolean joined = false;
+				for (TTTPlayer t : TTTPlayer.players)
+					if (t.getName().equals(p.getName()))
+						joined = true;
+				if (!joined){
+					if (!loaded){
+						TTT.plugin.getServer().createWorld(new WorldCreator("TTT_" + worldName));
+					}
+					p.teleport(TTT.plugin.getServer().getWorld("TTT_" + worldName).getSpawnLocation());
+					new TTTPlayer(p.getName(), worldName);
+					File invF = new File(TTT.plugin.getDataFolder() + File.separator + "inventories" + File.separator +
+							p.getName() + ".inv");
+					Inventory inv = p.getInventory();
+					PlayerInventory pInv = (PlayerInventory)inv;
+					try {
+						if (!invF.exists())
+							invF.createNewFile();
+						YamlConfiguration invY = new YamlConfiguration();
+						invY.load(invF);
+						for (int i = 0; i < inv.getContents().length; i++)
+							invY.set(Integer.toString(i), inv.getContents()[i]);
+						if (pInv.getHelmet() != null)
+							invY.set("h", pInv.getHelmet());
+						if (pInv.getChestplate() != null)
+							invY.set("c", pInv.getChestplate());
+						if (pInv.getLeggings() != null)
+							invY.set("l", pInv.getLeggings());
+						if (pInv.getBoots() != null)
+							invY.set("b", pInv.getBoots());
+						invY.save(invF);
+					}
+					catch (Exception ex){
+						ex.printStackTrace();
+						p.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("inv-save-error"));
+					}
+					inv.clear();
+					pInv.setArmorContents(new ItemStack[]{null, null, null, null});
+					p.sendMessage(ChatColor.GREEN + TTT.local.getMessage("success-join") + " " + worldName);
+					List<String> testers = new ArrayList<String>();
+					testers.add("ZerosAce00000");
+					testers.add("momhipie");
+					testers.add("xJHA929x");
+					testers.add("jmm1999");
+					testers.add("jon674");
+					testers.add("HardcoreBukkit");
+					testers.add("shiny3");
+					testers.add("jpf6368");
+					String addition = "";
+					if (p.getName().equals("AngryNerd1"))
+						addition = ", " + ChatColor.DARK_RED + TTT.local.getMessage("creator") + "," +
+								ChatColor.DARK_PURPLE;
+					else if (testers.contains(p.getName())){
+						addition = ", " + ChatColor.DARK_RED + TTT.local.getMessage("tester") + "," +
+								ChatColor.DARK_PURPLE;
+					}
+					Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + p.getName() + addition + " " +
+							TTT.local.getMessage("joined-map") + " \"" + worldName + "\"");
+					int ingamePlayers = 0;
+					for (TTTPlayer t : players)
+						if (t.getWorld().equals(worldName))
+							ingamePlayers += 1;
+					if (ingamePlayers >= TTT.plugin.getConfig().getInt("minimum-players") &&
+							r.getStage() != Stage.PREPARING){
+						for (Player pl : TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
+							pl.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("round-starting"));
+						r.setTime(TTT.plugin.getConfig().getInt("setup-time"));
+						r.setStage(Stage.PREPARING);
+						SetupManager.setupTimer(worldName);
+					}
+					else
+						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("waiting"));
 				}
-				p.teleport(TTT.plugin.getServer().getWorld("TTT_" + worldName).getSpawnLocation());
-				new TTTPlayer(p.getName(), worldName);
-				File invF = new File(TTT.plugin.getDataFolder() + File.separator + "inventories" + File.separator +
-						p.getName() + ".inv");
-				Inventory inv = p.getInventory();
-				PlayerInventory pInv = (PlayerInventory)inv;
-				try {
-					if (!invF.exists())
-						invF.createNewFile();
-					YamlConfiguration invY = new YamlConfiguration();
-					invY.load(invF);
-					for (int i = 0; i < inv.getContents().length; i++)
-						invY.set(Integer.toString(i), inv.getContents()[i]);
-					if (pInv.getHelmet() != null)
-						invY.set("h", pInv.getHelmet());
-					if (pInv.getChestplate() != null)
-						invY.set("c", pInv.getChestplate());
-					if (pInv.getLeggings() != null)
-						invY.set("l", pInv.getLeggings());
-					if (pInv.getBoots() != null)
-						invY.set("b", pInv.getBoots());
-					invY.save(invF);
-				}
-				catch (Exception ex){
-					ex.printStackTrace();
-					p.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("inv-save-error"));
-				}
-				inv.clear();
-				pInv.setArmorContents(new ItemStack[]{null, null, null, null});
-				p.sendMessage(ChatColor.GREEN + TTT.local.getMessage("success-join") + " " + worldName);
-				List<String> testers = new ArrayList<String>();
-				testers.add("ZerosAce00000");
-				testers.add("momhipie");
-				testers.add("xJHA929x");
-				testers.add("jmm1999");
-				testers.add("jon674");
-				testers.add("HardcoreBukkit");
-				testers.add("shiny3");
-				testers.add("jpf6368");
-				String addition = "";
-				if (p.getName().equals("AngryNerd1"))
-					addition = ", " + ChatColor.DARK_RED + TTT.local.getMessage("creator") + "," +
-							ChatColor.DARK_PURPLE;
-				else if (testers.contains(p.getName())){
-					addition = ", " + ChatColor.DARK_RED + TTT.local.getMessage("tester") + "," +
-							ChatColor.DARK_PURPLE;
-				}
-				Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + p.getName() + addition + " " +
-						TTT.local.getMessage("joined-map") + " \"" + worldName + "\"");
-				int ingamePlayers = 0;
-				for (TTTPlayer t : players)
-					if (t.getWorld().equals(worldName))
-						ingamePlayers += 1;
-				if (ingamePlayers >= TTT.plugin.getConfig().getInt("minimum-players") &&
-						r.getStage() != Stage.PREPARING){
-					for (Player pl : TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
-						pl.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("round-starting"));
-					r.setTime(TTT.plugin.getConfig().getInt("setup-time"));
-					r.setStage(Stage.PREPARING);
-					SetupManager.setupTimer(worldName);
-				}
-				else {
-					p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("waiting"));
-				}
+				else
+					p.sendMessage(ChatColor.DARK_PURPLE + "You are already in this game!");
 			}
 			else
 				p.sendMessage(ChatColor.RED + TTT.local.getMessage("map-invalid"));
