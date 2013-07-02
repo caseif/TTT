@@ -92,7 +92,7 @@ public class TTT extends JavaPlugin implements Listener {
 	}
 
 	public void createFile(String s){
-		File f = new File(TTT.plugin.getDataFolder(), "s");
+		File f = new File(TTT.plugin.getDataFolder(), s);
 		if (!f.exists()){
 			if (getConfig().getBoolean("verbose-logging"))
 				log.info(s + " not found, creating...");
