@@ -48,9 +48,9 @@ public class SbManager {
 		iTeamI = innocent.registerNewTeam("i");
 		iTeamT = innocent.registerNewTeam("t");
 		iTeamD = innocent.registerNewTeam("d");
-		iTeamI = innocent.registerNewTeam("i");
-		iTeamT = innocent.registerNewTeam("t");
-		iTeamD = innocent.registerNewTeam("d");
+		tTeamI = traitor.registerNewTeam("i");
+		tTeamT = traitor.registerNewTeam("t");
+		tTeamD = traitor.registerNewTeam("d");
 		
 		iTeamD.setPrefix("§1");
 		tTeamT.setPrefix("§4");
