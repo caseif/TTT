@@ -2,13 +2,10 @@ package net.amigocraft.TTT.managers;
 
 import java.util.HashMap;
 
-import net.amigocraft.TTT.Body;
 import net.amigocraft.TTT.Role;
-import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -51,9 +48,10 @@ public class SbManager {
 		iTeamI = innocent.registerNewTeam("i");
 		iTeamT = innocent.registerNewTeam("t");
 		iTeamD = innocent.registerNewTeam("d");
-		tTeamI= traitor.registerNewTeam("i");
-		tTeamT = traitor.registerNewTeam("t");
-		tTeamD = traitor.registerNewTeam("d");
+		iTeamI = innocent.registerNewTeam("i");
+		iTeamT = innocent.registerNewTeam("t");
+		iTeamD = innocent.registerNewTeam("d");
+		
 		iTeamD.setPrefix("§1");
 		tTeamT.setPrefix("§4");
 		tTeamD.setPrefix("§1");
@@ -69,27 +67,20 @@ public class SbManager {
 
 		for (TTTPlayer t : TTTPlayer.players){
 			if (t.getWorld().equalsIgnoreCase(worldName)){
-				if (t.getRole() == Role.INNOCENT && !iTeamI.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
+				if (t.getRole() == Role.INNOCENT){
 					iTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 					tTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				}
-				else if (t.getRole() == Role.TRAITOR && !iTeamT.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
+				else if (t.getRole() == Role.TRAITOR){
 					iTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 					tTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				}
-				else if (t.getRole() == Role.DETECTIVE && !iTeamD.hasPlayer(Bukkit.getOfflinePlayer(t.getName()))){
+				else if (t.getRole() == Role.DETECTIVE){
 					iTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 					tTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				}
 				if (t.isDead()){
-					boolean confirmed = false;
-					for (Body b : TTT.foundBodies){
-						if (b.getPlayer().getName().equalsIgnoreCase(t.getName())){
-							confirmed = true;
-							break;
-						}
-					}
-					if (confirmed)
+					if (t.isBodyFound())
 						handleDeadPlayer(t);
 					else
 						handleMIAPlayer(t);
@@ -118,7 +109,7 @@ public class SbManager {
 	}
 
 	private void handleAlivePlayer(TTTPlayer t){
-		String s = ChatColor.BOLD + t.getName();
+		String s = "§l" + t.getName();
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
@@ -134,9 +125,9 @@ public class SbManager {
 	}
 
 	private void handleDeadPlayer(TTTPlayer t){
-		String s = ChatColor.STRIKETHROUGH + t.getName();
+		String s = "§m" + t.getName();
 		if (t.isTraitor())
-			s = ChatColor.STRIKETHROUGH + "" + ChatColor.DARK_RED + t.getName();
+			s = "§4§m" + t.getName();
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));

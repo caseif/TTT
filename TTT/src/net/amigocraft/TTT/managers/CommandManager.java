@@ -55,9 +55,9 @@ public class CommandManager implements CommandExecutor {
 					if (sender instanceof Player){
 						if (sender.hasPermission("ttt.quit")){
 							if (isPlayer(sender.getName())){
-								RoundManager.resetPlayer((Player)sender);
 								sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + " " +
 								TTT.local.getMessage("left-game").replace("%", getTTTPlayer(sender.getName()).getWorld()));
+								RoundManager.resetPlayer((Player)sender);
 							}
 							else
 								sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("not-in-game"));

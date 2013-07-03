@@ -394,10 +394,14 @@ public class RoundManager {
 			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " +
 					TTT.local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
 
+		List<String> reset = new ArrayList<String>();
 		for (TTTPlayer t : TTTPlayer.players)
 			if (t.getWorld().equals(worldName))
 				if (plugin.getServer().getPlayer(t.getName()) != null)
-					resetPlayer(plugin.getServer().getPlayer(t.getName()));
+					reset.add(t.getName());
+		for (String s : reset){
+			resetPlayer(plugin.getServer().getPlayer(s));
+		}
 		
 		plugin.getServer().unloadWorld("TTT_" + worldName, false);
 		WorldUtils.rollbackWorld(worldName);

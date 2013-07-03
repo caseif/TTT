@@ -17,6 +17,7 @@ public class TTTPlayer {
 	private int dispKarma;
 	private boolean teamKill = false;
 	private double damageRed = 1;
+	private boolean found = false;
 	public static ArrayList<TTTPlayer> players = new ArrayList<TTTPlayer>();
 
 	public TTTPlayer(String name, String world){
@@ -71,6 +72,10 @@ public class TTTPlayer {
 	public boolean hasTeamKilled(){
 		return teamKill;
 	}
+	
+	public boolean isBodyFound(){
+		return found;
+	}
 
 	public void setName(String name){
 		this.name = name;
@@ -98,10 +103,15 @@ public class TTTPlayer {
 
 	public void setKarma(int karma){
 		this.karma = karma;
+		TTT.kLog.info(Integer.toString(karma));
 	}
 
 	public void setDisplayKarma(int karma){
 		this.dispKarma = karma;
+	}
+	
+	public void setBodyFound(boolean found){
+		this.found = found;
 	}
 	
 	public void calculateDamageReduction(){
@@ -120,7 +130,7 @@ public class TTTPlayer {
 		else if (this.karma < TTT.maxKarma)
 			this.karma = TTT.maxKarma;
 		if (TTT.plugin.getConfig().getBoolean("karma-debug"))
-			TTT.kLog.info(this.getName() + ": +" + karma);
+			TTT.kLog.info(getName() + ": +" + karma + ". " + "New value: " + getKarma());
 	}
 
 	public void subtractKarma(int karma){
@@ -131,7 +141,7 @@ public class TTTPlayer {
 			teamKill = true;
 		}
 		if (TTT.plugin.getConfig().getBoolean("karma-debug"))
-			TTT.kLog.info(this.getName() + ": -" + karma);
+			TTT.kLog.info(getName() + ": -" + karma + ". " + "New value: " + getKarma());
 	}
 
 	public void setTeamKill(boolean t){

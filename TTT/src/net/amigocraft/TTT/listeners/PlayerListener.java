@@ -26,6 +26,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -115,6 +116,7 @@ public class PlayerListener implements Listener {
 														TTT.local.getMessage("was-detective"));
 								}
 								TTT.foundBodies.add(TTT.bodies.get(index));
+								TTT.bodies.get(index).getPlayer().setBodyFound(true);
 							}
 							if (tPlayer.getRole() == Role.DETECTIVE){
 								if (e.getPlayer().getItemInHand() != null){
@@ -281,15 +283,18 @@ public class PlayerListener implements Listener {
 							armor += protection.get(p.getInventory().getArmorContents()[3].getType());
 				}
 				int actualDamage = (int)(e.getDamage() - ((armor * .04) * e.getDamage()));
-				if (e instanceof EntityDamageByEntityEvent)
-					if (((EntityDamageByEntityEvent)e).getDamager() instanceof Player)
+				if (e instanceof EntityDamageByEntityEvent){
+					EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
+					if (ed.getDamager() instanceof Player)
 						KarmaManager.handleDamageKarma(getTTTPlayer(
-								((Player)(
-										(EntityDamageByEntityEvent)e)
-										.getDamager())
-										.getName()),
-										t,
-										actualDamage);
+								((Player)(ed).getDamager()).getName()), t, actualDamage);
+					else if (ed.getDamager() instanceof Projectile){
+						if (((Projectile)ed.getDamager()).getShooter() instanceof Player){
+							KarmaManager.handleDamageKarma(getTTTPlayer(
+									((Player)((Projectile)ed.getDamager()).getShooter()).getName()), t, actualDamage);
+						}
+					}
+				}
 				if (actualDamage >= ((Player)e.getEntity()).getHealth()){
 					if (t.getRole() != null){
 						e.setCancelled(true);
@@ -340,12 +345,18 @@ public class PlayerListener implements Listener {
 						TTT.bodies.add(new Body(t, Location2i.getLocation(block), System.currentTimeMillis()));
 
 						if (e instanceof EntityDamageByEntityEvent){
-							if (((EntityDamageByEntityEvent)e).getDamager() instanceof Player){
+							EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
+							if (ed.getDamager() instanceof Player){
 								// set killer's karma
 								TTTPlayer victim = t;
-								TTTPlayer killer = getTTTPlayer(((Player)((EntityDamageByEntityEvent)e)
-										.getDamager()).getName());
+								TTTPlayer killer = getTTTPlayer(((Player)(ed.getDamager())).getName());
 								KarmaManager.handleKillKarma(killer, victim);
+							}
+							else if (ed.getDamager() instanceof Projectile){
+								if (((Projectile)ed.getDamager()).getShooter() instanceof Player){
+									KarmaManager.handleKillKarma(getTTTPlayer(
+											((Player)((Projectile)ed.getDamager()).getShooter()).getName()), t);
+								}
 							}
 						}
 					}
@@ -399,9 +410,6 @@ public class PlayerListener implements Listener {
 				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
 							.replace("%", worldName));
-				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
-					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
-							.replace("%", worldName));
 			}
 		}
 		if (!TTT.plugin.getConfig().getBoolean("karma-persistence"))
@@ -413,10 +421,11 @@ public class PlayerListener implements Listener {
 		String p = e.getPlayer().getName();
 		if (isPlayer(p)){
 			if (!e.getFrom().getWorld().getName().equals(e.getTo().getWorld().getName())){
+				String worldName = "TTT_" + getTTTPlayer(p).getWorld();
 				RoundManager.resetPlayer(e.getPlayer());
-				for (Player pl : plugin.getServer().getWorld("TTT_" + getTTTPlayer(p).getWorld()).getPlayers())
+				for (Player pl : plugin.getServer().getWorld(worldName).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
-							.replace("%", getTTTPlayer(p).getWorld()));
+							.replace("%", worldName));
 			}
 		}
 	}
