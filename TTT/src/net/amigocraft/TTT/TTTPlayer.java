@@ -125,6 +125,8 @@ public class TTTPlayer {
 	}
 
 	public void addKarma(int karma){
+		if (karma == 0 && TTT.plugin.getConfig().getBoolean("karma-round-to-one"))
+			karma = 1;
 		if (this.karma + karma < TTT.maxKarma)
 			this.karma += karma;
 		else if (this.karma < TTT.maxKarma)
@@ -134,6 +136,8 @@ public class TTTPlayer {
 	}
 
 	public void subtractKarma(int karma){
+		if (karma == 0 && TTT.plugin.getConfig().getBoolean("karma-round-to-one"))
+			karma = 1;
 		if (this.karma - karma < TTT.plugin.getConfig().getInt("karma-kick"))
 			KarmaManager.handleKick(this);
 		else {
@@ -143,11 +147,7 @@ public class TTTPlayer {
 		if (TTT.plugin.getConfig().getBoolean("karma-debug"))
 			TTT.kLog.info(getName() + ": -" + karma + ". " + "New value: " + getKarma());
 	}
-
-	public void setTeamKill(boolean t){
-		teamKill = t;
-	}
-
+	
 	public static TTTPlayer getTTTPlayer(String player){
 		for (TTTPlayer p : players){
 			if (p.getName().equals(player))

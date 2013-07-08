@@ -58,13 +58,20 @@ public class PlayerListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent e){
-		if (isPlayer(e.getPlayer().getName())){
+		if (isPlayer(e.getPlayer().getName())){ // check if player is even in TTT round
 			TTTPlayer tPlayer = getTTTPlayer(e.getPlayer().getName());
-			if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
+			// disable pressure plates for dead players
+			if (e.getAction() == Action.PHYSICAL && tPlayer.isDead()){
+				e.setCancelled(true);
+				return;
+			}
+			else if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
+				// disallow cheating
 				if (e.getClickedBlock().getType() == Material.ENDER_CHEST){
 					e.setCancelled(true);
 					return;
 				}
+				// handle body checking (no pun intended)
 				if (e.getClickedBlock().getType() == Material.CHEST){
 					if (tPlayer.isDead()){
 						e.setCancelled(true);
@@ -97,7 +104,7 @@ public class PlayerListener implements Listener {
 									break;
 								}
 							}
-							if (!found){
+							if (!found){ // it's a new body
 								for (Player p : e.getPlayer().getWorld().getPlayers()){
 									if (TTT.bodies.get(index).getPlayer().getRole() == Role.INNOCENT)
 										p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
@@ -118,7 +125,7 @@ public class PlayerListener implements Listener {
 								TTT.foundBodies.add(TTT.bodies.get(index));
 								TTT.bodies.get(index).getPlayer().setBodyFound(true);
 							}
-							if (tPlayer.getRole() == Role.DETECTIVE){
+							if (tPlayer.getRole() == Role.DETECTIVE){ // handle DNA scanning
 								if (e.getPlayer().getItemInHand() != null){
 									if (e.getPlayer().getItemInHand().getType() == Material.COMPASS){
 										if (e.getPlayer().getItemInHand().getItemMeta() != null){
@@ -156,6 +163,7 @@ public class PlayerListener implements Listener {
 					}
 				}
 			}
+			// guns
 			if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
 				if (!tPlayer.isDead()){
 					if (e.getPlayer().getItemInHand() != null){
@@ -183,6 +191,8 @@ public class PlayerListener implements Listener {
 						}
 					}
 				}
+				else
+					e.setCancelled(true); // disallow all interaction
 			}
 		}
 	}
@@ -285,9 +295,10 @@ public class PlayerListener implements Listener {
 				int actualDamage = (int)(e.getDamage() - ((armor * .04) * e.getDamage()));
 				if (e instanceof EntityDamageByEntityEvent){
 					EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
-					if (ed.getDamager() instanceof Player)
+					if (ed.getDamager() instanceof Player){
 						KarmaManager.handleDamageKarma(getTTTPlayer(
 								((Player)(ed).getDamager()).getName()), t, actualDamage);
+					}
 					else if (ed.getDamager() instanceof Projectile){
 						if (((Projectile)ed.getDamager()).getShooter() instanceof Player){
 							KarmaManager.handleDamageKarma(getTTTPlayer(

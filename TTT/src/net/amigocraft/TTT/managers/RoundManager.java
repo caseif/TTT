@@ -226,7 +226,7 @@ public class RoundManager {
 				else {
 					String m = ChatColor.DARK_PURPLE + "[TTT] ";
 					if (unbanTime == -1)
-						m += "You are permanently banned from using TTT on this server.";
+						m += TTT.local.getMessage("karma-permaban");
 					Calendar cal = Calendar.getInstance();
 					cal.setTimeInMillis(unbanTime * 1000);
 					String year = Integer.toString(cal.get(Calendar.YEAR) + 1);
@@ -235,7 +235,7 @@ public class RoundManager {
 					String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
 					String min = Integer.toString(cal.get(Calendar.MINUTE));
 					String sec = Integer.toString(cal.get(Calendar.SECOND));
-					m += "You are banned from using TTT on this server until " +
+					m += TTT.local.getMessage("karma-ban") + " " +
 							hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + ".";
 					p.sendMessage(m);
 				}

@@ -185,7 +185,7 @@ public class SetupManager {
 									String percentage = TTT.local.getMessage("full");
 									if (t.getDamageReduction() < 1)
 										percentage =
-										Integer.toString((int)(1 - t.getDamageReduction() * 100)) + "%";
+										Integer.toString((int)(t.getDamageReduction() * 100)) + "%";
 									p.sendMessage(ChatColor.DARK_PURPLE +
 											TTT.local.getMessage("karma-damage")
 											.replace("%", Integer.toString(t.getKarma()))
