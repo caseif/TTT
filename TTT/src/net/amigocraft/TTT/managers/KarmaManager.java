@@ -118,7 +118,7 @@ public class KarmaManager {
 						y.set(t.getName(), unbanTime);
 						y.save(f);
 						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-ban")
-								.replace("%", Integer.toString(TTT.plugin.getConfig().getInt("karma-ban-time")))
+								.replace("&", Integer.toString(TTT.plugin.getConfig().getInt("karma-ban-time")))
 								.replace("%", TTT.plugin.getConfig().getInt("karma-ban") + "."));
 					}
 				}
