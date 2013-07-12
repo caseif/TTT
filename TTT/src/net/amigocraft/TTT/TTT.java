@@ -1,7 +1,10 @@
 package net.amigocraft.TTT;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -52,6 +55,9 @@ public class TTT extends JavaPlugin implements Listener {
 		}
 
 		lang = getConfig().getString("localization");
+		
+		createLocale("l33t.properties");
+		createLocale("template.properties");
 
 		createFile("karma.yml");
 		createFile("bans.yml");
@@ -102,6 +108,39 @@ public class TTT extends JavaPlugin implements Listener {
 			catch (Exception ex){
 				ex.printStackTrace();
 				log.warning("Failed to write to " + s + "!");
+			}
+		}
+	}
+	
+	public void createLocale(String s){
+		File exLocale = new File(getDataFolder() + File.separator + "locales", s);
+		if (!exLocale.exists()){
+			InputStream is = null;
+			OutputStream os = null;
+			try {
+				File dir = new File(getDataFolder(), "locales");
+				dir.mkdir();
+				exLocale.createNewFile();
+				is = TTT.class.getClassLoader().getResourceAsStream(
+						"net/amigocraft/TTT/localization/example/" + s);
+				os = new FileOutputStream(exLocale);
+				byte[] buffer = new byte[1024];
+				int len;
+				while ((len = is.read(buffer)) != -1) {
+					os.write(buffer, 0, len);
+				}
+			}
+			catch (Exception ex){
+				ex.printStackTrace();
+			}
+			finally {
+				try {
+					is.close();
+					os.close();
+				}
+				catch (Exception exc){
+					exc.printStackTrace();
+				}
 			}
 		}
 	}
