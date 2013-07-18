@@ -16,7 +16,7 @@ public class Localization {
 
 	public String getMessage(String key){
 		InputStream is = null;
-		is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/" + TTT.lang + ".properties");
+		is = TTT.class.getResourceAsStream("/net/amigocraft/TTT/localization/" + TTT.lang + ".properties");
 		if (is == null){
 			try {
 				File file = new File(TTT.plugin.getDataFolder() + File.separator + "locales" + File.separator + TTT.lang + ".properties");
