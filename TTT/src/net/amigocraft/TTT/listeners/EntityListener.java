@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
 import net.amigocraft.TTT.Round;
 import net.amigocraft.TTT.TTTPlayer;
@@ -25,4 +26,12 @@ public class EntityListener implements Listener {
 			e.setCancelled(true);
 	}
 
+	@EventHandler
+	public void onHangingBreak(HangingBreakByEntityEvent e){
+		if (e.getRemover() instanceof Player){
+			if (TTTPlayer.isPlayer(((Player)e.getRemover()).getName()))
+				e.setCancelled(true);
+		}
+	}
+	
 }
