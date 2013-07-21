@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.amigocraft.TTT.Body;
+import net.amigocraft.TTT.Role;
 import net.amigocraft.TTT.Round;
 import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
@@ -68,27 +69,29 @@ public class RoundManager {
 									else
 										checkPlayers.add(tp.getName());
 								}
+								else if (tp.getRole() == Role.DETECTIVE){ // manage DNA Scanners
+									if (tp.getTracking() != null){
+										Player tracker = plugin.getServer().getPlayer(tp.getName());
+										Player killer = plugin.getServer().getPlayer(tp.getTracking());
+										if (killer != null && isPlayer(tp.getTracking()))
+											tracker.setCompassTarget(killer.getLocation());
+										else {
+											tracker.sendMessage(ChatColor.DARK_PURPLE +
+													"The player you're tracking has left the round!");
+												tracker.setCompassTarget(
+														Bukkit.getWorlds().get(1).getSpawnLocation());
+										}
+									}
+								}
 							}
 						}
 					}
 				}
-				for (TTTPlayer tp : offlinePlayers){
+				for (TTTPlayer tp : offlinePlayers)
 					tp.destroy();
-				}
 
 				// manage scoreboards
 				SbManager.sbManagers.get(worldName).manage();
-
-				// set compass targets
-				for (TTTPlayer p : players){
-					if (p.getKiller() != null){
-						Player tracker = plugin.getServer().getPlayer(p.getName());
-						Player killer = plugin.getServer().getPlayer(p.getKiller());
-						if (tracker != null || killer != null)
-							if (!offlinePlayers.contains(tracker) && !offlinePlayers.contains(killer))
-								tracker.setCompassTarget(killer.getLocation());
-					}
-				}
 
 				// check if game is over
 				boolean iLeft = false;
@@ -348,7 +351,7 @@ public class RoundManager {
 		else
 			p.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("in-progress"));
 	}
-	
+
 	public static void resetRound(String worldName, boolean inno){
 		plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 		tasks.remove(worldName);
@@ -402,7 +405,7 @@ public class RoundManager {
 		for (String s : reset){
 			resetPlayer(plugin.getServer().getPlayer(s));
 		}
-		
+
 		plugin.getServer().unloadWorld("TTT_" + worldName, false);
 		WorldUtils.rollbackWorld(worldName);
 		if (Round.getRound(worldName) != null)

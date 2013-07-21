@@ -96,4 +96,4 @@ enable-metrics: true
 localization: enUS
 
 #Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.4.0.34
+config-version: 0.4.0.35

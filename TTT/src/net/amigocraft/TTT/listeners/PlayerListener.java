@@ -71,7 +71,7 @@ public class PlayerListener implements Listener {
 					e.setCancelled(true);
 					return;
 				}
-				// handle body checking (no pun intended)
+				// handle body checking
 				if (e.getClickedBlock().getType() == Material.CHEST){
 					if (tPlayer.isDead()){
 						e.setCancelled(true);
@@ -163,36 +163,36 @@ public class PlayerListener implements Listener {
 					}
 				}
 			}
+			if (tPlayer.isDead()){
+				e.setCancelled(true);
+				return;
+			}
 			// guns
 			if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
-				if (!tPlayer.isDead()){
-					if (e.getPlayer().getItemInHand() != null){
-						if (e.getPlayer().getItemInHand().getItemMeta() != null){
-							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-								if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName()
-										.equals("§5" + TTT.local.getMessage("Gun"))){
-									if (Round.getRound(tPlayer.getWorld()).getStage() == Stage.PLAYING ||
-											plugin.getConfig().getBoolean("guns-outside-arenas")){
-										e.setCancelled(true);
-										if (e.getPlayer().getInventory().contains(Material.ARROW) ||
-												!plugin.getConfig().getBoolean("require-ammo-for-guns")){
-											if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
-												InventoryUtils.removeArrow(e.getPlayer().getInventory());
-												e.getPlayer().updateInventory();
-											}
-											e.getPlayer().launchProjectile(Arrow.class);
+				if (e.getPlayer().getItemInHand() != null){
+					if (e.getPlayer().getItemInHand().getItemMeta() != null){
+						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
+							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName()
+									.equals("§5" + TTT.local.getMessage("Gun"))){
+								if (Round.getRound(tPlayer.getWorld()).getStage() == Stage.PLAYING ||
+										plugin.getConfig().getBoolean("guns-outside-arenas")){
+									e.setCancelled(true);
+									if (e.getPlayer().getInventory().contains(Material.ARROW) ||
+											!plugin.getConfig().getBoolean("require-ammo-for-guns")){
+										if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
+											InventoryUtils.removeArrow(e.getPlayer().getInventory());
+											e.getPlayer().updateInventory();
 										}
-										else
-											e.getPlayer().sendMessage(ChatColor.RED +
-													TTT.local.getMessage("need-ammo"));
+										e.getPlayer().launchProjectile(Arrow.class);
 									}
+									else
+										e.getPlayer().sendMessage(ChatColor.RED +
+												TTT.local.getMessage("need-ammo"));
 								}
 							}
 						}
 					}
 				}
-				else
-					e.setCancelled(true); // disallow all interaction
 			}
 		}
 	}
