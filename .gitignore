@@ -1,0 +1,5 @@
+*.jardesc
+*.class
+.project
+bin/
+*.prefs

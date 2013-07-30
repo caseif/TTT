@@ -1,8 +1,6 @@
 package net.amigocraft.TTT.managers;
 
-import static net.amigocraft.TTT.TTTPlayer.getTTTPlayer;
-import static net.amigocraft.TTT.TTTPlayer.isPlayer;
-import static net.amigocraft.TTT.TTTPlayer.players;
+import static net.amigocraft.TTT.TTTPlayer.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,6 +34,8 @@ public class RoundManager {
 	private static HashMap<String, Integer> tasks = new HashMap<String, Integer>();
 
 	private static List<String> checkPlayers = new ArrayList<String>();
+	
+	private static int compassTick = 0;
 
 	public void gameTimer(final String worldName){
 
@@ -70,17 +70,22 @@ public class RoundManager {
 										checkPlayers.add(tp.getName());
 								}
 								else if (tp.getRole() == Role.DETECTIVE){ // manage DNA Scanners
+									Player tracker = plugin.getServer().getPlayer(tp.getName());
 									if (tp.getTracking() != null){
-										Player tracker = plugin.getServer().getPlayer(tp.getName());
 										Player killer = plugin.getServer().getPlayer(tp.getTracking());
 										if (killer != null && isPlayer(tp.getTracking()))
 											tracker.setCompassTarget(killer.getLocation());
 										else {
 											tracker.sendMessage(ChatColor.DARK_PURPLE +
 													"The player you're tracking has left the round!");
+											tp.setTracking(null);
 												tracker.setCompassTarget(
 														Bukkit.getWorlds().get(1).getSpawnLocation());
 										}
+									}
+									else if (compassTick % (20 / 4) == 0){ // change the location 4 times per second
+										//tracker.setCompassTarget(compassLoc);
+										tracker.setCompassTarget(null);
 									}
 								}
 							}
