@@ -52,7 +52,7 @@ public class SbManager {
 		tTeamI = traitor.registerNewTeam("i");
 		tTeamT = traitor.registerNewTeam("t");
 		tTeamD = traitor.registerNewTeam("d");
-		
+
 		iTeamD.setPrefix(ChatColor.DARK_BLUE + "");
 		tTeamT.setPrefix(ChatColor.DARK_RED + "");
 		tTeamD.setPrefix(ChatColor.DARK_BLUE + "");
@@ -111,9 +111,11 @@ public class SbManager {
 
 	private void handleAlivePlayer(TTTPlayer t){
 		String s = "§l" + t.getName();
-		String prefix = innocent.getTeam(t.getRole().toString().toLowerCase().substring(0, 1)).getPrefix();
-		if (prefix.length() + s.length() > 16)
-			s = s.substring(0, 16 - prefix.length());
+		if (t.getRole() != null){
+			String prefix = innocent.getTeam(t.getRole().toString().toLowerCase().substring(0, 1)).getPrefix();
+			if (prefix.length() + s.length() > 16)
+				s = s.substring(0, 16 - prefix.length());
+		}
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
@@ -122,9 +124,11 @@ public class SbManager {
 
 	private void handleMIAPlayer(TTTPlayer t){
 		String s = t.getName();
-		String prefix = innocent.getTeam(t.getRole().toString().toLowerCase().substring(0, 1)).getPrefix();
-		if (prefix.length() + s.length() > 16)
-			s = s.substring(0, 16 - prefix.length());
+		if (t.getRole() != null){
+			String prefix = innocent.getTeam(t.getRole().toString().toLowerCase().substring(0, 1)).getPrefix();
+			if (prefix.length() + s.length() > 16)
+				s = s.substring(0, 16 - prefix.length());
+		}
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
@@ -135,9 +139,11 @@ public class SbManager {
 		String s = "§m" + t.getName();
 		if (t.isTraitor())
 			s = "§4§m" + t.getName();
-		String prefix = innocent.getTeam(t.getRole().toString().toLowerCase().substring(0, 1)).getPrefix();
-		if (prefix.length() + s.length() > 16)
-			s = s.substring(0, 16 - prefix.length());
+		if (t.getRole() != null){
+			String prefix = innocent.getTeam(t.getRole().toString().toLowerCase().substring(0, 1)).getPrefix();
+			if (prefix.length() + s.length() > 16)
+				s = s.substring(0, 16 - prefix.length());
+		}
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
