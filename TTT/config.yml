@@ -1,6 +1,6 @@
-# ########################################### #
-# # Trouble In Terrorist Town Configuration # #
-# ########################################### #
+# ##################### #
+# # TTT Configuration # #
+# ##################### #
 
 #How long should rounds last for (in seconds)?
 time-limit: 360
@@ -96,4 +96,4 @@ enable-metrics: true
 localization: enUS
 
 #Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.4.1
+config-version: 0.5.0.1

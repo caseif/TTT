@@ -19,7 +19,8 @@ public class Localization {
 		is = Localization.class.getResourceAsStream("/net/amigocraft/TTT/localization/" + TTT.lang + ".properties");
 		if (is == null){
 			try {
-				File file = new File(TTT.plugin.getDataFolder() + File.separator + "locales" + File.separator + TTT.lang + ".properties");
+				File file = new File(TTT.plugin.getDataFolder() + File.separator + "locales" + File.separator +
+						TTT.lang + ".properties");
 				is = new FileInputStream(file);
 				if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
 					TTT.log.info("Loaded locale from " + file.getAbsolutePath());

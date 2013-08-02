@@ -17,6 +17,7 @@ import net.amigocraft.TTT.listeners.PlayerListener;
 import net.amigocraft.TTT.localization.Localization;
 import net.amigocraft.TTT.managers.CommandManager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -45,6 +46,19 @@ public class TTT extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getCommand("ttt").setExecutor(new CommandManager());
 
+		// copy pre-0.5 folder
+		File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
+		if (old.exists() && !getDataFolder().exists()){
+			log.info(local.getMessage("folder-rename"));
+			try {
+				old.renameTo(getDataFolder());
+			}
+			catch (Exception ex){
+				ex.printStackTrace();
+				log.warning(local.getMessage("folder-rename-error"));
+			}
+		}
+
 		// check if config should be overwritten
 		if (!new File(getDataFolder(), "config.yml").exists())
 			saveDefaultConfig();
@@ -55,7 +69,7 @@ public class TTT extends JavaPlugin implements Listener {
 		}
 
 		lang = getConfig().getString("localization");
-		
+
 		createLocale("l33t.properties");
 		createLocale("template.properties");
 
@@ -111,7 +125,7 @@ public class TTT extends JavaPlugin implements Listener {
 			}
 		}
 	}
-	
+
 	public void createLocale(String s){
 		File exLocale = new File(getDataFolder() + File.separator + "locales", s);
 		if (!exLocale.exists()){
