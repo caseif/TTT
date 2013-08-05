@@ -75,6 +75,7 @@ public class TTT extends JavaPlugin implements Listener {
 
 		createFile("karma.yml");
 		createFile("bans.yml");
+		createFile("signs.yml");
 
 		// autoupdate
 		if (getConfig().getBoolean("enable-auto-update")){

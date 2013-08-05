@@ -11,6 +11,9 @@ setup-time: 90
 #How many players are required to start a round?
 minimum-players: 3
 
+#How many players are allowed to enter a given round? (Set to -1 for no limit.)
+maximum-players: -1
+
 #What should the ratio of traitors to innocents be (as a decimal)?
 traitor-ratio: 0.2
 
@@ -96,4 +99,4 @@ enable-metrics: true
 localization: enUS
 
 #Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.5.0.2
+config-version: 0.5.0.3

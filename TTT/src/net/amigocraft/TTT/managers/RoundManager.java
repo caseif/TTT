@@ -278,6 +278,8 @@ public class RoundManager {
 					if (t.getName().equals(p.getName()))
 						joined = true;
 				if (!joined){
+					int maxPlayers = plugin.getConfig().getInt("maximum-players");
+					if (r.getPlayers().size() >= maxPlayers || maxPlayers == -1){
 					if (!loaded){
 						TTT.plugin.getServer().createWorld(new WorldCreator("TTT_" + worldName));
 					}
@@ -344,9 +346,12 @@ public class RoundManager {
 					}
 					else
 						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("waiting"));
+					}
+					else
+						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("round-full"));
 				}
 				else
-					p.sendMessage(ChatColor.DARK_PURPLE + "You are already in this game!");
+					p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("already-entered"));
 			}
 			else
 				p.sendMessage(ChatColor.RED + TTT.local.getMessage("map-invalid"));
