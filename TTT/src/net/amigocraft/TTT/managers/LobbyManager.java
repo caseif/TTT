@@ -70,14 +70,17 @@ public class LobbyManager {
 							players = ChatColor.GOLD + players;
 						s.setLine(1, players);
 						String status = r.getStage().toString();
-						if (status.equals("PLAYING"))
-							status = ChatColor.RED + "INGAME";
+						ChatColor color = null;
+						if (status.equals("PLAYING")){
+							color = ChatColor.RED;
+							status = "INGAME";
+						}
 						else if (status.equals("WAITING") || status.equals("RESETTING"))
-							status = ChatColor.GRAY + status;
+							color = ChatColor.GRAY;
 						else if (status.equals("PREPARING"))
-							status = ChatColor.GREEN + status;
+							color = ChatColor.GREEN;
 						status = TTT.local.getMessage(status.toLowerCase());
-						s.setLine(2, status);
+						s.setLine(2, color + status);
 						String time = "";
 						if (r.getStage() != Stage.WAITING && r.getStage() != Stage.RESETTING){
 							String seconds = Integer.toString(r.getTime() % 60);

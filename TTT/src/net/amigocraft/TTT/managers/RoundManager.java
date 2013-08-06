@@ -262,7 +262,6 @@ public class RoundManager {
 			File folder = null;
 			File tttFolder = null;
 			for (String s : Bukkit.getWorldContainer().list()){
-				TTT.log.info(s);
 				if (s.equalsIgnoreCase(worldName)){
 					folder = new File(s);
 					worldName = s;
