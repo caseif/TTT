@@ -52,6 +52,11 @@ public class TTT extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getCommand("ttt").setExecutor(new CommandManager());
 
+		createLocale("l33t.properties");
+		createLocale("template.properties");
+		lang = getConfig().getString("localization");
+		Localization.initialize();
+
 		// copy pre-0.5 folder
 		File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
 		if (old.exists() && !getDataFolder().exists()){
@@ -82,11 +87,6 @@ public class TTT extends JavaPlugin implements Listener {
 		}
 
 		checkVersion();
-
-		lang = getConfig().getString("localization");
-
-		createLocale("l33t.properties");
-		createLocale("template.properties");
 
 		createFile("karma.yml");
 		createFile("bans.yml");
