@@ -1,26 +1,26 @@
 name: TTT
-version: 0.5.0.4
+version: 0.5.0.5
 main: net.amigocraft.TTT.TTT
 author: Maxim Roncace
-website: http://www.headswilllol.com/
+website: http://headswilllol.com/
 description: This plugin allows players to participate in an imitation of the popular Garry's Mod gamemode "Trouble In Terrorist Town."
 commands:
   ttt:
     import:
-      description: Imports a TTT map from a specified folder in the server's root directory
+      description: Imports a TTT map from a specified folder in the server's root directory.
       usage: /ttt import [folder name]
     join:
-      description: Adds player to a specified game of TTT
+      description: Adds player to a specified game of TTT.
       usage: /ttt join [map name]
     setspawn:
       description: Sets the location to teleport players to upon round end.
       usage: /ttt setspawn
     help:
-      description: Displays available commands to the sender
+      description: Displays available commands to the sender.
       usage: /ttt help
 permissions:
   ttt.*:
-    description: Allows for full control and manipulation of the plugin
+    description: Allows for full control and manipulation of the plugin.
     default: op
     children:
       ttt.import: true
@@ -31,23 +31,26 @@ permissions:
       ttt.lobby.create: true
       ttt.lobby.use: true
   ttt.import:
-    description: Allows player to import worlds into the plugin
+    description: Allows player to import worlds into the plugin.
     default: op
   ttt.join:
-    description: Allows player to join TTT matches
+    description: Allows player to join TTT rounds.
     default: true
   ttt.quit:
-    description: Allows player to leave TTT matches
+    description: Allows player to leave TTT rounds.
     default: true
   ttt.setspawn:
-    description: Sets the spawn upon round exit to the sender's current location
+    description: Sets the spawn upon round exit to the sender's current location.
     default: op
   ttt.help:
-    description: Allows use of /ttt help
+    description: Allows use of /ttt help.
     default: true
   ttt.lobby.create:
-    description: Allows creation of lobby signs
+    description: Allows creation of lobby signs.
     default: op
   ttt.lobby.use:
-    description: Allows use of lobby signs
+    description: Allows use of lobby signs.
     default: true
+  ttt.build.alert:
+    description: Players with this node will be warned of unstable builds on join.
+    default: op

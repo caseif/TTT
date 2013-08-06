@@ -2,6 +2,10 @@
 # # TTT Configuration # #
 # ##################### #
 
+##################
+# Round Settings #
+##################
+
 #How long should rounds last for (in seconds)?
 time-limit: 360
 
@@ -17,6 +21,16 @@ maximum-players: -1
 #What should the ratio of traitors to innocents be (as a decimal)?
 traitor-ratio: 0.2
 
+#What should the ratio be for detectives to other players?
+detective-ratio: 0.15
+
+#If at least this many players are in a game, there is guaranteed to be a detective.
+minimum-players-for-detective: 5
+
+###################
+# Weapon Settings #
+###################
+
 #How much damage should crowbars do at full karma? (How many half-hearts?)
 crowbar-damage: 4
   
@@ -26,11 +40,9 @@ guns-outside-arenas: false
 #Should ammunition (arrows) be required to use guns?
 require-ammo-for-guns: true
 
-#What should the ratio be for detectives to other players?
-detective-ratio: 0.15
-
-#If at least this many players are in a game, there is guaranteed to be a detective.
-minimum-players-for-detective: 5
+##################
+# Karma Settings #
+##################
 
 #Should karma persist through reloads and PlayerQuitEvents (players leaving)? (If false, karma will reset when
 #the plugin is reloaded and when players leave the server.)
@@ -86,6 +98,10 @@ damage-reduction: true
 #When true, karma changes will be logged to the console. Note that this will typically cause /massive/ log spam!
 karma-debug: false
 
+###################
+# Plugin Settings #
+###################
+
 #Should potentially unnecessary information be logged?
 verbose-logging: true
 
@@ -98,5 +114,13 @@ enable-metrics: true
 #What language would you like to use? (If language is undefined, this will default to enUS.)
 localization: enUS
 
+#Should the plugin print a warning when the current build status can't be determined?
+#(Set this to false if you plan on modifying the plugin.yml file.)
+unknown-build-warning: true
+
+#Should the plugin print a warning if the current build is marked as unstable?
+#(We /highly/ recommend you set this to true.)
+unstable-build-warning: true
+
 #Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.5.0.4
+config-version: 0.5.0.5

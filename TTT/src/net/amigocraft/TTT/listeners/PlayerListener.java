@@ -408,6 +408,8 @@ public class PlayerListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent e){
 		if (TTT.plugin.getConfig().getBoolean("karma-persistence"))
 			KarmaManager.loadKarma(e.getPlayer().getName());
+		if (e.getPlayer().hasPermission("ttt.build.warn") && TTT.unstable)
+			e.getPlayer().sendMessage(ChatColor.DARK_RED + "[TTT] " + TTT.local.getMessage("unstable-build"));
 	}
 
 	@EventHandler

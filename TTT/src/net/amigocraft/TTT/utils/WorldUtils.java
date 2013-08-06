@@ -63,7 +63,7 @@ public class WorldUtils {
 					if (WorldUtils.isWorld(folder)){
 						File newFolder = new File("TTT_" + worldName);
 						try {
-							copyDirectory(folder, newFolder);
+							copyFile(folder, newFolder);
 							if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
 								TTT.log.info(TTT.local.getMessage("rollback") + " \"" + worldName + "\"!");
 						}
@@ -91,7 +91,7 @@ public class WorldUtils {
 							File uidDat = new File(folder + File.separator + "uid.dat");
 							sessionLock.delete();
 							uidDat.delete();
-							copyDirectory(folder, newFolder);
+							copyFile(folder, newFolder);
 							sender.sendMessage(ChatColor.GREEN + "[TTT] " + TTT.local.getMessage("import-success"));
 						}
 						catch (IOException e){
@@ -112,14 +112,14 @@ public class WorldUtils {
 			sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("folder-not-found"));
 	}
 
-	public static void copyDirectory(File sourceLocation , File targetLocation) throws IOException {
+	public static void copyFile(File sourceLocation, File targetLocation) throws IOException {
 		if (sourceLocation.isDirectory()){
 			if (!targetLocation.exists()){
 				targetLocation.mkdir();
 			}
 			String[] children = sourceLocation.list();
 			for (int i=0; i<children.length; i++){
-				copyDirectory(new File(sourceLocation, children[i]),
+				copyFile(new File(sourceLocation, children[i]),
 						new File(targetLocation, children[i]));
 			}
 		}

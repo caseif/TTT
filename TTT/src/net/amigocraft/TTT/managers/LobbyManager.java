@@ -76,6 +76,7 @@ public class LobbyManager {
 							status = ChatColor.GRAY + status;
 						else if (status.equals("PREPARING"))
 							status = ChatColor.GREEN + status;
+						status = TTT.local.getMessage(status.toLowerCase());
 						s.setLine(2, status);
 						String time = "";
 						if (r.getStage() != Stage.WAITING && r.getStage() != Stage.RESETTING){

@@ -16,12 +16,16 @@ import net.amigocraft.TTT.listeners.EntityListener;
 import net.amigocraft.TTT.listeners.PlayerListener;
 import net.amigocraft.TTT.localization.Localization;
 import net.amigocraft.TTT.managers.CommandManager;
+import net.amigocraft.TTT.utils.WorldUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TTT extends JavaPlugin implements Listener {
+
+	public static String ANSI_RED = "\u001B[31m";
+	public static String ANSI_WHITE = "\u001B[37m";
 
 	public static Logger log;
 	public static Logger kLog;
@@ -33,6 +37,8 @@ public class TTT extends JavaPlugin implements Listener {
 	public static List<Body> foundBodies = new ArrayList<Body>();
 
 	public static int maxKarma = 1000;
+
+	public static boolean unstable = false;
 
 	@Override
 	public void onEnable(){
@@ -64,9 +70,18 @@ public class TTT extends JavaPlugin implements Listener {
 			saveDefaultConfig();
 		else if (!getConfig().getString("config-version").equals(this.getDescription().getVersion())){
 			File config = new File(this.getDataFolder(), "config.yml");
+			try {
+				WorldUtils.copyFile(config, new File(this.getDataFolder(), "config.old.yml"));
+			}
+			catch (Exception ex){
+				ex.printStackTrace();
+				log.warning(local.getMessage("config-copy-fail"));
+			}
 			config.delete();
 			saveDefaultConfig();
 		}
+
+		checkVersion();
 
 		lang = getConfig().getString("localization");
 
@@ -116,13 +131,13 @@ public class TTT extends JavaPlugin implements Listener {
 		File f = new File(TTT.plugin.getDataFolder(), s);
 		if (!f.exists()){
 			if (getConfig().getBoolean("verbose-logging"))
-				log.info(s + " not found, creating...");
+				log.info(local.getMessage("creating-file").replace("%", s));
 			try {
 				f.createNewFile();
 			}
 			catch (Exception ex){
 				ex.printStackTrace();
-				log.warning("Failed to write to " + s + "!");
+				log.warning(local.getMessage("write-fail").replace("%", s));
 			}
 		}
 	}
@@ -157,6 +172,27 @@ public class TTT extends JavaPlugin implements Listener {
 					exc.printStackTrace();
 				}
 			}
+		}
+	}
+
+	public void checkVersion(){
+		try {
+			Thread t = new Thread(new BuildChecker());
+			t.start();
+			t.join(1000);
+			if (t.isAlive()){
+				t.interrupt();
+				log.info(local.getMessage("connect-fail-1"));
+				Thread t2 = new Thread(new BuildChecker());
+				t2.start();
+				t.join(1000);
+				if (t.isAlive())
+					log.warning(local.getMessage("connect-fail-2"));
+			}
+		}
+		catch (Exception ex){
+			ex.printStackTrace();
+			log.warning(local.getMessage("build-check-fail"));
 		}
 	}
 
