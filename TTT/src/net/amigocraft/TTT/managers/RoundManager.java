@@ -259,9 +259,20 @@ public class RoundManager {
 		else if (Round.getRound(worldName).getStage() != Stage.PLAYING)
 			valid = true;
 		if (valid){
-			File folder = new File(worldName);
-			File tttFolder = new File("TTT_" + worldName);
-			if (folder.exists() && tttFolder.exists()){
+			File folder = null;
+			File tttFolder = null;
+			for (String s : Bukkit.getWorldContainer().list()){
+				TTT.log.info(s);
+				if (s.equalsIgnoreCase(worldName)){
+					folder = new File(s);
+					worldName = s;
+				}
+				else if (s.equalsIgnoreCase("TTT_" + worldName))
+					tttFolder = new File(s);
+				if (folder != null && tttFolder != null)
+					break;
+			}
+			if (folder != null && tttFolder != null){
 				boolean loaded = false;
 				for (World w : Bukkit.getServer().getWorlds()){
 					if(w.getName().equals("TTT_" + worldName)){
@@ -363,6 +374,8 @@ public class RoundManager {
 	}
 
 	public static void resetRound(String worldName, boolean inno){
+		Round.getRound(worldName).setStage(Stage.RESETTING);
+		Round.getRound(worldName).setTime(0);
 		plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 		tasks.remove(worldName);
 		List<Body> removeBodies = new ArrayList<Body>();
@@ -418,9 +431,6 @@ public class RoundManager {
 
 		plugin.getServer().unloadWorld("TTT_" + worldName, false);
 		WorldUtils.rollbackWorld(worldName);
-		if (Round.getRound(worldName) != null)
-			Round.getRound(worldName).destroy();
-		else if (plugin.getConfig().getBoolean("verbose-logging"))
-			TTT.log.warning("That's odd, the round has already been destroyed...");
+		Round.getRound(worldName).setStage(Stage.WAITING);
 	}
 }

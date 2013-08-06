@@ -16,8 +16,8 @@ public class BlockListener implements Listener {
 
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent e){
-		if (isPlayer(e.getPlayer().getName()))
-			e.setCancelled(true);
+		//if (isPlayer(e.getPlayer().getName()))
+			//e.setCancelled(true);
 	}
 
 	@EventHandler

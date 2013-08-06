@@ -24,38 +24,70 @@ public class LobbyManager {
 	 * @param type The type of lobby sign to be created.
 	 * @param p The player who created the sign.
 	 */
-	public static void manageSign(Block b, final String world, String type, Player p){
+	public static void manageSign(Block b, String world, String type, Player p){
 		if (b.getState() instanceof Sign){
 			final Sign s = (Sign)b.getState();
 			Round ro = Round.getRound(world);
 			if (ro == null){
-				File folder = new File(world);
-				File tttFolder = new File("TTT_" + world);
-				if (folder.exists() && tttFolder.exists()){
-					ro = new Round(world);
+				File folder = null;
+				File tttFolder = null;
+				for (String str : Bukkit.getWorldContainer().list()){
+					if (str.equalsIgnoreCase(world)){
+						folder = new File(str);
+						world = str;
+					}
+					else if (str.equalsIgnoreCase("TTT_" + world))
+						tttFolder = new File(str);
+					if (folder != null && tttFolder != null)
+						break;
+					
 				}
+				if (folder != null && tttFolder != null)
+					ro = new Round(world);
 				else {
 					p.sendMessage(ChatColor.RED + TTT.local.getMessage("map-invalid"));
 					return;
 				}
 			}
-			final Round r = ro;
-			ro = null;
 			if (type.equalsIgnoreCase("status")){
-				s.setLine(0, r.getWorld());
+				s.setLine(0, ChatColor.DARK_RED + ro.getWorld());
+				ro = null;
+				final String w = world;
 				Bukkit.getScheduler().runTaskTimer(TTT.plugin, new Runnable(){
 					public void run(){
+						Round r = Round.getRound(w);
 						String max = TTT.plugin.getConfig().getInt("maximum-players") + "";
 						if (max.equals("-1"))
 							max = "∞";
-						s.setLine(1, r.getPlayers().size() + "/" + max);
+						String players = r.getPlayers().size() + "/" + max;
+						if (!max.equals("∞")){
+							if (r.getPlayers().size() >= Integer.parseInt(max))
+								players = ChatColor.RED + players;
+							else
+								players = ChatColor.GOLD + players;
+						}
+						else
+							players = ChatColor.GOLD + players;
+						s.setLine(1, players);
 						String status = r.getStage().toString();
 						if (status.equals("PLAYING"))
-							status = "INGAME";
+							status = ChatColor.RED + "INGAME";
+						else if (status.equals("WAITING") || status.equals("RESETTING"))
+							status = ChatColor.GRAY + status;
+						else if (status.equals("PREPARING"))
+							status = ChatColor.GREEN + status;
 						s.setLine(2, status);
 						String time = "";
-						if (r.getStage() != Stage.WAITING)
-							time = df.format(r.getTime() / 60) + ":" + (r.getTime() % 60);
+						if (r.getStage() != Stage.WAITING && r.getStage() != Stage.RESETTING){
+							String seconds = Integer.toString(r.getTime() % 60);
+							if (seconds.length() == 1)
+								seconds = "0" + seconds;
+							time = df.format(r.getTime() / 60) + ":" + seconds;
+							if (r.getTime() <= 60)
+								time = ChatColor.RED + time;
+							else
+								time = ChatColor.GREEN + time;
+						}
 						s.setLine(3, time);
 						s.update();
 					}
