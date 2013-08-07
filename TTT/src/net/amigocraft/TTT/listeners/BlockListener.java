@@ -4,6 +4,7 @@ import static net.amigocraft.TTT.TTTPlayer.isPlayer;
 
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.managers.LobbyManager;
+import net.amigocraft.TTT.utils.NumUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -14,7 +15,7 @@ import org.bukkit.event.block.SignChangeEvent;
 
 public class BlockListener implements Listener {
 
-	@EventHandler
+	//@EventHandler
 	public void onBlockPlace(BlockPlaceEvent e){
 		if (isPlayer(e.getPlayer().getName()))
 			e.setCancelled(true);
@@ -30,7 +31,14 @@ public class BlockListener implements Listener {
 	public void onSignChange(SignChangeEvent e){
 		if (e.getLine(0).equalsIgnoreCase("[TTT]")){
 			if (e.getPlayer().hasPermission("ttt.lobby.create")){
-				LobbyManager.manageSign(e.getBlock(), e.getLine(2), e.getLine(1), e.getPlayer());
+				if (!e.getLine(3).equals(""))
+					if (NumUtils.isInt(e.getLine(3)))
+						LobbyManager.manageSign(e.getBlock(), e.getLine(2), e.getLine(1),
+								Integer.parseInt(e.getLine(3)), e.getPlayer());
+					else
+						e.getPlayer().sendMessage(ChatColor.RED + TTT.local.getMessage("invalid-sign"));
+				else
+					LobbyManager.manageSign(e.getBlock(), e.getLine(2), e.getLine(1), e.getPlayer());
 			}
 			else
 				e.getPlayer().sendMessage(ChatColor.RED + TTT.local.getMessage("no-permission"));

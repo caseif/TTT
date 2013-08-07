@@ -2,13 +2,19 @@ package net.amigocraft.TTT.managers;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.amigocraft.TTT.LobbySign;
+import net.amigocraft.TTT.Role;
 import net.amigocraft.TTT.Round;
 import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
+import net.amigocraft.TTT.TTTPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -17,6 +23,8 @@ public class LobbyManager {
 
 	private static DecimalFormat df = new DecimalFormat("##");
 
+	public static List<LobbySign> playerSigns = new ArrayList<LobbySign>();
+
 	/**
 	 * Starts a task which manipulates a lobby sign each second.
 	 * @param b The block representing the sign to be managed.
@@ -24,7 +32,7 @@ public class LobbyManager {
 	 * @param type The type of lobby sign to be created.
 	 * @param p The player who created the sign.
 	 */
-	public static void manageSign(Block b, String world, String type, Player p){
+	public static void manageSign(Block b, String world, String type, int number, Player p){
 		if (b.getState() instanceof Sign){
 			final Sign s = (Sign)b.getState();
 			Round ro = Round.getRound(world);
@@ -40,7 +48,7 @@ public class LobbyManager {
 						tttFolder = new File(str);
 					if (folder != null && tttFolder != null)
 						break;
-					
+
 				}
 				if (folder != null && tttFolder != null)
 					ro = new Round(world);
@@ -97,7 +105,48 @@ public class LobbyManager {
 					}
 				}, 0L, 20L);
 			}
+			else if (type.equalsIgnoreCase("players")){
+				playerSigns.add(new LobbySign(b.getX(), b.getY(), b.getZ(), b.getWorld().getName(), world, number));
+			}
+			else
+				p.sendMessage(ChatColor.RED + TTT.local.getMessage("invalid-sign"));
 		}
 	}
 
+	public static void manageSign(Block b, String world, String type, Player p){
+		manageSign(b, world, type, 0, p);
+	}
+
+	public static void updateSigns(String world){
+		Round r = Round.getRound(world);
+		if (r != null){
+			List<TTTPlayer> players = r.getPlayers();
+			for (LobbySign s : playerSigns){
+				if (s.getWorld().equals(world)){
+					World w = Bukkit.getWorld(world);
+					if (w != null){
+						Block b = w.getBlockAt(s.getX(), s.getY(), s.getZ());
+						if (b != null){
+							if (b.getState() instanceof Sign){
+								Sign sign = (Sign)b.getState();
+								for (int i = 0; i <= 3; i++){
+									TTTPlayer t = players.get(s.getNumber() - (5 - i));
+									String name = t.getName();
+									if (t.getRole() == Role.DETECTIVE)
+										name = "§1" + name;
+									if (!t.isDead())
+										name = "§l" + name;
+									else if (t.isTraitor() && t.isBodyFound())
+										name = "§4§m" + name;
+									else if (t.isBodyFound())
+										name = "§m" + name;
+									sign.setLine(i, name);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

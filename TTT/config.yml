@@ -16,7 +16,7 @@ setup-time: 90
 minimum-players: 3
 
 #How many players are allowed to enter a given round? (Set to -1 for no limit.)
-maximum-players: -1
+maximum-players: 32
 
 #What should the ratio of traitors to innocents be (as a decimal)?
 traitor-ratio: 0.2
@@ -123,4 +123,4 @@ unknown-build-warning: true
 unstable-build-warning: true
 
 #Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.5.0.5
+config-version: 0.5.0.8

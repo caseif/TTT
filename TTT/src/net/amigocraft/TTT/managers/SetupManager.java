@@ -62,6 +62,7 @@ public class SetupManager {
 				}
 				for (TTTPlayer p : offlinePlayers){
 					p.destroy();
+					LobbyManager.updateSigns(worldName);
 				}
 
 				// manage scoreboards
@@ -199,6 +200,7 @@ public class SetupManager {
 						new RoundManager().gameTimer(worldName);
 						plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 						tasks.remove(worldName);
+						LobbyManager.updateSigns(worldName);
 					}
 					if (currentTime > 0)
 						r.tickDown();

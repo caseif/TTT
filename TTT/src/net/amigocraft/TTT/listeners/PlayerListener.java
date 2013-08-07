@@ -14,6 +14,7 @@ import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
 import net.amigocraft.TTT.managers.KarmaManager;
+import net.amigocraft.TTT.managers.LobbyManager;
 import net.amigocraft.TTT.managers.RoundManager;
 import net.amigocraft.TTT.utils.InventoryUtils;
 
@@ -124,6 +125,7 @@ public class PlayerListener implements Listener {
 								}
 								TTT.foundBodies.add(TTT.bodies.get(index));
 								TTT.bodies.get(index).getPlayer().setBodyFound(true);
+								LobbyManager.updateSigns(TTT.bodies.get(index).getPlayer().getWorld());
 							}
 							if (tPlayer.getRole() == Role.DETECTIVE){ // handle DNA scanning
 								if (e.getPlayer().getItemInHand() != null){
@@ -370,6 +372,7 @@ public class PlayerListener implements Listener {
 								}
 							}
 						}
+						LobbyManager.updateSigns(t.getWorld());
 					}
 					else
 						p.setHealth(20);
