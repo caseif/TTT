@@ -87,7 +87,10 @@ public class LobbyManager {
 							color = ChatColor.GRAY;
 						else if (status.equals("PREPARING"))
 							color = ChatColor.GREEN;
-						status = TTT.local.getMessage(status.toLowerCase());
+						if (status.equals("WAITING"))
+							status = TTT.local.getMessage(status.toLowerCase() + "-sign");
+						else
+							status = TTT.local.getMessage(status.toLowerCase());
 						s.setLine(2, color + status);
 						String time = "";
 						if (r.getStage() != Stage.WAITING && r.getStage() != Stage.RESETTING){
@@ -107,6 +110,7 @@ public class LobbyManager {
 			}
 			else if (type.equalsIgnoreCase("players")){
 				playerSigns.add(new LobbySign(b.getX(), b.getY(), b.getZ(), b.getWorld().getName(), world, number));
+				updateSigns(world);
 			}
 			else
 				p.sendMessage(ChatColor.RED + TTT.local.getMessage("invalid-sign"));

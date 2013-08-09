@@ -123,4 +123,4 @@ unknown-build-warning: true
 unstable-build-warning: true
 
 #Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.5.0.8
+config-version: 0.5.0.8.1

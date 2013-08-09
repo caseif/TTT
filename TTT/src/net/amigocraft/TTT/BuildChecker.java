@@ -7,11 +7,14 @@ import java.net.URL;
 public class BuildChecker implements Runnable {
 
 	public void run(){
+		InputStreamReader isr = null;
+		BufferedReader br = null;
 		try {
 			URL url = new URL("http://amigocraft.net/plugins/TTT/checkbuild.php?v=" +
 					TTT.plugin.getDescription().getVersion());
-			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-			String status = in.readLine();
+			isr = new InputStreamReader(url.openStream());
+			br = new BufferedReader(isr);
+			String status = br.readLine();
 			if (status.equals("STABLE")){
 				if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
 					TTT.log.info(TTT.local.getMessage("stable-build"));
@@ -22,14 +25,20 @@ public class BuildChecker implements Runnable {
 				TTT.unstable = true;
 			}
 			else if (status.equals("UNKNOWN")){
-				if (TTT.plugin.getConfig().getBoolean("unstable-build-warning")){
+				if (TTT.plugin.getConfig().getBoolean("unknown-build-warning")){
 					TTT.log.warning(TTT.ANSI_RED + TTT.local.getMessage("unknown-build") + TTT.ANSI_WHITE);
 				}
 			}
 		}
 		catch (Exception ex){
-			ex.printStackTrace();
 			TTT.log.warning(TTT.local.getMessage("build-check-fail"));
+		}
+		finally {
+			try {
+				br.close();
+				isr.close();
+			}
+			catch (Exception ex){}
 		}
 	}
 

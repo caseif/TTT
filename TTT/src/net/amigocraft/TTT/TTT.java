@@ -179,15 +179,17 @@ public class TTT extends JavaPlugin implements Listener {
 		try {
 			Thread t = new Thread(new BuildChecker());
 			t.start();
-			t.join(1000);
+			t.join(2000);
 			if (t.isAlive()){
 				t.interrupt();
 				log.info(local.getMessage("connect-fail-1"));
 				Thread t2 = new Thread(new BuildChecker());
 				t2.start();
-				t.join(1000);
-				if (t.isAlive())
+				t2.join(2000);
+				if (t2.isAlive()){
+					t2.interrupt();
 					log.warning(local.getMessage("connect-fail-2"));
+				}
 			}
 		}
 		catch (Exception ex){
