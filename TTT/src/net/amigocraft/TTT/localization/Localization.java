@@ -47,7 +47,8 @@ public class Localization {
 			br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 			while ((line = br.readLine()) != null) {
 				String[] params = line.split("\\|");
-				messages.put(params[0], params[1]);
+				if (params.length > 1)
+					messages.put(params[0], params[1]);
 			}
 		}
 		catch (IOException e){

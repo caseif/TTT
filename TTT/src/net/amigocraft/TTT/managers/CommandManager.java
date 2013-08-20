@@ -56,14 +56,16 @@ public class CommandManager implements CommandExecutor {
 						if (sender.hasPermission("ttt.quit")){
 							if (isPlayer(sender.getName())){
 								sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + " " +
-								TTT.local.getMessage("left-game").replace("%", getTTTPlayer(sender.getName()).getWorld()));
+										TTT.local.getMessage("left-game").replace("%",
+												getTTTPlayer(sender.getName()).getWorld()));
 								RoundManager.resetPlayer((Player)sender);
 							}
 							else
 								sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("not-in-game"));
 						}
 						else
-							sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("no-permission-quit"));
+							sender.sendMessage(ChatColor.RED + "[TTT] " +
+									TTT.local.getMessage("no-permission-quit"));
 					}
 					else
 						sender.sendMessage(ChatColor.RED + "[TTT] " + TTT.local.getMessage("must-be-ingame"));
@@ -100,19 +102,46 @@ public class CommandManager implements CommandExecutor {
 
 				}
 				else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")){
-					if (sender.hasPermission("ttt.help")){
-						sender.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE + TTT.local.getMessage("commands"));
+					if (args.length > 1 && args[1].equalsIgnoreCase("lobby")){
+						if (sender.hasPermission("ttt.lobby.create")){
+							sender.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE +
+									TTT.local.getMessage("lobby-help"));
+							sender.sendMessage("");
+							sender.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("first") + " " +
+									TTT.local.getMessage("line") + " " +
+									ChatColor.GREEN + "[TTT]");
+							sender.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("second") + " " +
+									TTT.local.getMessage("line") + " " +
+									ChatColor.GREEN + TTT.local.getMessage("type"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("third") + " " +
+									TTT.local.getMessage("line") + " " +
+									ChatColor.GREEN + TTT.local.getMessage("round"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("fourth") + " " +
+									TTT.local.getMessage("line") + " " +
+									ChatColor.GREEN + TTT.local.getMessage("number"));
+						}
+						else
+							sender.sendMessage(TTT.local.getMessage("no-permission"));
+					}
+					else if (sender.hasPermission("ttt.help")){
+						sender.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE +
+								TTT.local.getMessage("commands"));
 						sender.sendMessage("");
 						if (sender.hasPermission("ttt.join"))
-							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt join, j " + ChatColor.GREEN + TTT.local.getMessage("join-help"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt join, j " + ChatColor.GREEN +
+									TTT.local.getMessage("join-help"));
 						if (sender.hasPermission("ttt.quit"))
-							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt quit, q " + ChatColor.GREEN + TTT.local.getMessage("quit-help"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt quit, q " + ChatColor.GREEN +
+									TTT.local.getMessage("quit-help"));
 						if (sender.hasPermission("ttt.import"))
-							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt import, i " + ChatColor.GREEN + TTT.local.getMessage("import-help"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt import, i " + ChatColor.GREEN +
+									TTT.local.getMessage("import-help"));
 						if (sender.hasPermission("ttt.setspawn"))
-							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt setspawn, ss " + ChatColor.GREEN + TTT.local.getMessage("spawn-help"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt setspawn, ss " + ChatColor.GREEN +
+									TTT.local.getMessage("spawn-help"));
 						if (sender.hasPermission("ttt.help"))
-							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt help, ? " + ChatColor.GREEN + TTT.local.getMessage("help-help"));
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt help, ? " + ChatColor.GREEN +
+									TTT.local.getMessage("help-help"));
 					}
 					else
 						sender.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("no-permission"));
