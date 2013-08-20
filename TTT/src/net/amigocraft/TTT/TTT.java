@@ -16,9 +16,12 @@ import net.amigocraft.TTT.listeners.EntityListener;
 import net.amigocraft.TTT.listeners.PlayerListener;
 import net.amigocraft.TTT.localization.Localization;
 import net.amigocraft.TTT.managers.CommandManager;
+import net.amigocraft.TTT.managers.LobbyManager;
+import net.amigocraft.TTT.utils.NumUtils;
 import net.amigocraft.TTT.utils.WorldUtils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -91,6 +94,28 @@ public class TTT extends JavaPlugin implements Listener {
 		createFile("karma.yml");
 		createFile("bans.yml");
 		createFile("signs.yml");
+
+		// load lobby signs into memory
+		try {
+			YamlConfiguration y = new YamlConfiguration();
+			File f = new File(getDataFolder(), "signs.yml");
+			y.load(f);
+			for (String k : y.getKeys(false)){
+				if (NumUtils.isInt(k)){
+					LobbySign l = new LobbySign(
+							y.getInt(k + ".x"), y.getInt(k + ".y"), y.getInt(k + ".z"),
+							y.getString(k + ".world"), y.getString(k + ".round"), y.getInt(k + ".number"),
+							y.getString(k + ".type"));
+					l.setIndex(Integer.parseInt(k));
+					LobbyManager.signs.add(l);
+				}
+			}
+		}
+		catch (Exception ex){
+			ex.printStackTrace();
+			log.warning("Failed to load lobby signs into memory");
+		}
+		LobbyManager.resetSigns();
 
 		// autoupdate
 		if (getConfig().getBoolean("enable-auto-update")){

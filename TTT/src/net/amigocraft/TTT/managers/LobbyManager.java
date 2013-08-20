@@ -11,19 +11,21 @@ import net.amigocraft.TTT.Round;
 import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
+import net.amigocraft.TTT.utils.NumUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class LobbyManager {
 
 	private static DecimalFormat df = new DecimalFormat("##");
 
-	public static List<LobbySign> playerSigns = new ArrayList<LobbySign>();
+	public static List<LobbySign> signs = new ArrayList<LobbySign>();
 
 	/**
 	 * Creates a new LobbySign to be managed
@@ -58,14 +60,18 @@ public class LobbyManager {
 				}
 			}
 			if (type.equalsIgnoreCase("status")){
-				playerSigns.add(new LobbySign(b.getX(), b.getY(), b.getZ(), b.getWorld().getName(), world, 0,
-						type.toLowerCase()));
+				LobbySign l = new LobbySign(b.getX(), b.getY(), b.getZ(), b.getWorld().getName(), world, 0,
+						type.toLowerCase());
+				saveSign(l);
+				signs.add(l);
 				updateSigns(world);
 			}
 			else if (type.equalsIgnoreCase("players")){
 				if (number > 0){
-					playerSigns.add(new LobbySign(b.getX(), b.getY(), b.getZ(), b.getWorld().getName(), world, number,
-							type.toLowerCase()));
+					LobbySign l = new LobbySign(b.getX(), b.getY(), b.getZ(), b.getWorld().getName(), world, number,
+							type.toLowerCase());
+					saveSign(l);
+					signs.add(l);
 					updateSigns(world);
 				}
 				else
@@ -84,7 +90,8 @@ public class LobbyManager {
 		Round r = Round.getRound(world);
 		if (r != null){
 			List<TTTPlayer> players = r.getPlayers();
-			for (LobbySign s : playerSigns){
+			for (LobbySign s : signs){
+				TTT.log.info(s.getRound());
 				if (s.getRound().equals(world)){
 					World w = Bukkit.getWorld(s.getWorld());
 					if (w != null){
@@ -160,10 +167,94 @@ public class LobbyManager {
 									}
 								});
 							}
+							else
+								removeSign(s);
 						}
 					}
 				}
 			}
 		}
+	}
+
+	public static void resetSigns(){
+		for (LobbySign s : signs){
+			World w = Bukkit.getWorld(s.getWorld());
+			if (w != null){
+				Block b = w.getBlockAt(s.getX(), s.getY(), s.getZ());
+				if (b != null){
+					if (b.getState() instanceof Sign){
+						final Sign sign = (Sign)b.getState();
+						if (s.getType().equals("status")){
+							sign.setLine(0, "§4" + s.getRound());
+							String max = TTT.plugin.getConfig().getInt("maximum-players") + "";
+							if (max.equals("-1"))
+								max = "∞";
+							String playerCount = "0/" + max;
+							if (!max.equals("∞") && 0 >= Integer.parseInt(max))
+								playerCount = "§c" + playerCount;
+							else
+								playerCount = "§a" + playerCount;
+							sign.setLine(1, playerCount);
+							String status = "§7" + TTT.local.getMessage("waiting-sign");
+							sign.setLine(2, status);
+							sign.setLine(3, "");								
+						}
+						else if (s.getType().equals("players") && s.getNumber() > 0){
+							for (int i = 0; i <= 3; i++){
+								sign.setLine(i, "");
+							}
+						}
+						Bukkit.getScheduler().runTask(TTT.plugin, new Runnable(){
+							public void run(){
+								sign.update();
+							}
+						});
+					}
+					else
+						removeSign(s);
+				}
+			}
+		}
+	}
+
+	public static void removeSign(LobbySign s){
+		try {
+			YamlConfiguration y = new YamlConfiguration();
+			File f = new File(TTT.plugin.getDataFolder(), "signs.yml");
+			y.load(f);
+			y.set(Integer.toString(s.getIndex()), null);
+			y.save(f);
+		}
+		catch (Exception ex){
+			ex.printStackTrace();
+			TTT.log.warning("Failed to unregister lobby sign");
+		}
+	}
+
+	public static int saveSign(LobbySign l){
+		int nextKey = 0;
+		try {
+			YamlConfiguration y = new YamlConfiguration();
+			File f = new File(TTT.plugin.getDataFolder(), "signs.yml");
+			y.load(f);
+			for (String k : y.getKeys(false))
+				if (NumUtils.isInt(k) && Integer.parseInt(k) >= nextKey)
+					nextKey = Integer.parseInt(k) + 1;
+			String key = Integer.toString(nextKey);
+			y.set(key + ".world", l.getWorld());
+			y.set(key + ".x", l.getX());
+			y.set(key + ".y", l.getY());
+			y.set(key + ".z", l.getZ());
+			y.set(key + ".round", l.getRound());
+			y.set(key + ".type", l.getType());
+			y.set(key + ".number", l.getNumber());
+			l.setIndex(nextKey);
+			y.save(f);
+		}
+		catch (Exception ex){
+			ex.printStackTrace();
+			TTT.log.warning("Failed to save lobby sign to disk");
+		}
+		return nextKey;
 	}
 }

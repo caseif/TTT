@@ -9,6 +9,7 @@ public class LobbySign {
 	private String round;
 	private int number;
 	private String type;
+	private int index;
 	
 	public LobbySign(int x, int y, int z, String world, String round, int number, String type){
 		this.x = x;
@@ -74,6 +75,14 @@ public class LobbySign {
 	
 	public void setType(String type){
 		this.type = type;
+	}
+	
+	public int getIndex(){
+		return index;
+	}
+	
+	public void setIndex(int index){
+		this.index = index;
 	}
 	
 }
