@@ -28,16 +28,18 @@ public class BlockListener implements Listener {
 			e.setCancelled(true);
 			return;
 		}
-		for (LobbySign l : LobbyManager.signs){
-			if (l.getX() == e.getBlock().getX() && l.getY() == e.getBlock().getY() &&
-					l.getZ() == e.getBlock().getZ() && l.getWorld() == e.getBlock().getWorld().getName())
-				if (e.getPlayer().hasPermission("ttt.lobby.destroy"))
-					LobbyManager.removeSign(l);
-				else {
-					e.getPlayer().sendMessage(ChatColor.RED +
-							"[TTT] You do not have permission to destroy this lobby sign!");
-					e.setCancelled(true);
-				}
+		if (e.getPlayer().isSneaking()){
+			for (LobbySign l : LobbyManager.signs){
+				if (l.getX() == e.getBlock().getX() && l.getY() == e.getBlock().getY() &&
+						l.getZ() == e.getBlock().getZ() && l.getWorld().equals(e.getBlock().getWorld().getName()))
+					if (e.getPlayer().hasPermission("ttt.lobby.destroy")){
+						LobbyManager.removeSign(l);
+						e.getPlayer().sendMessage(ChatColor.GREEN + "[TTT] " +
+								TTT.local.getMessage("lobby-unregister"));
+					}
+					else
+						e.setCancelled(true);
+			}
 		}
 	}
 

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.amigocraft.TTT.Body;
+import net.amigocraft.TTT.LobbySign;
 import net.amigocraft.TTT.Location2i;
 import net.amigocraft.TTT.Role;
 import net.amigocraft.TTT.Round;
@@ -194,6 +195,20 @@ public class PlayerListener implements Listener {
 							}
 						}
 					}
+				}
+			}
+		}
+		else if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK){
+			for (LobbySign l : LobbyManager.signs){
+				if (l.getX() == e.getClickedBlock().getX() && l.getY() == e.getClickedBlock().getY() &&
+						l.getZ() == e.getClickedBlock().getZ() &&
+						l.getWorld().equals(e.getClickedBlock().getWorld().getName())){
+					if (e.getPlayer().hasPermission("ttt.lobby.use"))
+						RoundManager.handleJoin(e.getPlayer(), l.getRound());
+					else
+						e.getPlayer().sendMessage(ChatColor.RED +
+								"[TTT] You do not have permission to use lobby signs!");
+					e.setCancelled(true);
 				}
 			}
 		}

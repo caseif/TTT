@@ -65,6 +65,7 @@ public class LobbyManager {
 				saveSign(l);
 				signs.add(l);
 				updateSigns(world);
+				p.sendMessage(ChatColor.GREEN + "Lobby sign created");
 			}
 			else if (type.equalsIgnoreCase("players")){
 				if (number > 0){
@@ -73,6 +74,7 @@ public class LobbyManager {
 					saveSign(l);
 					signs.add(l);
 					updateSigns(world);
+					p.sendMessage(ChatColor.GREEN + "[TTT] " + TTT.local.getMessage("lobby-create"));
 				}
 				else
 					p.sendMessage(ChatColor.RED + TTT.local.getMessage("invalid-sign"));
@@ -227,7 +229,7 @@ public class LobbyManager {
 		}
 		catch (Exception ex){
 			ex.printStackTrace();
-			TTT.log.warning("Failed to unregister lobby sign");
+			TTT.log.warning(TTT.local.getMessage("lobby-unregister-fail"));
 		}
 	}
 
@@ -253,7 +255,7 @@ public class LobbyManager {
 		}
 		catch (Exception ex){
 			ex.printStackTrace();
-			TTT.log.warning("Failed to save lobby sign to disk");
+			TTT.log.warning(TTT.local.getMessage("lobby-create-fail"));
 		}
 		return nextKey;
 	}
