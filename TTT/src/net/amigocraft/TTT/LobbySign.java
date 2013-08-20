@@ -8,13 +8,16 @@ public class LobbySign {
 	private String world;
 	private String round;
 	private int number;
+	private String type;
 	
-	public LobbySign(int x, int y, int z, String world, String round, int number){
+	public LobbySign(int x, int y, int z, String world, String round, int number, String type){
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.world = world;
+		this.round = round;
 		this.number = number;
+		this.type = type;
 	}
 
 	public int getX(){
@@ -63,6 +66,14 @@ public class LobbySign {
 
 	public void setNumber(int number){
 		this.number = number;
+	}
+	
+	public String getType(){
+		return type;
+	}
+	
+	public void setType(String type){
+		this.type = type;
 	}
 	
 }

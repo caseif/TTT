@@ -30,7 +30,7 @@ public class SetupManager {
 
 	public static void setupTimer(final String worldName){
 
-		SbManager.sbManagers.put(worldName, new SbManager(worldName));
+		ScoreManager.sbManagers.put(worldName, new ScoreManager(worldName));
 
 		tasks.put(worldName, plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable(){
 
@@ -62,11 +62,11 @@ public class SetupManager {
 				}
 				for (TTTPlayer p : offlinePlayers){
 					p.destroy();
-					LobbyManager.updateSigns(worldName);
 				}
+				LobbyManager.updateSigns(worldName);
 
 				// manage scoreboards
-				SbManager.sbManagers.get(worldName).manage();
+				ScoreManager.sbManagers.get(worldName).manage();
 
 				int currentTime = r.getTime();
 				int playerCount = 0; 

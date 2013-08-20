@@ -3,6 +3,7 @@ package net.amigocraft.TTT;
 import java.util.ArrayList;
 
 import net.amigocraft.TTT.managers.KarmaManager;
+import net.amigocraft.TTT.managers.LobbyManager;
 
 public class TTTPlayer {
 
@@ -158,6 +159,7 @@ public class TTTPlayer {
 
 	public void destroy(){
 		players.remove(this);
+		LobbyManager.updateSigns(world);
 	}
 
 	public static boolean isPlayer(String p){

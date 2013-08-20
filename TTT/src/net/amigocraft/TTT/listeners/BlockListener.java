@@ -33,12 +33,12 @@ public class BlockListener implements Listener {
 			if (e.getPlayer().hasPermission("ttt.lobby.create")){
 				if (!e.getLine(3).equals(""))
 					if (NumUtils.isInt(e.getLine(3)))
-						LobbyManager.manageSign(e.getBlock(), e.getLine(2), e.getLine(1),
+						LobbyManager.addSign(e.getBlock(), e.getLine(2), e.getLine(1).toLowerCase(),
 								Integer.parseInt(e.getLine(3)), e.getPlayer());
 					else
 						e.getPlayer().sendMessage(ChatColor.RED + TTT.local.getMessage("invalid-sign"));
 				else
-					LobbyManager.manageSign(e.getBlock(), e.getLine(2), e.getLine(1), e.getPlayer());
+					LobbyManager.addSign(e.getBlock(), e.getLine(2), e.getLine(1).toLowerCase(), 0, e.getPlayer());
 			}
 			else
 				e.getPlayer().sendMessage(ChatColor.RED + TTT.local.getMessage("no-permission"));

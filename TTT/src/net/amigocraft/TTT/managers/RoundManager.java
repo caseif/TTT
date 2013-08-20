@@ -94,9 +94,10 @@ public class RoundManager {
 				}
 				for (TTTPlayer tp : offlinePlayers)
 					tp.destroy();
+				LobbyManager.updateSigns(worldName);
 
 				// manage scoreboards
-				SbManager.sbManagers.get(worldName).manage();
+				ScoreManager.sbManagers.get(worldName).manage();
 
 				// check if game is over
 				boolean iLeft = false;

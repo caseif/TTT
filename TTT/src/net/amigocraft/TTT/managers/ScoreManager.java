@@ -16,9 +16,9 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
-public class SbManager {
+public class ScoreManager {
 
-	public static HashMap<String, SbManager> sbManagers = new HashMap<String, SbManager>();
+	public static HashMap<String, ScoreManager> sbManagers = new HashMap<String, ScoreManager>();
 
 	public static ScoreboardManager manager = Bukkit.getScoreboardManager();
 	public Scoreboard innocent;
@@ -33,7 +33,7 @@ public class SbManager {
 	public Team tTeamT;
 	public Team tTeamD;
 
-	public SbManager(String worldName){
+	public ScoreManager(String worldName){
 
 		this.worldName = worldName;
 		innocent = manager.getNewScoreboard();

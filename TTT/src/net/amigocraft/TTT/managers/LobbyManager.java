@@ -26,15 +26,15 @@ public class LobbyManager {
 	public static List<LobbySign> playerSigns = new ArrayList<LobbySign>();
 
 	/**
-	 * Starts a task which manipulates a lobby sign each second.
-	 * @param b The block representing the sign to be managed.
-	 * @param world The name of the round to be tracked.
-	 * @param type The type of lobby sign to be created.
-	 * @param p The player who created the sign.
+	 * Creates a new LobbySign to be managed
+	 * @param b The Block containing the sign
+	 * @param world The name of the world containing the sign
+	 * @param type The type of the sign
+	 * @param number The number of the sign (applicable only for "players" signs)
+	 * @param p The player creating the sign
 	 */
-	public static void manageSign(Block b, String world, String type, int number, Player p){
+	public static void addSign(Block b, String world, String type, int number, Player p){
 		if (b.getState() instanceof Sign){
-			final Sign s = (Sign)b.getState();
 			Round ro = Round.getRound(world);
 			if (ro == null){
 				File folder = null;
@@ -58,94 +58,107 @@ public class LobbyManager {
 				}
 			}
 			if (type.equalsIgnoreCase("status")){
-				s.setLine(0, ChatColor.DARK_RED + ro.getWorld());
-				ro = null;
-				final String w = world;
-				Bukkit.getScheduler().runTaskTimer(TTT.plugin, new Runnable(){
-					public void run(){
-						Round r = Round.getRound(w);
-						String max = TTT.plugin.getConfig().getInt("maximum-players") + "";
-						if (max.equals("-1"))
-							max = "∞";
-						String players = r.getPlayers().size() + "/" + max;
-						if (!max.equals("∞")){
-							if (r.getPlayers().size() >= Integer.parseInt(max))
-								players = ChatColor.RED + players;
-							else
-								players = ChatColor.GOLD + players;
-						}
-						else
-							players = ChatColor.GOLD + players;
-						s.setLine(1, players);
-						String status = r.getStage().toString();
-						ChatColor color = null;
-						if (status.equals("PLAYING")){
-							color = ChatColor.RED;
-							status = "INGAME";
-						}
-						else if (status.equals("WAITING") || status.equals("RESETTING"))
-							color = ChatColor.GRAY;
-						else if (status.equals("PREPARING"))
-							color = ChatColor.GREEN;
-						if (status.equals("WAITING"))
-							status = TTT.local.getMessage(status.toLowerCase() + "-sign");
-						else
-							status = TTT.local.getMessage(status.toLowerCase());
-						s.setLine(2, color + status);
-						String time = "";
-						if (r.getStage() != Stage.WAITING && r.getStage() != Stage.RESETTING){
-							String seconds = Integer.toString(r.getTime() % 60);
-							if (seconds.length() == 1)
-								seconds = "0" + seconds;
-							time = df.format(r.getTime() / 60) + ":" + seconds;
-							if (r.getTime() <= 60)
-								time = ChatColor.RED + time;
-							else
-								time = ChatColor.GREEN + time;
-						}
-						s.setLine(3, time);
-						s.update();
-					}
-				}, 0L, 20L);
+				playerSigns.add(new LobbySign(b.getX(), b.getY(), b.getZ(), b.getWorld().getName(), world, 0,
+						type.toLowerCase()));
+				updateSigns(world);
 			}
 			else if (type.equalsIgnoreCase("players")){
-				playerSigns.add(new LobbySign(b.getX(), b.getY(), b.getZ(), b.getWorld().getName(), world, number));
-				updateSigns(world);
+				if (number > 0){
+					playerSigns.add(new LobbySign(b.getX(), b.getY(), b.getZ(), b.getWorld().getName(), world, number,
+							type.toLowerCase()));
+					updateSigns(world);
+				}
+				else
+					p.sendMessage(ChatColor.RED + TTT.local.getMessage("invalid-sign"));
 			}
 			else
 				p.sendMessage(ChatColor.RED + TTT.local.getMessage("invalid-sign"));
 		}
 	}
 
-	public static void manageSign(Block b, String world, String type, Player p){
-		manageSign(b, world, type, 0, p);
-	}
-
+	/**
+	 * Updates all LobbySigns linked to a specific TTT world
+	 * @param world The world to update signs for
+	 */
 	public static void updateSigns(String world){
 		Round r = Round.getRound(world);
 		if (r != null){
 			List<TTTPlayer> players = r.getPlayers();
 			for (LobbySign s : playerSigns){
-				if (s.getWorld().equals(world)){
-					World w = Bukkit.getWorld(world);
+				if (s.getRound().equals(world)){
+					World w = Bukkit.getWorld(s.getWorld());
 					if (w != null){
 						Block b = w.getBlockAt(s.getX(), s.getY(), s.getZ());
 						if (b != null){
 							if (b.getState() instanceof Sign){
-								Sign sign = (Sign)b.getState();
-								for (int i = 0; i <= 3; i++){
-									TTTPlayer t = players.get(s.getNumber() - (5 - i));
-									String name = t.getName();
-									if (t.getRole() == Role.DETECTIVE)
-										name = "§1" + name;
-									if (!t.isDead())
-										name = "§l" + name;
-									else if (t.isTraitor() && t.isBodyFound())
-										name = "§4§m" + name;
-									else if (t.isBodyFound())
-										name = "§m" + name;
-									sign.setLine(i, name);
+								final Sign sign = (Sign)b.getState();
+								if (s.getType().equals("status")){
+									sign.setLine(0, "§4" + r.getWorld());
+									String max = TTT.plugin.getConfig().getInt("maximum-players") + "";
+									if (max.equals("-1"))
+										max = "∞";
+									String playerCount = r.getPlayers().size() + "/" + max;
+									if (!max.equals("∞")){
+										if (r.getPlayers().size() >= Integer.parseInt(max))
+											playerCount = "§c" + playerCount;
+										else
+											playerCount = "§a" + playerCount;
+									}
+									else
+										playerCount = "§6" + playerCount;
+									sign.setLine(1, playerCount);
+									String status = r.getStage().toString();
+									String color = null;
+									if (status.equals("PLAYING")){
+										color = "§c";
+										status = "INGAME";
+									}
+									else if (status.equals("WAITING") || status.equals("RESETTING"))
+										color = "§7";
+									else if (status.equals("PREPARING"))
+										color = "§a";
+									if (status.equals("WAITING"))
+										status = TTT.local.getMessage(status.toLowerCase() + "-sign");
+									else
+										status = TTT.local.getMessage(status.toLowerCase());
+									sign.setLine(2, color + status);
+									String time = "";
+									if (r.getStage() != Stage.WAITING && r.getStage() != Stage.RESETTING){
+										String seconds = Integer.toString(r.getTime() % 60);
+										if (seconds.length() == 1)
+											seconds = "0" + seconds;
+										time = df.format(r.getTime() / 60) + ":" + seconds;
+										if (r.getTime() <= 60)
+											time = "§c" + time;
+										else
+											time = "§a" + time;
+									}
+									sign.setLine(3, time);
 								}
+								else if (s.getType().equals("players") && s.getNumber() > 0){
+									for (int i = 0; i <= 3; i++){
+										if (players.size() >= (s.getNumber() - 1) * 4 + i + 1){
+											TTTPlayer t = players.get((s.getNumber() - 1) * 4 + i);
+											String name = t.getName();
+											if (t.getRole() == Role.DETECTIVE)
+												name = "§1" + name;
+											if (!t.isDead())
+												name = "§l" + name;
+											else if (t.isTraitor() && t.isBodyFound())
+												name = "§4§m" + name;
+											else if (t.isBodyFound())
+												name = "§m" + name;
+											sign.setLine(i, name);
+										}
+										else
+											sign.setLine(i, "");
+									}
+								}
+								Bukkit.getScheduler().runTask(TTT.plugin, new Runnable(){
+									public void run(){
+										sign.update();
+									}
+								});
 							}
 						}
 					}
