@@ -104,7 +104,6 @@ public class TTTPlayer {
 
 	public void setKarma(int karma){
 		this.karma = karma;
-		TTT.kLog.info(Integer.toString(karma));
 	}
 
 	public void setDisplayKarma(int karma){

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import net.amigocraft.TTT.Body;
 import net.amigocraft.TTT.Role;
@@ -19,6 +20,7 @@ import net.amigocraft.TTT.utils.WorldUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -34,8 +36,6 @@ public class RoundManager {
 	private static HashMap<String, Integer> tasks = new HashMap<String, Integer>();
 
 	private static List<String> checkPlayers = new ArrayList<String>();
-
-	private static int compassTick = 0;
 
 	public void gameTimer(final String worldName){
 
@@ -83,9 +83,12 @@ public class RoundManager {
 													Bukkit.getWorlds().get(1).getSpawnLocation());
 										}
 									}
-									else if (compassTick % (20 / 4) == 0){ // change the location 4 times per second
-										//tracker.setCompassTarget(compassLoc);
-										tracker.setCompassTarget(null);
+									else {
+										Random r = new Random();
+										tracker.setCompassTarget(new Location(tracker.getWorld(),
+												tracker.getLocation().getX() + r.nextInt(10) - 5,
+												tracker.getLocation().getY(),
+												tracker.getLocation().getZ() + r.nextInt(10) - 5));
 									}
 								}
 							}

@@ -2,7 +2,6 @@ package net.amigocraft.TTT.listeners;
 
 import static net.amigocraft.TTT.TTTPlayer.isPlayer;
 
-import net.amigocraft.TTT.LobbySign;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.managers.LobbyManager;
 import net.amigocraft.TTT.utils.NumUtils;
@@ -27,19 +26,6 @@ public class BlockListener implements Listener {
 		if (isPlayer(e.getPlayer().getName())){
 			e.setCancelled(true);
 			return;
-		}
-		if (e.getPlayer().isSneaking()){
-			for (LobbySign l : LobbyManager.signs){
-				if (l.getX() == e.getBlock().getX() && l.getY() == e.getBlock().getY() &&
-						l.getZ() == e.getBlock().getZ() && l.getWorld().equals(e.getBlock().getWorld().getName()))
-					if (e.getPlayer().hasPermission("ttt.lobby.destroy")){
-						LobbyManager.removeSign(l);
-						e.getPlayer().sendMessage(ChatColor.GREEN + "[TTT] " +
-								TTT.local.getMessage("lobby-unregister"));
-					}
-					else
-						e.setCancelled(true);
-			}
 		}
 	}
 

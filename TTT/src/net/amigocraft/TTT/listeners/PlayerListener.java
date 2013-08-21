@@ -60,7 +60,7 @@ public class PlayerListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent e){
-		if (isPlayer(e.getPlayer().getName())){ // check if player is even in TTT round
+		if (isPlayer(e.getPlayer().getName())){ // check if player is in TTT round
 			TTTPlayer tPlayer = getTTTPlayer(e.getPlayer().getName());
 			// disable pressure plates for dead players
 			if (e.getAction() == Action.PHYSICAL && tPlayer.isDead()){
@@ -203,11 +203,17 @@ public class PlayerListener implements Listener {
 				if (l.getX() == e.getClickedBlock().getX() && l.getY() == e.getClickedBlock().getY() &&
 						l.getZ() == e.getClickedBlock().getZ() &&
 						l.getWorld().equals(e.getClickedBlock().getWorld().getName())){
-					if (e.getPlayer().hasPermission("ttt.lobby.use"))
+					if (e.getAction() == Action.LEFT_CLICK_BLOCK && e.getPlayer().isSneaking() &&
+							e.getPlayer().hasPermission("ttt.lobby.destroy")){
+						LobbyManager.removeSign(l);
+						e.getPlayer().sendMessage(ChatColor.GREEN + "[TTT] " +
+								TTT.local.getMessage("lobby-unregister"));
+					}
+					else if (e.getPlayer().hasPermission("ttt.lobby.use"))
 						RoundManager.handleJoin(e.getPlayer(), l.getRound());
 					else
 						e.getPlayer().sendMessage(ChatColor.RED +
-								"[TTT] You do not have permission to use lobby signs!");
+								"[TTT] " + TTT.local.getMessage("no-permission"));
 					e.setCancelled(true);
 				}
 			}

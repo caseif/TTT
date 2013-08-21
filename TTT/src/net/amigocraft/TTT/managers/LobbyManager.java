@@ -93,7 +93,6 @@ public class LobbyManager {
 		if (r != null){
 			List<TTTPlayer> players = r.getPlayers();
 			for (LobbySign s : signs){
-				TTT.log.info(s.getRound());
 				if (s.getRound().equals(world)){
 					World w = Bukkit.getWorld(s.getWorld());
 					if (w != null){
