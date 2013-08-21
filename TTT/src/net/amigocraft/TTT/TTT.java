@@ -204,16 +204,29 @@ public class TTT extends JavaPlugin implements Listener {
 		try {
 			Thread t = new Thread(new BuildChecker());
 			t.start();
-			t.join(2000);
-			if (t.isAlive()){
+			t.join(1000);
+			if (t.isAlive() || (BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
+					(BuildChecker.response >= 500 && BuildChecker.response <= 599)){
 				t.interrupt();
-				log.info(local.getMessage("connect-fail-1"));
+				if ((BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
+						(BuildChecker.response >= 500 && BuildChecker.response <= 599))
+					log.info(local.getMessage("connect-fail-1"));
+				else
+					log.info(local.getMessage("connect-fail-2"));
+				BuildChecker.response = 0;
 				Thread t2 = new Thread(new BuildChecker());
 				t2.start();
-				t2.join(2000);
-				if (t2.isAlive()){
+				t2.join(1000);
+				if (t2.isAlive() || (BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
+						(BuildChecker.response >= 500 && BuildChecker.response <= 599)){
 					t2.interrupt();
-					log.warning(local.getMessage("connect-fail-2"));
+					String response = "";
+					if (t2.isAlive() || (BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
+							(BuildChecker.response >= 500 && BuildChecker.response <= 599))
+						response = " (" +
+								local.getMessage("response").replace("%", Integer.toString(BuildChecker.response) +
+										")");
+					log.warning(local.getMessage("connect-fail-3").replace(" %", response));
 				}
 			}
 		}
