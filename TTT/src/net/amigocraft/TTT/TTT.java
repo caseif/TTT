@@ -17,10 +17,12 @@ import net.amigocraft.TTT.listeners.PlayerListener;
 import net.amigocraft.TTT.localization.Localization;
 import net.amigocraft.TTT.managers.CommandManager;
 import net.amigocraft.TTT.managers.LobbyManager;
+import net.amigocraft.TTT.managers.RoundManager;
 import net.amigocraft.TTT.utils.NumUtils;
 import net.amigocraft.TTT.utils.WorldUtils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -146,6 +148,10 @@ public class TTT extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable(){
+		Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "Ending all TTT rounds due to server " +
+				"reload/restart");
+		for (Round r : Round.rounds)
+			RoundManager.resetRound(r.getWorld(), true);
 		if (getConfig().getBoolean("verbose-logging"))
 			log.info(this + " " + local.getMessage("disabled"));
 		plugin = null;
