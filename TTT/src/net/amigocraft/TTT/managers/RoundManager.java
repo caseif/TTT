@@ -355,20 +355,35 @@ public class RoundManager {
 						alpha.add("shiny3");
 						alpha.add("jpf6368");
 						List<String> testers = new ArrayList<String>();
-						testers.add("alexandercitt");
+						testers.add("Alexandercitt");
+						List<String> translators = new ArrayList<String>();
+						translators.add("jon674");
 						String addition = "";
 						if (p.getName().equals("AngryNerd1"))
 							addition = ", " + ChatColor.DARK_RED + TTT.local
 							.getMessage("creator") + "," +
 									ChatColor.DARK_PURPLE;
+						if (alpha.contains(p.getName()) && translators.contains(p.getName()))
+							addition += ", " + ChatColor.DARK_RED + TTT.local
+							.getMessage("alpha-tester") + ", " + TTT.local.getMessage("translator")
+							+ "," + ChatColor.DARK_PURPLE;
+						else if (testers.contains(p.getName()) && translators.contains(p.getName()))
+							addition += ", " + ChatColor.DARK_RED + TTT.local
+							.getMessage("tester") + ", " + TTT.local.getMessage("translator")
+							+ "," + ChatColor.DARK_PURPLE;
 						else if (alpha.contains(p.getName())){
-							addition = ", " + ChatColor.DARK_RED + TTT.local
+							addition += ", " + ChatColor.DARK_RED + TTT.local
 									.getMessage("alpha-tester") + "," +
 									ChatColor.DARK_PURPLE;
 						}
 						else if (testers.contains(p.getName())){
-							addition = ", " + ChatColor.DARK_RED + TTT.local
+							addition += ", " + ChatColor.DARK_RED + TTT.local
 									.getMessage("tester") + "," +
+									ChatColor.DARK_PURPLE;
+						}
+						else if (translators.contains(p.getName())){
+							addition += ", " + ChatColor.DARK_RED + TTT.local
+									.getMessage("translator") + "," +
 									ChatColor.DARK_PURPLE;
 						}
 						Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + p.getName() + addition + " " +
