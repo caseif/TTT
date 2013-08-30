@@ -16,6 +16,7 @@ import net.amigocraft.TTT.TTTPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,6 +37,10 @@ public class SetupManager {
 
 			public void run(){
 
+				World w = Bukkit.getWorld(worldName);
+				if (w != null)
+					w.setTime(6000L);
+				
 				Round r = Round.getRound(worldName);
 
 				// verify that all players are still online

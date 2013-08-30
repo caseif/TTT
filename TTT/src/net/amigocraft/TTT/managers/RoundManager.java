@@ -24,6 +24,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -48,6 +50,10 @@ public class RoundManager {
 		tasks.put(worldName, plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable(){
 
 			public void run(){
+
+				World w = Bukkit.getWorld(worldName);
+				if (w != null)
+					w.setTime(6000L);
 
 				// verify that all players are still online
 				List<TTTPlayer> offlinePlayers = new ArrayList<TTTPlayer>();
@@ -313,6 +319,10 @@ public class RoundManager {
 						}
 						p.teleport(TTT.plugin.getServer().getWorld("TTT_" + worldName)
 								.getSpawnLocation());
+						for (Entity e :
+							TTT.plugin.getServer().getWorld("TTT_" + worldName).getEntities())
+							if (e instanceof LivingEntity)
+								e.remove();
 						new TTTPlayer(p.getName(), worldName);
 						File invF = new File(TTT.plugin.getDataFolder() + File.separator +
 								"inventories" + File.separator +
