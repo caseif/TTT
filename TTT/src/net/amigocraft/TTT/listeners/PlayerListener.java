@@ -209,12 +209,15 @@ public class PlayerListener implements Listener {
 						e.getPlayer().sendMessage(ChatColor.GREEN + "[TTT] " +
 								TTT.local.getMessage("lobby-unregister"));
 					}
-					else if (e.getPlayer().hasPermission("ttt.lobby.use"))
+					else if (e.getPlayer().hasPermission("ttt.lobby.use")){
 						RoundManager.handleJoin(e.getPlayer(), l.getRound());
-					else
+						e.setCancelled(true);
+					}
+					else {
 						e.getPlayer().sendMessage(ChatColor.RED +
 								"[TTT] " + TTT.local.getMessage("no-permission"));
-					e.setCancelled(true);
+						e.setCancelled(true);
+					}
 				}
 			}
 		}

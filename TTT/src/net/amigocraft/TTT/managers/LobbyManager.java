@@ -225,6 +225,7 @@ public class LobbyManager {
 			y.load(f);
 			y.set(Integer.toString(s.getIndex()), null);
 			y.save(f);
+			signs.remove(s);
 		}
 		catch (Exception ex){
 			ex.printStackTrace();
