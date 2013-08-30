@@ -1,4 +1,4 @@
-﻿package net.amigocraft.TTT.utils;
+package net.amigocraft.TTT.utils;
 
 import java.io.File;
 import java.io.FileInputStream;

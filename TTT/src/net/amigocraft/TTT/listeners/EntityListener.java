@@ -1,4 +1,4 @@
-﻿package net.amigocraft.TTT.listeners;
+package net.amigocraft.TTT.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -1,4 +1,4 @@
-﻿package net.amigocraft.TTT.utils;
+package net.amigocraft.TTT.utils;
 
 public class NumUtils {
 	

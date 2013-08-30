@@ -1,4 +1,4 @@
-﻿package net.amigocraft.TTT.listeners;
+package net.amigocraft.TTT.listeners;
 
 import static net.amigocraft.TTT.TTTPlayer.isPlayer;
 

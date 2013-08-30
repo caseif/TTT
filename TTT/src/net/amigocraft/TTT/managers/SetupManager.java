@@ -1,4 +1,4 @@
-﻿package net.amigocraft.TTT.managers;
+package net.amigocraft.TTT.managers;
 
 import static net.amigocraft.TTT.TTTPlayer.players;
 

@@ -1,4 +1,4 @@
-﻿package net.amigocraft.TTT;
+package net.amigocraft.TTT;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

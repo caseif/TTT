@@ -1,4 +1,4 @@
-﻿package net.amigocraft.TTT;
+package net.amigocraft.TTT;
 
 import org.bukkit.block.Block;
 

@@ -1,4 +1,4 @@
-﻿package net.amigocraft.TTT;
+package net.amigocraft.TTT;
 
 public enum Stage {
 	WAITING, PREPARING, PLAYING, RESETTING
