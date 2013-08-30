@@ -38,6 +38,9 @@ public class BuildChecker implements Runnable {
 						TTT.log.warning(TTT.ANSI_RED + TTT.local.getMessage("unknown-build") + TTT.ANSI_WHITE);
 					}
 				}
+				else if (status.equals("PRE")){
+					TTT.log.info(TTT.ANSI_RED + TTT.local.getMessage("prerelease") + TTT.ANSI_WHITE);
+				}
 			}
 		}
 		catch (Exception ex){
