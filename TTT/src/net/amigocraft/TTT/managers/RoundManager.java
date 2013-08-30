@@ -321,7 +321,7 @@ public class RoundManager {
 								.getSpawnLocation());
 						for (Entity e :
 							TTT.plugin.getServer().getWorld("TTT_" + worldName).getEntities())
-							if (e instanceof LivingEntity)
+							if (e instanceof LivingEntity && !(e instanceof Player))
 								e.remove();
 						new TTTPlayer(p.getName(), worldName);
 						File invF = new File(TTT.plugin.getDataFolder() + File.separator +
