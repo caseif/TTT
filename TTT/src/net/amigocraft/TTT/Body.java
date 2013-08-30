@@ -1,4 +1,4 @@
-package net.amigocraft.TTT;
+﻿package net.amigocraft.TTT;
 // the class
 
 public class Body {

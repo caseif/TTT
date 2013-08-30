@@ -1,4 +1,4 @@
-package net.amigocraft.TTT.localization;
+﻿package net.amigocraft.TTT.localization;
 
 import java.io.BufferedReader;
 import java.io.File;

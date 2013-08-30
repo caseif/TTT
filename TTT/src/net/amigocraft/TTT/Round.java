@@ -1,4 +1,4 @@
-package net.amigocraft.TTT;
+﻿package net.amigocraft.TTT;
 
 import java.util.ArrayList;
 import java.util.List;

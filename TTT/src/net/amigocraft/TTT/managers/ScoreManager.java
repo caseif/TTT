@@ -1,4 +1,4 @@
-package net.amigocraft.TTT.managers;
+ï»¿package net.amigocraft.TTT.managers;
 
 import java.util.HashMap;
 
@@ -110,7 +110,7 @@ public class ScoreManager {
 	}
 
 	private void handleAlivePlayer(TTTPlayer t){
-		String s = "§l" + t.getName();
+		String s = "Â§l" + t.getName();
 		if (t.getRole() != null){
 			String prefix = innocent.getTeam(t.getRole().toString().toLowerCase().substring(0, 1)).getPrefix();
 			if (prefix.length() + s.length() > 16)
@@ -136,9 +136,9 @@ public class ScoreManager {
 	}
 
 	private void handleDeadPlayer(TTTPlayer t){
-		String s = "§m" + t.getName();
+		String s = "Â§m" + t.getName();
 		if (t.isTraitor())
-			s = "§4§m" + t.getName();
+			s = "Â§4Â§m" + t.getName();
 		if (t.getRole() != null){
 			String prefix = innocent.getTeam(t.getRole().toString().toLowerCase().substring(0, 1)).getPrefix();
 			if (prefix.length() + s.length() > 16)

@@ -1,4 +1,4 @@
-package net.amigocraft.TTT.managers;
+﻿package net.amigocraft.TTT.managers;
 
 import java.io.File;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package net.amigocraft.TTT.managers;
+ï»¿package net.amigocraft.TTT.managers;
 
 import static net.amigocraft.TTT.TTTPlayer.players;
 
@@ -124,16 +124,16 @@ public class SetupManager {
 						}
 						ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
 						ItemMeta cbMeta = crowbar.getItemMeta();
-						cbMeta.setDisplayName("§5" + TTT.local.getMessage("crowbar"));
+						cbMeta.setDisplayName("Â§5" + TTT.local.getMessage("crowbar"));
 						crowbar.setItemMeta(cbMeta);
 						ItemStack gun = new ItemStack(Material.ANVIL, 1);
 						ItemMeta gunMeta = crowbar.getItemMeta();
-						gunMeta.setDisplayName("§5" + TTT.local.getMessage("gun"));
+						gunMeta.setDisplayName("Â§5" + TTT.local.getMessage("gun"));
 						gun.setItemMeta(gunMeta);
 						ItemStack ammo = new ItemStack(Material.ARROW, 28);
 						ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
 						ItemMeta dnaMeta = dnaScanner.getItemMeta();
-						dnaMeta.setDisplayName("§1" + TTT.local.getMessage("dna-scanner"));
+						dnaMeta.setDisplayName("Â§1" + TTT.local.getMessage("dna-scanner"));
 						dnaScanner.setItemMeta(dnaMeta);
 						for (String s : innocents){
 							Player pl = plugin.getServer().getPlayer(s);
