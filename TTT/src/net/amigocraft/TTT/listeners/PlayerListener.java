@@ -176,7 +176,7 @@ public class PlayerListener implements Listener {
 					if (e.getPlayer().getItemInHand().getItemMeta() != null){
 						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
 							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName()
-									.equals("�5" + TTT.local.getMessage("Gun"))){
+									.endsWith(TTT.local.getMessage("Gun"))){
 								if (Round.getRound(tPlayer.getWorld()).getStage() == Stage.PLAYING ||
 										plugin.getConfig().getBoolean("guns-outside-arenas")){
 									e.setCancelled(true);
