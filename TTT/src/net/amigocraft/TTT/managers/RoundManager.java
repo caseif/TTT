@@ -405,9 +405,11 @@ public class RoundManager {
 	}
 
 	public static void resetRound(String worldName, boolean inno){
+		System.out.println("resetting");
 		Round.getRound(worldName).setStage(Stage.RESETTING);
 		Round.getRound(worldName).setTime(0);
-		plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
+		if (tasks.get(worldName) != null)
+			plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 		tasks.remove(worldName);
 		List<Body> removeBodies = new ArrayList<Body>();
 		List<Body> removeFoundBodies = new ArrayList<Body>();
@@ -457,6 +459,7 @@ public class RoundManager {
 				if (plugin.getServer().getPlayer(t.getName()) != null)
 					reset.add(t.getName());
 		for (String s : reset){
+			System.out.println(s);
 			resetPlayer(plugin.getServer().getPlayer(s));
 		}
 

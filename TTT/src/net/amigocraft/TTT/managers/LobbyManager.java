@@ -162,11 +162,12 @@ public class LobbyManager {
 											sign.setLine(i, "");
 									}
 								}
-								Bukkit.getScheduler().runTask(TTT.plugin, new Runnable(){
-									public void run(){
-										sign.update();
-									}
-								});
+								if (TTT.plugin.isEnabled())
+									Bukkit.getScheduler().runTask(TTT.plugin, new Runnable(){
+										public void run(){
+											sign.update();
+										}
+									});
 							}
 							else
 								removeSign(s);
