@@ -135,7 +135,7 @@ public class PlayerListener implements Listener {
 											if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName()
 													!= null){
 												if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName()
-														.equals("§1" + TTT.local.getMessage("dna-scanner"))){
+														.equals("ï¿½1" + TTT.local.getMessage("dna-scanner"))){
 													e.setCancelled(true);
 													Player killer = plugin.getServer().getPlayer(
 															getTTTPlayer(TTT.bodies.get(index).getPlayer()
@@ -176,7 +176,7 @@ public class PlayerListener implements Listener {
 					if (e.getPlayer().getItemInHand().getItemMeta() != null){
 						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
 							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName()
-									.equals("§5" + TTT.local.getMessage("Gun"))){
+									.equals("ï¿½5" + TTT.local.getMessage("Gun"))){
 								if (Round.getRound(tPlayer.getWorld()).getStage() == Stage.PLAYING ||
 										plugin.getConfig().getBoolean("guns-outside-arenas")){
 									e.setCancelled(true);
@@ -199,13 +199,14 @@ public class PlayerListener implements Listener {
 			}
 		}
 		else if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK){
+			LobbySign sign = null;
 			for (LobbySign l : LobbyManager.signs){
 				if (l.getX() == e.getClickedBlock().getX() && l.getY() == e.getClickedBlock().getY() &&
 						l.getZ() == e.getClickedBlock().getZ() &&
 						l.getWorld().equals(e.getClickedBlock().getWorld().getName())){
 					if (e.getAction() == Action.LEFT_CLICK_BLOCK && e.getPlayer().isSneaking() &&
 							e.getPlayer().hasPermission("ttt.lobby.destroy")){
-						LobbyManager.removeSign(l);
+						sign = l;
 						e.getPlayer().sendMessage(ChatColor.GREEN + "[TTT] " +
 								TTT.local.getMessage("lobby-unregister"));
 					}
@@ -220,6 +221,8 @@ public class PlayerListener implements Listener {
 					}
 				}
 			}
+			if (sign != null)
+				LobbyManager.removeSign(sign);
 		}
 	}
 
@@ -267,7 +270,7 @@ public class PlayerListener implements Listener {
 								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName()
 										!= null)
 									if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName()
-											.equals("§5" + TTT.local.getMessage("crowbar")))
+											.equals("ï¿½5" + TTT.local.getMessage("crowbar")))
 										e.setDamage(plugin.getConfig().getInt("crowbar-damage"));
 				}
 			}
@@ -358,21 +361,21 @@ public class PlayerListener implements Listener {
 						ItemMeta tiMeta = ti.getItemMeta();
 						if (t.getRole() == Role.INNOCENT){
 							ti.setDurability((short)5);
-							tiMeta.setDisplayName("§2" + TTT.local.getMessage("innocent"));
+							tiMeta.setDisplayName("ï¿½2" + TTT.local.getMessage("innocent"));
 							List<String> tiLore = new ArrayList<String>();
 							tiLore.add(TTT.local.getMessage("innocent-id"));
 							tiMeta.setLore(tiLore);
 						}
 						else if (t.getRole() == Role.TRAITOR){
 							ti.setDurability((short)14);
-							tiMeta.setDisplayName("§4" + TTT.local.getMessage("traitor"));
+							tiMeta.setDisplayName("ï¿½4" + TTT.local.getMessage("traitor"));
 							List<String> lore = new ArrayList<String>();
 							lore.add(TTT.local.getMessage("traitor-id"));
 							tiMeta.setLore(lore);
 						}
 						else if (t.getRole() == Role.DETECTIVE){
 							ti.setDurability((short)11);
-							tiMeta.setDisplayName("§1" + TTT.local.getMessage("detective"));
+							tiMeta.setDisplayName("ï¿½1" + TTT.local.getMessage("detective"));
 							List<String> lore = new ArrayList<String>();
 							lore.add(TTT.local.getMessage("detective-id"));
 							tiMeta.setLore(lore);
