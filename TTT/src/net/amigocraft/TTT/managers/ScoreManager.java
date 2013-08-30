@@ -112,9 +112,9 @@ public class ScoreManager {
 	private void handleAlivePlayer(TTTPlayer t){
 		String s = "§l" + t.getName();
 		if (t.getRole() != null){
-			String prefix = innocent.getTeam(t.getRole().toString().toLowerCase().substring(0, 1)).getPrefix();
-			if (prefix.length() + s.length() > 16)
-				s = s.substring(0, 16 - prefix.length());
+			int prefix = t.getRole() != Role.INNOCENT ? 2 : 0;
+			if (prefix + s.length() > 16)
+				s = s.substring(0, 16 - prefix);
 		}
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
@@ -125,9 +125,9 @@ public class ScoreManager {
 	private void handleMIAPlayer(TTTPlayer t){
 		String s = t.getName();
 		if (t.getRole() != null){
-			String prefix = innocent.getTeam(t.getRole().toString().toLowerCase().substring(0, 1)).getPrefix();
-			if (prefix.length() + s.length() > 16)
-				s = s.substring(0, 16 - prefix.length());
+			int prefix = t.getRole() != Role.INNOCENT ? 2 : 0;
+			if (prefix + s.length() > 16)
+				s = s.substring(0, 16 - prefix);
 		}
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
@@ -140,9 +140,9 @@ public class ScoreManager {
 		if (t.isTraitor())
 			s = "§4§m" + t.getName();
 		if (t.getRole() != null){
-			String prefix = innocent.getTeam(t.getRole().toString().toLowerCase().substring(0, 1)).getPrefix();
-			if (prefix.length() + s.length() > 16)
-				s = s.substring(0, 16 - prefix.length());
+			int prefix = t.getRole() != Role.INNOCENT ? 2 : 0;
+			if (prefix + s.length() > 16)
+				s = s.substring(0, 16 - prefix);
 		}
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
