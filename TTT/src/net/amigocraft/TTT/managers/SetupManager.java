@@ -213,6 +213,7 @@ public class SetupManager {
 					}
 					plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 					tasks.remove(worldName);
+					LobbyManager.updateSigns(worldName);
 				}
 			}
 		}, 0L, 20L).getTaskId());
