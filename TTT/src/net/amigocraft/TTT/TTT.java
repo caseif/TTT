@@ -43,7 +43,7 @@ public class TTT extends JavaPlugin implements Listener {
 
 	public static int maxKarma = 1000;
 
-	public static boolean unstable = false;
+	public static String stability = "stable";
 
 	@Override
 	public void onEnable(){

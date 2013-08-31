@@ -1,5 +1,5 @@
 name: TTT
-version: 0.5-pre2
+version: 0.5.0.26
 main: net.amigocraft.TTT.TTT
 author: Maxim Roncace
 website: http://headswilllol.com/
@@ -30,6 +30,7 @@ permissions:
       ttt.help: true
       ttt.lobby.create: true
       ttt.lobby.use: true
+      ttt.build.warn: true
   ttt.import:
     description: Allows player to import worlds into the plugin.
     default: op
@@ -54,6 +55,6 @@ permissions:
   ttt.lobby.use:
     description: Allows use of lobby signs.
     default: true
-  ttt.build.alert:
+  ttt.build.warn:
     description: Players with this node will be warned of unstable builds on join.
     default: op

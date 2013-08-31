@@ -31,15 +31,16 @@ public class BuildChecker implements Runnable {
 				else if (status.equals("UNSTABLE")){
 					if (TTT.plugin.getConfig().getBoolean("unstable-build-warning"))
 						TTT.log.warning(TTT.ANSI_RED + TTT.local.getMessage("unstable-build") + TTT.ANSI_WHITE);
-					TTT.unstable = true;
+					TTT.stability = "unstable";
 				}
 				else if (status.equals("UNKNOWN")){
-					if (TTT.plugin.getConfig().getBoolean("unknown-build-warning")){
+					if (TTT.plugin.getConfig().getBoolean("unknown-build-warning"))
 						TTT.log.warning(TTT.ANSI_RED + TTT.local.getMessage("unknown-build") + TTT.ANSI_WHITE);
-					}
+					TTT.stability = "unknown";
 				}
 				else if (status.equals("PRE")){
 					TTT.log.info(TTT.ANSI_RED + TTT.local.getMessage("prerelease") + TTT.ANSI_WHITE);
+					TTT.stability = "pre";
 				}
 			}
 		}

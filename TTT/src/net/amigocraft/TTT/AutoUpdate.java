@@ -356,18 +356,14 @@ public class AutoUpdate implements Runnable, Listener, CommandExecutor, CommandS
 					return;
 				}
 				final String[] out = new String[] {
-						"["+plugin.getName()+"] New "+type+" available!",
-						"If you want to update from "+av+" to "+updateVersion+" use /update "+plugin.getName(),
-						"See "+pluginURL+" for more information."
+						"["+plugin.getName()+"] If you want to update from "+av+" to "+updateVersion+", use /update "+plugin.getName()
 				};
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new SyncMessageDelayer(null, out));
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 				{
 					public void run()
 					{
-						String[] rout = new String[3];
-						for(int i = 0; i < 3; i++)
-							rout[i] = COLOR_INFO+out[i];
+						String[] rout = new String[]{out[0]};
 						for(Player p: plugin.getServer().getOnlinePlayers())
 							if(hasPermission(p, "autoupdate.announce"))
 								p.sendMessage(rout);
@@ -404,9 +400,7 @@ public class AutoUpdate implements Runnable, Listener, CommandExecutor, CommandS
 				if(hasPermission(p, "autoupdate.announce"))
 				{
 					out = new String[] {
-							COLOR_INFO+"["+plugin.getName()+"] New "+type+" available!",
-							COLOR_INFO+"If you want to update from "+av+" to "+updateVersion+" use /update "+plugin.getName(),
-							COLOR_INFO+"See "+pluginURL+" for more information."
+							COLOR_INFO+"["+plugin.getName()+"] " + COLOR_INFO+"If you want to update from "+av+" to "+updateVersion+" use /update "+plugin.getName()
 					};
 				}
 				else
@@ -417,8 +411,7 @@ public class AutoUpdate implements Runnable, Listener, CommandExecutor, CommandS
 				if(hasPermission(p, "autoupdate.announce"))
 				{
 					out = new String[] {
-							COLOR_INFO+"Please restart the server to finish the update of "+plugin.getName(),
-							COLOR_INFO+"See "+pluginURL+" for more information."
+							COLOR_INFO+"Please restart the server to finish the update of "+plugin.getName()
 					};
 				}
 				else
