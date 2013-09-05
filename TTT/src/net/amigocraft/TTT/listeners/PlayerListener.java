@@ -171,28 +171,30 @@ public class PlayerListener implements Listener {
 				e.setCancelled(true);
 				return;
 			}
-			// guns
-			if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
-				if (e.getPlayer().getItemInHand() != null){
-					if (e.getPlayer().getItemInHand().getItemMeta() != null){
-						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-							if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName()
-									.endsWith(TTT.local.getMessage("Gun"))){
-								if (Round.getRound(tPlayer.getWorld()).getStage() == Stage.PLAYING ||
-										plugin.getConfig().getBoolean("guns-outside-arenas")){
-									e.setCancelled(true);
-									if (e.getPlayer().getInventory().contains(Material.ARROW) ||
-											!plugin.getConfig().getBoolean("require-ammo-for-guns")){
-										if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
-											InventoryUtils.removeArrow(e.getPlayer().getInventory());
-											e.getPlayer().updateInventory();
-										}
-										e.getPlayer().launchProjectile(Arrow.class);
+		}
+		// guns
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
+			if (e.getPlayer().getItemInHand() != null){
+				if (e.getPlayer().getItemInHand().getItemMeta() != null){
+					if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
+						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName()
+								.endsWith(TTT.local.getMessage("gun"))){
+							if ((isPlayer(e.getPlayer().getName()) &&
+									Round.getRound(getTTTPlayer(e.getPlayer().getName())
+											.getWorld()).getStage() == Stage.PLAYING) ||
+									plugin.getConfig().getBoolean("guns-outside-arenas")){
+								e.setCancelled(true);
+								if (e.getPlayer().getInventory().contains(Material.ARROW) ||
+										!plugin.getConfig().getBoolean("require-ammo-for-guns")){
+									if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
+										InventoryUtils.removeArrow(e.getPlayer().getInventory());
+										e.getPlayer().updateInventory();
 									}
-									else
-										e.getPlayer().sendMessage(ChatColor.RED +
-												TTT.local.getMessage("need-ammo"));
+									e.getPlayer().launchProjectile(Arrow.class);
 								}
+								else
+									e.getPlayer().sendMessage(ChatColor.RED +
+											TTT.local.getMessage("need-ammo"));
 							}
 						}
 					}
