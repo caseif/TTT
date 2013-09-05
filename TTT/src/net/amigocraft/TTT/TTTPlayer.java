@@ -74,6 +74,10 @@ public class TTTPlayer {
 		return teamKill;
 	}
 	
+	public Round getRound(){
+		return Round.getRound(world);
+	}
+	
 	public boolean isBodyFound(){
 		return found;
 	}

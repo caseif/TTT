@@ -68,8 +68,9 @@ public class PlayerListener implements Listener {
 				return;
 			}
 			else if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
-				// disallow cheating
-				if (e.getClickedBlock().getType() == Material.ENDER_CHEST){
+				// disallow cheating/bed setting
+				if (e.getClickedBlock().getType() == Material.ENDER_CHEST ||
+						e.getClickedBlock().getType() == Material.BED_BLOCK){
 					e.setCancelled(true);
 					return;
 				}
@@ -255,28 +256,26 @@ public class PlayerListener implements Listener {
 							e.setCancelled(true);
 							return;
 						}
-					}
-
-					if (isPlayer(((Player)ed.getDamager()).getName())){
-						if (Round.getRound(((Player)ed.getDamager()).getWorld().getName().replace("TTT_", ""))
+						if (getTTTPlayer(((Player)ed.getDamager()).getName()).getRound()
 								.getStage() != Stage.PLAYING){
 							e.setCancelled(true);
 							return;
 						}
-					}
-					if (isPlayer(((Player)ed.getDamager()).getName()))
 						if (((Player)ed.getDamager()).getItemInHand() != null)
 							if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
 								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName()
 										!= null)
 									if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName()
-											.equals("�5" + TTT.local.getMessage("crowbar")))
+											.endsWith(TTT.local.getMessage("crowbar")))
 										e.setDamage(plugin.getConfig().getInt("crowbar-damage"));
+					}
 				}
 			}
 			Player p = (Player)e.getEntity();
 			if (isPlayer(p.getName())){
 				TTTPlayer t = getTTTPlayer(p.getName());
+				if (t.getRound().getStage() != Stage.PLAYING)
+					e.setCancelled(true);
 				e.setDamage((int)(e.getDamage() * t.getDamageReduction()));
 				int armor = 0;
 				if (e.getCause() == DamageCause.ENTITY_ATTACK ||
@@ -439,12 +438,12 @@ public class PlayerListener implements Listener {
 		if (TTT.plugin.getConfig().getBoolean("karma-persistence"))
 			KarmaManager.loadKarma(e.getPlayer().getName());
 		if (e.getPlayer().hasPermission("ttt.build.warn"))
-		if (TTT.stability.equals("unstable"))
-			e.getPlayer().sendMessage(ChatColor.DARK_RED + "[TTT] " + TTT.local.getMessage("unstable-build"));
-		else if (TTT.stability.equals("unknown"))
-			e.getPlayer().sendMessage(ChatColor.DARK_RED + "[TTT] " + TTT.local.getMessage("unknown-build"));
-		else if (TTT.stability.equals("pre"))
-			e.getPlayer().sendMessage(ChatColor.DARK_RED + "[TTT] " + TTT.local.getMessage("prerelease"));
+			if (TTT.stability.equals("unstable"))
+				e.getPlayer().sendMessage(ChatColor.DARK_RED + "[TTT] " + TTT.local.getMessage("unstable-build"));
+			else if (TTT.stability.equals("unknown"))
+				e.getPlayer().sendMessage(ChatColor.DARK_RED + "[TTT] " + TTT.local.getMessage("unknown-build"));
+			else if (TTT.stability.equals("pre"))
+				e.getPlayer().sendMessage(ChatColor.DARK_RED + "[TTT] " + TTT.local.getMessage("prerelease"));
 	}
 
 	@EventHandler
@@ -452,13 +451,11 @@ public class PlayerListener implements Listener {
 		String p = e.getPlayer().getName();
 		if (isPlayer(p)){
 			String worldName = "";
-			if (isPlayer(p)){
-				worldName = getTTTPlayer(p).getWorld();
-				RoundManager.resetPlayer(e.getPlayer());
-				for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
-					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
-							.replace("%", worldName));
-			}
+			worldName = getTTTPlayer(p).getWorld();
+			RoundManager.resetPlayer(e.getPlayer());
+			for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
+				pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
+						.replace("%", worldName));
 		}
 		if (!TTT.plugin.getConfig().getBoolean("karma-persistence"))
 			KarmaManager.playerKarma.remove(e.getPlayer().getName());

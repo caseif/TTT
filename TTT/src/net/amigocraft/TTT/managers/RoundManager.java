@@ -430,7 +430,6 @@ public class RoundManager {
 	}
 
 	public static void resetRound(String worldName, boolean inno){
-		System.out.println("resetting");
 		Round.getRound(worldName).setStage(Stage.RESETTING);
 		Round.getRound(worldName).setTime(0);
 		if (tasks.get(worldName) != null)
@@ -483,10 +482,8 @@ public class RoundManager {
 			if (t.getWorld().equals(worldName))
 				if (plugin.getServer().getPlayer(t.getName()) != null)
 					reset.add(t.getName());
-		for (String s : reset){
-			System.out.println(s);
+		for (String s : reset)
 			resetPlayer(plugin.getServer().getPlayer(s));
-		}
 
 		plugin.getServer().unloadWorld("TTT_" + worldName, false);
 		WorldUtils.rollbackWorld(worldName);

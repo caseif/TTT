@@ -57,7 +57,6 @@ public class TTT extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getCommand("ttt").setExecutor(new CommandManager());
 
-		createLocale("l33t.properties");
 		createLocale("template.properties");
 		lang = getConfig().getString("localization");
 		Localization.initialize();
