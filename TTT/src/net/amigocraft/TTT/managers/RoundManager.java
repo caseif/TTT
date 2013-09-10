@@ -31,6 +31,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
+
 public class RoundManager {
 
 	private static TTT plugin = TTT.plugin;
@@ -303,9 +305,8 @@ public class RoundManager {
 					}
 				}
 				Round r = Round.getRound(worldName);
-				if (r == null){
+				if (r == null)
 					r = new Round(worldName);
-				}
 				boolean joined = false;
 				for (TTTPlayer t : TTTPlayer.players)
 					if (t.getName().equals(p.getName()))
@@ -316,6 +317,7 @@ public class RoundManager {
 						if (!loaded){
 							TTT.plugin.getServer().createWorld
 							(new WorldCreator("TTT_" + worldName));
+							fixMultiverse("TTT_" + worldName);
 						}
 						p.teleport(TTT.plugin.getServer().getWorld("TTT_" + worldName)
 								.getSpawnLocation());
@@ -489,5 +491,12 @@ public class RoundManager {
 		WorldUtils.rollbackWorld(worldName);
 		Round.getRound(worldName).setStage(Stage.WAITING);
 		LobbyManager.updateSigns(worldName);
+	}
+	
+	public static void fixMultiverse(String world){
+		if (plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Core")){
+			MultiverseCore p = (MultiverseCore)Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+			p.getMVWorldManager().unloadWorld(world);
+		}
 	}
 }
