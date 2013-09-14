@@ -356,7 +356,7 @@ public class AutoUpdate implements Runnable, Listener, CommandExecutor, CommandS
 					return;
 				}
 				final String[] out = new String[] {
-						"["+plugin.getName()+"] If you want to update from "+av+" to "+updateVersion+", use /update "+plugin.getName()
+						COLOR_INFO + "["+plugin.getName()+"] If you want to update from "+av+" to "+updateVersion+", use /update "+plugin.getName()
 				};
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new SyncMessageDelayer(null, out));
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()

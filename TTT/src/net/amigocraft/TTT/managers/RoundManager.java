@@ -398,7 +398,8 @@ public class RoundManager {
 									.getMessage("translator") + "," +
 									ChatColor.DARK_PURPLE;
 						}
-						Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + p.getName() + addition + " " +
+						Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + p.getName() +
+								addition + " " +
 								TTT.local.getMessage("joined-map") + " \"" + worldName + "\"");
 						int ingamePlayers = 0;
 						for (TTTPlayer t : players)
@@ -406,8 +407,10 @@ public class RoundManager {
 								ingamePlayers += 1;
 						if (ingamePlayers >= TTT.plugin.getConfig().getInt("minimum-players") &&
 								r.getStage() != Stage.PREPARING){
-							for (Player pl : TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
-								pl.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("round-starting"));
+							for (Player pl : TTT.plugin.getServer().getWorld("TTT_" +
+								worldName).getPlayers())
+								pl.sendMessage(ChatColor.DARK_PURPLE + TTT.local
+										.getMessage("round-starting"));
 							r.setTime(TTT.plugin.getConfig().getInt("setup-time"));
 							r.setStage(Stage.PREPARING);
 							SetupManager.setupTimer(worldName);
@@ -474,10 +477,12 @@ public class RoundManager {
 
 		if (inno)
 			Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " +
-					TTT.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") + "!");
+					TTT.local.getMessage("innocent-win").replace("%", "\"" + worldName + "\"") +
+					"!");
 		else
 			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " +
-					TTT.local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") + "!");
+					TTT.local.getMessage("traitor-win").replace("%", "\"" + worldName + "\"") +
+					"!");
 
 		List<String> reset = new ArrayList<String>();
 		for (TTTPlayer t : TTTPlayer.players)
@@ -495,7 +500,8 @@ public class RoundManager {
 	
 	public static void fixMultiverse(String world){
 		if (plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Core")){
-			MultiverseCore p = (MultiverseCore)Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+			MultiverseCore p = (MultiverseCore)Bukkit.getPluginManager()
+					.getPlugin("Multiverse-Core");
 			p.getMVWorldManager().unloadWorld(world);
 		}
 	}

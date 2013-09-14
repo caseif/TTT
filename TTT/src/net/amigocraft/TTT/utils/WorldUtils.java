@@ -37,6 +37,7 @@ public class WorldUtils {
 			File spawnFile = new File(TTT.plugin.getDataFolder() + File.separator + "spawn.yml");
 			if (spawnFile.exists()){
 				YamlConfiguration spawnYaml = new YamlConfiguration();
+				spawnYaml.load(spawnFile);
 				if (spawnYaml.isSet("world") && spawnYaml.isSet("x") &&
 						spawnYaml.isSet("y") && spawnYaml.isSet("z"));
 				Location l = new Location(TTT.plugin.getServer().getWorld(spawnYaml.getString("world")),

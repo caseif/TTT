@@ -42,6 +42,11 @@ public class BuildChecker implements Runnable {
 					TTT.log.info(TTT.ANSI_RED + TTT.local.getMessage("prerelease") + TTT.ANSI_WHITE);
 					TTT.stability = "pre";
 				}
+				else {
+					TTT.log.info("Failed to check build stability against webserver. " +
+							"I probably messed something up on the remote end, so it should " + 
+							"resolve itself within a short bit. :)");
+				}
 			}
 		}
 		catch (Exception ex){

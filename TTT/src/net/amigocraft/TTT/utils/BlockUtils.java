@@ -14,6 +14,7 @@ public class BlockUtils {
 			Block adjBlock = block.getRelative(face);
 			if (adjBlock.getState() instanceof Sign){
 				if (face != BlockFace.UP){
+					@SuppressWarnings("deprecation")
 					byte data = adjBlock.getData();
 					byte north = 0x2;
 					byte south = 0x3;

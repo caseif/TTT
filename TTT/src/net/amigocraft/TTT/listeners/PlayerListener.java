@@ -196,12 +196,14 @@ public class PlayerListener implements Listener {
 									e.getPlayer().sendMessage(ChatColor.RED +
 											TTT.local.getMessage("need-ammo"));
 							}
+							return;
 						}
 					}
 				}
 			}
 		}
-		else if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK){
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK){
+			TTT.log.info("fired");
 			LobbySign sign = null;
 			for (LobbySign l : LobbyManager.signs){
 				if (l.getX() == e.getClickedBlock().getX() && l.getY() == e.getClickedBlock().getY() &&
