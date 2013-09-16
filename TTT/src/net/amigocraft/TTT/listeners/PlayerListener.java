@@ -203,7 +203,6 @@ public class PlayerListener implements Listener {
 			}
 		}
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK){
-			TTT.log.info("fired");
 			LobbySign sign = null;
 			for (LobbySign l : LobbyManager.signs){
 				if (l.getX() == e.getClickedBlock().getX() && l.getY() == e.getClickedBlock().getY() &&
@@ -396,7 +395,9 @@ public class PlayerListener implements Listener {
 								KarmaManager.handleKillKarma(killer, victim);
 							}
 							else if (ed.getDamager() instanceof Projectile){
-								if (((Projectile)ed.getDamager()).getShooter() instanceof Player){
+								if (((Projectile)ed.getDamager()).getShooter() != null &&
+										((Projectile)ed.getDamager()).getShooter()
+										instanceof Player){
 									KarmaManager.handleKillKarma(getTTTPlayer(
 											((Player)((Projectile)ed.getDamager()).getShooter()).getName()), t);
 								}

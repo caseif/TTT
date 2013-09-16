@@ -44,7 +44,10 @@ public class KarmaManager {
 				YamlConfiguration karmaYaml = new YamlConfiguration();
 				karmaYaml.load(karmaFile);
 				if (karmaYaml.isSet(pName))
-					playerKarma.put(pName, karmaYaml.getInt(pName));
+					if (karmaYaml.getInt(pName) > TTT.plugin.getConfig().getInt("max-karma"))
+						playerKarma.put(pName, TTT.plugin.getConfig().getInt("max-karma"));
+					else
+						playerKarma.put(pName, karmaYaml.getInt(pName));
 				else
 					playerKarma.put(pName, 1000);
 			}

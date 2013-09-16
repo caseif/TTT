@@ -111,11 +111,11 @@ public class ScoreManager {
 
 	private void handleAlivePlayer(TTTPlayer t){
 		String s = "§l" + t.getName();
-		if (t.getRole() != null){
-			int prefix = t.getRole() != Role.INNOCENT ? 2 : 0;
-			if (prefix + s.length() > 16)
-				s = s.substring(0, 16 - prefix);
-		}
+		int prefix = 0;
+		if (t.getRole() != null && t.getRole() != Role.INNOCENT)
+			prefix = 2;
+		if (prefix + s.length() > 16)
+			s = s.substring(0, 16 - prefix);
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
@@ -124,11 +124,11 @@ public class ScoreManager {
 
 	private void handleMIAPlayer(TTTPlayer t){
 		String s = t.getName();
-		if (t.getRole() != null){
-			int prefix = t.getRole() != Role.INNOCENT ? 2 : 0;
-			if (prefix + s.length() > 16)
-				s = s.substring(0, 16 - prefix);
-		}
+		int prefix = 0;
+		if (t.getRole() != null && t.getRole() != Role.INNOCENT)
+			prefix = 2;
+		if (prefix + s.length() > 16)
+			s = s.substring(0, 16 - prefix);
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
@@ -136,14 +136,12 @@ public class ScoreManager {
 	}
 
 	private void handleDeadPlayer(TTTPlayer t){
-		String s = "§m" + t.getName();
-		if (t.isTraitor())
-			s = "§4§m" + t.getName();
-		if (t.getRole() != null){
-			int prefix = t.getRole() != Role.INNOCENT ? 2 : 0;
-			if (prefix + s.length() > 16)
-				s = s.substring(0, 16 - prefix);
-		}
+		String s = t.isTraitor() ? "§4§m" + t.getName() : "§m" + t.getName();
+		int prefix = 0;
+		if (t.getRole() != null && t.getRole() != Role.INNOCENT)
+			prefix = 2;
+		if (prefix + s.length() > 16)
+			s = s.substring(0, 16 - prefix);
 		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
 		score1.setScore(t.getDisplayKarma());
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));

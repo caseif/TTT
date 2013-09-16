@@ -50,7 +50,6 @@ public class LobbyManager {
 						tttFolder = new File(str);
 					if (folder != null && tttFolder != null)
 						break;
-
 				}
 				if (folder != null && tttFolder != null)
 					ro = new Round(world);
@@ -65,7 +64,7 @@ public class LobbyManager {
 				saveSign(l);
 				signs.add(l);
 				updateSigns(world);
-				p.sendMessage(ChatColor.GREEN + "Lobby sign created");
+				p.sendMessage(ChatColor.GREEN + "[TTT] " + TTT.local.getMessage("lobby-create"));
 			}
 			else if (type.equalsIgnoreCase("players")){
 				if (number > 0){
