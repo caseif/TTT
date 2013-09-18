@@ -130,7 +130,7 @@ public class TTT extends JavaPlugin implements Listener {
 				Metrics metrics = new Metrics(this);
 				metrics.start();
 			}
-			catch (IOException e) {
+			catch (IOException e){
 				if (plugin.getConfig().getBoolean("verbose-logging"))
 					log.warning(local.getMessage("metrics-fail"));
 			}
@@ -226,7 +226,7 @@ public class TTT extends JavaPlugin implements Listener {
 						(BuildChecker.response >= 500 && BuildChecker.response <= 599)){
 					t2.interrupt();
 					String response = "";
-					if (t2.isAlive() || (BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
+					if ((BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
 							(BuildChecker.response >= 500 && BuildChecker.response <= 599))
 						response = " (" +
 								local.getMessage("response").replace("%", Integer.toString(BuildChecker.response) +

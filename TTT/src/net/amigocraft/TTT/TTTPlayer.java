@@ -120,13 +120,15 @@ public class TTTPlayer {
 	
 	public void calculateDamageReduction(){
 		double a = -1.5839260914526 * Math.pow(10, -7);
-		double b = 0.0002591955951727;
-		double c = -0.6969034697;
+		double b = 2.591955951727 * Math.pow(10, -4);
+		double c = -6.969034697 * Math.pow(10, -4);
 		double d = 0.185644476098;
 		int x = dispKarma;
-		this.damageRed = a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x + d;
+		this.damageRed = Math.round(a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x + d) / 100;
 		if (damageRed > 1)
 			damageRed = 1;
+		else if (damageRed <= 0)
+			damageRed = 0.01;
 	}
 
 	public void addKarma(int karma){

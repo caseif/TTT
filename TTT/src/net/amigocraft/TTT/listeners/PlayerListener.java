@@ -254,23 +254,25 @@ public class PlayerListener implements Listener {
 			if (e instanceof EntityDamageByEntityEvent){
 				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
 				if (ed.getDamager().getType() == EntityType.PLAYER){
-					if (isPlayer(((Player)ed.getDamager()).getName())){
-						if (getTTTPlayer(((Player)ed.getDamager()).getName()).isDead()){
+					Player damager = (Player)ed.getDamager();
+					if (isPlayer(damager.getName())){
+						TTTPlayer dt = getTTTPlayer(((Player)ed.getDamager()).getName());
+						if (dt.isDead()){
 							e.setCancelled(true);
 							return;
 						}
-						if (getTTTPlayer(((Player)ed.getDamager()).getName()).getRound()
-								.getStage() != Stage.PLAYING){
+						if (dt.getRound().getStage() != Stage.PLAYING){
 							e.setCancelled(true);
 							return;
 						}
-						if (((Player)ed.getDamager()).getItemInHand() != null)
-							if (((Player)ed.getDamager()).getItemInHand().getItemMeta() != null)
-								if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName()
+						if (damager.getItemInHand() != null)
+							if (damager.getItemInHand().getItemMeta() != null)
+								if (damager.getItemInHand().getItemMeta().getDisplayName()
 										!= null)
-									if (((Player)ed.getDamager()).getItemInHand().getItemMeta().getDisplayName()
+									if (damager.getItemInHand().getItemMeta().getDisplayName()
 											.endsWith(TTT.local.getMessage("crowbar")))
 										e.setDamage(plugin.getConfig().getInt("crowbar-damage"));
+						e.setDamage((int)(e.getDamage() * dt.getDamageReduction()));
 					}
 				}
 			}
@@ -279,7 +281,6 @@ public class PlayerListener implements Listener {
 				TTTPlayer t = getTTTPlayer(p.getName());
 				if (t.getRound().getStage() != Stage.PLAYING)
 					e.setCancelled(true);
-				e.setDamage((int)(e.getDamage() * t.getDamageReduction()));
 				int armor = 0;
 				if (e.getCause() == DamageCause.ENTITY_ATTACK ||
 						e.getCause() == DamageCause.PROJECTILE ||
@@ -324,6 +325,7 @@ public class PlayerListener implements Listener {
 							armor += protection.get(p.getInventory().getArmorContents()[3].getType());
 				}
 				int actualDamage = (int)(e.getDamage() - ((armor * .04) * e.getDamage()));
+				TTT.log.info(actualDamage + "");
 				if (e instanceof EntityDamageByEntityEvent){
 					EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
 					if (ed.getDamager() instanceof Player){
