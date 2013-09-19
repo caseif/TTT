@@ -12,6 +12,7 @@ import net.amigocraft.TTT.Round;
 import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
+import net.amigocraft.TTT.Variables;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -51,7 +52,7 @@ public class SetupManager {
 						if (p != null){
 							if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 								if (checkPlayers.contains(tp.getName())){
-									if (plugin.getConfig().getBoolean("verbose-logging"))
+									if (Variables.verbose_logging)
 										TTT.log.info(tp.getName() +
 												" was missing from TTT world for 2 ticks, removing...");
 									checkPlayers.remove(tp.getName());
@@ -79,7 +80,7 @@ public class SetupManager {
 					if (tp.getWorld().equals(worldName))
 						playerCount += 1;
 				}
-				if (playerCount >= plugin.getConfig().getInt("minimum-players")){
+				if (playerCount >= Variables.minimum_players){
 					if((currentTime % 10) == 0 && currentTime > 0){
 						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("begin")
@@ -95,7 +96,7 @@ public class SetupManager {
 					else if (currentTime <= 0){
 						int players = plugin.getServer().getWorld("TTT_" + worldName).getPlayers().size();
 						int traitorNum = 0;
-						int limit = (int)(players * plugin.getConfig().getDouble("traitor-ratio"));
+						int limit = (int)(players * Variables.traitor_ratio);
 						if (limit == 0)
 							limit = 1;
 						List<String> innocents = new ArrayList<String>();
@@ -115,8 +116,8 @@ public class SetupManager {
 								traitorNum += 1;
 							}
 						}
-						int dLimit = (int)(players * plugin.getConfig().getDouble("detective-ratio"));
-						if (players >= plugin.getConfig().getInt("minimum-players-for-detective") && dLimit == 0)
+						int dLimit = (int)(players * Variables.detective_ratio);
+						if (players >= Variables.minimum_players_for_detective && dLimit == 0)
 							dLimit += 1;
 						int detectiveNum = 0;
 						while (detectiveNum < dLimit){
@@ -183,7 +184,7 @@ public class SetupManager {
 							}
 						}
 
-						if (TTT.plugin.getConfig().getBoolean("damage-reduction")){
+						if (Variables.damage_reduction){
 							for (Player p : plugin.getServer().getOnlinePlayers()){
 								if (TTTPlayer.isPlayer(p.getName())){
 									TTTPlayer t = TTTPlayer.getTTTPlayer(p.getName());
@@ -200,7 +201,7 @@ public class SetupManager {
 							}
 						}
 
-						r.setTime(plugin.getConfig().getInt("time-limit"));
+						r.setTime(Variables.time_limit);
 						r.setStage(Stage.PLAYING);
 						new RoundManager().gameTimer(worldName);
 						plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));

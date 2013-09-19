@@ -14,6 +14,7 @@ import net.amigocraft.TTT.Round;
 import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
+import net.amigocraft.TTT.Variables;
 import net.amigocraft.TTT.managers.KarmaManager;
 import net.amigocraft.TTT.managers.LobbyManager;
 import net.amigocraft.TTT.managers.RoundManager;
@@ -182,11 +183,11 @@ public class PlayerListener implements Listener {
 							if ((isPlayer(e.getPlayer().getName()) &&
 									Round.getRound(getTTTPlayer(e.getPlayer().getName())
 											.getWorld()).getStage() == Stage.PLAYING) ||
-									plugin.getConfig().getBoolean("guns-outside-arenas")){
+											Variables.guns_outside_arenas){
 								e.setCancelled(true);
 								if (e.getPlayer().getInventory().contains(Material.ARROW) ||
-										!plugin.getConfig().getBoolean("require-ammo-for-guns")){
-									if (plugin.getConfig().getBoolean("require-ammo-for-guns")){
+										!Variables.require_ammo_for_guns){
+									if (Variables.require_ammo_for_guns){
 										InventoryUtils.removeArrow(e.getPlayer().getInventory());
 										e.getPlayer().updateInventory();
 									}
@@ -271,7 +272,7 @@ public class PlayerListener implements Listener {
 										!= null)
 									if (damager.getItemInHand().getItemMeta().getDisplayName()
 											.endsWith(TTT.local.getMessage("crowbar")))
-										e.setDamage(plugin.getConfig().getInt("crowbar-damage"));
+										e.setDamage(Variables.crowbar_damage);
 						e.setDamage((int)(e.getDamage() * dt.getDamageReduction()));
 					}
 				}
@@ -442,7 +443,7 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
-		if (TTT.plugin.getConfig().getBoolean("karma-persistence"))
+		if (Variables.karma_persistence)
 			KarmaManager.loadKarma(e.getPlayer().getName());
 		if (e.getPlayer().hasPermission("ttt.build.warn"))
 			if (TTT.stability.equals("unstable"))
@@ -464,7 +465,7 @@ public class PlayerListener implements Listener {
 				pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
 						.replace("%", worldName));
 		}
-		if (!TTT.plugin.getConfig().getBoolean("karma-persistence"))
+		if (!Variables.karma_persistence)
 			KarmaManager.playerKarma.remove(e.getPlayer().getName());
 	}
 

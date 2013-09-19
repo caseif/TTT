@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import net.amigocraft.TTT.TTT;
+import net.amigocraft.TTT.Variables;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -65,7 +66,7 @@ public class WorldUtils {
 						File newFolder = new File("TTT_" + worldName);
 						try {
 							copyFile(folder, newFolder);
-							if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
+							if (Variables.verbose_logging)
 								TTT.log.info(TTT.local.getMessage("rollback") + " \"" + worldName + "\"!");
 						}
 						catch (IOException ex){

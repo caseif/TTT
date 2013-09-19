@@ -11,6 +11,7 @@ import net.amigocraft.TTT.Round;
 import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
+import net.amigocraft.TTT.Variables;
 import net.amigocraft.TTT.utils.NumUtils;
 
 import org.bukkit.Bukkit;
@@ -101,7 +102,7 @@ public class LobbyManager {
 								final Sign sign = (Sign)b.getState();
 								if (s.getType().equals("status")){
 									sign.setLine(0, "§4" + r.getWorld());
-									String max = TTT.plugin.getConfig().getInt("maximum-players") + "";
+									String max = Variables.maximum_players + "";
 									if (max.equals("-1"))
 										max = "∞";
 									String playerCount = r.getPlayers().size() + "/" + max;
@@ -187,7 +188,7 @@ public class LobbyManager {
 						final Sign sign = (Sign)b.getState();
 						if (s.getType().equals("status")){
 							sign.setLine(0, "§4" + s.getRound());
-							String max = TTT.plugin.getConfig().getInt("maximum-players") + "";
+							String max = Variables.maximum_players + "";
 							if (max.equals("-1"))
 								max = "∞";
 							String playerCount = "0/" + max;

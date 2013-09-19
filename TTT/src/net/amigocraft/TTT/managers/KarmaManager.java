@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
+import net.amigocraft.TTT.Variables;
 
 public class KarmaManager {
 
@@ -44,8 +45,8 @@ public class KarmaManager {
 				YamlConfiguration karmaYaml = new YamlConfiguration();
 				karmaYaml.load(karmaFile);
 				if (karmaYaml.isSet(pName))
-					if (karmaYaml.getInt(pName) > TTT.plugin.getConfig().getInt("max-karma"))
-						playerKarma.put(pName, TTT.plugin.getConfig().getInt("max-karma"));
+					if (karmaYaml.getInt(pName) > Variables.max_karma)
+						playerKarma.put(pName, Variables.max_karma);
 					else
 						playerKarma.put(pName, karmaYaml.getInt(pName));
 				else
@@ -60,17 +61,17 @@ public class KarmaManager {
 	public static void allocateKarma(String worldName){
 		for (TTTPlayer t : TTTPlayer.players){
 			if (t.getWorld().equals(worldName)){
-				t.addKarma(TTT.plugin.getConfig().getInt("karma-heal"));
+				t.addKarma(Variables.karma_heal);
 				if (!t.hasTeamKilled()){
-					int add = TTT.plugin.getConfig().getInt("karma-clean-bonus");
-					if (t.getKarma() > TTT.plugin.getConfig().getInt("default-karma")){
-						if ((TTT.plugin.getConfig().getInt("max-karma") -
-								TTT.plugin.getConfig().getInt("default-karma")) > 0){
-							int above = t.getKarma() - TTT.plugin.getConfig().getInt("default-karma");
+					int add = Variables.karma_clean_bonus;
+					if (t.getKarma() > Variables.default_karma){
+						if ((Variables.max_karma -
+								Variables.default_karma) > 0){
+							int above = t.getKarma() - Variables.default_karma;
 							double percentage = above /
-									(TTT.plugin.getConfig().getInt("max-karma") -
-											TTT.plugin.getConfig().getInt("default-karma"));
-							double divide = percentage / TTT.plugin.getConfig().getInt("karma-clean-half");
+									(Variables.max_karma -
+											Variables.default_karma);
+							double divide = percentage / Variables.karma_clean_half;
 							add /= 2 * divide;
 						}
 					}
@@ -84,45 +85,45 @@ public class KarmaManager {
 		if (damager != null && victim != null){
 			if (damager.isTraitor() == victim.isTraitor())
 				damager.subtractKarma((int)(
-						victim.getKarma() * (damage * TTT.plugin.getConfig().getDouble("damage-penalty"))));
+						victim.getKarma() * (damage * Variables.damage_penalty)));
 			else if (!damager.isTraitor() && victim.isTraitor())
-				damager.addKarma((int)(TTT.plugin.getConfig().getInt("max-karma") *
-						damage * TTT.plugin.getConfig().getDouble("t-damage-reward")));
+				damager.addKarma((int)(Variables.max_karma *
+						damage * Variables.t_damage_reward));
 		}
 	}
 
 	public static void handleKillKarma(TTTPlayer killer, TTTPlayer victim){
 		if (killer.isTraitor() == victim.isTraitor())
-			handleDamageKarma(killer, victim, TTT.plugin.getConfig().getInt("kill-penalty"));
+			handleDamageKarma(killer, victim, Variables.kill_penalty);
 		else if (!killer.isTraitor() && victim.isTraitor())
-			killer.addKarma(TTT.plugin.getConfig().getInt("tbonus") *
-					TTT.plugin.getConfig().getInt("t-damage-bonus") * victim.getKarma());
+			killer.addKarma(Variables.tbonus *
+					Variables.t_damage_reward * victim.getKarma());
 	}
 
 	public static void handleKick(TTTPlayer t){
 		Player p = TTT.plugin.getServer().getPlayer(t.getName());
 		if (p != null){
 			RoundManager.resetPlayer(p);
-			if (TTT.plugin.getConfig().getBoolean("karma-ban")){
+			if (Variables.karma_ban){
 				File f = new File(TTT.plugin.getDataFolder(), "bans.yml");
 				YamlConfiguration y = new YamlConfiguration();
 				try {
 					y.load(f);
-					if (TTT.plugin.getConfig().getInt("karma-ban-time") < 0){
+					if (Variables.karma_ban_time < 0){
 						y.set(t.getName(), -1);
 						y.save(f);
 						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-permaban")
-								.replace("%", TTT.plugin.getConfig().getInt("karma-ban") + "."));
+								.replace("%", Variables.karma_kick + "."));
 					}
 					else {
 						// store unban time as a Unix timestamp
 						int unbanTime = (int)System.currentTimeMillis() / 1000 +
-								(TTT.plugin.getConfig().getInt("karma-ban-time") * 60);
+								(Variables.karma_ban_time * 60);
 						y.set(t.getName(), unbanTime);
 						y.save(f);
 						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-ban")
-								.replace("&", Integer.toString(TTT.plugin.getConfig().getInt("karma-ban-time")))
-								.replace("%", TTT.plugin.getConfig().getInt("karma-ban") + "."));
+								.replace("&", Integer.toString(Variables.karma_ban_time))
+								.replace("%", Variables.karma_kick + "."));
 					}
 				}
 				catch (Exception ex){
@@ -132,7 +133,7 @@ public class KarmaManager {
 			}
 			else
 				p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-kick")
-						.replace("%", Integer.toString(TTT.plugin.getConfig().getInt("karma-kick"))));
+						.replace("%", Integer.toString(Variables.karma_kick)));
 		}
 	}
 }

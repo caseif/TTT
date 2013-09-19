@@ -15,6 +15,7 @@ import net.amigocraft.TTT.Round;
 import net.amigocraft.TTT.Stage;
 import net.amigocraft.TTT.TTT;
 import net.amigocraft.TTT.TTTPlayer;
+import net.amigocraft.TTT.Variables;
 import net.amigocraft.TTT.utils.NumUtils;
 import net.amigocraft.TTT.utils.WorldUtils;
 
@@ -46,7 +47,7 @@ public class RoundManager {
 		for (TTTPlayer t : players)
 			if (t.getWorld().equals(worldName))
 				if (!KarmaManager.playerKarma.containsKey(t.getName()) &&
-						TTT.plugin.getConfig().getBoolean("karma-persistence"))
+						Variables.karma_persistence)
 					KarmaManager.loadKarma(t.getName());
 
 		tasks.put(worldName, plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable(){
@@ -66,7 +67,7 @@ public class RoundManager {
 							if (p != null){
 								if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 									if (checkPlayers.contains(tp.getName())){
-										if (plugin.getConfig().getBoolean("verbose-logging"))
+										if (Variables.verbose_logging)
 											TTT.log.info(tp.getName() +
 													" was missing from TTT world for 2 ticks, removing...");
 										checkPlayers.remove(tp.getName());
@@ -252,7 +253,7 @@ public class RoundManager {
 				if (unbanTime > System.currentTimeMillis() / 1000){
 					y.set(p.getName(), null);
 					y.save(f);
-					if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
+					if (Variables.verbose_logging)
 						TTT.log.info(p.getName() + "'s ban has been lifted");
 				}
 				else {
@@ -312,7 +313,7 @@ public class RoundManager {
 					if (t.getName().equals(p.getName()))
 						joined = true;
 				if (!joined){
-					int maxPlayers = plugin.getConfig().getInt("maximum-players");
+					int maxPlayers = Variables.maximum_players;
 					if (r.getPlayers().size() < maxPlayers || maxPlayers == -1){
 						if (!loaded){
 							TTT.plugin.getServer().createWorld
@@ -405,13 +406,13 @@ public class RoundManager {
 						for (TTTPlayer t : players)
 							if (t.getWorld().equals(worldName))
 								ingamePlayers += 1;
-						if (ingamePlayers >= TTT.plugin.getConfig().getInt("minimum-players") &&
+						if (ingamePlayers >= Variables.minimum_players &&
 								r.getStage() != Stage.PREPARING){
 							for (Player pl : TTT.plugin.getServer().getWorld("TTT_" +
 								worldName).getPlayers())
 								pl.sendMessage(ChatColor.DARK_PURPLE + TTT.local
 										.getMessage("round-starting"));
-							r.setTime(TTT.plugin.getConfig().getInt("setup-time"));
+							r.setTime(Variables.setup_time);
 							r.setStage(Stage.PREPARING);
 							SetupManager.setupTimer(worldName);
 						}

@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 
 import net.amigocraft.TTT.TTT;
+import net.amigocraft.TTT.Variables;
 
 public class Localization {
 
@@ -30,7 +31,7 @@ public class Localization {
 			File file = new File(TTT.plugin.getDataFolder() + File.separator + "locales" + File.separator +
 					TTT.lang + ".properties");
 			is = new FileInputStream(file);
-			if (TTT.plugin.getConfig().getBoolean("verbose-logging"))
+			if (Variables.verbose_logging)
 				TTT.log.info("Loaded locale from " + file.getAbsolutePath());
 		}
 		catch (Exception ex){

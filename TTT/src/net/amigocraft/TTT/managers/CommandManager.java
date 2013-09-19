@@ -5,6 +5,7 @@ import static net.amigocraft.TTT.TTTPlayer.*;
 import java.io.File;
 
 import net.amigocraft.TTT.TTT;
+import net.amigocraft.TTT.Variables;
 import net.amigocraft.TTT.utils.WorldUtils;
 
 import org.bukkit.ChatColor;
@@ -76,7 +77,7 @@ public class CommandManager implements CommandExecutor {
 							try {
 								File spawnFile = new File(plugin.getDataFolder() + File.separator + "spawn.yml");
 								if (!spawnFile.exists()){
-									if (plugin.getConfig().getBoolean("verbose-logging"))
+									if (Variables.verbose_logging)
 										TTT.log.info("No spawn.yml found, creating...");
 									spawnFile.createNewFile();
 								}

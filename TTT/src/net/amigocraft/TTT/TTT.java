@@ -50,7 +50,10 @@ public class TTT extends JavaPlugin implements Listener {
 		log = this.getLogger();
 		kLog = Logger.getLogger("TTT Karma Debug");
 		plugin = this;
-
+		
+		// initialize config variables
+		new Variables(this);
+		
 		// register events, commands, and the plugin variable
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		getServer().getPluginManager().registerEvents(new BlockListener(), this);
@@ -58,7 +61,7 @@ public class TTT extends JavaPlugin implements Listener {
 		getCommand("ttt").setExecutor(new CommandManager());
 
 		createLocale("template.properties");
-		lang = getConfig().getString("localization");
+		lang = Variables.localization;
 		Localization.initialize();
 
 		// copy pre-0.5 folder
@@ -77,7 +80,7 @@ public class TTT extends JavaPlugin implements Listener {
 		// check if config should be overwritten
 		if (!new File(getDataFolder(), "config.yml").exists())
 			saveDefaultConfig();
-		else if (!getConfig().getString("config-version").equals(this.getDescription().getVersion())){
+		else if (!Variables.config_version.equals(this.getDescription().getVersion())){
 			File config = new File(this.getDataFolder(), "config.yml");
 			try {
 				WorldUtils.copyFile(config, new File(this.getDataFolder(), "config.old.yml"));
@@ -119,19 +122,19 @@ public class TTT extends JavaPlugin implements Listener {
 		LobbyManager.resetSigns();
 
 		// autoupdate
-		if (getConfig().getBoolean("enable-auto-update")){
+		if (Variables.enable_auto_update){
 			try {new AutoUpdate(this);}
 			catch (Exception e){e.printStackTrace();}
 		}
 
 		// submit metrics
-		if (getConfig().getBoolean("enable-metrics")){
+		if (Variables.enable_metrics){
 			try {
 				Metrics metrics = new Metrics(this);
 				metrics.start();
 			}
 			catch (IOException e){
-				if (plugin.getConfig().getBoolean("verbose-logging"))
+				if (Variables.verbose_logging)
 					log.warning(local.getMessage("metrics-fail"));
 			}
 		}
@@ -139,9 +142,9 @@ public class TTT extends JavaPlugin implements Listener {
 		File invDir = new File(this.getDataFolder() + File.separator + "inventories");
 		invDir.mkdir();
 
-		maxKarma = getConfig().getInt("max-karma");
+		maxKarma = Variables.max_karma;
 
-		if (getConfig().getBoolean("verbose-logging"))
+		if (Variables.verbose_logging)
 			log.info(this + " " + local.getMessage("enabled"));
 	}
 
@@ -151,7 +154,7 @@ public class TTT extends JavaPlugin implements Listener {
 				"reload/restart");
 		for (Round r : Round.rounds)
 			RoundManager.resetRound(r.getWorld(), true);
-		if (getConfig().getBoolean("verbose-logging"))
+		if (Variables.verbose_logging)
 			log.info(this + " " + local.getMessage("disabled"));
 		plugin = null;
 		lang = null;
@@ -160,7 +163,7 @@ public class TTT extends JavaPlugin implements Listener {
 	public void createFile(String s){
 		File f = new File(TTT.plugin.getDataFolder(), s);
 		if (!f.exists()){
-			if (getConfig().getBoolean("verbose-logging"))
+			if (Variables.verbose_logging)
 				log.info(local.getMessage("creating-file").replace("%", s));
 			try {
 				f.createNewFile();
