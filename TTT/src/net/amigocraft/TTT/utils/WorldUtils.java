@@ -66,7 +66,7 @@ public class WorldUtils {
 						File newFolder = new File("TTT_" + worldName);
 						try {
 							copyFile(folder, newFolder);
-							if (Variables.verbose_logging)
+							if (Variables.VERBOSE_LOGGING)
 								TTT.log.info(TTT.local.getMessage("rollback") + " \"" + worldName + "\"!");
 						}
 						catch (IOException ex){

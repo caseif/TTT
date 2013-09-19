@@ -56,8 +56,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlayerListener implements Listener {
 
-	private TTT plugin = TTT.plugin;
-
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent e){
@@ -82,7 +80,7 @@ public class PlayerListener implements Listener {
 						for (Body b : TTT.bodies){
 							if (b.getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
 								Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
-								Inventory inv = plugin.getServer().createInventory(null, chestinv.getSize());
+								Inventory inv = TTT.plugin.getServer().createInventory(null, chestinv.getSize());
 								inv.setContents(chestinv.getContents());
 								e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("discreet"));
 								tPlayer.setDiscreet(true);
@@ -139,7 +137,7 @@ public class PlayerListener implements Listener {
 												if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName()
 														.equals("�1" + TTT.local.getMessage("dna-scanner"))){
 													e.setCancelled(true);
-													Player killer = plugin.getServer().getPlayer(
+													Player killer = TTT.plugin.getServer().getPlayer(
 															getTTTPlayer(TTT.bodies.get(index).getPlayer()
 																	.getName()).getKiller());
 													if (killer != null){
@@ -183,11 +181,11 @@ public class PlayerListener implements Listener {
 							if ((isPlayer(e.getPlayer().getName()) &&
 									Round.getRound(getTTTPlayer(e.getPlayer().getName())
 											.getWorld()).getStage() == Stage.PLAYING) ||
-											Variables.guns_outside_arenas){
+											Variables.GUNS_OUTSIDE_ARENAS){
 								e.setCancelled(true);
 								if (e.getPlayer().getInventory().contains(Material.ARROW) ||
-										!Variables.require_ammo_for_guns){
-									if (Variables.require_ammo_for_guns){
+										!Variables.REQUIRE_AMMO_FOR_GUNS){
+									if (Variables.REQUIRE_AMMO_FOR_GUNS){
 										InventoryUtils.removeArrow(e.getPlayer().getInventory());
 										e.getPlayer().updateInventory();
 									}
@@ -272,7 +270,7 @@ public class PlayerListener implements Listener {
 										!= null)
 									if (damager.getItemInHand().getItemMeta().getDisplayName()
 											.endsWith(TTT.local.getMessage("crowbar")))
-										e.setDamage(Variables.crowbar_damage);
+										e.setDamage(Variables.CROWBAR_DAMAGE);
 						e.setDamage((int)(e.getDamage() * dt.getDamageReduction()));
 					}
 				}
@@ -443,7 +441,7 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
-		if (Variables.karma_persistence)
+		if (Variables.KARMA_PERSISTENCE)
 			KarmaManager.loadKarma(e.getPlayer().getName());
 		if (e.getPlayer().hasPermission("ttt.build.warn"))
 			if (TTT.stability.equals("unstable"))
@@ -461,11 +459,11 @@ public class PlayerListener implements Listener {
 			String worldName = "";
 			worldName = getTTTPlayer(p).getWorld();
 			RoundManager.resetPlayer(e.getPlayer());
-			for (Player pl : plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
+			for (Player pl : TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers())
 				pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
 						.replace("%", worldName));
 		}
-		if (!Variables.karma_persistence)
+		if (!Variables.KARMA_PERSISTENCE)
 			KarmaManager.playerKarma.remove(e.getPlayer().getName());
 	}
 
@@ -476,7 +474,7 @@ public class PlayerListener implements Listener {
 			if (!e.getFrom().getWorld().getName().equals(e.getTo().getWorld().getName())){
 				String worldName = "TTT_" + getTTTPlayer(p).getWorld();
 				RoundManager.resetPlayer(e.getPlayer());
-				for (Player pl : plugin.getServer().getWorld(worldName).getPlayers())
+				for (Player pl : TTT.plugin.getServer().getWorld(worldName).getPlayers())
 					pl.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + p + " " + TTT.local.getMessage("left-game")
 							.replace("%", worldName));
 			}
@@ -502,7 +500,7 @@ public class PlayerListener implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onPlayerChat(AsyncPlayerChatEvent e){
-		for (Player p : plugin.getServer().getOnlinePlayers()){
+		for (Player p : TTT.plugin.getServer().getOnlinePlayers()){
 			// check if recipient is in TTT game
 			if (isPlayer(p.getName())){ // recipient is in game
 				if (!p.getWorld().getName().equals(e.getPlayer().getWorld().getName())) // sender is not in game
@@ -522,7 +520,7 @@ public class PlayerListener implements Listener {
 					final Player player = e.getPlayer();
 					e.getPlayer().setDisplayName(ChatColor.DARK_BLUE + "[Detective] " + ChatColor.DARK_BLUE + e.getPlayer()
 							.getDisplayName());
-					plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable(){
+					TTT.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(TTT.plugin, new Runnable(){
 						public void run(){
 							String name = player.getDisplayName();
 							name = name.replace(ChatColor.DARK_BLUE + "[Detective] " + ChatColor.DARK_BLUE, "");

@@ -24,8 +24,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class SetupManager {
 
-	private static TTT plugin = TTT.plugin;
-
 	private static HashMap<String, Integer> tasks = new HashMap<String, Integer>();
 
 	private static List<String> checkPlayers = new ArrayList<String>();
@@ -34,7 +32,7 @@ public class SetupManager {
 
 		ScoreManager.sbManagers.put(worldName, new ScoreManager(worldName));
 
-		tasks.put(worldName, plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable(){
+		tasks.put(worldName, TTT.plugin.getServer().getScheduler().runTaskTimer(TTT.plugin, new Runnable(){
 
 			public void run(){
 
@@ -48,11 +46,11 @@ public class SetupManager {
 				List<TTTPlayer> offlinePlayers = new ArrayList<TTTPlayer>();
 				for (TTTPlayer tp : players){
 					if (tp.getWorld().equals(worldName)){
-						Player p = plugin.getServer().getPlayer(tp.getName());
+						Player p = TTT.plugin.getServer().getPlayer(tp.getName());
 						if (p != null){
-							if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
+							if (!TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 								if (checkPlayers.contains(tp.getName())){
-									if (Variables.verbose_logging)
+									if (Variables.VERBOSE_LOGGING)
 										TTT.log.info(tp.getName() +
 												" was missing from TTT world for 2 ticks, removing...");
 									checkPlayers.remove(tp.getName());
@@ -80,29 +78,29 @@ public class SetupManager {
 					if (tp.getWorld().equals(worldName))
 						playerCount += 1;
 				}
-				if (playerCount >= Variables.minimum_players){
+				if (playerCount >= Variables.MINIMUM_PLAYERS){
 					if((currentTime % 10) == 0 && currentTime > 0){
-						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
+						for (Player p : TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("begin")
 									.replace("%", currentTime + " " + TTT.local.getMessage("seconds") + "!"));
 						}
 					}
 					else if (currentTime > 0 && currentTime < 10){
-						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
+						for (Player p : TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("begin")
 									.replace("%", currentTime + " " + TTT.local.getMessage("seconds") + "!"));
 						}
 					}
 					else if (currentTime <= 0){
-						int players = plugin.getServer().getWorld("TTT_" + worldName).getPlayers().size();
+						int players = TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers().size();
 						int traitorNum = 0;
-						int limit = (int)(players * Variables.traitor_ratio);
+						int limit = (int)(players * Variables.TRAITOR_RATIO);
 						if (limit == 0)
 							limit = 1;
 						List<String> innocents = new ArrayList<String>();
 						List<String> traitors = new ArrayList<String>();
 						List<String> detectives = new ArrayList<String>();
-						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
+						for (Player p : TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							innocents.add(p.getName());
 							p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("begun"));
 						}
@@ -116,8 +114,8 @@ public class SetupManager {
 								traitorNum += 1;
 							}
 						}
-						int dLimit = (int)(players * Variables.detective_ratio);
-						if (players >= Variables.minimum_players_for_detective && dLimit == 0)
+						int dLimit = (int)(players * Variables.DETECTIVE_RATIO);
+						if (players >= Variables.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0)
 							dLimit += 1;
 						int detectiveNum = 0;
 						while (detectiveNum < dLimit){
@@ -142,7 +140,7 @@ public class SetupManager {
 						dnaMeta.setDisplayName("§1" + TTT.local.getMessage("dna-scanner"));
 						dnaScanner.setItemMeta(dnaMeta);
 						for (String s : innocents){
-							Player pl = plugin.getServer().getPlayer(s);
+							Player pl = TTT.plugin.getServer().getPlayer(s);
 							TTTPlayer t = TTTPlayer.getTTTPlayer(s);
 							if (pl != null && t != null){
 								t.setRole(Role.INNOCENT);
@@ -153,7 +151,7 @@ public class SetupManager {
 							}
 						}
 						for (String s : traitors){
-							Player pl = plugin.getServer().getPlayer(s);
+							Player pl = TTT.plugin.getServer().getPlayer(s);
 							TTTPlayer t = TTTPlayer.getTTTPlayer(s);
 							if (pl != null && t != null){
 								t.setRole(Role.TRAITOR);
@@ -173,7 +171,7 @@ public class SetupManager {
 							}
 						}
 						for (String s : detectives){
-							Player pl = plugin.getServer().getPlayer(s);
+							Player pl = TTT.plugin.getServer().getPlayer(s);
 							TTTPlayer t = TTTPlayer.getTTTPlayer(s);
 							if (pl != null && t != null){
 								t.setRole(Role.DETECTIVE);
@@ -184,8 +182,8 @@ public class SetupManager {
 							}
 						}
 
-						if (Variables.damage_reduction){
-							for (Player p : plugin.getServer().getOnlinePlayers()){
+						if (Variables.DAMAGE_REDUCTION){
+							for (Player p : TTT.plugin.getServer().getOnlinePlayers()){
 								if (TTTPlayer.isPlayer(p.getName())){
 									TTTPlayer t = TTTPlayer.getTTTPlayer(p.getName());
 									t.calculateDamageReduction();
@@ -201,10 +199,10 @@ public class SetupManager {
 							}
 						}
 
-						r.setTime(Variables.time_limit);
+						r.setTime(Variables.TIME_LIMIT);
 						r.setStage(Stage.PLAYING);
 						new RoundManager().gameTimer(worldName);
-						plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
+						TTT.plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 						tasks.remove(worldName);
 						LobbyManager.updateSigns(worldName);
 					}
@@ -214,14 +212,19 @@ public class SetupManager {
 				else {
 					r.setTime(0);
 					r.setStage(Stage.WAITING);
-					for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
+					for (Player p : TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("waiting"));
 					}
-					plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
+					TTT.plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 					tasks.remove(worldName);
 					LobbyManager.updateSigns(worldName);
 				}
 			}
 		}, 0L, 20L).getTaskId());
+	}
+	
+	public static void uninitialize(){
+		tasks = null;
+		checkPlayers = null;
 	}
 }

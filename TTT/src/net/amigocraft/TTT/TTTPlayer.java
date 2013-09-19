@@ -132,26 +132,26 @@ public class TTTPlayer {
 	}
 
 	public void addKarma(int karma){
-		if (karma == 0 && Variables.karma_round_to_one)
+		if (karma == 0 && Variables.KARMA_ROUND_TO_ONE)
 			karma = 1;
 		if (this.karma + karma < TTT.maxKarma)
 			this.karma += karma;
 		else if (this.karma < TTT.maxKarma)
 			this.karma = TTT.maxKarma;
-		if (Variables.karma_debug)
+		if (Variables.KARMA_DEBUG)
 			TTT.kLog.info(getName() + ": +" + karma + ". " + "New value: " + getKarma());
 	}
 
 	public void subtractKarma(int karma){
-		if (karma == 0 && Variables.karma_round_to_one)
+		if (karma == 0 && Variables.KARMA_ROUND_TO_ONE)
 			karma = 1;
-		if (this.karma - karma < Variables.karma_kick)
+		if (this.karma - karma < Variables.KARMA_KICK)
 			KarmaManager.handleKick(this);
 		else {
 			this.karma -= karma;
 			teamKill = true;
 		}
-		if (Variables.karma_debug)
+		if (Variables.KARMA_DEBUG)
 			TTT.kLog.info(getName() + ": -" + karma + ". " + "New value: " + getKarma());
 	}
 	

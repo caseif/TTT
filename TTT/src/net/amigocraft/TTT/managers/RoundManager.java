@@ -36,8 +36,6 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class RoundManager {
 
-	private static TTT plugin = TTT.plugin;
-
 	private static HashMap<String, Integer> tasks = new HashMap<String, Integer>();
 
 	private static List<String> checkPlayers = new ArrayList<String>();
@@ -47,10 +45,10 @@ public class RoundManager {
 		for (TTTPlayer t : players)
 			if (t.getWorld().equals(worldName))
 				if (!KarmaManager.playerKarma.containsKey(t.getName()) &&
-						Variables.karma_persistence)
+						Variables.KARMA_PERSISTENCE)
 					KarmaManager.loadKarma(t.getName());
 
-		tasks.put(worldName, plugin.getServer().getScheduler().runTaskTimer(plugin, new Runnable(){
+		tasks.put(worldName, TTT.plugin.getServer().getScheduler().runTaskTimer(TTT.plugin, new Runnable(){
 
 			public void run(){
 
@@ -63,11 +61,11 @@ public class RoundManager {
 				for (TTTPlayer tp : players){
 					if (tp.getWorld().equals(worldName)){
 						if (Round.getRound(worldName) != null){
-							Player p = plugin.getServer().getPlayer(tp.getName());
+							Player p = TTT.plugin.getServer().getPlayer(tp.getName());
 							if (p != null){
-								if (!plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
+								if (!TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers().contains(p)){
 									if (checkPlayers.contains(tp.getName())){
-										if (Variables.verbose_logging)
+										if (Variables.VERBOSE_LOGGING)
 											TTT.log.info(tp.getName() +
 													" was missing from TTT world for 2 ticks, removing...");
 										checkPlayers.remove(tp.getName());
@@ -79,9 +77,9 @@ public class RoundManager {
 										checkPlayers.add(tp.getName());
 								}
 								else if (tp.getRole() == Role.DETECTIVE){ // manage DNA Scanners
-									Player tracker = plugin.getServer().getPlayer(tp.getName());
+									Player tracker = TTT.plugin.getServer().getPlayer(tp.getName());
 									if (tp.getTracking() != null){
-										Player killer = plugin.getServer().getPlayer(tp.getTracking());
+										Player killer = TTT.plugin.getServer().getPlayer(tp.getTracking());
 										if (killer != null && isPlayer(tp.getTracking()))
 											tracker.setCompassTarget(killer.getLocation());
 										else {
@@ -135,7 +133,7 @@ public class RoundManager {
 					Round r = Round.getRound(worldName);
 					int rTime = r.getTime();
 					if (rTime % 60 == 0 && rTime >= 60){
-						for (Player p : plugin.getServer().getWorld("TTT_" + worldName)
+						for (Player p : TTT.plugin.getServer().getWorld("TTT_" + worldName)
 								.getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime / 60) +
 									" " + TTT.local.getMessage("minutes") + " " +
@@ -143,7 +141,7 @@ public class RoundManager {
 						}
 					}
 					else if (rTime % 10 == 0 && rTime > 10 && rTime < 60){
-						for (Player p : plugin.getServer().getWorld("TTT_" + worldName)
+						for (Player p : TTT.plugin.getServer().getWorld("TTT_" + worldName)
 								.getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " +
 									TTT.local.getMessage("seconds") + " " +
@@ -151,7 +149,7 @@ public class RoundManager {
 						}
 					}
 					else if (rTime < 10 && rTime > 0){
-						for (Player p : plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
+						for (Player p : TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers()){
 							p.sendMessage(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " +
 									TTT.local.getMessage("seconds") + " " +
 									TTT.local.getMessage("left"));
@@ -167,19 +165,19 @@ public class RoundManager {
 				// hide dead players
 				for (TTTPlayer p : players){
 					if (p.isDead()){
-						if (plugin.getServer().getPlayer(p.getName()) != null){
-							if (plugin.getServer().getWorld("TTT_" + worldName) != null){
-								if (plugin.getServer().getWorld("TTT_" + worldName).getPlayers()
+						if (TTT.plugin.getServer().getPlayer(p.getName()) != null){
+							if (TTT.plugin.getServer().getWorld("TTT_" + worldName) != null){
+								if (TTT.plugin.getServer().getWorld("TTT_" + worldName).getPlayers()
 										.contains(
-										plugin.getServer().getPlayer(p.getName()))){
-									plugin.getServer().getPlayer(p.getName()).setAllowFlight(true);
+										TTT.plugin.getServer().getPlayer(p.getName()))){
+									TTT.plugin.getServer().getPlayer(p.getName()).setAllowFlight(true);
 									for (TTTPlayer other : players){
 										if (other.getWorld().equals(worldName) &&
-												plugin.getServer().getPlayer(
+												TTT.plugin.getServer().getPlayer(
 												other.getName()) != null)
-											plugin.getServer().getPlayer(other.getName())
+											TTT.plugin.getServer().getPlayer(other.getName())
 											.hidePlayer(
-													plugin.getServer().getPlayer(p.getName()));
+													TTT.plugin.getServer().getPlayer(p.getName()));
 									}
 								}
 							}
@@ -239,7 +237,7 @@ public class RoundManager {
 			}
 			LobbyManager.updateSigns(worldName);
 		}
-		p.setScoreboard(plugin.getServer().getScoreboardManager().getNewScoreboard());
+		p.setScoreboard(TTT.plugin.getServer().getScoreboardManager().getNewScoreboard());
 		WorldUtils.teleportPlayer(p);
 	}
 
@@ -253,7 +251,7 @@ public class RoundManager {
 				if (unbanTime > System.currentTimeMillis() / 1000){
 					y.set(p.getName(), null);
 					y.save(f);
-					if (Variables.verbose_logging)
+					if (Variables.VERBOSE_LOGGING)
 						TTT.log.info(p.getName() + "'s ban has been lifted");
 				}
 				else {
@@ -313,7 +311,7 @@ public class RoundManager {
 					if (t.getName().equals(p.getName()))
 						joined = true;
 				if (!joined){
-					int maxPlayers = Variables.maximum_players;
+					int maxPlayers = Variables.MAXIMUM_PLAYERS;
 					if (r.getPlayers().size() < maxPlayers || maxPlayers == -1){
 						if (!loaded){
 							TTT.plugin.getServer().createWorld
@@ -406,13 +404,13 @@ public class RoundManager {
 						for (TTTPlayer t : players)
 							if (t.getWorld().equals(worldName))
 								ingamePlayers += 1;
-						if (ingamePlayers >= Variables.minimum_players &&
+						if (ingamePlayers >= Variables.MINIMUM_PLAYERS &&
 								r.getStage() != Stage.PREPARING){
 							for (Player pl : TTT.plugin.getServer().getWorld("TTT_" +
 								worldName).getPlayers())
 								pl.sendMessage(ChatColor.DARK_PURPLE + TTT.local
 										.getMessage("round-starting"));
-							r.setTime(Variables.setup_time);
+							r.setTime(Variables.SETUP_TIME);
 							r.setStage(Stage.PREPARING);
 							SetupManager.setupTimer(worldName);
 						}
@@ -439,7 +437,7 @@ public class RoundManager {
 		Round.getRound(worldName).setStage(Stage.RESETTING);
 		Round.getRound(worldName).setTime(0);
 		if (tasks.get(worldName) != null)
-			plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
+			TTT.plugin.getServer().getScheduler().cancelTask(tasks.get(worldName));
 		tasks.remove(worldName);
 		List<Body> removeBodies = new ArrayList<Body>();
 		List<Body> removeFoundBodies = new ArrayList<Body>();
@@ -488,22 +486,27 @@ public class RoundManager {
 		List<String> reset = new ArrayList<String>();
 		for (TTTPlayer t : TTTPlayer.players)
 			if (t.getWorld().equals(worldName))
-				if (plugin.getServer().getPlayer(t.getName()) != null)
+				if (TTT.plugin.getServer().getPlayer(t.getName()) != null)
 					reset.add(t.getName());
 		for (String s : reset)
-			resetPlayer(plugin.getServer().getPlayer(s));
+			resetPlayer(TTT.plugin.getServer().getPlayer(s));
 
-		plugin.getServer().unloadWorld("TTT_" + worldName, false);
+		TTT.plugin.getServer().unloadWorld("TTT_" + worldName, false);
 		WorldUtils.rollbackWorld(worldName);
 		Round.getRound(worldName).setStage(Stage.WAITING);
 		LobbyManager.updateSigns(worldName);
 	}
 	
 	public static void fixMultiverse(String world){
-		if (plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Core")){
+		if (TTT.plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Core")){
 			MultiverseCore p = (MultiverseCore)Bukkit.getPluginManager()
 					.getPlugin("Multiverse-Core");
 			p.getMVWorldManager().unloadWorld(world);
 		}
+	}
+	
+	public static void uninitialize(){
+		tasks = null;
+		checkPlayers = null;
 	}
 }

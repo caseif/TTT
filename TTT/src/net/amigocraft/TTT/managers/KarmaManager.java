@@ -45,8 +45,8 @@ public class KarmaManager {
 				YamlConfiguration karmaYaml = new YamlConfiguration();
 				karmaYaml.load(karmaFile);
 				if (karmaYaml.isSet(pName))
-					if (karmaYaml.getInt(pName) > Variables.max_karma)
-						playerKarma.put(pName, Variables.max_karma);
+					if (karmaYaml.getInt(pName) > Variables.MAX_KARMA)
+						playerKarma.put(pName, Variables.MAX_KARMA);
 					else
 						playerKarma.put(pName, karmaYaml.getInt(pName));
 				else
@@ -61,17 +61,17 @@ public class KarmaManager {
 	public static void allocateKarma(String worldName){
 		for (TTTPlayer t : TTTPlayer.players){
 			if (t.getWorld().equals(worldName)){
-				t.addKarma(Variables.karma_heal);
+				t.addKarma(Variables.KARMA_HEAL);
 				if (!t.hasTeamKilled()){
-					int add = Variables.karma_clean_bonus;
-					if (t.getKarma() > Variables.default_karma){
-						if ((Variables.max_karma -
-								Variables.default_karma) > 0){
-							int above = t.getKarma() - Variables.default_karma;
+					int add = Variables.KARMA_CLEAN_BONUS;
+					if (t.getKarma() > Variables.DEFAULT_KARMA){
+						if ((Variables.MAX_KARMA -
+								Variables.DEFAULT_KARMA) > 0){
+							int above = t.getKarma() - Variables.DEFAULT_KARMA;
 							double percentage = above /
-									(Variables.max_karma -
-											Variables.default_karma);
-							double divide = percentage / Variables.karma_clean_half;
+									(Variables.MAX_KARMA -
+											Variables.DEFAULT_KARMA);
+							double divide = percentage / Variables.KARMA_CLEAN_HALF;
 							add /= 2 * divide;
 						}
 					}
@@ -85,45 +85,45 @@ public class KarmaManager {
 		if (damager != null && victim != null){
 			if (damager.isTraitor() == victim.isTraitor())
 				damager.subtractKarma((int)(
-						victim.getKarma() * (damage * Variables.damage_penalty)));
+						victim.getKarma() * (damage * Variables.DAMAGE_PENALTY)));
 			else if (!damager.isTraitor() && victim.isTraitor())
-				damager.addKarma((int)(Variables.max_karma *
-						damage * Variables.t_damage_reward));
+				damager.addKarma((int)(Variables.MAX_KARMA *
+						damage * Variables.T_DAMAGE_REWARD));
 		}
 	}
 
 	public static void handleKillKarma(TTTPlayer killer, TTTPlayer victim){
 		if (killer.isTraitor() == victim.isTraitor())
-			handleDamageKarma(killer, victim, Variables.kill_penalty);
+			handleDamageKarma(killer, victim, Variables.KILL_PENALTY);
 		else if (!killer.isTraitor() && victim.isTraitor())
-			killer.addKarma(Variables.tbonus *
-					Variables.t_damage_reward * victim.getKarma());
+			killer.addKarma(Variables.TBONUS *
+					Variables.T_DAMAGE_REWARD * victim.getKarma());
 	}
 
 	public static void handleKick(TTTPlayer t){
 		Player p = TTT.plugin.getServer().getPlayer(t.getName());
 		if (p != null){
 			RoundManager.resetPlayer(p);
-			if (Variables.karma_ban){
+			if (Variables.KARMA_BAN){
 				File f = new File(TTT.plugin.getDataFolder(), "bans.yml");
 				YamlConfiguration y = new YamlConfiguration();
 				try {
 					y.load(f);
-					if (Variables.karma_ban_time < 0){
+					if (Variables.KARMA_BAN_TIME < 0){
 						y.set(t.getName(), -1);
 						y.save(f);
 						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-permaban")
-								.replace("%", Variables.karma_kick + "."));
+								.replace("%", Variables.KARMA_KICK + "."));
 					}
 					else {
 						// store unban time as a Unix timestamp
 						int unbanTime = (int)System.currentTimeMillis() / 1000 +
-								(Variables.karma_ban_time * 60);
+								(Variables.KARMA_BAN_TIME * 60);
 						y.set(t.getName(), unbanTime);
 						y.save(f);
 						p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-ban")
-								.replace("&", Integer.toString(Variables.karma_ban_time))
-								.replace("%", Variables.karma_kick + "."));
+								.replace("&", Integer.toString(Variables.KARMA_BAN_TIME))
+								.replace("%", Variables.KARMA_KICK + "."));
 					}
 				}
 				catch (Exception ex){
@@ -133,7 +133,7 @@ public class KarmaManager {
 			}
 			else
 				p.sendMessage(ChatColor.DARK_PURPLE + TTT.local.getMessage("karma-kick")
-						.replace("%", Integer.toString(Variables.karma_kick)));
+						.replace("%", Integer.toString(Variables.KARMA_KICK)));
 		}
 	}
 }

@@ -17,8 +17,6 @@ import org.bukkit.entity.Player;
 
 public class CommandManager implements CommandExecutor {
 
-	private TTT plugin = TTT.plugin;
-
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
 		if (commandLabel.equalsIgnoreCase("ttt")){
 			if (args.length > 0){
@@ -75,9 +73,9 @@ public class CommandManager implements CommandExecutor {
 					if (sender.hasPermission("ttt.setspawn")){
 						if (sender instanceof Player){
 							try {
-								File spawnFile = new File(plugin.getDataFolder() + File.separator + "spawn.yml");
+								File spawnFile = new File(TTT.plugin.getDataFolder() + File.separator + "spawn.yml");
 								if (!spawnFile.exists()){
-									if (Variables.verbose_logging)
+									if (Variables.VERBOSE_LOGGING)
 										TTT.log.info("No spawn.yml found, creating...");
 									spawnFile.createNewFile();
 								}

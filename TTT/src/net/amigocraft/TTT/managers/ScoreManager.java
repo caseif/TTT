@@ -147,5 +147,10 @@ public class ScoreManager {
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
 		score2.setScore(t.getDisplayKarma());
 	}
+	
+	public static void uninitialize(){
+		sbManagers = null;
+		manager = null;
+	}
 
 }

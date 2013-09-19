@@ -16,8 +16,11 @@ import net.amigocraft.TTT.listeners.EntityListener;
 import net.amigocraft.TTT.listeners.PlayerListener;
 import net.amigocraft.TTT.localization.Localization;
 import net.amigocraft.TTT.managers.CommandManager;
+import net.amigocraft.TTT.managers.KarmaManager;
 import net.amigocraft.TTT.managers.LobbyManager;
 import net.amigocraft.TTT.managers.RoundManager;
+import net.amigocraft.TTT.managers.ScoreManager;
+import net.amigocraft.TTT.managers.SetupManager;
 import net.amigocraft.TTT.utils.NumUtils;
 import net.amigocraft.TTT.utils.WorldUtils;
 
@@ -52,7 +55,7 @@ public class TTT extends JavaPlugin implements Listener {
 		plugin = this;
 		
 		// initialize config variables
-		new Variables(this);
+		Variables.initialize();
 		
 		// register events, commands, and the plugin variable
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
@@ -61,7 +64,7 @@ public class TTT extends JavaPlugin implements Listener {
 		getCommand("ttt").setExecutor(new CommandManager());
 
 		createLocale("template.properties");
-		lang = Variables.localization;
+		lang = Variables.LOCALIZATION;
 		Localization.initialize();
 
 		// copy pre-0.5 folder
@@ -80,7 +83,7 @@ public class TTT extends JavaPlugin implements Listener {
 		// check if config should be overwritten
 		if (!new File(getDataFolder(), "config.yml").exists())
 			saveDefaultConfig();
-		else if (!Variables.config_version.equals(this.getDescription().getVersion())){
+		else if (!Variables.CONFIG_VERSION.equals(this.getDescription().getVersion())){
 			File config = new File(this.getDataFolder(), "config.yml");
 			try {
 				WorldUtils.copyFile(config, new File(this.getDataFolder(), "config.old.yml"));
@@ -122,19 +125,19 @@ public class TTT extends JavaPlugin implements Listener {
 		LobbyManager.resetSigns();
 
 		// autoupdate
-		if (Variables.enable_auto_update){
+		if (Variables.ENABLE_AUTO_UPDATE){
 			try {new AutoUpdate(this);}
 			catch (Exception e){e.printStackTrace();}
 		}
 
 		// submit metrics
-		if (Variables.enable_metrics){
+		if (Variables.ENABLE_METRICS){
 			try {
 				Metrics metrics = new Metrics(this);
 				metrics.start();
 			}
 			catch (IOException e){
-				if (Variables.verbose_logging)
+				if (Variables.VERBOSE_LOGGING)
 					log.warning(local.getMessage("metrics-fail"));
 			}
 		}
@@ -142,9 +145,9 @@ public class TTT extends JavaPlugin implements Listener {
 		File invDir = new File(this.getDataFolder() + File.separator + "inventories");
 		invDir.mkdir();
 
-		maxKarma = Variables.max_karma;
+		maxKarma = Variables.MAX_KARMA;
 
-		if (Variables.verbose_logging)
+		if (Variables.VERBOSE_LOGGING)
 			log.info(this + " " + local.getMessage("enabled"));
 	}
 
@@ -154,8 +157,19 @@ public class TTT extends JavaPlugin implements Listener {
 				"reload/restart");
 		for (Round r : Round.rounds)
 			RoundManager.resetRound(r.getWorld(), true);
-		if (Variables.verbose_logging)
+		
+		// uninitialize static variables so as not to cause memory leaks when reloading
+		Round.rounds = null;
+		TTTPlayer.players = null;
+		KarmaManager.playerKarma = null;
+		LobbyManager.df = null;
+		LobbyManager.signs = null;
+		RoundManager.uninitialize();
+		ScoreManager.uninitialize();
+		SetupManager.uninitialize();
+		if (Variables.VERBOSE_LOGGING)
 			log.info(this + " " + local.getMessage("disabled"));
+		Localization.messages = null;
 		plugin = null;
 		lang = null;
 	}
@@ -163,7 +177,7 @@ public class TTT extends JavaPlugin implements Listener {
 	public void createFile(String s){
 		File f = new File(TTT.plugin.getDataFolder(), s);
 		if (!f.exists()){
-			if (Variables.verbose_logging)
+			if (Variables.VERBOSE_LOGGING)
 				log.info(local.getMessage("creating-file").replace("%", s));
 			try {
 				f.createNewFile();

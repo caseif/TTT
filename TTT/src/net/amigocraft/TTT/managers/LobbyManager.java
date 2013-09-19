@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
 
 public class LobbyManager {
 
-	private static DecimalFormat df = new DecimalFormat("##");
+	public static DecimalFormat df = new DecimalFormat("##");
 
 	public static List<LobbySign> signs = new ArrayList<LobbySign>();
 
@@ -102,7 +102,7 @@ public class LobbyManager {
 								final Sign sign = (Sign)b.getState();
 								if (s.getType().equals("status")){
 									sign.setLine(0, "§4" + r.getWorld());
-									String max = Variables.maximum_players + "";
+									String max = Variables.MAXIMUM_PLAYERS + "";
 									if (max.equals("-1"))
 										max = "∞";
 									String playerCount = r.getPlayers().size() + "/" + max;
@@ -188,7 +188,7 @@ public class LobbyManager {
 						final Sign sign = (Sign)b.getState();
 						if (s.getType().equals("status")){
 							sign.setLine(0, "§4" + s.getRound());
-							String max = Variables.maximum_players + "";
+							String max = Variables.MAXIMUM_PLAYERS + "";
 							if (max.equals("-1"))
 								max = "∞";
 							String playerCount = "0/" + max;

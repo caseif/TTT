@@ -25,16 +25,16 @@ public class BuildChecker implements Runnable {
 				br = new BufferedReader(isr);
 				String status = br.readLine();
 				if (status.equals("STABLE")){
-					if (Variables.verbose_logging)
+					if (Variables.VERBOSE_LOGGING)
 						TTT.log.info(TTT.local.getMessage("stable-build"));
 				}
 				else if (status.equals("UNSTABLE")){
-					if (Variables.unstable_build_warning)
+					if (Variables.UNSTABLE_BUILD_WARNING)
 						TTT.log.warning(TTT.ANSI_RED + TTT.local.getMessage("unstable-build") + TTT.ANSI_WHITE);
 					TTT.stability = "unstable";
 				}
 				else if (status.equals("UNKNOWN")){
-					if (Variables.unknown_build_warning)
+					if (Variables.UNKNOWN_BUILD_WARNING)
 						TTT.log.warning(TTT.ANSI_RED + TTT.local.getMessage("unknown-build") + TTT.ANSI_WHITE);
 					TTT.stability = "unknown";
 				}

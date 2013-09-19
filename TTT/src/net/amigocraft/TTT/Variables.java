@@ -1,96 +1,90 @@
 package net.amigocraft.TTT;
 
 public class Variables {
+	
+	public static double DETECTIVE_RATIO;
+	public static int MAXIMUM_PLAYERS;
+	public static double TRAITOR_RATIO;
+	public static int MINIMUM_PLAYERS_FOR_DETECTIVE;
+	public static int CROWBAR_DAMAGE;
+	public static boolean GUNS_OUTSIDE_ARENAS;
+	public static boolean REQUIRE_AMMO_FOR_GUNS;
+	public static boolean KARMA_PERSISTENCE;
+	public static int DEFAULT_KARMA;
+	public static int MAX_KARMA;
+	public static int KARMA_HEAL;
+	public static int KARMA_CLEAN_BONUS;
+	public static double KARMA_CLEAN_HALF;
+	public static double DAMAGE_PENALTY;
+	public static int KILL_PENALTY;
+	public static int T_DAMAGE_REWARD;
+	public static int TBONUS;
+	public static boolean KARMA_ROUND_TO_ONE;
+	public static int KARMA_KICK;
+	public static boolean KARMA_BAN;
+	public static int KARMA_BAN_TIME;
+	public static boolean KARMA_DEBUG;
+	public static boolean VERBOSE_LOGGING;
+	public static boolean DAMAGE_REDUCTION;
+	public static boolean ENABLE_AUTO_UPDATE;
+	public static boolean ENABLE_METRICS;
+	public static String LOCALIZATION;
+	public static boolean UNKNOWN_BUILD_WARNING;
+	public static boolean UNSTABLE_BUILD_WARNING;
+	public static String CONFIG_VERSION;
+	public static int MINIMUM_PLAYERS;
+	public static int TIME_LIMIT;
+	public static int SETUP_TIME;
 
-	private TTT plugin;
-	public static double detective_ratio;
-	public static int maximum_players;
-	public static double traitor_ratio;
-	public static int minimum_players_for_detective;
-	public static int crowbar_damage;
-	public static boolean guns_outside_arenas;
-	public static boolean require_ammo_for_guns;
-	public static boolean karma_persistence;
-	public static int default_karma;
-	public static int max_karma;
-	public static int karma_heal;
-	public static int karma_clean_bonus;
-	public static double karma_clean_half;
-	public static double damage_penalty;
-	public static int kill_penalty;
-	public static int t_damage_reward;
-	public static int tbonus;
-	public static boolean karma_round_to_one;
-	public static int karma_kick;
-	public static boolean karma_ban;
-	public static int karma_ban_time;
-	public static boolean karma_debug;
-	public static boolean verbose_logging;
-	public static boolean damage_reduction;
-	public static boolean enable_auto_update;
-	public static boolean enable_metrics;
-	public static String localization;
-	public static boolean unknown_build_warning;
-	public static boolean unstable_build_warning;
-	public static String config_version;
-	public static int minimum_players;
-	public static int time_limit;
-	public static int setup_time;
-
-	public Variables(TTT plugin) {
-		this.plugin = plugin;
-		InitialiseVariables();
+	public static void initialize(){
+		TIME_LIMIT = getInt("time-limit");
+		SETUP_TIME = getInt("setup-time");
+		MINIMUM_PLAYERS = getInt("minimum-players");
+		MAXIMUM_PLAYERS = getInt("maximum-players");
+		TRAITOR_RATIO = getDouble("traitor-ratio");
+		DETECTIVE_RATIO = getDouble("detective-ratio");
+		MINIMUM_PLAYERS_FOR_DETECTIVE = getInt("minimum-players-for-detective");
+		CROWBAR_DAMAGE = getInt("crowbar-damage");
+		GUNS_OUTSIDE_ARENAS = getBoolean("guns-outside-arenas");
+		REQUIRE_AMMO_FOR_GUNS = getBoolean("require-ammo-for-guns");
+		KARMA_PERSISTENCE = getBoolean("karma-persistence");
+		DEFAULT_KARMA = getInt("default-karma");
+		MAX_KARMA = getInt("max-karma");
+		KARMA_HEAL = getInt("karma-heal");
+		KARMA_CLEAN_BONUS = getInt("karma-clean-bonus");
+		KARMA_CLEAN_HALF = getDouble("karma-clean-half");
+		DAMAGE_PENALTY = getDouble("damage-penalty");
+		KILL_PENALTY = getInt("kill-penalty");
+		T_DAMAGE_REWARD = getInt("t-damage-reward");
+		TBONUS = getInt("tbonus");
+		KARMA_ROUND_TO_ONE = getBoolean("karma-round-to-one");
+		KARMA_KICK = getInt("karma-kick");
+		KARMA_BAN = getBoolean("karma-ban");
+		KARMA_BAN_TIME = getInt("karma-ban-time");
+		DAMAGE_REDUCTION = getBoolean("damage-reduction");
+		KARMA_DEBUG = getBoolean("karma-debug");
+		VERBOSE_LOGGING = getBoolean("verbose-logging");
+		ENABLE_AUTO_UPDATE = getBoolean("enable-auto-update");
+		ENABLE_METRICS = getBoolean("enable-metrics");
+		LOCALIZATION = getString("localization");
+		UNKNOWN_BUILD_WARNING = getBoolean("unknown-build-warning");
+		UNSTABLE_BUILD_WARNING = getBoolean("unstable-build-warning");
+		CONFIG_VERSION = getString("config-version");
 	}
 
-	public void InitialiseVariables() {
-		time_limit = getInt("time-limit");
-		setup_time = getInt("setup-time");
-		minimum_players = getInt("minimum-players");
-		maximum_players = getInt("maximum-players");
-		traitor_ratio = getDouble("traitor-ratio");
-		detective_ratio = getDouble("detective-ratio");
-		minimum_players_for_detective = getInt("minimum-players-for-detective");
-		crowbar_damage = getInt("crowbar-damage");
-		guns_outside_arenas = getBoolean("guns-outside-arenas");
-		require_ammo_for_guns = getBoolean("require-ammo-for-guns");
-		karma_persistence = getBoolean("karma-persistence");
-		default_karma = getInt("default-karma");
-		max_karma = getInt("max-karma");
-		karma_heal = getInt("karma-heal");
-		karma_clean_bonus = getInt("karma-clean-bonus");
-		karma_clean_half = getDouble("karma-clean-half");
-		damage_penalty = getDouble("damage-penalty");
-		kill_penalty = getInt("kill-penalty");
-		t_damage_reward = getInt("t-damage-reward");
-		tbonus = getInt("tbonus");
-		karma_round_to_one = getBoolean("karma-round-to-one");
-		karma_kick = getInt("karma-kick");
-		karma_ban = getBoolean("karma-ban");
-		karma_ban_time = getInt("karma-ban-time");
-		damage_reduction = getBoolean("damage-reduction");
-		karma_debug = getBoolean("karma-debug");
-		verbose_logging = getBoolean("verbose-logging");
-		enable_auto_update = getBoolean("enable-auto-update");
-		enable_metrics = getBoolean("enable-metrics");
-		localization = getString("localization");
-		unknown_build_warning = getBoolean("unknown-build-warning");
-		unstable_build_warning = getBoolean("unstable-build-warning");
-		config_version = getString("config-version");
+	public static String getString(String a) {
+		return TTT.plugin.getConfig().getString(a);
 	}
 
-	public String getString(String a) {
-		return plugin.getConfig().getString(a);
+	public static boolean getBoolean(String a) {
+		return TTT.plugin.getConfig().getBoolean(a);
 	}
 
-	public boolean getBoolean(String a) {
-		return plugin.getConfig().getBoolean(a);
+	public static int getInt(String a) {
+		return TTT.plugin.getConfig().getInt(a);
 	}
 
-	public int getInt(String a) {
-		return plugin.getConfig().getInt(a);
-	}
-
-	public double getDouble(String a) {
-		return plugin.getConfig().getDouble(a);
+	public static double getDouble(String a) {
+		return TTT.plugin.getConfig().getDouble(a);
 	}
 }

@@ -31,7 +31,7 @@ public class Localization {
 			File file = new File(TTT.plugin.getDataFolder() + File.separator + "locales" + File.separator +
 					TTT.lang + ".properties");
 			is = new FileInputStream(file);
-			if (Variables.verbose_logging)
+			if (Variables.VERBOSE_LOGGING)
 				TTT.log.info("Loaded locale from " + file.getAbsolutePath());
 		}
 		catch (Exception ex){
