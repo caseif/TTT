@@ -58,8 +58,6 @@ public class WorldUtils {
 	}
 
 	public static void rollbackWorld(final String worldName){
-		TTT.plugin.getServer().getScheduler().scheduleSyncDelayedTask(TTT.plugin, new Runnable(){
-			public void run(){
 				File folder = new File(worldName);
 				if (folder.exists()){
 					if (WorldUtils.isWorld(folder)){
@@ -77,8 +75,6 @@ public class WorldUtils {
 					else
 						TTT.log.info(TTT.local.getMessage("cannot-load-world"));
 				}
-			}
-		}, 100L);
 	}
 
 	public static void importWorld(CommandSender sender, String worldName){
