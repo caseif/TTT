@@ -58,29 +58,29 @@ public class WorldUtils {
 	}
 
 	public static void rollbackWorld(final String worldName){
-				File folder = new File(worldName);
-				if (folder.exists()){
-					if (WorldUtils.isWorld(folder)){
-						File newFolder = new File("TTT_" + worldName);
-						try {
-							copyFile(folder, newFolder);
-							if (Variables.VERBOSE_LOGGING)
-								TTT.log.info(TTT.local.getMessage("rollback") + " \"" + worldName + "\"!");
-						}
-						catch (IOException ex){
-							TTT.log.info(TTT.local.getMessage("folder-error") + " " + worldName);
-							ex.printStackTrace();
-						}
-					}
-					else
-						TTT.log.info(TTT.local.getMessage("cannot-load-world"));
+		File folder = new File(worldName);
+		if (folder.exists()){
+			if (WorldUtils.isWorld(folder)){
+				File newFolder = new File("TTT_" + worldName);
+				try {
+					copyFile(folder, newFolder);
+					if (Variables.VERBOSE_LOGGING)
+						TTT.log.info(TTT.local.getMessage("rollback") + " \"" + worldName + "\"!");
 				}
+				catch (IOException ex){
+					TTT.log.info(TTT.local.getMessage("folder-error") + " " + worldName);
+					ex.printStackTrace();
+				}
+			}
+			else
+				TTT.log.info(TTT.local.getMessage("cannot-load-world"));
+		}
 	}
 
 	public static void importWorld(CommandSender sender, String worldName){
 		File folder = new File(worldName);
 		if (folder.exists()){
-			if (!worldName.substring(0, 3).equalsIgnoreCase("TTT_")){
+			if (worldName.length() < 4 || !worldName.substring(0, 3).equalsIgnoreCase("TTT_")){
 				if (isWorld(folder)){
 					File newFolder = new File("TTT_" + worldName);
 					if (!newFolder.exists()){

@@ -21,6 +21,7 @@ import net.amigocraft.TTT.utils.WorldUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -318,6 +319,7 @@ public class RoundManager {
 							(new WorldCreator("TTT_" + worldName));
 							fixMultiverse("TTT_" + worldName);
 						}
+						p.setGameMode(GameMode.SURVIVAL);
 						p.teleport(TTT.plugin.getServer().getWorld("TTT_" + worldName)
 								.getSpawnLocation());
 						for (Entity e :
