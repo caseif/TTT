@@ -88,9 +88,11 @@ public class CommandManager implements CommandExecutor {
 								spawnYaml.set("pitch", ((Player)sender).getLocation().getPitch());
 								spawnYaml.set("yaw", ((Player)sender).getLocation().getYaw());
 								spawnYaml.save(spawnFile);
+								sender.sendMessage(ChatColor.DARK_PURPLE + "Successfully set TTT return point!");
 							}
 							catch (Exception ex){
 								ex.printStackTrace();
+								sender.sendMessage(ChatColor.RED + "An error occurred while setting the TTT return point.");
 							}
 						}
 						else
