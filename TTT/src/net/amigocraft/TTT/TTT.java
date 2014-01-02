@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import net.amigocraft.TTT.AutoUpdate;
 import net.amigocraft.TTT.Metrics;
 import net.amigocraft.TTT.listeners.BlockListener;
 import net.amigocraft.TTT.listeners.EntityListener;
@@ -96,7 +95,8 @@ public class TTT extends JavaPlugin implements Listener {
 			saveDefaultConfig();
 		}
 
-		checkVersion();
+		if (Variables.ENABLE_VERSION_CHECK)
+			checkVersion();
 
 		createFile("karma.yml");
 		createFile("bans.yml");
@@ -126,8 +126,7 @@ public class TTT extends JavaPlugin implements Listener {
 
 		// autoupdate
 		if (Variables.ENABLE_AUTO_UPDATE){
-			try {new AutoUpdate(this);}
-			catch (Exception e){e.printStackTrace();}
+			new Updater(this, 52474, this.getFile(), Updater.UpdateType.DEFAULT, true);
 		}
 
 		// submit metrics

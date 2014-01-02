@@ -105,21 +105,24 @@ karma-debug: false
 #Should potentially unnecessary information be logged?
 verbose-logging: true
 
-#Should the plugin allow auto-updating?
+#What language would you like to use? (If language is undefined, this will default to enUS.)
+localization: enUS
+
+#Should the plugin update itself? (recommended)
 enable-auto-update: true
 
 #Allow me to collect anonymous usage information? (Pretty please? :3)
 enable-metrics: true
 
-#What language would you like to use? (If language is undefined, this will default to enUS.)
-localization: enUS
+#Should the plugin check the stability of the current version? (highly recommended)
+enable-version-check: true
 
 #Should the plugin print a warning when the current build status can't be determined?
 #(Set this to false if you plan on modifying the plugin.yml file.)
 unknown-build-warning: true
 
 #Should the plugin print a warning if the current build is marked as unstable?
-#(We highly recommend you set this to true.)
+#(We highly recommend you set this as true.)
 unstable-build-warning: true
 
 #Please don't touch this unless you want your current configuration overwritten.

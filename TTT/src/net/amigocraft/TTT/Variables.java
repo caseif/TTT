@@ -35,6 +35,7 @@ public class Variables {
 	public static int MINIMUM_PLAYERS;
 	public static int TIME_LIMIT;
 	public static int SETUP_TIME;
+	public static boolean ENABLE_VERSION_CHECK;
 
 	public static void initialize(){
 		TIME_LIMIT = getInt("time-limit");
@@ -70,6 +71,7 @@ public class Variables {
 		UNKNOWN_BUILD_WARNING = getBoolean("unknown-build-warning");
 		UNSTABLE_BUILD_WARNING = getBoolean("unstable-build-warning");
 		CONFIG_VERSION = getString("config-version");
+		ENABLE_VERSION_CHECK = getBoolean("enable-version-check");
 	}
 
 	public static String getString(String a) {
