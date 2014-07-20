@@ -1,0 +1,132 @@
+# ##################### #
+# # TTT Configuration # #
+# ##################### #
+
+##################
+# Round Settings #
+##################
+
+# How long should rounds last for (in seconds)?
+time-limit: 360
+
+# How long should the plugin wait before starting a new round once enough players have joined?
+setup-time: 90
+
+# How many players are required to start a round?
+minimum-players: 3
+
+# How many players are allowed to enter a given round? (Set to -1 for no limit.)
+maximum-players: 32
+
+# What should the ratio of traitors to innocents be (as a decimal)?
+traitor-ratio: 0.2
+
+# What should the ratio be for detectives to other players?
+detective-ratio: 0.15
+
+# If at least this many players are in a game, there is guaranteed to be a detective.
+minimum-players-for-detective: 5
+
+###################
+# Weapon Settings #
+###################
+
+# How much damage should crowbars do at full karma? (How many half-hearts?)
+crowbar-damage: 4
+  
+# Should guns be functional outside of arenas?
+guns-outside-arenas: false
+
+# Should ammunition (arrows) be required to use guns?
+require-ammo-for-guns: true
+
+##################
+# Karma Settings #
+##################
+
+# Should karma persist through reloads and PlayerQuitEvents (players leaving)? (If false, karma will reset when
+# the plugin is reloaded and when players leave the server.)
+karma-persistence: true
+
+# What karma should players initially be given?
+default-karma: 1000
+
+# What should the maximum allowed karma be? (After this is reached, the player will not receive karma until they go below it again.)
+max-karma: 1000
+
+# How much karma should be allocated to each player at the end of a round?
+karma-heal: 5
+
+# How much karma should be allocated to players who avoided damaging or killing teammates during a round at the end?
+karma-clean-bonus: 30
+
+# At what point should the clean bonus be halved? (The default value of 0.25 sets it a quarter of the way between
+# the starting karma and the maximum.)
+karma-clean-half: 0.25
+
+# What ratio should be used when determining the karma taken when a player damages their ally? (0-1)
+damage-penalty: 0.001
+
+# From the official TTT documentation:
+# All karma penalties are based on damage dealt. The kill penalty is just an extra amount of "damage" dealt
+# when you kill someone. So if this was 100, and you headshot someone with a rifle, it would penalise you as
+# if you dealt 200 damage.
+kill-penalty: 15
+
+# What ratio should be used when determining the karma given when an innocent damages a traitor? (0-1)
+t-damage-reward: 0.0003
+
+# How much karma should be given when an innocent kills a traitor (scaled by t-damage-reward and the victim's karma)?
+tbonus: 40
+
+# Should added or subtracted karma be rounded up to 1 if it is between 0 and 1?
+karma-round-to-one: true
+
+# Players will be kicked from the round once they reach or go under this karma level. (Set to -1 for no autokick.)
+karma-kick: -1
+
+# Should player's be temporarily banned from using the plugin rather than kicked?
+karma-ban: false
+
+# How long in minutes should users be banned from using the plugin for? (Set to -1 for a permanent ban.)
+#Note: this value is not retroactively applied to previous bans.
+karma-ban-time: 30
+
+# Should damage dealt by users be negatively impacted by karma? (Full damage is done at 1000.)
+damage-reduction: true
+
+# When true, karma changes will be logged to the console. Note that this will typically cause massive log spam.
+karma-debug: false
+
+###################
+# Plugin Settings #
+###################
+
+# Should potentially unnecessary information be logged?
+verbose-logging: true
+
+# What language would you like to use? (If language is undefined, this will default to enUS.)
+locale: enUS
+
+# Should the plugin update itself? (recommended)
+enable-auto-update: true
+
+# Allow me to collect anonymous usage information? (Pretty please? :3)
+enable-metrics: true
+
+# Should the plugin check the stability of the current version? (highly recommended)
+enable-version-check: true
+
+# Should the plugin print a warning when the current build status can't be determined?
+# (Set this to false if you plan on modifying the plugin.yml file.)
+unknown-build-warning: true
+
+# Should the plugin print a warning if the current build is marked as unstable?
+# (We highly recommend you set this as true.)
+unstable-build-warning: true
+
+# When true, the value of config-version will be ignored and the config will not be overwritten between versions.
+ignore-config-version: false
+
+#Please don't touch this unless you want your current configuration overwritten.
+config-version: 0.6.0-SNAPSHOT-jnks$BUILD

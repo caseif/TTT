@@ -1,0 +1,9 @@
+*.jardesc
+*.class
+.project
+bin/
+*.prefs
+.classpath
+.settings
+/target/
+*.iml

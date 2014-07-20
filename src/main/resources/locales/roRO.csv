@@ -1,0 +1,119 @@
+no-permission|Nu ai permisiuni necesare pentru a face acest lucru!
+no-permission-join|Nu ai permisiuni necesare pentru a intra intr-un joc!
+no-permission-quit|Nu ai permisiuni necesare pentru a iesii dintr-un joc!
+no-permission-import|Nu ai permisiuni sa import-ezi mape
+usage-1|Utilizare: /ttt [numele lumii]
+usage-join|Utilizare: /ttt join [numele lumii]
+usage-import|Utilizare: /ttt import [numele lumii]
+invalid-args-1|Prea putine argumente!
+invalid-args-2|Argumentele sunt invalide!
+not-in-game|Nu sunteti momentan intr-un joc!
+must-be-ingame|Trebuie sa fii intr-un joc!
+in-progress|Nu poti intra intr-un joc dejea inceput!
+waiting|Astept playeri
+map-invalid|Eroare: Mapa nu a fost gasita!
+round-starting|Runda incepe, pregateste-te!
+no-kits|Nu poti folosii kit-uri intr-un joc!
+creator|creatorul TTT
+alpha-tester|tester-ul alpha TTT
+tester|tester-ul TTT
+translator|translator-ul TTT
+success-join|Ai intrat intr-o mapa cu succes!
+metrics-fail|Am esouat sa trimitem informatii la MCStats
+enabled|a fost activat!
+disabled|a fost dezactivat
+import-success|Lume importata cu succes!
+folder-error|O eroare a aparut cand am incercat sa gasim folderul!
+already-imported|Aceasta lume a fost importata deja!
+cannot-load-world|Eroare:Nu poti importa aceasta lume, exista ceva invalid!
+start-error|World numele trebuie sa inceapa cu "TTT_"!
+folder-not-found|Folderul specificat nu este in director! 
+inv-save-error|Eroare:Nu am reusit sa va salvez inventarul!
+dead|Ai murit! Ai fost facut invizibil si ai acum puterea de ai zbura ( ca spectator )
+id|ID
+body-of|Aceast corp apartine lui 
+innocent|Inocent
+traitor|Tadator
+detective|Detectiv
+innocent-id|Aceasta persoana a fost un inocent
+traitor-id|Aceasta persoana a fost un tradator
+detective-id|Aceasta persoana a fost un detectiv
+joined-map|s-a alaturat mapei!
+left-map|a parasit mapa!
+begin|Jocul va incepe in %
+seconds|secunde
+minutes|minute
+you-are-innocent|Esti un innocent! Dar fi atent, exista multi tradatori care vor sa te impuste!
+you-are-traitor|Tu esti un tradator! Scopul tau este sa omori cat de multi inocenti! Dar fi atent, ai sa ai nevoie de destepticiune si de atentie pentru a castiga!
+allies|Tradator, acestia iti sunt aliati :
+alone|Tradator, nu ai parteneri, esti singur!
+begun|Jocul a inceput!
+traitor-win|Tradatorii au invins pe mapa %
+innocent-win|Inocentii au invins pe mapa %
+inv-load-error|Eroare:Nu am putut incarca inventarul tau vechi!
+left|a iesit in timpul jocului
+rollback|Roll back-ul a fost facut cu succes!
+found-body|a gasit trupul lui %
+was-innocent|A fost un inocent
+was-traitor|A fost un tradator
+was-detective|A fost un detectiv
+need-ammo|Ai nevoie de mai multa munitie
+discreet|Cautand corpul cu atentie
+no-drop|Nu poti arunca iteme intr-un joc!
+you-are-detective|Esti un detectiv, ai fost echipat cu un DNA Scanner, foloseste-l sa prinzi tradatorii!
+collected-sample|Ai colectat DNA de la %
+crowbar|Ranga
+gun|Arma
+dna-scanner|DNA Scanner
+killer-left|Ucigasul acestui player a iesit din joc!
+dna-decay|Acest DNA se va distruge %
+karma|Karma
+karma-damage|Karma ta este %, asa ca ai luptat si ai primit in aceasta lupta!
+full|plin
+no-pm|Nu poti trimite mesaje private intr-un joc!
+left-game|A iesit din mapa %!
+commands|Comenzile disponibile pentru tine:
+import-help|Importurile-o lume dintr-un anumit dosar în plugin-ul
+alature-help|Va intra într-un anumit joc
+renuntat-help|Te scoate din joc curent
+spawn-help|Seteaza punctul de spawn la iesirea rotund la locatia curenta
+help-help|Afiseaza acest meniu de ajutor
+karma-permaban|Ai au fost interzise definitiv de la folosirea TTT pe acest server, deoarece karma ta a scazut sub %
+karma-ban|Ai au fost interzise de la utilizarea TTT pe acest server pentru & deoarece karma ta a scazut sub %
+karma-kick|Ai au fost eliminate în mod automat din runda, deoarece karma ta a scazut sub %
+ban-fail|Nu a reusit sa se înregistreze ban jucator pentru %
+folder-rename|Un Pre-0.5 TTT folder a fost gasit. Acesta va fi redenumit ca "TTT". Chiar daca , va trebuii schimbat inapoi daca doresti sa te intorci la pre-0.5 version.
+folder-rename-error|O eroare a aparut la redenumirea folderului. Acum va trebuii sa-l redenumesti tu manual.
+already-entered|Esti deja in aceasta runda.
+round-full|Aceasta runda este plina.
+connect-fail-1|Au trecut 20000 ms. Reincercam..
+connect-fail-2|A aparut o eroare detectand build-ul actual. Reincercam...
+connect-fail-3|Nu ma pot conecta la server-ul %. Statusul build-ului actual va ramane neverificat pana cand plugin-ul va fi pornit din nou.
+response|raspunde cu %
+stable-build|Build-ul TTT actual este stabil.
+unstable-build|Build-ul TTT curent nu este stabil. Considera update-ul la plugin cu un unul stabil !
+unknown-build|Nu pot verifica stabilitatea acestui build. 
+build-check-fail|A aparut o eroare incercand sa aflu build-ul actual.
+config-copy-fail|Nu am putut copiat config-ul vechi.
+write-fail|Nu am putut scrie %!
+creating-file|% nu a fost gasit. Se creeaza...
+waiting-sign|ASTEPTARE
+preparing|PREGATIRE
+ingame|INJOC
+resetting|RESETARE
+locale-fail|Nu am putut scrie mesajul din locale.
+invalid-sign|Lobby Sign invalid. Scrie /ttt help lobby pentru ajutor !
+lobby-unregister|Lobby sign neinregistrata
+lobby-create|Lobby sign a fost creata !
+lobby-unregister-fail|Nu am putut sterge lobby sign.
+lobby-create-fail|Eroare la creerea unui lobby sign.
+lobby-help|Lobby Sign Format
+first|Primul
+second|Al doilea
+third|Al treilea
+fourth|Al patrulea
+line|Linie
+type|Tip-ul Sign
+round|NUmele Rundei
+number|Numarul Sign-ului (doar pentru "players" semne)
+prerelease|Am detectat că se execută o construcție prelansare a TTT. Dacă există o versiune mai nouă, vă recomandăm actualizarea la asta. Dacă nu, vă rugăm să raporteze orice bug-uri veți găsi în acest construi la autorul plugin.

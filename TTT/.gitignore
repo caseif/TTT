@@ -1,8 +1,0 @@
-*.jardesc
-*.class
-.project
-bin/
-*.prefs
-.classpath
-.settings
-.gitignore
