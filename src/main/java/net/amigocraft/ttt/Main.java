@@ -19,7 +19,7 @@ import net.amigocraft.ttt.listeners.PlayerListener;
 import net.amigocraft.ttt.managers.CommandManager;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
-import net.amigocraft.ttt.utils.WorldUtils;
+import net.amigocraft.ttt.utils.FileUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -96,7 +96,7 @@ public class Main extends JavaPlugin {
 		else if (!Variables.IGNORE_CONFIG_VERSION && !Variables.CONFIG_VERSION.equals(this.getDescription().getVersion())){
 			File config = new File(this.getDataFolder(), "config.yml");
 			try {
-				WorldUtils.copyFile(config, new File(this.getDataFolder(), "config.old.yml"));
+				FileUtils.copyFile(config, new File(this.getDataFolder(), "config.old.yml"));
 			}
 			catch (Exception ex){
 				ex.printStackTrace();

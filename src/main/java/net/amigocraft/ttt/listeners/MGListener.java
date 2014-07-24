@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import net.amigocraft.mglib.api.Location3D;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.api.Stage;
@@ -17,7 +18,6 @@ import net.amigocraft.mglib.event.round.MinigameRoundEndEvent;
 import net.amigocraft.mglib.event.round.MinigameRoundPrepareEvent;
 import net.amigocraft.mglib.event.round.MinigameRoundTickEvent;
 import net.amigocraft.ttt.Body;
-import net.amigocraft.ttt.Location2i;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.TTTPlayer;
 import net.amigocraft.ttt.Variables;
@@ -414,7 +414,7 @@ public class MGListener implements Listener {
 		}
 		ti.setItemMeta(tiMeta);
 		chest.getInventory().addItem(new ItemStack[]{id, ti});
-		Main.bodies.add(new Body(t, Location2i.getLocation(block), System.currentTimeMillis()));
+		Main.bodies.add(new Body(t, Location3D.valueOf(block.getLocation()), System.currentTimeMillis()));
 	}
 
 }

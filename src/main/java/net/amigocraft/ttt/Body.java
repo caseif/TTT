@@ -1,12 +1,14 @@
 package net.amigocraft.ttt;
+
+import net.amigocraft.mglib.api.Location3D;
 // the class
 
 public class Body {
 	private TTTPlayer player;
-	private Location2i l;
+	private Location3D l;
 	private long time;
 
-	public Body(TTTPlayer player, Location2i l, long time){
+	public Body(TTTPlayer player, Location3D l, long time){
 		this.player = player;
 		this.l = l;
 		this.time = time;
@@ -16,7 +18,7 @@ public class Body {
 		return player;
 	}
 
-	public Location2i getLocation(){
+	public Location3D getLocation(){
 		return l;
 	}
 	

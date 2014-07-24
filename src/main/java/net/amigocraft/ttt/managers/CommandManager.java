@@ -4,6 +4,7 @@ import java.io.File;
 
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Round;
+import net.amigocraft.mglib.exception.ArenaExistsException;
 import net.amigocraft.mglib.exception.ArenaNotExistsException;
 import net.amigocraft.mglib.exception.PlayerNotPresentException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
@@ -11,9 +12,11 @@ import net.amigocraft.mglib.exception.PlayerPresentException;
 import net.amigocraft.mglib.exception.RoundFullException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.Variables;
-import net.amigocraft.ttt.utils.WorldUtils;
+import net.amigocraft.ttt.utils.FileUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,7 +31,26 @@ public class CommandManager implements CommandExecutor {
 				if (args[0].equalsIgnoreCase("import") || args[0].equalsIgnoreCase("i")){
 					if (sender.hasPermission("ttt.import")){
 						if (args.length > 1){
-							WorldUtils.importWorld(sender, args[1]);
+							if (new File(Bukkit.getWorldContainer(), args[1]).exists()){
+								if (FileUtils.isWorld(args[1])){
+									World w = Bukkit.getWorld(args[1]);
+									if (w != null){
+										try {
+											Main.mg.createArena(args[1], w.getSpawnLocation());
+										}
+										catch (ArenaExistsException e){
+											//TODO: replace this message with something more accurate
+											sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("already-imported"));
+										}
+									}
+									else
+										sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("cannot-load-world"));
+								}
+								else
+									sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("cannot-load-world"));
+							}
+							else
+								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("folder-error"));
 						}
 						else {
 							sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-1"));
@@ -44,7 +66,9 @@ public class CommandManager implements CommandExecutor {
 							if (args.length > 1){
 								Round r;
 								try {
-									r = Main.mg.createRound(args[1]);
+									r = Main.mg.getRound(args[1]);
+									if (r == null)
+										r = Main.mg.createRound(args[1]);
 									r.addPlayer(sender.getName());
 								}
 								catch (ArenaNotExistsException ex){
@@ -77,9 +101,11 @@ public class CommandManager implements CommandExecutor {
 							if (Main.mg.isPlayer(sender.getName())){
 								MGPlayer mp = Main.mg.getMGPlayer(sender.getName());
 								try {
-								mp.removeFromRound();
+									mp.removeFromRound();
 								}
-								catch (PlayerNotPresentException ex){}
+								catch (PlayerNotPresentException ex){
+									sender.sendMessage(Main.locale.getMessage("not-in-game"));
+								}
 								catch (PlayerOfflineException ex){}
 								sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + " " +
 										Main.locale.getMessage("left-game").replace("%",

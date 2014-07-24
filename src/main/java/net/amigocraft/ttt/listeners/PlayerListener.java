@@ -1,8 +1,8 @@
 package net.amigocraft.ttt.listeners;
 
+import net.amigocraft.mglib.api.Location3D;
 import net.amigocraft.mglib.api.Stage;
 import net.amigocraft.ttt.Body;
-import net.amigocraft.ttt.Location2i;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.TTTPlayer;
 import net.amigocraft.ttt.Variables;
@@ -56,7 +56,7 @@ public class PlayerListener implements Listener {
 					if (t.isSpectating()){
 						e.setCancelled(true);
 						for (Body b : Main.bodies){
-							if (b.getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
+							if (b.getLocation().equals(Location3D.valueOf(e.getClickedBlock().getLocation()))){
 								Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
 								Inventory inv = Main.plugin.getServer().createInventory(null, chestinv.getSize());
 								inv.setContents(chestinv.getContents());
@@ -71,7 +71,7 @@ public class PlayerListener implements Listener {
 						int index = -1;
 						for (int i = 0; i < Main.bodies.size(); i++){
 							if (Main.bodies.get(i).getLocation().equals(
-									Location2i.getLocation(e.getClickedBlock()))){
+									Location3D.valueOf(e.getClickedBlock().getLocation()))){
 								index = i;
 								break;
 							}
@@ -79,7 +79,7 @@ public class PlayerListener implements Listener {
 						if (index != -1){
 							boolean found = false;
 							for (Body b : Main.foundBodies){
-								if (b.getLocation().equals(Location2i.getLocation(e.getClickedBlock()))){
+								if (b.getLocation().equals(Location3D.valueOf(e.getClickedBlock().getLocation()))){
 									found = true;
 									break;
 								}
@@ -306,14 +306,14 @@ public class PlayerListener implements Listener {
 					boolean found1 = false;
 					boolean found2 = false;
 					for (Body b : Main.bodies){
-						if (b.getLocation().equals(Location2i.getLocation(block))){
+						if (b.getLocation().equals(Location3D.valueOf(block.getLocation()))){
 							found1 = true;
 							e.setCancelled(true);
 							if (block2 == null || found2)
 								break;
 						}
 						if (block2 != null){
-							if (b.getLocation().equals(Location2i.getLocation(block2))){
+							if (b.getLocation().equals(Location3D.valueOf(block.getLocation()))){
 								e.setCancelled(true);
 								if (!found1)
 									break;
