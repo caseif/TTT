@@ -2,6 +2,7 @@ package net.amigocraft.ttt.managers;
 
 import java.io.File;
 
+import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.exception.ArenaExistsException;
@@ -128,7 +129,7 @@ public class CommandManager implements CommandExecutor {
 								File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
 								if (!spawnFile.exists()){
 									if (Variables.VERBOSE_LOGGING)
-										Main.log.info("No spawn.yml found, creating...");
+										Main.mg.log("No spawn.yml found, creating...", LogLevel.INFO);
 									spawnFile.createNewFile();
 								}
 								YamlConfiguration spawnYaml = new YamlConfiguration();
@@ -140,6 +141,7 @@ public class CommandManager implements CommandExecutor {
 								spawnYaml.set("pitch", ((Player)sender).getLocation().getPitch());
 								spawnYaml.set("yaw", ((Player)sender).getLocation().getYaw());
 								spawnYaml.save(spawnFile);
+								Main.mg.getConfigManager().setDefaultExitLocation(((Player)sender).getLocation());
 								sender.sendMessage(ChatColor.DARK_PURPLE + "Successfully set TTT return point!");
 							}
 							catch (Exception ex){

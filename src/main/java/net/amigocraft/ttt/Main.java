@@ -7,10 +7,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import net.amigocraft.mglib.api.ConfigManager;
 import net.amigocraft.mglib.api.Locale;
+import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.Minigame;
 import net.amigocraft.ttt.Metrics;
 import net.amigocraft.ttt.listeners.EntityListener;
@@ -42,6 +44,11 @@ public class Main extends JavaPlugin {
 	public static int maxKarma = 1000;
 
 	public static String stability = "stable";
+	
+	public static List<UUID> creator = new ArrayList<UUID>();
+	public static List<UUID> alpha = new ArrayList<UUID>();
+	public static List<UUID> testers = new ArrayList<UUID>();
+	public static List<UUID> translators = new ArrayList<UUID>();
 
 	@Override
 	public void onEnable(){
@@ -80,13 +87,13 @@ public class Main extends JavaPlugin {
 		// copy pre-0.5 folder
 		File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
 		if (old.exists() && !getDataFolder().exists()){
-			log.info(locale.getMessage("folder-rename"));
+			mg.log(locale.getMessage("folder-rename"), LogLevel.INFO);
 			try {
 				old.renameTo(getDataFolder());
 			}
 			catch (Exception ex){
 				ex.printStackTrace();
-				log.warning(locale.getMessage("folder-rename-error"));
+				mg.log(locale.getMessage("folder-rename-error"), LogLevel.WARNING);
 			}
 		}
 
@@ -100,7 +107,7 @@ public class Main extends JavaPlugin {
 			}
 			catch (Exception ex){
 				ex.printStackTrace();
-				log.warning(locale.getMessage("config-copy-fail"));
+				mg.log(locale.getMessage("config-copy-fail"), LogLevel.INFO);
 			}
 			config.delete();
 			saveDefaultConfig();
@@ -125,7 +132,7 @@ public class Main extends JavaPlugin {
 			}
 			catch (IOException e){
 				if (Variables.VERBOSE_LOGGING)
-					log.warning(locale.getMessage("metrics-fail"));
+					mg.log(locale.getMessage("metrics-fail"), LogLevel.INFO);
 			}
 		}
 
@@ -133,9 +140,27 @@ public class Main extends JavaPlugin {
 		invDir.mkdir();
 
 		maxKarma = Variables.MAX_KARMA;
+		
+		// add special players to list
+		creator.add(UUID.fromString("8ea8a3c0-ab53-4d80-8449-fa5368798dfc"));
+		
+		alpha.add(UUID.fromString("7fa299a6-1525-404c-a5f6-bf116cc2ceff")); // ZerosAce00000
+		alpha.add(UUID.fromString("7d5ba8ca-4a7c-41ff-9a27-4f74d006b086")); // momhipie
+		alpha.add(UUID.fromString("57cb8d8f-0e74-4eeb-8188-52adbed3e216")); // xJHA929x
+		alpha.add(UUID.fromString("1fdac8d1-6c37-4afd-8a16-aba6bec4b101")); // jmm1999
+		alpha.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
+		alpha.add(UUID.fromString("93a94c4a-0ad1-49c5-be92-d6fb416f938a")); // HardcoreBukkit
+		alpha.add(UUID.fromString("8c63bf21-ab7a-431b-aa45-c9e661e6e812")); // shiny3
+		alpha.add(UUID.fromString("e6f80dfe-d8ec-490f-9267-75797a213577")); // jpf6368
+		
+		testers.add(UUID.fromString("1b7fa3f3-3ac6-408b-990c-60cd37450208")); // Alexandercitt
+		
+		translators.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
+		translators.add(UUID.fromString("dcd6037d-a68d-4593-a857-7853406ec11e")); // Nikkolo_DTU
+		translators.add(UUID.fromString("ece5d120-402a-4a32-b78a-fdfaf5adab33")); // JeyWake
 
 		if (Variables.VERBOSE_LOGGING)
-			log.info(this + " " + locale.getMessage("enabled"));
+			mg.log(this + " " + locale.getMessage("enabled"), LogLevel.INFO);
 	}
 
 	@Override
@@ -145,7 +170,7 @@ public class Main extends JavaPlugin {
 		KarmaManager.playerKarma = null;
 		ScoreManager.uninitialize();
 		if (Variables.VERBOSE_LOGGING)
-			log.info(this + " " + locale.getMessage("disabled"));
+			mg.log(this + " " + locale.getMessage("disabled"), LogLevel.INFO);
 		plugin = null;
 		lang = null;
 	}
@@ -154,13 +179,13 @@ public class Main extends JavaPlugin {
 		File f = new File(Main.plugin.getDataFolder(), s);
 		if (!f.exists()){
 			if (Variables.VERBOSE_LOGGING)
-				log.info(locale.getMessage("creating-file").replace("%", s));
+				mg.log(locale.getMessage("creating-file").replace("%", s), LogLevel.INFO);
 			try {
 				f.createNewFile();
 			}
 			catch (Exception ex){
 				ex.printStackTrace();
-				log.warning(locale.getMessage("write-fail").replace("%", s));
+				mg.log(locale.getMessage("write-fail").replace("%", s), LogLevel.INFO);
 			}
 		}
 	}
@@ -208,9 +233,9 @@ public class Main extends JavaPlugin {
 				t.interrupt();
 				if ((BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
 						(BuildChecker.response >= 500 && BuildChecker.response <= 599))
-					log.info(locale.getMessage("connect-fail-1"));
+					mg.log(locale.getMessage("connect-fail-1"), LogLevel.INFO);
 				else
-					log.info(locale.getMessage("connect-fail-2"));
+					mg.log(locale.getMessage("connect-fail-2"), LogLevel.INFO);
 				BuildChecker.response = 0;
 				Thread t2 = new Thread(new BuildChecker());
 				t2.start();
@@ -224,13 +249,13 @@ public class Main extends JavaPlugin {
 						response = " (" +
 								locale.getMessage("response").replace("%", Integer.toString(BuildChecker.response) +
 										")");
-					log.warning(locale.getMessage("connect-fail-3").replace(" %", response));
+					mg.log(locale.getMessage("connect-fail-3").replace(" %", response), LogLevel.WARNING);
 				}
 			}
 		}
 		catch (Exception ex){
 			ex.printStackTrace();
-			log.warning(locale.getMessage("build-check-fail"));
+			mg.log(locale.getMessage("build-check-fail"), LogLevel.WARNING);
 		}
 	}
 

@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import net.amigocraft.mglib.api.Location3D;
+import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.api.Stage;
@@ -59,7 +60,7 @@ public class MGListener implements Listener {
 					y.set(e.getPlayer().getName(), null);
 					y.save(f);
 					if (Variables.VERBOSE_LOGGING)
-						Main.log.info(e.getPlayer().getName() + "'s ban has been lifted");
+						Main.mg.log(e.getPlayer().getName() + "'s ban has been lifted", LogLevel.INFO);
 				}
 				else {
 					String m = ChatColor.DARK_PURPLE + "[TTT] ";
@@ -84,39 +85,28 @@ public class MGListener implements Listener {
 		}
 		catch (Exception ex){
 			ex.printStackTrace();
-			Main.log.warning("Failed to load bans from disk!");
+			Main.mg.log("Failed to load bans from disk!", LogLevel.WARNING);
 		}
-		List<UUID> alpha = new ArrayList<UUID>();
-		alpha.add(UUID.fromString("7fa299a6-1525-404c-a5f6-bf116cc2ceff")); // ZerosAce00000
-		alpha.add(UUID.fromString("7d5ba8ca-4a7c-41ff-9a27-4f74d006b086")); // momhipie
-		alpha.add(UUID.fromString("57cb8d8f-0e74-4eeb-8188-52adbed3e216")); // xJHA929x
-		alpha.add(UUID.fromString("1fdac8d1-6c37-4afd-8a16-aba6bec4b101")); // jmm1999
-		alpha.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
-		alpha.add(UUID.fromString("93a94c4a-0ad1-49c5-be92-d6fb416f938a")); // HardcoreBukkit
-		alpha.add(UUID.fromString("8c63bf21-ab7a-431b-aa45-c9e661e6e812")); // shiny3
-		alpha.add(UUID.fromString("e6f80dfe-d8ec-490f-9267-75797a213577")); // jpf6368
-		List<UUID> testers = new ArrayList<UUID>();
-		testers.add(UUID.fromString("1b7fa3f3-3ac6-408b-990c-60cd37450208")); // Alexandercitt
-		List<UUID> translators = new ArrayList<UUID>();
-		translators.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
+		
 		String addition = "";
-		UUID uuid = e.getPlayer().getBukkitPlayer().getUniqueId();
-		if (uuid.equals(UUID.fromString("8ea8a3c0-ab53-4d80-8449-fa5368798dfc")))
+		@SuppressWarnings("static-access")
+		UUID uuid = Main.mg.getOnlineUUIDs().get(e.getPlayer().getName());
+		if (Main.creator.contains(uuid))
 			addition = ", " + ChatColor.DARK_RED + Main.locale.getMessage("creator") + "," + ChatColor.DARK_PURPLE;
-		if (alpha.contains(uuid) && translators.contains(uuid))
+		if (Main.alpha.contains(uuid) && Main.translators.contains(uuid))
 			addition += ", " + ChatColor.DARK_RED + Main.locale.getMessage("alpha-tester") + ", " +
 					Main.locale.getMessage("translator") + "," + ChatColor.DARK_PURPLE;
-		else if (testers.contains(uuid) && translators.contains(uuid))
+		else if (Main.testers.contains(uuid) && Main.translators.contains(uuid))
 			addition += ", " + ChatColor.DARK_RED + Main.locale.getMessage("tester") + ", " +
 					Main.locale.getMessage("translator") + "," + ChatColor.DARK_PURPLE;
-		else if (alpha.contains(uuid)){
+		else if (Main.alpha.contains(uuid)){
 			addition += ", " + ChatColor.DARK_RED + Main.locale.getMessage("alpha-tester") + "," + ChatColor.DARK_PURPLE;
 		}
-		else if (testers.contains(uuid)){
+		else if (Main.testers.contains(uuid)){
 			addition += ", " + ChatColor.DARK_RED + Main.locale.getMessage("tester") + "," +
 					ChatColor.DARK_PURPLE;
 		}
-		else if (translators.contains(uuid)){
+		else if (Main.translators.contains(uuid)){
 			addition += ", " + ChatColor.DARK_RED + Main.locale.getMessage("translator") + "," +
 					ChatColor.DARK_PURPLE;
 		}

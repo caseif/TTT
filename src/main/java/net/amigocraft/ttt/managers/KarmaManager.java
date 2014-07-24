@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.exception.PlayerNotPresentException;
@@ -136,7 +137,7 @@ public class KarmaManager {
 				}
 				catch (Exception ex){
 					ex.printStackTrace();
-					Main.log.warning(Main.locale.getMessage("ban-fail").replace("%", t.getName()));
+					Main.mg.log(Main.locale.getMessage("ban-fail").replace("%", t.getName()), LogLevel.INFO);
 				}
 			}
 			else
