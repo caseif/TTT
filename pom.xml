@@ -17,12 +17,12 @@
 	</properties>
 	<repositories>
 		<repository>
-			<id>Bukkit Repo</id>
-			<url>http://repo.bukkit.org/content/groups/public/</url>
+			<id>MGLib Repo</id>
+			<url>http://repo.amigocraft.net/content/repositories/mglib/</url>
 		</repository>
 		<repository>
-			<id>MGLib Repo</id>
-			<url>http://repo.amigocraft.net/mglib/</url>
+			<id>Bukkit Repo</id>
+			<url>http://repo.bukkit.org/content/groups/public/</url>
 		</repository>
 	</repositories>
 	<dependencies>

@@ -1,16 +1,10 @@
 package net.amigocraft.ttt;
 
-import java.util.ArrayList;
-
+import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.ttt.managers.KarmaManager;
-import net.amigocraft.ttt.managers.LobbyManager;
 
-public class TTTPlayer {
+public class TTTPlayer extends MGPlayer {
 
-	private String name;
-	private String world;
-	private Role role;
-	private boolean dead;
 	private boolean discreet = false;
 	private String tracking;
 	private String killer;
@@ -19,31 +13,12 @@ public class TTTPlayer {
 	private boolean teamKill = false;
 	private double damageRed = 1;
 	private boolean found = false;
-	public static ArrayList<TTTPlayer> players = new ArrayList<TTTPlayer>();
 
-	public TTTPlayer(String name, String world){
-		this.name = name;
-		this.world = world;
+	public TTTPlayer(String plugin, String name, String arena){
+		super(plugin, name, arena);
 		KarmaManager.loadKarma(name);
 		karma = KarmaManager.playerKarma.get(name);
 		dispKarma = KarmaManager.playerKarma.get(name);
-		players.add(this);
-	}
-
-	public String getName(){
-		return name;
-	}
-
-	public String getWorld(){
-		return world;
-	}
-
-	public Role getRole(){
-		return role;
-	}
-
-	public boolean isDead(){
-		return dead;
 	}
 
 	public boolean isDiscreet(){
@@ -74,24 +49,8 @@ public class TTTPlayer {
 		return teamKill;
 	}
 	
-	public Round getRound(){
-		return Round.getRound(world);
-	}
-	
 	public boolean isBodyFound(){
 		return found;
-	}
-
-	public void setName(String name){
-		this.name = name;
-	}
-
-	public void setRole(Role role){
-		this.role = role;
-	}
-
-	public void setDead(boolean dead){
-		this.dead = dead;
 	}
 
 	public void setDiscreet(boolean discreet){
@@ -119,6 +78,7 @@ public class TTTPlayer {
 	}
 	
 	public void calculateDamageReduction(){
+		// Below is an approximation of the original game's formula. It was calculated on a TI Nspire, so it may not be 100% accurate.
 		double a = -1.5839260914526 * Math.pow(10, -7);
 		double b = 2.591955951727 * Math.pow(10, -4);
 		double c = -6.969034697 * Math.pow(10, -4);
@@ -154,65 +114,19 @@ public class TTTPlayer {
 		if (Variables.KARMA_DEBUG)
 			Main.kLog.info(getName() + ": -" + karma + ". " + "New value: " + getKarma());
 	}
-	
-	public static TTTPlayer getTTTPlayer(String player){
-		for (TTTPlayer p : players){
-			if (p.getName().equals(player))
-				return p;
-		}
-		return null;
-	}
-
-	public void destroy(){
-		players.remove(this);
-		LobbyManager.updateSigns(world);
-	}
-
-	public static boolean isPlayer(String p){
-		if (getTTTPlayer(p) != null)
-			return true;
-		return false;
-	}
 
 	public boolean equals(Object p){
 		TTTPlayer t = (TTTPlayer)p;
-		boolean trackingEquals = false;
-		if (tracking == null && t.getTracking() == null)
-			trackingEquals = true;
-		else if (tracking != null && t.getTracking() != null)
-			if (tracking.equals(t.getTracking()))
-				trackingEquals = true;
-		boolean killerEquals = false;
-		if (killer == null && t.getKiller() == null)
-			killerEquals = true;
-		else if (killer != null && t.getKiller() != null)
-			if (killer.equals(t.getKiller()))
-				killerEquals = true;
-		boolean roleEquals = false;
-		if (role == null && t.getRole() == null)
-			roleEquals = true;
-		else if (role != null && t.getRole() != null)
-			if (role.equals(t.getRole()))
-				roleEquals = true;
-		return name.equals(t.getName()) && world.equals(t.getWorld()) &&
-				roleEquals && dead == t.isDead() &&
-				discreet == t.isDiscreet() && trackingEquals && killerEquals;
+		return getName().equals(t.getName()) && getArena().equals(t.getArena()) &&
+				getTeam().equals(t.getTeam());
 	}
 
 	public int hashCode(){
-		int trackingHash = 0;
-		if (tracking != null)
-			trackingHash = tracking.hashCode();
-		int killerHash = 0;
-		if (killer != null)
-			killerHash = killer.hashCode();
-		return 41 * (name.hashCode() + world.hashCode() + role.hashCode() +
-				((Boolean)dead).hashCode() + ((Boolean)discreet).hashCode() +
-				trackingHash + killerHash);
+		return 41 * (getName().hashCode() + getArena().hashCode() + getTeam().hashCode());
 	}
 
 	public boolean isTraitor(){
-		return role == Role.TRAITOR;
+		return getTeam().equals("Traitor");
 	}
 
 }

@@ -2,13 +2,13 @@ package net.amigocraft.ttt.managers;
 
 import java.util.HashMap;
 
-import net.amigocraft.ttt.Role;
+import net.amigocraft.mglib.api.MGPlayer;
+import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.TTTPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -25,7 +25,7 @@ public class ScoreManager {
 	public Scoreboard traitor;
 	public Objective iObj;
 	public Objective tObj;
-	public String worldName;
+	public String arenaName;
 	public Team iTeamI;
 	public Team iTeamT;
 	public Team iTeamD;
@@ -33,9 +33,9 @@ public class ScoreManager {
 	public Team tTeamT;
 	public Team tTeamD;
 
-	public ScoreManager(String worldName){
+	public ScoreManager(String arenaName){
 
-		this.worldName = worldName;
+		this.arenaName = arenaName;
 		innocent = manager.getNewScoreboard();
 		traitor = manager.getNewScoreboard();
 
@@ -67,46 +67,37 @@ public class ScoreManager {
 		for (OfflinePlayer o : traitor.getPlayers())
 			traitor.resetScores(o);
 
-		for (TTTPlayer t : TTTPlayer.players){
-			if (t.getWorld().equalsIgnoreCase(worldName)){
-				if (t.getRole() == Role.INNOCENT){
-					iTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-					tTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				}
-				else if (t.getRole() == Role.TRAITOR){
-					iTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-					tTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				}
-				else if (t.getRole() == Role.DETECTIVE){
-					iTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-					tTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				}
-				if (t.isDead()){
-					if (t.isBodyFound())
-						handleDeadPlayer(t);
+		for (MGPlayer m : Main.mg.getRound(arenaName).getPlayerList()){
+			TTTPlayer t = (TTTPlayer)m;
+			if (t.hasMetadata("detective")){
+				iTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+				tTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+			}
+			else if (t.getTeam().equals("Innocent")){
+				iTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+				tTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+			}
+			else if (t.getTeam().equals("Traitor")){
+				iTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+				tTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+			}
+			if (t.isSpectating()){
+				if (t.isBodyFound())
+					handleDeadPlayer(t);
+				else
+					handleMIAPlayer(t);
+			}
+			else
+				handleAlivePlayer(t);
+			
+			if (t.getTeam() != null){
+					if (!t.isTraitor())
+						t.getBukkitPlayer().setScoreboard(innocent);
 					else
-						handleMIAPlayer(t);
+						t.getBukkitPlayer().setScoreboard(traitor);
 				}
 				else
-					handleAlivePlayer(t);
-			}
-		}
-
-		for (Player p : Bukkit.getOnlinePlayers()){
-			if (TTTPlayer.isPlayer(p.getName())){
-				TTTPlayer t = TTTPlayer.getTTTPlayer(p.getName());
-				if (t.getWorld().equalsIgnoreCase(worldName)){
-					// set scoreboards
-					if (t.getRole() != null){
-						if (!t.isTraitor())
-							p.setScoreboard(innocent);
-						else
-							p.setScoreboard(traitor);
-					}
-					else
-						p.setScoreboard(innocent);
-				}
-			}
+					t.getBukkitPlayer().setScoreboard(innocent);
 		}
 	}
 
@@ -114,7 +105,7 @@ public class ScoreManager {
 	private void handleAlivePlayer(TTTPlayer t){
 		String s = "§l" + t.getName();
 		int prefix = 0;
-		if (t.getRole() != null && t.getRole() != Role.INNOCENT)
+		if (t.getTeam() != null && !t.hasMetadata("detective"))
 			prefix = 2;
 		if (prefix + s.length() > 16)
 			s = s.substring(0, 16 - prefix);
@@ -128,7 +119,7 @@ public class ScoreManager {
 	private void handleMIAPlayer(TTTPlayer t){
 		String s = t.getName();
 		int prefix = 0;
-		if (t.getRole() != null && t.getRole() != Role.INNOCENT)
+		if (t.getTeam() != null && !t.getTeam().equals("Innocent"))
 			prefix = 2;
 		if (prefix + s.length() > 16)
 			s = s.substring(0, 16 - prefix);
@@ -142,7 +133,7 @@ public class ScoreManager {
 	private void handleDeadPlayer(TTTPlayer t){
 		String s = t.isTraitor() ? "§4§m" + t.getName() : "§m" + t.getName();
 		int prefix = 0;
-		if (t.getRole() != null && t.getRole() != Role.INNOCENT)
+		if (t.getTeam() != null && !t.getTeam().equals("Innocent"))
 			prefix = 2;
 		if (prefix + s.length() > 16)
 			s = s.substring(0, 16 - prefix);
@@ -151,7 +142,7 @@ public class ScoreManager {
 		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
 		score2.setScore(t.getDisplayKarma());
 	}
-	
+
 	public static void uninitialize(){
 		sbManagers = null;
 		manager = null;

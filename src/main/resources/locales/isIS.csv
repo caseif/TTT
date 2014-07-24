@@ -1,121 +1,121 @@
 key|message|comments*
 *Comments are ignored by the plugin
-no-permission|Şú hefur ekki heimild til ağ gera şetta!
-no-permission-join|Şú hefur ekki heimild til ağ fara í leik!
-no-permission-quit|Şú hefur ekki heimild til ağ fara úr leik!
-no-permission-import|Şú hefur ekki heimild til ağ setja inn veröld!
+no-permission|ÃÃº hefur ekki heimild til aÃ° gera Ã¾etta!
+no-permission-join|ÃÃº hefur ekki heimild til aÃ° fara Ã­ leik!
+no-permission-quit|ÃÃº hefur ekki heimild til aÃ° fara Ãºr leik!
+no-permission-import|ÃÃº hefur ekki heimild til aÃ° setja inn verÃ¶ld!
 usage-1|Notkun: /ttt [skipun]
-usage-join|Notkun: /ttt join [nafn á veröld]
-usage-import|Notkun: /ttt import [nafn á veröld]
-invalid-args-1|Of lítiğ af rökum! Type /ttt help for help
-invalid-args-2|Ógild rök! Type /ttt help fyrir hjálp
-not-in-game|Şú ert ekki í neinum leik!
-must-be-ingame|Şú verğur ağ vera inni í leiknum til ağ nota şessa skipun!
-in-progress|Şú mátt ekki fara inn í leik sem er í gangi!
-waiting|Bíğ eftir spilurum...
-map-invalid|Villa: Valin veröld er ekki til eğa hefur ekki veriğ sett inn!
-round-starting|Umferğ er ağ byrja!
-no-kits|Şú mátt ekki nota pakka á meğan şú ert í leik!
-creator|Höfundur af TTT
-alpha-tester|Alfa prófari af TTT
-tester|Prófari af TTT
-translator|Şığandi af TTT
-success-join|Tókst ağ fara inn í veröld
-metrics-fail|Mistókst ağ senda stöğu til MCStats!
-enabled|hefur veriğ kveikt á!
-disabled|hefur veriğ slökkt á!
-import-success|Tókst ağ setja inn veröld!
-folder-error|Villa kom á meğan reynt var ağ búa til nıja veröldsmöppu.
-already-imported|Şessi veröld hefur núşegar veriğ sett inn!
-cannot-load-world|Valin veröld getur ekki veriğ hlağinn, og er şví ógild eğa spillt.
-start-error|Veraldar nafn verğur ekki ağ byrja á "TTT_"!
-folder-not-found|Valin mappa var ekki fundin! Farğu yfir ağ mappan er í şjóns skrá, og reyndu aftur.
-inv-save-error|Mistókst ağ vista bakpoka!
-dead|Şú ert nú dauğur! Şú hefur veriğ falinn frá öğrum spilurum og getur nú flogiğ.
-id|Skilríki
-body-of|Şetta er lík
+usage-join|Notkun: /ttt join [nafn Ã¡ verÃ¶ld]
+usage-import|Notkun: /ttt import [nafn Ã¡ verÃ¶ld]
+invalid-args-1|Of lÃ­tiÃ° af rÃ¶kum! Type /ttt help for help
+invalid-args-2|Ã“gild rÃ¶k! Type /ttt help fyrir hjÃ¡lp
+not-in-game|ÃÃº ert ekki Ã­ neinum leik!
+must-be-ingame|ÃÃº verÃ°ur aÃ° vera inni Ã­ leiknum til aÃ° nota Ã¾essa skipun!
+in-progress|ÃÃº mÃ¡tt ekki fara inn Ã­ leik sem er Ã­ gangi!
+waiting|BÃ­Ã° eftir spilurum...
+map-invalid|Villa: Valin verÃ¶ld er ekki til eÃ°a hefur ekki veriÃ° sett inn!
+round-starting|UmferÃ° er aÃ° byrja!
+no-kits|ÃÃº mÃ¡tt ekki nota pakka Ã¡ meÃ°an Ã¾Ãº ert Ã­ leik!
+creator|HÃ¶fundur af TTT
+alpha-tester|Alfa prÃ³fari af TTT
+tester|PrÃ³fari af TTT
+translator|ÃÃ½Ã°andi af TTT
+success-join|TÃ³kst aÃ° fara inn Ã­ verÃ¶ld
+metrics-fail|MistÃ³kst aÃ° senda stÃ¶Ã°u til MCStats!
+enabled|hefur veriÃ° kveikt Ã¡!
+disabled|hefur veriÃ° slÃ¶kkt Ã¡!
+import-success|TÃ³kst aÃ° setja inn verÃ¶ld!
+folder-error|Villa kom Ã¡ meÃ°an reynt var aÃ° bÃºa til nÃ½ja verÃ¶ldsmÃ¶ppu.
+already-imported|Ãessi verÃ¶ld hefur nÃºÃ¾egar veriÃ° sett inn!
+cannot-load-world|Valin verÃ¶ld getur ekki veriÃ° hlaÃ°inn, og er Ã¾vÃ­ Ã³gild eÃ°a spillt.
+start-error|Veraldar nafn verÃ°ur ekki aÃ° byrja Ã¡ "TTT_"!
+folder-not-found|Valin mappa var ekki fundin! FarÃ°u yfir aÃ° mappan er Ã­ Ã¾jÃ³ns skrÃ¡, og reyndu aftur.
+inv-save-error|MistÃ³kst aÃ° vista bakpoka!
+dead|ÃÃº ert nÃº dauÃ°ur! ÃÃº hefur veriÃ° falinn frÃ¡ Ã¶Ã°rum spilurum og getur nÃº flogiÃ°.
+id|SkilrÃ­ki
+body-of|Ãetta er lÃ­k
 innocent|Saklaus
 traitor|Svikari
-detective|Lögreglumağur
-innocent-id|Şessi mağur var saklaus.
-traitor-id|Şessi mağur var svikari!
-detective-id|Şessi mağur var lögregla.
-joined-map|hefur fariğ í veröldina
-left-map|hefur fariğ úr veröldinni
+detective|LÃ¶greglumaÃ°ur
+innocent-id|Ãessi maÃ°ur var saklaus.
+traitor-id|Ãessi maÃ°ur var svikari!
+detective-id|Ãessi maÃ°ur var lÃ¶gregla.
+joined-map|hefur fariÃ° Ã­ verÃ¶ldina
+left-map|hefur fariÃ° Ãºr verÃ¶ldinni
 begin|Leikurinn byrjar eftir %
-seconds|sekúndur
-minutes|mínútur
-you-are-innocent|Şú ert saklaus! En varağu şig, şağ eru svikarar á kreik sem vilja fylla şig af skotum.
-you-are-traitor|Şú ert svikari! Şitt starf er ağ drepa saklausa. En varağu şig, şú ert á móti mörgum. Şú şarft snilld og hreyfigetu til ağ vinna.
-allies|Svikari, şetta eru liğsmenn şínir:
-alone|Svikari, şú ert einn.
-begun|Leikurinn hefur byrjağ!
-traitor-win|Svikarar unnu á %
-innocent-win|Saklausir unnu á %
-inv-load-error|Mistókst ağ hlağa vistuğum bakpoka!
-left|fór úr leiknum!
-rollback|Tókst ağ endurskapa veröld!
-found-body|fann lík %
+seconds|sekÃºndur
+minutes|mÃ­nÃºtur
+you-are-innocent|ÃÃº ert saklaus! En varaÃ°u Ã¾ig, Ã¾aÃ° eru svikarar Ã¡ kreik sem vilja fylla Ã¾ig af skotum.
+you-are-traitor|ÃÃº ert svikari! Ãitt starf er aÃ° drepa saklausa. En varaÃ°u Ã¾ig, Ã¾Ãº ert Ã¡ mÃ³ti mÃ¶rgum. ÃÃº Ã¾arft snilld og hreyfigetu til aÃ° vinna.
+allies|Svikari, Ã¾etta eru liÃ°smenn Ã¾Ã­nir:
+alone|Svikari, Ã¾Ãº ert einn.
+begun|Leikurinn hefur byrjaÃ°!
+traitor-win|Svikarar unnu Ã¡ %
+innocent-win|Saklausir unnu Ã¡ %
+inv-load-error|MistÃ³kst aÃ° hlaÃ°a vistuÃ°um bakpoka!
+left|fÃ³r Ãºr leiknum!
+rollback|TÃ³kst aÃ° endurskapa verÃ¶ld!
+found-body|fann lÃ­k %
 was-innocent|Hann var saklaus.
 was-traitor|Hann var svikari!
-was-detective|Hann var lögreglumağur.
-need-ammo|Şú şarft fleiri skot!
-discreet|Skoğar lík í leyni
-no-drop|Şú getur ekki hennt hlutum á meğan şú spilar!
-you-are-detective|Şú ert lögreglumağur! Şú hefur fengiğ DNA skanna sem leyfir şér ağ taka DNA sıni frá líkum til ağ finna morğingjann. Notağu şetta tæki til ağ drepa alla svikaranna!
-collected-sample|Náği DNA sıni frá líki af %
-crowbar|Kúbeinn
+was-detective|Hann var lÃ¶greglumaÃ°ur.
+need-ammo|ÃÃº Ã¾arft fleiri skot!
+discreet|SkoÃ°ar lÃ­k Ã­ leyni
+no-drop|ÃÃº getur ekki hennt hlutum Ã¡ meÃ°an Ã¾Ãº spilar!
+you-are-detective|ÃÃº ert lÃ¶greglumaÃ°ur! ÃÃº hefur fengiÃ° DNA skanna sem leyfir Ã¾Ã©r aÃ° taka DNA sÃ½ni frÃ¡ lÃ­kum til aÃ° finna morÃ°ingjann. NotaÃ°u Ã¾etta tÃ¦ki til aÃ° drepa alla svikaranna!
+collected-sample|NÃ¡Ã°i DNA sÃ½ni frÃ¡ lÃ­ki af %
+crowbar|KÃºbeinn
 gun|Byssa
 dna-scanner|DNA Skannari
-killer-left|Morğingi şessa spilara er ekki lengur í leiknum!
-dna-decay|Şetta DNA sıni mun rotna eftir %
-karma|Heiğarleiki
-karma-damage|Heiğarleiki şinn er %, svo şú gerir & árásarstig.
+killer-left|MorÃ°ingi Ã¾essa spilara er ekki lengur Ã­ leiknum!
+dna-decay|Ãetta DNA sÃ½ni mun rotna eftir %
+karma|HeiÃ°arleiki
+karma-damage|HeiÃ°arleiki Ã¾inn er %, svo Ã¾Ãº gerir & Ã¡rÃ¡sarstig.
 full|fullt
-no-pm|Şú mátt ekki senda einkaskilaboğ á meğan şú spilar!
-left-game|fór úr veröldinni %!
-commands|Skipanir sem şú getur gert:
-import-help|Setur inn veröld frá uppgefni möppu í viğbótina
-join-help|Lætur şig fara í ákveğnan leik
-quit-help|Tekur şig úr leik sem şú ert í
-spawn-help|Setur byrjunarstağinn á enda leiks til stağinn sem şú ert á
-help-help|Sınir hjálp valmynd
-karma-permaban|Şú hefur veriğ bannağur ağ eilífu frá TTT á şessum server şví heiğarleiki hefur falliğ niğur fyrir %
-karma-ban|Şú hefur veriğ bannağur frá TTT á şessum vefşjón útaf & şví heiğarleiki hefur falliğ niğur fyrir %
-karma-kick|Şú hefur sjálfkrafa veriğ tekinn úr leiknum şví heiğarleiki hefur falliğ fyrir neğan %
-ban-fail|Mistókst ağ hlağa banni fyrir %
-folder-rename|Pre-0.5 gagna mappa ("Trouble In Terrorist Town") fundin. Şetta verğur sjálfkrafa endurnefnt sem "TTT." Samt, şağ verğur ağ vera handvikrt breytt til baka ef şú villt breyta til baka í pre-0.5 gerğ.
-folder-rename-error|Villa kom á meğan reynt var ağ endurnefna gagn möppu. Şú gætir şurft ağ gera şağ handvirkt.
-already-entered|Şú ert nú şegar í şessum leik!
-round-full|Áhorfanda leikur er fullur!
-connect-fail-1|Hámark tengingar tími af 1000ms fariğ yfir. Reyni aftur...
-connect-fail-2|Undartekning átti sér stağ şegar skoğağ var byggingastöğu. Reyni aftur...
-connect-fail-3|Gat ekki tengst vefşjón %. Núverandi byggingastağa verğur kjurr óskoğ şangağ til viğbótin er kveikt á aftur.
-response|svaraği viğ %
-stable-build|Núverandi TTT bygging er stöğug.
-unstable-build|Núverandi TTT bygging er óstöğug! Hugsağu um ağ færa şig á stöğuga byggingu.
-unknown-build|Get ekki náğ í stöğu TTT byggingu. Ef şú hefur ekki breytt plugin.yml fæl (eğa veist ekki hvağ şağ er), tuğağu í verktaka til ağ uppfæra stöğu şessar gerğar.
-build-check-fail|Undantekning gerğist meğan kíkt var á nıjasta byggingastöğu.
-config-copy-fail|Mistókst ağ afrita stillingar!
-write-fail|Mistókst ağ skrifa á %!
-creating-file|% ekki fundin; bı til...
-waiting-sign|BÍĞ
-preparing|UNDIRBÚNINGUR
-ingame|Í LEIK
-resetting|ENDURRÆSI
-locale-fail|Gat ekki náğ í skilaboğ frá núverandi stağ!
-invalid-sign|Ógilt andyraskilti! Skrifağu /ttt help lobby fyrir hjálp.
-lobby-unregister|Andyraskilti afskráğ
-lobby-create|Andyraskilti búiğ til
-lobby-unregister-fail|Mistókst ağ afskrá andyraskilti
-lobby-create-fail|Mistókst ağ vista andyraskilti á disk
-lobby-help|Andyraskilti sniğ
+no-pm|ÃÃº mÃ¡tt ekki senda einkaskilaboÃ° Ã¡ meÃ°an Ã¾Ãº spilar!
+left-game|fÃ³r Ãºr verÃ¶ldinni %!
+commands|Skipanir sem Ã¾Ãº getur gert:
+import-help|Setur inn verÃ¶ld frÃ¡ uppgefni mÃ¶ppu Ã­ viÃ°bÃ³tina
+join-help|LÃ¦tur Ã¾ig fara Ã­ Ã¡kveÃ°nan leik
+quit-help|Tekur Ã¾ig Ãºr leik sem Ã¾Ãº ert Ã­
+spawn-help|Setur byrjunarstaÃ°inn Ã¡ enda leiks til staÃ°inn sem Ã¾Ãº ert Ã¡
+help-help|SÃ½nir hjÃ¡lp valmynd
+karma-permaban|ÃÃº hefur veriÃ° bannaÃ°ur aÃ° eilÃ­fu frÃ¡ TTT Ã¡ Ã¾essum server Ã¾vÃ­ heiÃ°arleiki hefur falliÃ° niÃ°ur fyrir %
+karma-ban|ÃÃº hefur veriÃ° bannaÃ°ur frÃ¡ TTT Ã¡ Ã¾essum vefÃ¾jÃ³n Ãºtaf & Ã¾vÃ­ heiÃ°arleiki hefur falliÃ° niÃ°ur fyrir %
+karma-kick|ÃÃº hefur sjÃ¡lfkrafa veriÃ° tekinn Ãºr leiknum Ã¾vÃ­ heiÃ°arleiki hefur falliÃ° fyrir neÃ°an %
+ban-fail|MistÃ³kst aÃ° hlaÃ°a banni fyrir %
+folder-rename|Pre-0.5 gagna mappa ("Trouble In Terrorist Town") fundin. Ãetta verÃ°ur sjÃ¡lfkrafa endurnefnt sem "TTT." Samt, Ã¾aÃ° verÃ°ur aÃ° vera handvikrt breytt til baka ef Ã¾Ãº villt breyta til baka Ã­ pre-0.5 gerÃ°.
+folder-rename-error|Villa kom Ã¡ meÃ°an reynt var aÃ° endurnefna gagn mÃ¶ppu. ÃÃº gÃ¦tir Ã¾urft aÃ° gera Ã¾aÃ° handvirkt.
+already-entered|ÃÃº ert nÃº Ã¾egar Ã­ Ã¾essum leik!
+round-full|Ãhorfanda leikur er fullur!
+connect-fail-1|HÃ¡mark tengingar tÃ­mi af 1000ms fariÃ° yfir. Reyni aftur...
+connect-fail-2|Undartekning Ã¡tti sÃ©r staÃ° Ã¾egar skoÃ°aÃ° var byggingastÃ¶Ã°u. Reyni aftur...
+connect-fail-3|Gat ekki tengst vefÃ¾jÃ³n %. NÃºverandi byggingastaÃ°a verÃ°ur kjurr Ã³skoÃ° Ã¾angaÃ° til viÃ°bÃ³tin er kveikt Ã¡ aftur.
+response|svaraÃ°i viÃ° %
+stable-build|NÃºverandi TTT bygging er stÃ¶Ã°ug.
+unstable-build|NÃºverandi TTT bygging er Ã³stÃ¶Ã°ug! HugsaÃ°u um aÃ° fÃ¦ra Ã¾ig Ã¡ stÃ¶Ã°uga byggingu.
+unknown-build|Get ekki nÃ¡Ã° Ã­ stÃ¶Ã°u TTT byggingu. Ef Ã¾Ãº hefur ekki breytt plugin.yml fÃ¦l (eÃ°a veist ekki hvaÃ° Ã¾aÃ° er), tuÃ°aÃ°u Ã­ verktaka til aÃ° uppfÃ¦ra stÃ¶Ã°u Ã¾essar gerÃ°ar.
+build-check-fail|Undantekning gerÃ°ist meÃ°an kÃ­kt var Ã¡ nÃ½jasta byggingastÃ¶Ã°u.
+config-copy-fail|MistÃ³kst aÃ° afrita stillingar!
+write-fail|MistÃ³kst aÃ° skrifa Ã¡ %!
+creating-file|% ekki fundin; bÃ½ til...
+waiting-sign|BÃÃ
+preparing|UNDIRBÃšNINGUR
+ingame|Ã LEIK
+resetting|ENDURRÃ†SI
+locale-fail|Gat ekki nÃ¡Ã° Ã­ skilaboÃ° frÃ¡ nÃºverandi staÃ°!
+invalid-sign|Ã“gilt andyraskilti! SkrifaÃ°u /ttt help lobby fyrir hjÃ¡lp.
+lobby-unregister|Andyraskilti afskrÃ¡Ã°
+lobby-create|Andyraskilti bÃºiÃ° til
+lobby-unregister-fail|MistÃ³kst aÃ° afskrÃ¡ andyraskilti
+lobby-create-fail|MistÃ³kst aÃ° vista andyraskilti Ã¡ disk
+lobby-help|Andyraskilti sniÃ°
 first|Fyrst
-second|Annağ
-third|Şriğja
-fourth|Fjórğa
-line|Lína
-type|Gerğ skiltis
-round|Umferğsnafn
-number|Skiltanúmer (bara fyrir "players" skilti)|Translator note: do not translate "players"
-prerelease|Viğ höfum tekiğ eftir ağ şú ert á óútgefnu byggingu af TTT. Ef şağ er til nı gerğ, mælum viğ meğ şví ağ nota şağ. Ef ekki, vinsamlegst segiğ frá öllum villum sem şú finnur í şessari byggingu til verktaka.
+second|AnnaÃ°
+third|ÃriÃ°ja
+fourth|FjÃ³rÃ°a
+line|LÃ­na
+type|GerÃ° skiltis
+round|UmferÃ°snafn
+number|SkiltanÃºmer (bara fyrir "players" skilti)|Translator note: do not translate "players"
+prerelease|ViÃ° hÃ¶fum tekiÃ° eftir aÃ° Ã¾Ãº ert Ã¡ Ã³Ãºtgefnu byggingu af TTT. Ef Ã¾aÃ° er til nÃ½ gerÃ°, mÃ¦lum viÃ° meÃ° Ã¾vÃ­ aÃ° nota Ã¾aÃ°. Ef ekki, vinsamlegst segiÃ° frÃ¡ Ã¶llum villum sem Ã¾Ãº finnur Ã­ Ã¾essari byggingu til verktaka.

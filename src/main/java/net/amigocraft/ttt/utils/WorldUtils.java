@@ -65,15 +65,15 @@ public class WorldUtils {
 				try {
 					copyFile(folder, newFolder);
 					if (Variables.VERBOSE_LOGGING)
-						Main.log.info(Main.local.getMessage("rollback") + " \"" + worldName + "\"!");
+						Main.log.info(Main.locale.getMessage("rollback") + " \"" + worldName + "\"!");
 				}
 				catch (IOException ex){
-					Main.log.info(Main.local.getMessage("folder-error") + " " + worldName);
+					Main.log.info(Main.locale.getMessage("folder-error") + " " + worldName);
 					ex.printStackTrace();
 				}
 			}
 			else
-				Main.log.info(Main.local.getMessage("cannot-load-world"));
+				Main.log.info(Main.locale.getMessage("cannot-load-world"));
 		}
 	}
 
@@ -90,24 +90,24 @@ public class WorldUtils {
 							sessionLock.delete();
 							uidDat.delete();
 							copyFile(folder, newFolder);
-							sender.sendMessage(ChatColor.GREEN + "[TTT] " + Main.local.getMessage("import-success"));
+							sender.sendMessage(ChatColor.GREEN + "[TTT] " + Main.locale.getMessage("import-success"));
 						}
 						catch (IOException e){
-							sender.sendMessage(ChatColor.RED + "[TTT] " + Main.local.getMessage("folder-error"));
+							sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("folder-error"));
 							e.printStackTrace();
 						}
 					}
 					else
-						sender.sendMessage(ChatColor.RED + "[TTT] " + Main.local.getMessage("already-imported"));
+						sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("already-imported"));
 				}
 				else
-					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.local.getMessage("cannot-load-world"));
+					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("cannot-load-world"));
 			}
 			else
-				sender.sendMessage(ChatColor.RED + "[TTT] " + Main.local.getMessage("start-error"));
+				sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("start-error"));
 		}
 		else
-			sender.sendMessage(ChatColor.RED + "[TTT] " + Main.local.getMessage("folder-not-found"));
+			sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("folder-not-found"));
 	}
 
 	public static void copyFile(File sourceLocation, File targetLocation) throws IOException {

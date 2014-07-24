@@ -9,35 +9,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import net.amigocraft.mglib.api.ConfigManager;
+import net.amigocraft.mglib.api.Locale;
+import net.amigocraft.mglib.api.Minigame;
 import net.amigocraft.ttt.Metrics;
-import net.amigocraft.ttt.listeners.BlockListener;
 import net.amigocraft.ttt.listeners.EntityListener;
+import net.amigocraft.ttt.listeners.MGListener;
 import net.amigocraft.ttt.listeners.PlayerListener;
 import net.amigocraft.ttt.managers.CommandManager;
 import net.amigocraft.ttt.managers.KarmaManager;
-import net.amigocraft.ttt.managers.LobbyManager;
-import net.amigocraft.ttt.managers.Localization;
-import net.amigocraft.ttt.managers.RoundManager;
 import net.amigocraft.ttt.managers.ScoreManager;
-import net.amigocraft.ttt.managers.SetupManager;
-import net.amigocraft.ttt.utils.NumUtils;
 import net.amigocraft.ttt.utils.WorldUtils;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin implements Listener {
+public class Main extends JavaPlugin {
 
 	public static String ANSI_RED = "\u001B[31m";
 	public static String ANSI_WHITE = "\u001B[37m";
+	public static Minigame mg;
 
 	public static Logger log;
 	public static Logger kLog;
 	public static Main plugin;
-	public static Localization local = new Localization();
+	public static Locale locale;
 	public static String lang;
 
 	public static List<Body> bodies = new ArrayList<Body>();
@@ -56,26 +52,41 @@ public class Main extends JavaPlugin implements Listener {
 		// initialize config variables
 		Variables.initialize();
 		
-		// register events, commands, and the plugin variable
-		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		getServer().getPluginManager().registerEvents(new BlockListener(), this);
-		getServer().getPluginManager().registerEvents(new EntityListener(), this);
-		getCommand("ttt").setExecutor(new CommandManager());
+		// register plugin with MGLib
+		mg = Minigame.registerPlugin(this);
+		
+		locale = mg.getLocale();
+		
+		ConfigManager cm = mg.getConfigManager();
+		cm.setBlockPlaceAllowed(false);
+		cm.setBlockBreakAllowed(false);
+		cm.setKitsAllowed(false);
+		cm.setPMsAllowed(false);
+		cm.setPlayerClass(TTTPlayer.class);
+		cm.setRandomSpawning(false);
+		cm.setTeleportationAllowed(false);
+		cm.setTeamChatEnabled(true);
+		cm.setDefaultPreparationTime(Variables.SETUP_TIME);
+		cm.setDefaultPlayingTime(Variables.TIME_LIMIT);
+		cm.setAllowJoinRoundWhilePreparing(true);
+		cm.setAllowJoinRoundInProgress(false);
 
-		createLocale("template.csv");
-		lang = Variables.LOCALIZATION;
-		Localization.initialize();
+		// register events, commands, and the plugin variable
+		getServer().getPluginManager().registerEvents(new EntityListener(), this);
+		getServer().getPluginManager().registerEvents(new MGListener(), this);
+		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+		getCommand("ttt").setExecutor(new CommandManager());
 
 		// copy pre-0.5 folder
 		File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
 		if (old.exists() && !getDataFolder().exists()){
-			log.info(local.getMessage("folder-rename"));
+			log.info(locale.getMessage("folder-rename"));
 			try {
 				old.renameTo(getDataFolder());
 			}
 			catch (Exception ex){
 				ex.printStackTrace();
-				log.warning(local.getMessage("folder-rename-error"));
+				log.warning(locale.getMessage("folder-rename-error"));
 			}
 		}
 
@@ -89,40 +100,17 @@ public class Main extends JavaPlugin implements Listener {
 			}
 			catch (Exception ex){
 				ex.printStackTrace();
-				log.warning(local.getMessage("config-copy-fail"));
+				log.warning(locale.getMessage("config-copy-fail"));
 			}
 			config.delete();
 			saveDefaultConfig();
 		}
 
-		if (Variables.ENABLE_VERSION_CHECK)
+		if (Variables.ENABLE_VERSION_CHECK && !this.getDescription().getVersion().contains("SNAPSHOT"))
 			checkVersion();
 
 		createFile("karma.yml");
 		createFile("bans.yml");
-		createFile("signs.yml");
-
-		// load lobby signs into memory
-		try {
-			YamlConfiguration y = new YamlConfiguration();
-			File f = new File(getDataFolder(), "signs.yml");
-			y.load(f);
-			for (String k : y.getKeys(false)){
-				if (NumUtils.isInt(k)){
-					LobbySign l = new LobbySign(
-							y.getInt(k + ".x"), y.getInt(k + ".y"), y.getInt(k + ".z"),
-							y.getString(k + ".world"), y.getString(k + ".round"), y.getInt(k + ".number"),
-							y.getString(k + ".type"));
-					l.setIndex(Integer.parseInt(k));
-					LobbyManager.signs.add(l);
-				}
-			}
-		}
-		catch (Exception ex){
-			ex.printStackTrace();
-			log.warning("Failed to load lobby signs into memory");
-		}
-		LobbyManager.resetSigns();
 
 		// autoupdate
 		if (Variables.ENABLE_AUTO_UPDATE){
@@ -137,7 +125,7 @@ public class Main extends JavaPlugin implements Listener {
 			}
 			catch (IOException e){
 				if (Variables.VERBOSE_LOGGING)
-					log.warning(local.getMessage("metrics-fail"));
+					log.warning(locale.getMessage("metrics-fail"));
 			}
 		}
 
@@ -147,28 +135,17 @@ public class Main extends JavaPlugin implements Listener {
 		maxKarma = Variables.MAX_KARMA;
 
 		if (Variables.VERBOSE_LOGGING)
-			log.info(this + " " + local.getMessage("enabled"));
+			log.info(this + " " + locale.getMessage("enabled"));
 	}
 
 	@Override
 	public void onDisable(){
-		Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "Ending all TTT rounds due to server " +
-				"reload/restart");
-		for (Round r : Round.rounds)
-			RoundManager.resetRound(r.getWorld(), true);
 		
 		// uninitialize static variables so as not to cause memory leaks when reloading
-		Round.rounds = null;
-		TTTPlayer.players = null;
 		KarmaManager.playerKarma = null;
-		LobbyManager.df = null;
-		LobbyManager.signs = null;
-		RoundManager.uninitialize();
 		ScoreManager.uninitialize();
-		SetupManager.uninitialize();
 		if (Variables.VERBOSE_LOGGING)
-			log.info(this + " " + local.getMessage("disabled"));
-		Localization.messages = null;
+			log.info(this + " " + locale.getMessage("disabled"));
 		plugin = null;
 		lang = null;
 	}
@@ -177,13 +154,13 @@ public class Main extends JavaPlugin implements Listener {
 		File f = new File(Main.plugin.getDataFolder(), s);
 		if (!f.exists()){
 			if (Variables.VERBOSE_LOGGING)
-				log.info(local.getMessage("creating-file").replace("%", s));
+				log.info(locale.getMessage("creating-file").replace("%", s));
 			try {
 				f.createNewFile();
 			}
 			catch (Exception ex){
 				ex.printStackTrace();
-				log.warning(local.getMessage("write-fail").replace("%", s));
+				log.warning(locale.getMessage("write-fail").replace("%", s));
 			}
 		}
 	}
@@ -231,9 +208,9 @@ public class Main extends JavaPlugin implements Listener {
 				t.interrupt();
 				if ((BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
 						(BuildChecker.response >= 500 && BuildChecker.response <= 599))
-					log.info(local.getMessage("connect-fail-1"));
+					log.info(locale.getMessage("connect-fail-1"));
 				else
-					log.info(local.getMessage("connect-fail-2"));
+					log.info(locale.getMessage("connect-fail-2"));
 				BuildChecker.response = 0;
 				Thread t2 = new Thread(new BuildChecker());
 				t2.start();
@@ -245,15 +222,15 @@ public class Main extends JavaPlugin implements Listener {
 					if ((BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
 							(BuildChecker.response >= 500 && BuildChecker.response <= 599))
 						response = " (" +
-								local.getMessage("response").replace("%", Integer.toString(BuildChecker.response) +
+								locale.getMessage("response").replace("%", Integer.toString(BuildChecker.response) +
 										")");
-					log.warning(local.getMessage("connect-fail-3").replace(" %", response));
+					log.warning(locale.getMessage("connect-fail-3").replace(" %", response));
 				}
 			}
 		}
 		catch (Exception ex){
 			ex.printStackTrace();
-			log.warning(local.getMessage("build-check-fail"));
+			log.warning(locale.getMessage("build-check-fail"));
 		}
 	}
 
