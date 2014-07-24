@@ -49,14 +49,15 @@ public class MGListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoinMinigameRound(PlayerJoinMinigameRoundEvent e){
-
+		if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena()))
+			ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
 		File f = new File(Main.plugin.getDataFolder(), "bans.yml");
 		YamlConfiguration y = new YamlConfiguration();
 		try {
 			y.load(f);
 			if (y.isSet(e.getPlayer().getName())){
 				int unbanTime = y.getInt(e.getPlayer().getName());
-				if (unbanTime > System.currentTimeMillis() / 1000){
+				if (unbanTime <= System.currentTimeMillis() / 1000){
 					y.set(e.getPlayer().getName(), null);
 					y.save(f);
 					if (Variables.VERBOSE_LOGGING)
@@ -121,8 +122,9 @@ public class MGListener implements Listener {
 		e.getPlayer().getBukkitPlayer().setScoreboard(Main.plugin.getServer().getScoreboardManager().getNewScoreboard());
 		KarmaManager.saveKarma((TTTPlayer)e.getPlayer());
 		((TTTPlayer)e.getPlayer()).setDisplayKarma(((TTTPlayer)e.getPlayer()).getKarma());
-		e.getRound().broadcast("[TTT] " + e.getPlayer().getName() + " " +
-				Main.locale.getMessage("left-game") + " \"" + e.getPlayer().getArena() + "\"");
+		if (!e.getRound().hasEnded())
+				e.getRound().broadcast(ChatColor.DARK_PURPLE + e.getPlayer().getName() + " " +
+						Main.locale.getMessage("left-game").replace("%", e.getPlayer().getArena()));
 	}
 
 	@SuppressWarnings({"deprecation"})

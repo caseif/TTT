@@ -77,6 +77,8 @@ public class Main extends JavaPlugin {
 		cm.setDefaultPlayingTime(Variables.TIME_LIMIT);
 		cm.setAllowJoinRoundWhilePreparing(true);
 		cm.setAllowJoinRoundInProgress(false);
+		cm.setMinPlayers(Variables.MINIMUM_PLAYERS);
+		cm.setMaxPlayers(Variables.MAXIMUM_PLAYERS);
 
 		// register events, commands, and the plugin variable
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);

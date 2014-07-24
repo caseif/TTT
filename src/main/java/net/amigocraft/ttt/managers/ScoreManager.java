@@ -73,7 +73,7 @@ public class ScoreManager {
 				iTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				tTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 			}
-			else if (t.getTeam().equals("Innocent")){
+			else if (t.getTeam() == null || t.getTeam().equals("Innocent")){
 				iTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 				tTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
 			}

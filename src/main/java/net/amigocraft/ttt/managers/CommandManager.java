@@ -18,6 +18,7 @@ import net.amigocraft.ttt.utils.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,7 +35,7 @@ public class CommandManager implements CommandExecutor {
 						if (args.length > 1){
 							if (new File(Bukkit.getWorldContainer(), args[1]).exists()){
 								if (FileUtils.isWorld(args[1])){
-									World w = Bukkit.getWorld(args[1]);
+									World w = Bukkit.createWorld(new WorldCreator(args[1]));
 									if (w != null){
 										try {
 											Main.mg.createArena(args[1], w.getSpawnLocation());

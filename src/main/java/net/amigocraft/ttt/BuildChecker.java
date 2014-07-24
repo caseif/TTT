@@ -35,14 +35,14 @@ public class BuildChecker implements Runnable {
 						Main.mg.log(Main.ANSI_RED + Main.locale.getMessage("unstable-build") + Main.ANSI_WHITE, LogLevel.WARNING);
 					Main.stability = "unstable";
 				}
-				else if (status.equals("UNKNOWN")){
-					if (Variables.UNKNOWN_BUILD_WARNING)
-						Main.mg.log(Main.ANSI_RED + Main.locale.getMessage("unknown-build") + Main.ANSI_WHITE, LogLevel.WARNING);
-					Main.stability = "unknown";
-				}
 				else if (status.equals("PRE")){
 					Main.mg.log(Main.ANSI_RED + Main.locale.getMessage("prerelease") + Main.ANSI_WHITE, LogLevel.INFO);
 					Main.stability = "pre";
+				}
+				else {
+					if (Variables.UNKNOWN_BUILD_WARNING)
+						Main.mg.log(Main.ANSI_RED + Main.locale.getMessage("unknown-build") + Main.ANSI_WHITE, LogLevel.WARNING);
+					Main.stability = "unknown";
 				}
 			}
 		}
