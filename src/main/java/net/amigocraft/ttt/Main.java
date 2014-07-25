@@ -24,6 +24,10 @@ import net.amigocraft.ttt.managers.ScoreManager;
 import net.amigocraft.ttt.utils.FileUtils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -44,7 +48,7 @@ public class Main extends JavaPlugin {
 	public static int maxKarma = 1000;
 
 	public static String stability = "stable";
-	
+
 	public static List<UUID> creator = new ArrayList<UUID>();
 	public static List<UUID> alpha = new ArrayList<UUID>();
 	public static List<UUID> testers = new ArrayList<UUID>();
@@ -55,15 +59,15 @@ public class Main extends JavaPlugin {
 		log = this.getLogger();
 		kLog = Logger.getLogger("TTT Karma Debug");
 		plugin = this;
-		
+
 		// initialize config variables
 		Variables.initialize();
-		
+
 		// register plugin with MGLib
 		mg = Minigame.registerPlugin(this);
-		
+
 		locale = mg.getLocale();
-		
+
 		ConfigManager cm = mg.getConfigManager();
 		cm.setBlockPlaceAllowed(false);
 		cm.setBlockBreakAllowed(false);
@@ -79,6 +83,30 @@ public class Main extends JavaPlugin {
 		cm.setAllowJoinRoundInProgress(false);
 		cm.setMinPlayers(Variables.MINIMUM_PLAYERS);
 		cm.setMaxPlayers(Variables.MAXIMUM_PLAYERS);
+		cm.setPvPAllowed(true);
+		cm.setTeamDamageAllowed(true);
+		cm.setOverrideDeathEvent(true);
+		cm.setForcePreciseDamage(true);
+
+		try {
+			File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
+			if (spawnFile.exists()){
+				YamlConfiguration spawnYaml = new YamlConfiguration();
+				spawnYaml.load(spawnFile);
+				World w = Bukkit.getWorld(spawnYaml.getString("world"));
+				if (w == null)
+					w = Bukkit.createWorld(new WorldCreator(spawnYaml.getString("world")));
+				if (w == null){
+					mg.log("Failed to set default exit location!", LogLevel.WARNING);
+				}
+				else
+					cm.setDefaultExitLocation(new Location(w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z")));
+			}
+		}
+		catch (Exception ex){
+			ex.printStackTrace();
+			mg.log("Failed to load default exit location from disk!", LogLevel.WARNING);
+		}
 
 		// register events, commands, and the plugin variable
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);
@@ -142,10 +170,10 @@ public class Main extends JavaPlugin {
 		invDir.mkdir();
 
 		maxKarma = Variables.MAX_KARMA;
-		
+
 		// add special players to list
 		creator.add(UUID.fromString("8ea8a3c0-ab53-4d80-8449-fa5368798dfc"));
-		
+
 		alpha.add(UUID.fromString("7fa299a6-1525-404c-a5f6-bf116cc2ceff")); // ZerosAce00000
 		alpha.add(UUID.fromString("7d5ba8ca-4a7c-41ff-9a27-4f74d006b086")); // momhipie
 		alpha.add(UUID.fromString("57cb8d8f-0e74-4eeb-8188-52adbed3e216")); // xJHA929x
@@ -154,9 +182,11 @@ public class Main extends JavaPlugin {
 		alpha.add(UUID.fromString("93a94c4a-0ad1-49c5-be92-d6fb416f938a")); // HardcoreBukkit
 		alpha.add(UUID.fromString("8c63bf21-ab7a-431b-aa45-c9e661e6e812")); // shiny3
 		alpha.add(UUID.fromString("e6f80dfe-d8ec-490f-9267-75797a213577")); // jpf6368
-		
+
 		testers.add(UUID.fromString("1b7fa3f3-3ac6-408b-990c-60cd37450208")); // Alexandercitt
-		
+		testers.add(UUID.fromString("18d0e7d7-f331-43e1-aded-6204fed565c1")); // Callmegusgus
+		testers.add(UUID.fromString("6f93a373-3765-4316-af73-199ca1ea14cf")); // redraskal
+
 		translators.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
 		translators.add(UUID.fromString("dcd6037d-a68d-4593-a857-7853406ec11e")); // Nikkolo_DTU
 		translators.add(UUID.fromString("ece5d120-402a-4a32-b78a-fdfaf5adab33")); // JeyWake
@@ -167,7 +197,7 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable(){
-		
+
 		// uninitialize static variables so as not to cause memory leaks when reloading
 		KarmaManager.playerKarma = null;
 		ScoreManager.uninitialize();

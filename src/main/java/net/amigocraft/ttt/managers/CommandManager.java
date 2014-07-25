@@ -17,6 +17,7 @@ import net.amigocraft.ttt.utils.FileUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
@@ -136,13 +137,13 @@ public class CommandManager implements CommandExecutor {
 								YamlConfiguration spawnYaml = new YamlConfiguration();
 								spawnYaml.load(spawnFile);
 								spawnYaml.set("world", ((Player)sender).getLocation().getWorld().getName());
-								spawnYaml.set("x", ((Player)sender).getLocation().getX());
-								spawnYaml.set("y", ((Player)sender).getLocation().getY());
-								spawnYaml.set("z", ((Player)sender).getLocation().getZ());
-								spawnYaml.set("pitch", ((Player)sender).getLocation().getPitch());
-								spawnYaml.set("yaw", ((Player)sender).getLocation().getYaw());
+								spawnYaml.set("x", ((Player)sender).getLocation().getBlockX() + 0.5);
+								spawnYaml.set("y", ((Player)sender).getLocation().getBlockY());
+								spawnYaml.set("z", ((Player)sender).getLocation().getBlockZ() + 0.5);
 								spawnYaml.save(spawnFile);
-								Main.mg.getConfigManager().setDefaultExitLocation(((Player)sender).getLocation());
+								Location l = ((Player)sender).getLocation();
+								Main.mg.getConfigManager().setDefaultExitLocation(
+										new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5));
 								sender.sendMessage(ChatColor.DARK_PURPLE + "Successfully set TTT return point!");
 							}
 							catch (Exception ex){

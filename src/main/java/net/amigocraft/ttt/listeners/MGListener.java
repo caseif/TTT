@@ -89,6 +89,8 @@ public class MGListener implements Listener {
 			Main.mg.log("Failed to load bans from disk!", LogLevel.WARNING);
 		}
 		
+		e.getPlayer().getBukkitPlayer().setHealth(e.getPlayer().getBukkitPlayer().getMaxHealth());
+		
 		String addition = "";
 		@SuppressWarnings("static-access")
 		UUID uuid = Main.mg.getOnlineUUIDs().get(e.getPlayer().getName());
@@ -206,7 +208,7 @@ public class MGListener implements Listener {
 					Player pl = Main.plugin.getServer().getPlayer(s);
 					TTTPlayer t = (TTTPlayer)Main.mg.getMGPlayer(s);
 					if (pl != null && t != null){
-						t.setTeam("Traitor");;
+						t.setTeam("Traitor");
 						pl.sendMessage(ChatColor.DARK_RED + Main.locale.getMessage("you-are-traitor"));
 						if (traitors.size() > 1){
 							pl.sendMessage(ChatColor.DARK_RED + Main.locale.getMessage("allies"));
@@ -297,7 +299,7 @@ public class MGListener implements Listener {
 			}
 
 			Round r = e.getRound();
-			int rTime = r.getTime();
+			int rTime = r.getRemainingTime();
 			if (rTime % 60 == 0 && rTime >= 60){
 				r.broadcast(ChatColor.DARK_PURPLE + Integer.toString(rTime / 60) +
 						" " + Main.locale.getMessage("minutes") + " " +
