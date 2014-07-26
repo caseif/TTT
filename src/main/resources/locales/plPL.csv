@@ -1,3 +1,5 @@
+key|message|comments*
+*Comments are ignored by the plugin
 no-permission|Nie masz uprawnien aby to zrobic!
 no-permission-join|Nie masz uprawnien aby dolaczyc do gry!
 no-permission-quit|Nie masz uprawnien aby opuscic gre!
@@ -11,7 +13,7 @@ not-in-game|Juz jestes w grze!
 must-be-ingame|Musisz byc w grze aby uzyc tej komendy!
 in-progress|Nie mozesz dolaczyc do gry ktora juz sie rozpoczela!
 waiting|Oczekiwanie na reszte graczy...
-map-invalid|Error: Ta mapa nie istnieje lub nie zostala zimportowana!
+arena-invalid|Określone arena nie został jeszcze utworzony, czy importowane!
 round-starting|Runda sie rozpoczyna!
 no-kits|Nie mozesz uzyc zestawu w grze!
 creator|Tworca TTT
@@ -116,3 +118,10 @@ type|Znak Rodzaj
 round|Runda Nazwa
 number|Liczba Sign (tylko dla "players" znaków)|Translator note: do no translate "players"
 prerelease|Wykryliśmy, że używasz prerelease budowa TTT. Jeśli jest dostępne nowsze wydanie, zalecamy aktualizację do tego. Jeśli nie, prosimy o zgłaszanie wszelkich błędów, które znajdziesz w tej kompilacji do autora wtyczki.
+
+Wszystko poniżej tej linii został przetłumaczony tylko przez Google Translate. Zapraszam do skorygowania, jeśli jest niedokładne. :)
+
+createarena-help|Tworzy arenę przez określoną nazwą. Trzy współrzędne i ewentualnie świecie mogą być świadczone. Jeśli żadne dodatkowe argumenty są, będą wykorzystywane lokalizacja nadawcy. 
+addspawn-help|Dodaje tarło do określonego rzędu. Trzy współrzędne i ewentualnie świecie mogą być świadczone. Jeśli żadne dodatkowe argumenty są, będą wykorzystywane lokalizacja nadawcy. 
+removespawn-help|Usuwa ikry z określonego rzędu. Trzy współrzędne i ewentualnie świecie mogą być świadczone. Jeśli żadne dodatkowe argumenty są, będą wykorzystywane lokalizacja nadawcy.Pojedynczy indeks może być również stosowany. 
+same-world|Musisz być w tym samym świecie, co na arenie!

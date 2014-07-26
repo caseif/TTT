@@ -98,6 +98,22 @@ damage-reduction: true
 # When true, karma changes will be logged to the console. Note that this will typically cause massive log spam.
 karma-debug: false
 
+##################
+# Event Settings #
+##################
+
+# What events should be cancelled in worlds containing arenas?
+# Note: these are events which would otherwise not be rolled back.
+block-burn: true
+block-fade: true
+block-grow: true
+block-ignite: true
+block-flow: false
+block-piston: false
+block-spread: true
+# Explosions from TNT blocks placed by players in a round will be rolled back. Other TNT blocks, creepers, and anything else will not.
+entity-explode: true
+
 ###################
 # Plugin Settings #
 ###################

@@ -1,7 +1,7 @@
 name: TTT
 version: 0.6.0-SNAPSHOT-jnks$BUILD
 main: net.amigocraft.ttt.Main
-author: Maxim Roncace
+author: Maxim Roncacé
 website: http://www.headswilllol.com/
 description: A Bukkit minigame based off the Garry's Mod gamemode Trouble In Terrorist Town.
 commands:
@@ -9,12 +9,21 @@ commands:
     import:
       description: Imports a TTT map from a specified folder in the server's root directory.
       usage: /ttt import [folder name]
+    carena:
+      description: Creates a new arena for use with TTT at the sender's or a specified location.
+      usage: /ttt carena [arena name] {x} {y} {z} {world}
     join:
       description: Adds player to a specified game of TTT.
       usage: /ttt join [map name]
-    setspawn:
+    setexit:
       description: Sets the location to teleport players to upon round end.
-      usage: /ttt setspawn
+      usage: /ttt setexit
+    addspawn:
+      description: Adds the sender's or a specified location as a spawn to a specified arena.
+      usage: /ttt addspawn [arena name] {x} {y} {z}
+    removespawn:
+      description: Removes the sender's or a specified location or an index as a spawn from the specified arena.
+      usage: /ttt removespawn [arena name] {x|index} {y|blank} {z|blank}
     help:
       description: Displays available commands to the sender.
       usage: /ttt help
@@ -23,26 +32,56 @@ permissions:
     description: Allows for full control and manipulation of the plugin.
     default: op
     children:
-      ttt.import: true
-      ttt.join: true
-      ttt.quit: true
-      ttt.setspawn: true
+      ttt.arena.import: true
+      ttt.arena.create: true
+      ttt.arena.addspawn: true
+      ttt.arena.removespawn: true
+      ttt.arena.join: true
+      ttt.arena.leave: true
+      ttt.setexit: true
       ttt.help: true
       ttt.lobby.create: true
       ttt.lobby.use: true
       ttt.build.warn: true
-  ttt.import:
+
+  ttt.admin:
+    description: Allows for full control and manipulation of the plugin.
+    default: op
+    children:
+      ttt.*: true
+  ttt.arena.*:
+    description: Grants all permissions beginning with ttt.arena.
+    default: op
+    children:
+      ttt.arena.import: true
+      ttt.arena.create: true
+      ttt.arena.addspawn: true
+      ttt.arena.removespawn: true
+      ttt.arena.join: true
+      ttt.arena.leave: true
+  ttt.arena.import:
     description: Allows player to import worlds into the plugin.
     default: op
-  ttt.join:
+  ttt.arena.create:
+    description: Allows player to create arenas for use with the plugin.
+    default: op
+  ttt.arena.addspawn:
+    description: Allows player to add spawns to an arena.
+    default: op
+  ttt.arena.removespawn:
+    description: Allows player to remove spawns from an arena.
+    default: op
+  ttt.arena.join:
     description: Allows player to join TTT rounds.
     default: true
-  ttt.quit:
+  ttt.arena.leave:
     description: Allows player to leave TTT rounds.
     default: true
-  ttt.setspawn:
+
+  ttt.setexit:
     description: Sets the spawn upon round exit to the sender's current location.
     default: op
+
   ttt.help:
     description: Allows use of /ttt help.
     default: true
@@ -58,3 +97,24 @@ permissions:
   ttt.build.warn:
     description: Players with this node will be warned of unstable builds on join.
     default: op
+
+  ttt.import:
+    description: Allows player to import worlds into the plugin. (deprecated)
+    default: op
+    children:
+      ttt.arena.import: true
+  ttt.join:
+    description: Allows player to join TTT rounds. (deprecated)
+    default: true
+    children:
+      ttt.arena.join: true
+  ttt.quit:
+    description: Allows player to leave TTT rounds. (deprecated)
+    default: true
+    children:
+      ttt.arena.leave: true
+  ttt.setspawn:
+    description: Sets the spawn upon round exit to the sender's current location. (deprecated)
+    default: op
+    children:
+      ttt.setexit: true

@@ -1,3 +1,5 @@
+key|message|comments*
+*Comments are ignored by the plugin
 no-permission|Du har ikke tilladelse til at gøre dette!
 no-permission-join|Du har ikke tilladelse til at tilslutte et spil!
 no-permission-quit|Du har ikke tilladelse til at forlade et spil!
@@ -11,7 +13,7 @@ not-in-game|Du er ikke i et spil!
 must-be-ingame|Du skal være i et spil for at bruge denne kommando!
 in-progress|Du må ikke tilslutte et spil der er igang!
 waiting|Venter på spillere...
-map-invalid|FEJL: Den specificerede verden findes ikke, eller er ikke importeret!
+arena-invalid|Den angivne arena er endnu ikke blevet oprettet eller importeret!
 round-starting|Runden starter!
 no-kits|Du kan ikke bruge kits når du er i spillet!
 creator|laveren af TTT
@@ -117,3 +119,10 @@ type|Skilt Type
 round|Runde Navn
 number|Skilt Nummer (kun for "players" skilte)
 prerelease|Vi har registreret, at du kører en gammel version af TTT. Hvis der er en nyere udgave til rådighed, anbefaler vi stærkt at opdatere til den. Hvis ikke, bedes du rapportere alle fejl du finder i denne version til personen der har lavet pluginnet.
+
+Alt under denne linje er blevet oversat kun af Google Translate. Du er velkommen til at rette det, hvis det er unøjagtige. :)
+
+createarena-help|Opretter en arena med det angivne navn. Tre koordinater og eventuelt en verden kan tilvejebringes. Hvis ingen ekstra argumenter er forudsat, vil afsenderens placering anvendes. 
+addspawn-help|Tilføjer en gyde til den angivne arena. Tre koordinater og eventuelt en verden kan tilvejebringes. Hvis ingen ekstra argumenter er forudsat, vil afsenderens placering anvendes. 
+removespawn-help|Fjerner en gyde fra den angivne arena. Tre koordinater og eventuelt en verden kan tilvejebringes. Hvis ingen ekstra argumenter er forudsat, vil afsenderens placering anvendes. En enkelt indeks kan også anvendes. 
+same-world|Du skal være i den samme verden som arena!

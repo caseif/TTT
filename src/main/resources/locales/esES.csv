@@ -13,7 +13,7 @@ not-in-game|No estas en un juego!
 must-be-ingame|Debes de estar en un juego para ejecutar ese comando!
 in-progress|No te puedes unir a una partida en progreso!
 waiting|Esperando a los jugadores...
-map-invalid|Error: El mapa importado no existe o se importo mal!
+arena-invalid|La arena se especifica aún no se ha creado o importado!
 round-starting|Ronda iniciada!
 no-kits|No puedes usar kits en juego!
 creator|creador de TTT
@@ -119,3 +119,10 @@ type|Tipo de señal
 round|Nombre de la ronda
 number|Numero de señales (solo para "players" señales)|Translator note: do not translate "players"
 prerelease|Hemos detectado que está ejecutando una compilación preliminar de TTT. Si hay una nueva versión disponible, le recomendamos actualizar a eso. Si no es así, por favor, informe de cualquier error que encuentre en este construir el autor del plugin.
+
+Todo debajo de esta línea se ha traducido sólo por Google Translate. Siéntase libre para corregirlo si es inexacta. :)
+
+createarena-help|Crea una arena con el nombre especificado. Tres coordenadas y, opcionalmente, un mundo pueden ser proporcionados. Si no se proporcionan argumentos adicionales, se utilizará la ubicación del remitente. 
+addspawn-help|Añade un engendro a la arena especificada. Tres coordenadas y, opcionalmente, un mundo pueden ser proporcionados. Si no se proporcionan argumentos adicionales, se utilizará la ubicación del remitente. 
+removespawn-help|Quita un engendro de la arena especificada. Tres coordenadas y, opcionalmente, un mundo pueden ser proporcionados. Si no se proporcionan argumentos adicionales, se utilizará la ubicación del remitente. Un índice único también se puede utilizar. 
+same-world|Debe estar en el mismo mundo que la arena!

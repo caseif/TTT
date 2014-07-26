@@ -1,3 +1,5 @@
+key|message|comments*
+*Comments are ignored by the plugin
 no-permission|Nu ai permisiuni necesare pentru a face acest lucru!
 no-permission-join|Nu ai permisiuni necesare pentru a intra intr-un joc!
 no-permission-quit|Nu ai permisiuni necesare pentru a iesii dintr-un joc!
@@ -11,7 +13,7 @@ not-in-game|Nu sunteti momentan intr-un joc!
 must-be-ingame|Trebuie sa fii intr-un joc!
 in-progress|Nu poti intra intr-un joc dejea inceput!
 waiting|Astept playeri
-map-invalid|Eroare: Mapa nu a fost gasita!
+arena-invalid|Arena specificat nu a fost încă creat sau importat!
 round-starting|Runda incepe, pregateste-te!
 no-kits|Nu poti folosii kit-uri intr-un joc!
 creator|creatorul TTT
@@ -117,3 +119,10 @@ type|Tip-ul Sign
 round|NUmele Rundei
 number|Numarul Sign-ului (doar pentru "players" semne)
 prerelease|Am detectat că se execută o construcție prelansare a TTT. Dacă există o versiune mai nouă, vă recomandăm actualizarea la asta. Dacă nu, vă rugăm să raporteze orice bug-uri veți găsi în acest construi la autorul plugin.
+
+Totul sub această linie a fost tradus doar prin Google Translate. Simțiți-vă liber să-l corecteze, dacă este inexact. :)
+
+createarena-help|Creează o arenă de numele specificat. Pot fi prevăzute trei coordonate și, opțional, o lume. În cazul în care sunt furnizate argumente suplimentare, locația expeditorului va fi folosit. 
+addspawn-help|Adaugă o spawn la arena specificat. Pot fi prevăzute trei coordonate și, opțional, o lume. În cazul în care sunt furnizate argumente suplimentare, locația expeditorului va fi folosit. 
+removespawn-help|Sterge un spawn de la arena specificată. Pot fi prevăzute trei coordonate și, opțional, o lume. În cazul în care sunt furnizate argumente suplimentare, locația expeditorului va fi folosit. Un singur indice pot fi de asemenea utilizate. 
+same-world|Tu trebuie să fie în aceeași lume ca arenă!

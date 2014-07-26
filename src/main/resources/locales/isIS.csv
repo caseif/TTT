@@ -13,7 +13,7 @@ not-in-game|Þú ert ekki í neinum leik!
 must-be-ingame|Þú verður að vera inni í leiknum til að nota þessa skipun!
 in-progress|Þú mátt ekki fara inn í leik sem er í gangi!
 waiting|Bíð eftir spilurum...
-map-invalid|Villa: Valin veröld er ekki til eða hefur ekki verið sett inn!
+arena-invalid|Tilgreint vettvangi hefur ekki enn verið búið til eða flutt!
 round-starting|Umferð er að byrja!
 no-kits|Þú mátt ekki nota pakka á meðan þú ert í leik!
 creator|Höfundur af TTT
@@ -119,3 +119,10 @@ type|Gerð skiltis
 round|Umferðsnafn
 number|Skiltanúmer (bara fyrir "players" skilti)|Translator note: do not translate "players"
 prerelease|Við höfum tekið eftir að þú ert á óútgefnu byggingu af TTT. Ef það er til ný gerð, mælum við með því að nota það. Ef ekki, vinsamlegst segið frá öllum villum sem þú finnur í þessari byggingu til verktaka.
+
+Allt undir þessari línu hefur verið þýdd aðeins með Google Translate. Feel frjáls til að leiðrétta það ef það er ónákvæm. :)
+
+createarena-help|Býr vettvangi með tilgreint nafn. Þrjár hnit og mögulega heiminum kann að vera til staðar. Ef engin auka rök eru, staðsetning sendandans verður notað. 
+addspawn-help|Bætir hrogn til tiltekins vettvangi. Þrjár hnit og mögulega heiminum kann að vera til staðar. Ef engin auka rök eru, staðsetning sendandans verður notað. 
+removespawn-help|fjarlægir hrogn frá skilgreindum vettvangi. Þrjár hnit og mögulega heiminum kann að vera til staðar. Ef engin auka rök eru, staðsetning sendandans verður notað. A einn vísitölu getur einnig verið notaður. 
+same-world|Þú verður að vera í sama heimi og á vettvangi!

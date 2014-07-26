@@ -13,7 +13,7 @@ not-in-game|Non sei ingame!
 must-be-ingame|Per eseguire questo comando devi essere ingame!
 in-progress|Non puoi entrare in un game gia in progresso!
 waiting|Aspettando per altri players...
-map-invalid|Error: La mappa specificata non esiste o non e' stata importata!
+arena-invalid|L'arena specificato non è ancora stato creato o importato!
 round-starting|Il game sta iniziando!
 no-kits|Non puoi usare i kits mentre sei ingame!
 creator|creatore di Trouble in Terrorist Town
@@ -119,3 +119,10 @@ type|Tipo di cartello
 round|Nome Round
 number|Numero Cartello (solo per i cartelli "players")|Translator note: do not translate "players"
 prerelease|Abbiamo rilevato che stai usando una prerelease build di TTT. Se e' disponibile una release, ti raccomandiamo di aggiornare a quella versione li. Se non e' disponibile, perfavore riporta qualsiasi bug che trovi in questa versione al creatore del plugin.
+
+Tutto sotto di questa linea è stata tradotta solo da Google Translate. Sentiti libero di correggerla se è imprecisa. :)
+
+createarena-help|Crea un arena con il nome specificato. Possono essere previste tre coordinate ed eventualmente un mondo. Se non vengono forniti argomenti aggiuntivi, verrà utilizzata la posizione del mittente. 
+addspawn-help|Aggiunge una escursione per l'arena specificato. Possono essere previste tre coordinate ed eventualmente un mondo. Se non vengono forniti argomenti aggiuntivi, verrà utilizzata la posizione del mittente. 
+removespawn-help|Rimuove un escursione dall'arena specificato. Possono essere previste tre coordinate ed eventualmente un mondo. Se non vengono forniti argomenti aggiuntivi, verrà utilizzata la posizione del mittente. Un singolo indice può anche essere usato. 
+same-world|Devi essere nello stesso mondo come l'arena!

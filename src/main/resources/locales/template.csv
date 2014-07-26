@@ -13,7 +13,7 @@ not-in-game|You are not currently in a game!
 must-be-ingame|You must be an ingame player to perform this command!
 in-progress|You may not join a game already in progress!
 waiting|Waiting for players...
-map-invalid|Error: The specified map does not exist or has not been imported!
+arena-invalid|The specified arena has not yet been created or imported!
 round-starting|Round is starting!
 no-kits|You may not use kits whilst in a game!
 creator|creator of TTT
@@ -41,7 +41,6 @@ innocent-id|This person was innocent.
 traitor-id|This person was a traitor!
 detective-id|This person was a detective.
 joined-map|has joined map
-left-map|has left map
 begin|The game will begin in %
 seconds|seconds
 minutes|minutes
@@ -78,7 +77,7 @@ commands|Commands available to you:
 import-help|Imports a world from a given folder into the plugin
 join-help|Enters you into a given game
 quit-help|Removes you from your current game
-spawn-help|Sets the spawn point upon round exit to your current location
+spawn-help|Sets the exit point upon round exit to your current location
 help-help|Displays this help menu
 karma-permaban|You have been permanently banned from using TTT on this server because your karma has fallen below %
 karma-ban|You have been banned from using TTT on this server for & because your karma has fallen below %
@@ -119,3 +118,10 @@ type|Sign Type
 round|Round Name
 number|Sign Number (only for "players" signs)|Translator note: do not translate "players"
 prerelease|We have detected that you are running a prerelease build of TTT. If there is a newer release available, we highly recommend updating to that. If not, please report any bugs you find in this build to the plugin author.
+
+Everything below this line has been translated only by Google Translate. Feel free to correct it if it's inaccurate. :)
+
+createarena-help|Creates an arena by the specified name. Three coordinates and optionally a world may be provided. If no extra arguments are provided, the sender's location will be used.
+addspawn-help|Adds a spawn to the specified arena. Three coordinates and optionally a world may be provided. If no extra arguments are provided, the sender's location will be used.
+removespawn-help|Removes a spawn from the specified arena. Three coordinates and optionally a world may be provided. If no extra arguments are provided, the sender's location will be used. A single index may also be used.
+same-world|You must be in the same world as the arena!

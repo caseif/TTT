@@ -1,3 +1,5 @@
+key|message|comments*
+*Comments are ignored by the plugin
 no-permission|Vous n'avez pas la permission de faire ceci!
 no-permission-join|Vous n'avez pas la permission de joindre la partie!
 no-permission-quit|Vous n'avez pas la permission de quitter la partie!
@@ -11,7 +13,7 @@ not-in-game|Vous n'êtes actuellement dans une partie!
 must-be-ingame|Vous devez être un joueur dans le partie pour effectuer cette commande!
 in-progress|Vous ne pouvez pas joindre une partie déjà lancée!
 waiting|Attente de joueur...
-map-invalid|Erreur: la map spécifique n'existe pas ou n'a pas été importé!
+arena-invalid|L'arène spécifié n'a pas encore été créé ou importé!
 round-starting|La partie commance!
 no-kits|Vous ne pouvez pas utiliser les kits lorsque vous êtes dans une partie!
 creator|createur de TTT
@@ -117,3 +119,10 @@ type|Tape Panneau
 round|Nom de partie
 number|Nombre de parties (seulement pour le panneau "players")|Translator note: do not translate "players"
 prerelease|Nous avons détecté que vous utilisez un build préliminaire de TTT. Si il ya une version plus récente est disponible, nous vous recommandons fortement la mise à jour à ce sujet. Si non, s'il vous plaît rapporter tous les bugs que vous trouvez dans cette version à l'auteur du plugin.
+
+Tout en dessous de cette ligne a été traduite que par Google Translate. N'hésitez pas à les corriger si c'est inexact. :)
+
+createarena-help|Crée une arène par le nom spécifié. Trois coordonnées et le cas échéant un monde peuvent être prévus. Si aucun argument supplémentaires sont fournis, l'emplacement de l'émetteur sera utilisé. 
+addspawn-help|Ajoute un spawn à l'arène spécifié. Trois coordonnées et le cas échéant un monde peuvent être prévus. Si aucun argument supplémentaires sont fournis, l'emplacement de l'émetteur sera utilisé. 
+removespawn-help|Supprime un spawn de l'arène spécifié. Trois coordonnées et le cas échéant un monde peuvent être prévus. Si aucun argument supplémentaires sont fournis, l'emplacement de l'émetteur sera utilisé. Un index unique peut également être utilisé. 
+same-world|Vous devez être dans le même monde que l'arène!

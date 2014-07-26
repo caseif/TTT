@@ -14,7 +14,9 @@ public class FileUtils {
 
 	// world checking method from Multiverse
 	public static boolean isWorld(String worldName){
-		File[] files = new File(Bukkit.getWorldContainer(), worldName).listFiles(new FilenameFilter(){
+		File folder = new File(Bukkit.getWorldContainer(), worldName);
+		if (folder.exists()){
+		File[] files = folder.listFiles(new FilenameFilter(){
 			@Override
 			public boolean accept(File file, String name){
 				return name.equalsIgnoreCase("level.dat");
@@ -22,6 +24,7 @@ public class FileUtils {
 		});
 		if (files != null && files.length > 0){
 			return true;
+		}
 		}
 		return false;
 	}

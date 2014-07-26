@@ -1,3 +1,5 @@
+key|message|comments*
+*Comments are ignored by the plugin
 no-permission|Je hebt geen toestemming om dit te doen!
 no-permission-join|Je hebt geen toestemming om een spel te joinen!
 no-permission-quit|Je hebt geen toestemming om een spel te verlaten!
@@ -11,7 +13,7 @@ not-in-game|Je bent niet in een spel!
 must-be-ingame|Je moet in-game zijn om dit command uit te kunnen voeren!
 in-progress|Je mag een spel dat al bezig is niet joinen!
 waiting|Wachten op spelers...
-map-invalid|Error: Deze map bestaat niet of is niet geïmporteerd!
+arena-invalid|De opgegeven arena is nog niet gemaakt of geïmporteerd!
 round-starting|De ronde begint!
 no-kits|Je mag geen kits gebruiken terwijl je in het spel bent!
 creator|Maker van TTT
@@ -117,3 +119,10 @@ type|Teken Type
 round|Ronde Naam
 number|Teken Nummer (alleen voor "players" borden)|Translator note: do not translate "players"
 prerelease|We hebben gedetecteerd dat je werkt met een prerelease build van TTT. Als er een nieuwere versie beschikbaar is, raden we een update naar die. Zo niet, gelieve dit te melden alle bugs die je in deze bouwen om de plugin auteur.
+
+Alles onder deze lijn is vertaald alleen door Google Translate. Voel je vrij om dit te corrigeren als het onnauwkeurig. :)
+
+createarena-help|Maakt een arena met de opgegeven naam. Drie coördinaten en eventueel een wereld worden verschaft. Als er geen extra argumenten worden verstrekt, zal de locatie van de afzender gebruikt worden. 
+addspawn-help|Voegt een spawn naar de opgegeven arena. Drie coördinaten en eventueel een wereld worden verschaft. Als er geen extra argumenten worden verstrekt, zal de locatie van de afzender gebruikt worden. 
+removespawn-help|Verwijdert een spawn van de opgegeven arena. Drie coördinaten en eventueel een wereld worden verschaft. Als er geen extra argumenten worden verstrekt, zal de locatie van de afzender gebruikt worden. Een index kan ook worden gebruikt. 
+same-world|U moet in dezelfde wereld als de arena!

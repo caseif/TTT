@@ -1,3 +1,5 @@
+key|message|comments*
+*Comments are ignored by the plugin
 no-permission|Você não tem permissão para fazer isto!
 no-permission-join|Você não tem permissão para entrar no jogo!
 no-permission-quit|Você não tem permissão para sair do jogo!
@@ -11,7 +13,7 @@ not-in-game|Você não está jogando em nenhuma partida!
 must-be-ingame|Você precisa estar em jogo para executar este comando!
 in-progress|Você nao pode entrar em um jogo em progresso!
 waiting|Esperando os outros Jogadores...
-map-invalid|Erro: O mapa nao existe ou ainda não foi importado!
+arena-invalid|A arena especificada ainda não foi criado ou importado!
 round-starting|A rodada está começando!
 no-kits|Você não pode usar kits enquanto está jogando!
 creator|Criador do TTT
@@ -117,3 +119,10 @@ type|Tipo
 round|Nome Rodada
 number|sinal de número (apenas para "jogadores" sinais)|Tradutor nota: não traduzir "players"
 prerelease|Detectamos que você está executando uma compilação de pré-lançamento do TTT. Se houver uma nova versão disponível, é altamente recomendável a atualização para isso. Se não, por favor relatar quaisquer bugs que você encontrar nesta compilação ao autor do plugin.
+
+Tudo abaixo desta linha foi traduzido apenas pelo Google Translate. Sinta-se livre para corrigi-lo se ele é impreciso. :)
+
+createarena-help|Cria uma arena com o nome especificado. Pode ser fornecida três coordenadas e, opcionalmente, um mundo. Se não há argumentos adicionais são fornecidos, a localização do transmissor será usado. 
+addspawn-help|Adiciona um spawn para a arena especificado. Pode ser fornecida três coordenadas e, opcionalmente, um mundo. Se não há argumentos adicionais são fornecidos, a localização do transmissor será usado. 
+removespawn-help|Remove um spawn da arena especificado. Pode ser fornecida três coordenadas e, opcionalmente, um mundo. Se não há argumentos adicionais são fornecidos, a localização do transmissor será usado. Um índice único pode também ser usado. 
+same-world|Você deve estar no mesmo mundo como a arena!
