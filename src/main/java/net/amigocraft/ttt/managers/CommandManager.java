@@ -32,8 +32,8 @@ import org.bukkit.entity.Player;
 
 public class CommandManager implements CommandExecutor {
 
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
-		if (commandLabel.equalsIgnoreCase("ttt")){
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+		if (label.equalsIgnoreCase("ttt")){
 			if (args.length > 0){
 				if (args[0].equalsIgnoreCase("import") || args[0].equalsIgnoreCase("i")){
 					if (sender.hasPermission("ttt.import")){
@@ -79,7 +79,7 @@ public class CommandManager implements CommandExecutor {
 									r.addPlayer(sender.getName());
 								}
 								catch (ArenaNotExistsException ex){
-									sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("map-invalid"));
+									sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("arena-invalid"));
 								}
 								catch (PlayerOfflineException ex){ // this should never be able to happen
 									ex.printStackTrace();
@@ -367,7 +367,7 @@ public class CommandManager implements CommandExecutor {
 							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt carena, ca " + ChatColor.GREEN +
 									Main.locale.getMessage("createarena-help"));
 						if (sender.hasPermission("ttt.arena.addspawn"))
-							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt adspanw, ad " + ChatColor.GREEN +
+							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt addspawn, ad " + ChatColor.GREEN +
 									Main.locale.getMessage("addspawn-help"));
 						if (sender.hasPermission("ttt.arena.removespawn"))
 							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt removespawn, rs " + ChatColor.GREEN +

@@ -18,9 +18,11 @@ import net.amigocraft.ttt.Metrics;
 import net.amigocraft.ttt.listeners.EntityListener;
 import net.amigocraft.ttt.listeners.MGListener;
 import net.amigocraft.ttt.listeners.PlayerListener;
+import net.amigocraft.ttt.listeners.SpecialPlayerListener;
 import net.amigocraft.ttt.managers.CommandManager;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
+import net.amigocraft.ttt.managers.SpecialCommandManager;
 import net.amigocraft.ttt.utils.FileUtils;
 
 import org.bukkit.Bukkit;
@@ -31,6 +33,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
+
+	public static boolean MGLIB = true;
 
 	public static String ANSI_RED = "\u001B[31m";
 	public static String ANSI_WHITE = "\u001B[37m";
@@ -59,6 +63,15 @@ public class Main extends JavaPlugin {
 		log = this.getLogger();
 		kLog = Logger.getLogger("TTT Karma Debug");
 		plugin = this;
+
+		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib")){
+			MGLIB = false;
+			Main.log.info(ANSI_RED + "This version of TTT requires a library called MGLib. You can download and install it from " +
+					"http://dev.bukkit.org/bukkit-plugins/mglib/. Note that TTT *will not function* without it!" + ANSI_WHITE);
+			getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
+			getCommand("ttt").setExecutor(new SpecialCommandManager());
+			return;
+		}
 
 		// initialize config variables
 		Variables.initialize();
@@ -197,12 +210,13 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable(){
-
-		// uninitialize static variables so as not to cause memory leaks when reloading
-		KarmaManager.playerKarma = null;
-		ScoreManager.uninitialize();
-		if (Variables.VERBOSE_LOGGING)
-			mg.log(this + " " + locale.getMessage("disabled"), LogLevel.INFO);
+		if (MGLIB){
+			// uninitialize static variables so as not to cause memory leaks when reloading
+			KarmaManager.playerKarma = null;
+			ScoreManager.uninitialize();
+			if (Variables.VERBOSE_LOGGING)
+				mg.log(this + " " + locale.getMessage("disabled"), LogLevel.INFO);
+		}
 		plugin = null;
 		lang = null;
 	}

@@ -4,6 +4,8 @@ main: net.amigocraft.ttt.Main
 author: Maxim Roncacé
 website: http://www.headswilllol.com/
 description: A Bukkit minigame based off the Garry's Mod gamemode Trouble In Terrorist Town.
+softdepend: [MGLib]
+
 commands:
   ttt:
     import:
@@ -27,6 +29,9 @@ commands:
     help:
       description: Displays available commands to the sender.
       usage: /ttt help
+  dlmglib:
+    description: Downloads and installs MGLib if not present.
+    usage: /dlmglib
 permissions:
   ttt.*:
     description: Allows for full control and manipulation of the plugin.
