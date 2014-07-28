@@ -120,6 +120,7 @@ public class PlayerListener implements Listener {
 																	.getName())).getKiller());
 													if (killer != null){
 														if (Main.mg.isPlayer(killer.getName())){
+															if (!Main.mg.getMGPlayer(killer.getName()).isSpectating())
 															t.setTracking(killer.getName());
 															e.getPlayer().sendMessage(ChatColor.BLUE +
 																	Main.locale.getMessage("collected-sample")
@@ -153,8 +154,9 @@ public class PlayerListener implements Listener {
 						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName()
 								.endsWith(Main.locale.getMessage("gun"))){
 							if ((Main.mg.isPlayer(e.getPlayer().getName()) &&
-									Main.mg.getMGPlayer(e.getPlayer().getName()).getRound().getStage() == Stage.PLAYING) ||
-									Variables.GUNS_OUTSIDE_ARENAS){
+									!Main.mg.getMGPlayer(e.getPlayer().getName()).isSpectating() &&
+									(Main.mg.getMGPlayer(e.getPlayer().getName()).getRound().getStage() == Stage.PLAYING) ||
+									Variables.GUNS_OUTSIDE_ARENAS)){
 								e.setCancelled(true);
 								if (e.getPlayer().getInventory().contains(Material.ARROW) ||
 										!Variables.REQUIRE_AMMO_FOR_GUNS){

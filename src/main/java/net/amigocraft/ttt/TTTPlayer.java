@@ -1,6 +1,9 @@
 package net.amigocraft.ttt;
 
+import org.bukkit.Bukkit;
+
 import net.amigocraft.mglib.api.MGPlayer;
+import net.amigocraft.mglib.exception.PlayerOfflineException;
 import net.amigocraft.ttt.managers.KarmaManager;
 
 public class TTTPlayer extends MGPlayer {
@@ -19,6 +22,7 @@ public class TTTPlayer extends MGPlayer {
 		KarmaManager.loadKarma(name);
 		karma = KarmaManager.playerKarma.get(name);
 		dispKarma = KarmaManager.playerKarma.get(name);
+		getBukkitPlayer().setCompassTarget(null);
 	}
 
 	public boolean isDiscreet(){
@@ -113,6 +117,12 @@ public class TTTPlayer extends MGPlayer {
 		}
 		if (Variables.KARMA_DEBUG)
 			Main.kLog.info(getName() + ": -" + karma + ". " + "New value: " + getKarma());
+	}
+
+	@Override
+	public void reset() throws PlayerOfflineException {
+		super.reset();
+		getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
 	}
 
 	public boolean equals(Object p){

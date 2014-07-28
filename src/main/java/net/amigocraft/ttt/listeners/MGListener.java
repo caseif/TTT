@@ -30,6 +30,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -352,14 +353,15 @@ public class MGListener implements Listener {
 	@EventHandler
 	public void onMGPlayerDeath(MGPlayerDeathEvent e){
 		TTTPlayer t = (TTTPlayer)e.getPlayer();
+		t.getBukkitPlayer().setHealth(t.getBukkitPlayer().getMaxHealth());
 		t.setSpectating(true);
 		if (e.getKiller() != null && e.getKiller() instanceof Player){
-			t.setKiller(((Player)e.getKiller()).getName());
 			if (e.getKiller() instanceof Player){
 				// set killer's karma
 				TTTPlayer victim = t;
 				TTTPlayer killer = (TTTPlayer)Main.mg.getMGPlayer(((Player)(e.getKiller())).getName());
 				KarmaManager.handleKillKarma(killer, victim);
+				t.setKiller(((Player)e.getKiller()).getName());
 			}
 			else if (e.getKiller() instanceof Projectile){
 				if (((Projectile)e.getKiller()).getShooter() != null &&
@@ -367,11 +369,20 @@ public class MGListener implements Listener {
 						instanceof Player){
 					KarmaManager.handleKillKarma((TTTPlayer)Main.mg.getMGPlayer(
 							((Player)((Projectile)e.getKiller()).getShooter()).getName()), t);
+					t.setKiller(((Player)((Projectile)e.getKiller()).getShooter()).getName());
 				}
 			}
 		}
 		Block block = t.getBukkitPlayer().getLocation().getBlock();
-		block.setType(Material.CHEST);
+		Main.mg.getRollbackManager().logBlockChange(block, e.getPlayer().getArena());
+		BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
+		boolean trapped = false;
+		for (BlockFace bf : faces)
+			if (block.getRelative(bf).getType() == Material.CHEST){
+				trapped = true;
+				break;
+			}
+		block.setType(trapped ? Material.TRAPPED_CHEST : Material.CHEST);
 		Chest chest = (Chest)block.getState();
 		// player identifier
 		ItemStack id = new ItemStack(Material.PAPER, 1);

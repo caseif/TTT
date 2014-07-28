@@ -107,6 +107,7 @@ public class CommandManager implements CommandExecutor {
 						if (sender.hasPermission("ttt.quit")){
 							if (Main.mg.isPlayer(sender.getName())){
 								MGPlayer mp = Main.mg.getMGPlayer(sender.getName());
+								String arena = mp.getArena();
 								try {
 									mp.removeFromRound();
 								}
@@ -115,8 +116,7 @@ public class CommandManager implements CommandExecutor {
 								}
 								catch (PlayerOfflineException ex){}
 								sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + " " +
-										Main.locale.getMessage("left-game").replace("%",
-												Main.mg.getMGPlayer(sender.getName()).getArena()));
+										Main.locale.getMessage("left-game").replace("%", arena));
 							}
 							else
 								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("not-in-game"));

@@ -85,10 +85,10 @@ public class KarmaManager {
 		}
 	}
 
-	public static void handleDamageKarma(TTTPlayer damager, MGPlayer victim, int damage){
+	public static void handleDamageKarma(TTTPlayer damager, TTTPlayer victim, int damage){
 		if (damager != null && victim != null){
 			if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor"))
-				damager.setKarma((int)((Integer)victim.getMetadata("karma") * (damage * Variables.DAMAGE_PENALTY)));
+				damager.setKarma((int)((Integer)victim.getKarma() * (damage * Variables.DAMAGE_PENALTY)));
 			else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor"))
 				damager.subtractKarma((int)(Variables.MAX_KARMA *
 						damage * Variables.T_DAMAGE_REWARD));

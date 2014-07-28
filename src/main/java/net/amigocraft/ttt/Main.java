@@ -99,7 +99,7 @@ public class Main extends JavaPlugin {
 		cm.setPvPAllowed(true);
 		cm.setTeamDamageAllowed(true);
 		cm.setOverrideDeathEvent(true);
-		cm.setForcePreciseDamage(true);
+		cm.setMobSpawningAllowed(false);
 
 		try {
 			File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
@@ -185,7 +185,7 @@ public class Main extends JavaPlugin {
 		maxKarma = Variables.MAX_KARMA;
 
 		// add special players to list
-		creator.add(UUID.fromString("8ea8a3c0-ab53-4d80-8449-fa5368798dfc"));
+		creator.add(UUID.fromString("8ea8a3c0-ab53-4d80-8449-fa5368798dfc")); // AngryNerd1
 
 		alpha.add(UUID.fromString("7fa299a6-1525-404c-a5f6-bf116cc2ceff")); // ZerosAce00000
 		alpha.add(UUID.fromString("7d5ba8ca-4a7c-41ff-9a27-4f74d006b086")); // momhipie
@@ -199,10 +199,15 @@ public class Main extends JavaPlugin {
 		testers.add(UUID.fromString("1b7fa3f3-3ac6-408b-990c-60cd37450208")); // Alexandercitt
 		testers.add(UUID.fromString("18d0e7d7-f331-43e1-aded-6204fed565c1")); // Callmegusgus
 		testers.add(UUID.fromString("6f93a373-3765-4316-af73-199ca1ea14cf")); // redraskal
+		testers.add(UUID.fromString("987c31ca-2939-4d37-aa0d-eb9f44c979cc")); // rob_black
+		testers.add(UUID.fromString("29fa58ce-1ff0-4d43-a4de-e3dd16e7fbb5")); // Weblack
+		testers.add(UUID.fromString("63bcf544-1793-42c1-a9f9-dcfd34f72536")); // pdidy1
 
 		translators.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
 		translators.add(UUID.fromString("dcd6037d-a68d-4593-a857-7853406ec11e")); // Nikkolo_DTU
 		translators.add(UUID.fromString("ece5d120-402a-4a32-b78a-fdfaf5adab33")); // JeyWake
+		translators.add(UUID.fromString("abdaf9ad-3034-43a2-b22e-ba81fb949708")); // Rocoty
+		translators.add(UUID.fromString("3e2b55fe-5e77-4ecf-8053-9ac9f5b118a3")); // RokkeyCX
 
 		if (Variables.VERBOSE_LOGGING)
 			mg.log(this + " " + locale.getMessage("enabled"), LogLevel.INFO);
