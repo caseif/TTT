@@ -208,6 +208,7 @@ public class Main extends JavaPlugin {
 		translators.add(UUID.fromString("ece5d120-402a-4a32-b78a-fdfaf5adab33")); // JeyWake
 		translators.add(UUID.fromString("abdaf9ad-3034-43a2-b22e-ba81fb949708")); // Rocoty
 		translators.add(UUID.fromString("3e2b55fe-5e77-4ecf-8053-9ac9f5b118a3")); // RokkeyCX
+		translators.add(UUID.fromString("9ffc9678-2c59-4fb5-9025-bf424e32a5f7")); // SuicideSilence_
 
 		if (Variables.VERBOSE_LOGGING)
 			mg.log(this + " " + locale.getMessage("enabled"), LogLevel.INFO);

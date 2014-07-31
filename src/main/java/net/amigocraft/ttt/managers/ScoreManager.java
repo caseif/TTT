@@ -8,7 +8,6 @@ import net.amigocraft.ttt.TTTPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -62,35 +61,36 @@ public class ScoreManager {
 	@SuppressWarnings("deprecation")
 	public void manage(){
 
-		for (OfflinePlayer o : innocent.getPlayers())
-			innocent.resetScores(o);
-		for (OfflinePlayer o : traitor.getPlayers())
-			traitor.resetScores(o);
+		for (String e : innocent.getEntries())
+			innocent.resetScores(e);
+		for (String e : traitor.getEntries())
+			traitor.resetScores(e);
 
 		for (MGPlayer m : Main.mg.getRound(arenaName).getPlayerList()){
-			TTTPlayer t = (TTTPlayer)m;
-			if (t.hasMetadata("detective")){
-				iTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-			}
-			else if (t.getTeam() == null || t.getTeam().equals("Innocent")){
-				iTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-			}
-			else if (t.getTeam().equals("Traitor")){
-				iTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-			}
-			if (t.isSpectating()){
-				if (t.isBodyFound())
-					handleDeadPlayer(t);
+			if (m.getBukkitPlayer() != null){
+				TTTPlayer t = (TTTPlayer)m;
+				if (t.hasMetadata("detective")){
+					iTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+					tTeamD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+				}
+				else if (t.getTeam() == null || t.getTeam().equals("Innocent")){
+					iTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+					tTeamI.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+				}
+				else if (t.getTeam().equals("Traitor")){
+					iTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+					tTeamT.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+				}
+				if (t.isSpectating()){
+					if (t.isBodyFound())
+						handleDeadPlayer(t);
+					else
+						handleMIAPlayer(t);
+				}
 				else
-					handleMIAPlayer(t);
-			}
-			else
-				handleAlivePlayer(t);
-			
-			if (t.getTeam() != null){
+					handleAlivePlayer(t);
+
+				if (t.getTeam() != null){
 					if (!t.isTraitor())
 						t.getBukkitPlayer().setScoreboard(innocent);
 					else
@@ -98,48 +98,37 @@ public class ScoreManager {
 				}
 				else
 					t.getBukkitPlayer().setScoreboard(innocent);
+			}
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void handleAlivePlayer(TTTPlayer t){
-		String s = "§l" + t.getName();
-		int prefix = 0;
-		if (t.getTeam() != null && !t.hasMetadata("detective"))
-			prefix = 2;
-		if (prefix + s.length() > 16)
-			s = s.substring(0, 16 - prefix);
-		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
+		t.getBukkitPlayer().setDisplayName(ChatColor.BOLD +
+				t.getBukkitPlayer().getName().substring(0, Math.min(t.getBukkitPlayer().getName().length(), 14)));
+		String s = t.getBukkitPlayer().getDisplayName();
+		Score score1 = iObj.getScore(s);
 		score1.setScore(t.getDisplayKarma());
-		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
+		Score score2 = tObj.getScore(s);
 		score2.setScore(t.getDisplayKarma());
 	}
 
-	@SuppressWarnings("deprecation")
 	private void handleMIAPlayer(TTTPlayer t){
+		t.getBukkitPlayer().setDisplayName(t.getBukkitPlayer().getName());
 		String s = t.getName();
-		int prefix = 0;
-		if (t.getTeam() != null && !t.getTeam().equals("Innocent"))
-			prefix = 2;
-		if (prefix + s.length() > 16)
-			s = s.substring(0, 16 - prefix);
-		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
+		Score score1 = iObj.getScore(s);
 		score1.setScore(t.getDisplayKarma());
-		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
+		Score score2 = tObj.getScore(s);
 		score2.setScore(t.getDisplayKarma());
 	}
 
-	@SuppressWarnings("deprecation")
 	private void handleDeadPlayer(TTTPlayer t){
-		String s = t.isTraitor() ? "§4§m" + t.getName() : "§m" + t.getName();
-		int prefix = 0;
-		if (t.getTeam() != null && !t.getTeam().equals("Innocent"))
-			prefix = 2;
-		if (prefix + s.length() > 16)
-			s = s.substring(0, 16 - prefix);
-		Score score1 = iObj.getScore(Bukkit.getOfflinePlayer(s));
+		t.getBukkitPlayer().setDisplayName((t.isTraitor() ? ChatColor.DARK_RED + "" : "") + ChatColor.STRIKETHROUGH + t.getBukkitPlayer().getName());
+		if (t.getBukkitPlayer().getDisplayName().length() > 16)
+			t.getBukkitPlayer().setDisplayName(t.getBukkitPlayer().getDisplayName().substring(0, 16));
+		String s = t.getBukkitPlayer().getDisplayName().substring(0, Math.min(t.getBukkitPlayer().getDisplayName().length(), 16));
+		Score score1 = iObj.getScore(s);
 		score1.setScore(t.getDisplayKarma());
-		Score score2 = tObj.getScore(Bukkit.getOfflinePlayer(s));
+		Score score2 = tObj.getScore(s);
 		score2.setScore(t.getDisplayKarma());
 	}
 

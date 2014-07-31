@@ -270,7 +270,7 @@ public class MGListener implements Listener {
 				else
 					break;
 
-				if (p.hasMetadata("detective")){ // manage DNA Scanners
+				if (p.hasMetadata("detective") && p.getRound().getTime() % Variables.SCANNER_CHARGE_TIME == 0){ // manage DNA Scanners every n seconds
 					Player tracker = Main.plugin.getServer().getPlayer(p.getName());
 					if (p.hasMetadata("tracking")){
 						Player killer = Main.plugin.getServer().getPlayer((String)p.getMetadata("tracking"));

@@ -57,9 +57,9 @@ public class PlayerListener implements Listener {
 						e.setCancelled(true);
 						for (Body b : Main.bodies){
 							if (b.getLocation().equals(Location3D.valueOf(e.getClickedBlock().getLocation()))){
-								Inventory chestinv = ((Chest)e.getClickedBlock().getState()).getInventory();
-								Inventory inv = Main.plugin.getServer().createInventory(null, chestinv.getSize());
-								inv.setContents(chestinv.getContents());
+								Inventory chestInv = ((Chest)e.getClickedBlock().getState()).getInventory();
+								Inventory inv = Main.plugin.getServer().createInventory(chestInv.getHolder(), chestInv.getSize());
+								inv.setContents(chestInv.getContents());
 								e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("discreet"));
 								t.setDiscreet(true);
 								e.getPlayer().openInventory(inv);
@@ -121,7 +121,7 @@ public class PlayerListener implements Listener {
 													if (killer != null){
 														if (Main.mg.isPlayer(killer.getName())){
 															if (!Main.mg.getMGPlayer(killer.getName()).isSpectating())
-															t.setTracking(killer.getName());
+															t.setMetadata("tracking", killer.getName());
 															e.getPlayer().sendMessage(ChatColor.BLUE +
 																	Main.locale.getMessage("collected-sample")
 																	.replace("%", Main.bodies.get(index).getPlayer()
@@ -308,7 +308,10 @@ public class PlayerListener implements Listener {
 					boolean found1 = false;
 					boolean found2 = false;
 					for (Body b : Main.bodies){
-						if (b.getLocation().equals(Location3D.valueOf(block.getLocation()))){
+						if (b
+								.getLocation().equals(
+										Location3D.valueOf(block
+												.getLocation()))){
 							found1 = true;
 							e.setCancelled(true);
 							if (block2 == null || found2)

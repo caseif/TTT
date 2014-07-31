@@ -22,7 +22,7 @@ public class TTTPlayer extends MGPlayer {
 		KarmaManager.loadKarma(name);
 		karma = KarmaManager.playerKarma.get(name);
 		dispKarma = KarmaManager.playerKarma.get(name);
-		getBukkitPlayer().setCompassTarget(null);
+		getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 	}
 
 	public boolean isDiscreet(){
@@ -59,10 +59,6 @@ public class TTTPlayer extends MGPlayer {
 
 	public void setDiscreet(boolean discreet){
 		this.discreet = discreet;
-	}
-
-	public void setTracking(String tracking){
-		this.tracking = tracking;
 	}
 
 	public void setKiller(String killer){
@@ -132,7 +128,7 @@ public class TTTPlayer extends MGPlayer {
 	}
 
 	public int hashCode(){
-		return 41 * (getName().hashCode() + getArena().hashCode() + getTeam().hashCode());
+		return 41 * (getName().hashCode() * 37 + getArena() != null ? getArena().hashCode() : 67 + getTeam().hashCode() * 53);
 	}
 
 	public boolean isTraitor(){

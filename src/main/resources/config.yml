@@ -27,6 +27,9 @@ detective-ratio: 0.15
 # If at least this many players are in a game, there is guaranteed to be a detective.
 minimum-players-for-detective: 5
 
+# How many seconds should the DNA scanner take to charge?
+scanner-charge-time: 25
+
 ###################
 # Weapon Settings #
 ###################

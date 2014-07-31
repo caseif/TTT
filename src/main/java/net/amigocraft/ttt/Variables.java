@@ -6,6 +6,7 @@ public class Variables {
 	public static int MAXIMUM_PLAYERS;
 	public static double TRAITOR_RATIO;
 	public static int MINIMUM_PLAYERS_FOR_DETECTIVE;
+	public static int SCANNER_CHARGE_TIME;
 	public static int CROWBAR_DAMAGE;
 	public static boolean GUNS_OUTSIDE_ARENAS;
 	public static boolean REQUIRE_AMMO_FOR_GUNS;
@@ -46,6 +47,7 @@ public class Variables {
 		TRAITOR_RATIO = getDouble("traitor-ratio");
 		DETECTIVE_RATIO = getDouble("detective-ratio");
 		MINIMUM_PLAYERS_FOR_DETECTIVE = getInt("minimum-players-for-detective");
+		SCANNER_CHARGE_TIME = getInt("scanner-charge-time");
 		CROWBAR_DAMAGE = getInt("crowbar-damage");
 		GUNS_OUTSIDE_ARENAS = getBoolean("guns-outside-arenas");
 		REQUIRE_AMMO_FOR_GUNS = getBoolean("require-ammo-for-guns");
