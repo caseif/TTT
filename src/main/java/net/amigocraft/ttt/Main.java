@@ -204,6 +204,11 @@ public class Main extends JavaPlugin {
 		testers.add(UUID.fromString("987c31ca-2939-4d37-aa0d-eb9f44c979cc")); // rob_black
 		testers.add(UUID.fromString("29fa58ce-1ff0-4d43-a4de-e3dd16e7fbb5")); // Weblack
 		testers.add(UUID.fromString("63bcf544-1793-42c1-a9f9-dcfd34f72536")); // pdidy1
+		testers.add(UUID.fromString("3e2b55fe-5e77-4ecf-8053-9ac9f5b118a3")); // RokkeyCX
+		testers.add(UUID.fromString("9ffc9678-2c59-4fb5-9025-bf424e32a5f7")); // SuicideSilence_
+		testers.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
+		testers.add(UUID.fromString("93ed0f85-c30d-4204-9908-1b3557c9b611")); // Captn_Carles
+		testers.add(UUID.fromString("809cbc32-5d27-47ef-82ff-3f1ae8d6c3f8")); // MoustachedMudkip
 
 		translators.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
 		translators.add(UUID.fromString("dcd6037d-a68d-4593-a857-7853406ec11e")); // Nikkolo_DTU

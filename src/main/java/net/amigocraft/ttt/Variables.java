@@ -10,6 +10,7 @@ public class Variables {
 	public static int CROWBAR_DAMAGE;
 	public static boolean GUNS_OUTSIDE_ARENAS;
 	public static boolean REQUIRE_AMMO_FOR_GUNS;
+	public static int INITIAL_AMMO;
 	public static boolean KARMA_PERSISTENCE;
 	public static int DEFAULT_KARMA;
 	public static int MAX_KARMA;
@@ -51,6 +52,7 @@ public class Variables {
 		CROWBAR_DAMAGE = getInt("crowbar-damage");
 		GUNS_OUTSIDE_ARENAS = getBoolean("guns-outside-arenas");
 		REQUIRE_AMMO_FOR_GUNS = getBoolean("require-ammo-for-guns");
+		INITIAL_AMMO = getInt("initial-ammo");
 		KARMA_PERSISTENCE = getBoolean("karma-persistence");
 		DEFAULT_KARMA = getInt("default-karma");
 		MAX_KARMA = getInt("max-karma");

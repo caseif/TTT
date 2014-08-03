@@ -49,13 +49,14 @@ public class KarmaManager {
 			if (karmaFile.exists()){
 				YamlConfiguration karmaYaml = new YamlConfiguration();
 				karmaYaml.load(karmaFile);
-				if (karmaYaml.isSet(pName))
-					if (karmaYaml.getInt(pName) > Variables.MAX_KARMA)
-						playerKarma.put(pName, Variables.MAX_KARMA);
+				String uuid = Minigame.getOnlineUUIDs().get(pName).toString();
+				if (karmaYaml.isSet(Minigame.getOnlineUUIDs().get(pName).toString()))
+					if (karmaYaml.getInt(uuid) > Variables.MAX_KARMA)
+						playerKarma.put(uuid, Variables.MAX_KARMA);
 					else
-						playerKarma.put(pName, karmaYaml.getInt(pName));
+						playerKarma.put(uuid, karmaYaml.getInt(pName));
 				else
-					playerKarma.put(pName, 1000);
+					playerKarma.put(uuid, 1000);
 			}
 		}
 		catch (Exception ex){
@@ -72,12 +73,9 @@ public class KarmaManager {
 				if (t.getKarma() > Variables.DEFAULT_KARMA){
 					if ((Variables.MAX_KARMA -
 							Variables.DEFAULT_KARMA) > 0){
-						int above = t.getKarma() - Variables.DEFAULT_KARMA;
-						double percentage = above /
-								(Variables.MAX_KARMA -
-										Variables.DEFAULT_KARMA);
-						double divide = percentage / Variables.KARMA_CLEAN_HALF;
-						add /= 2 * divide;
+						add = (int)Math.round(30 * Math.pow(.5,
+								t.getKarma() - Variables.DEFAULT_KARMA) /
+								((Variables.MAX_KARMA - Variables.DEFAULT_KARMA) * Variables.KARMA_CLEAN_HALF));
 					}
 				}
 				t.addKarma(add);
@@ -89,18 +87,21 @@ public class KarmaManager {
 		if (damager != null && victim != null){
 			if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor")) // team damage
 				damager.subtractKarma((int)((Integer)victim.getKarma() * (damage * Variables.DAMAGE_PENALTY)));
-			else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")) // innocent damaging traitor
+			else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")){ // innocent damaging traitor
 				damager.addKarma((int)(Variables.MAX_KARMA *
 						damage * Variables.T_DAMAGE_REWARD));
+			}
 		}
 	}
 
 	public static void handleKillKarma(TTTPlayer killer, TTTPlayer victim){
-		if (killer.isTraitor() == victim.isTraitor())
+		if (killer.isTraitor() == victim.isTraitor()){
 			handleDamageKarma(killer, victim, Variables.KILL_PENALTY);
-		else if (!killer.isTraitor() && victim.isTraitor())
+		}
+		else if (!killer.isTraitor() && victim.isTraitor()){
 			killer.addKarma(Variables.TBONUS *
 					Variables.T_DAMAGE_REWARD * victim.getKarma());
+		}
 	}
 
 	public static void handleKick(TTTPlayer t){
@@ -136,7 +137,7 @@ public class KarmaManager {
 				}
 				catch (Exception ex){
 					ex.printStackTrace();
-					Main.mg.log(Main.locale.getMessage("ban-fail").replace("%", t.getName()), LogLevel.INFO);
+					Main.mg.log(Main.locale.getMessage("ban-fail").replace("%", t.getName()), LogLevel.WARNING);
 				}
 			}
 			else

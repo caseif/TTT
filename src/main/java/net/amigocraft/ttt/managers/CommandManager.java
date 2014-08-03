@@ -388,8 +388,9 @@ public class CommandManager implements CommandExecutor {
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + Main.locale.getMessage("invalid-args-1"));
-				sender.sendMessage(ChatColor.RED + Main.locale.getMessage("usage-1"));
+				sender.sendMessage(ChatColor.LIGHT_PURPLE + "This server is running TTT version " + Main.plugin.getDescription().getVersion() +
+						" by Maxim Roncacé.");
+				sender.sendMessage(ChatColor.LIGHT_PURPLE + "Type \"/ttt help\" for help.");
 			}
 			return true;
 		}

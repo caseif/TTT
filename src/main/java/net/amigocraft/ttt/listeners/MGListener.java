@@ -33,6 +33,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -189,7 +191,7 @@ public class MGListener implements Listener {
 				ItemMeta gunMeta = crowbar.getItemMeta();
 				gunMeta.setDisplayName("§5" + Main.locale.getMessage("gun"));
 				gun.setItemMeta(gunMeta);
-				ItemStack ammo = new ItemStack(Material.ARROW, 28);
+				ItemStack ammo = new ItemStack(Material.ARROW, Variables.INITIAL_AMMO);
 				ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
 				ItemMeta dnaMeta = dnaScanner.getItemMeta();
 				dnaMeta.setDisplayName("§1" + Main.locale.getMessage("dna-scanner"));
@@ -348,6 +350,9 @@ public class MGListener implements Listener {
 			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " +
 					Main.locale.getMessage("traitor-win").replace("%", "\"" + e.getRound().getArena() + "\"") +
 					"!");
+		for (Entity ent : Bukkit.getWorld(e.getRound().getWorld()).getEntities())
+			if (ent.getType() == EntityType.ARROW)
+				ent.remove();
 	}
 
 	@EventHandler
