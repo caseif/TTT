@@ -199,13 +199,20 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent e){
 		if (e.getEntityType() == EntityType.PLAYER){
+			TTTPlayer vt = (TTTPlayer)Main.mg.getMGPlayer(((Player)e.getEntity()).getName());
+			if (vt != null && vt.getRound().getStage() != Stage.PLAYING)
+				e.setCancelled(true);
 			if (e instanceof EntityDamageByEntityEvent){
 				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
 				if (ed.getDamager().getType() == EntityType.PLAYER){
 					Player damager = (Player)ed.getDamager();
 					if (Main.mg.isPlayer(damager.getName())){
-						TTTPlayer dt = (TTTPlayer)Main.mg.getMGPlayer(((Player)ed.getDamager()).getName());
+						TTTPlayer dt = (TTTPlayer)Main.mg.getMGPlayer(damager.getName());
 						if (dt.getRound().getStage() != Stage.PLAYING){
+							e.setCancelled(true);
+							return;
+						}
+						else if (vt == null){
 							e.setCancelled(true);
 							return;
 						}
@@ -217,6 +224,7 @@ public class PlayerListener implements Listener {
 											.endsWith(Main.locale.getMessage("crowbar")))
 										e.setDamage(Variables.CROWBAR_DAMAGE);
 						e.setDamage((int)(e.getDamage() * dt.getDamageReduction()));
+						KarmaManager.handleDamageKarma(dt, vt, e.getDamage());
 					}
 				}
 			}

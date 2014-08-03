@@ -403,7 +403,7 @@ public class MGListener implements Listener {
 			lore.add(Main.locale.getMessage("detective-id"));
 			tiMeta.setLore(lore);
 		}
-		else if (t.getTeam().equals("Innocent")){
+		else if (t.getTeam() == null && t.getTeam().equals("Innocent")){
 			ti.setDurability((short)5);
 			tiMeta.setDisplayName("§2" + Main.locale.getMessage("innocent"));
 			List<String> tiLore = new ArrayList<String>();

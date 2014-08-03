@@ -64,9 +64,9 @@ public class Main extends JavaPlugin {
 		kLog = Logger.getLogger("TTT Karma Debug");
 		plugin = this;
 
-		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib")){
+		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !Minigame.isMGLibCompatible("0.3.0")){
 			MGLIB = false;
-			Main.log.info(ANSI_RED + "This version of TTT requires a library called MGLib. You can download and install it from " +
+			Main.log.info(ANSI_RED + "This version of TTT requires MGLib version 0.3.0 or higher. You can download and install it from " +
 					"http://dev.bukkit.org/bukkit-plugins/mglib/. Note that TTT *will not function* without it!" + ANSI_WHITE);
 			getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
 			getCommand("ttt").setExecutor(new SpecialCommandManager());
@@ -84,6 +84,7 @@ public class Main extends JavaPlugin {
 		ConfigManager cm = mg.getConfigManager();
 		cm.setBlockPlaceAllowed(false);
 		cm.setBlockBreakAllowed(false);
+		cm.setHangingBreakAllowed(false);
 		cm.setKitsAllowed(false);
 		cm.setPMsAllowed(false);
 		cm.setPlayerClass(TTTPlayer.class);
@@ -100,6 +101,7 @@ public class Main extends JavaPlugin {
 		cm.setTeamDamageAllowed(true);
 		cm.setOverrideDeathEvent(true);
 		cm.setMobSpawningAllowed(false);
+		cm.setEntityTargetingEnabled(false);
 
 		try {
 			File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");

@@ -10,7 +10,7 @@ public class SpecialPlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
 		if (e.getPlayer().hasPermission("ttt.build.warn"))
-			e.getPlayer().sendMessage(ChatColor.RED + "This version of TTT requires a library called MGLib. You can download and install it from " +
+			e.getPlayer().sendMessage(ChatColor.RED + "This version of TTT requires MGLib version 0.3.0 or higher. You can download and install it from " +
 					"http://dev.bukkit.org/bukkit-plugins/mglib/. Note that TTT " + ChatColor.ITALIC + "will not function " +
 					ChatColor.RED + "without it!");
 	}

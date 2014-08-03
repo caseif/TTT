@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
+import net.amigocraft.mglib.api.Minigame;
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.exception.PlayerNotPresentException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
@@ -26,15 +27,14 @@ public class KarmaManager {
 	}
 
 	public static void saveKarma(TTTPlayer t){
-		//TODO: save with UUIDs instead
 		playerKarma.remove(t.getName());
-		playerKarma.put(t.getName(), (Integer)t.getMetadata("karma"));
+		playerKarma.put(t.getName(), (Integer)t.getKarma());
 		File karmaFile = new File(Main.plugin.getDataFolder(), "karma.yml");
 		try {
 			if (karmaFile.exists()){
 				YamlConfiguration karmaYaml = new YamlConfiguration();
 				karmaYaml.load(karmaFile);
-				karmaYaml.set(t.getName(), t.getKarma());
+				karmaYaml.set(Minigame.getOnlineUUIDs().get(t.getName()).toString(), t.getKarma());
 				karmaYaml.save(karmaFile);
 			}
 		}
@@ -85,12 +85,12 @@ public class KarmaManager {
 		}
 	}
 
-	public static void handleDamageKarma(TTTPlayer damager, TTTPlayer victim, int damage){
+	public static void handleDamageKarma(TTTPlayer damager, TTTPlayer victim, double damage){
 		if (damager != null && victim != null){
-			if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor"))
-				damager.setKarma((int)((Integer)victim.getKarma() * (damage * Variables.DAMAGE_PENALTY)));
-			else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor"))
-				damager.subtractKarma((int)(Variables.MAX_KARMA *
+			if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor")) // team damage
+				damager.subtractKarma((int)((Integer)victim.getKarma() * (damage * Variables.DAMAGE_PENALTY)));
+			else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")) // innocent damaging traitor
+				damager.addKarma((int)(Variables.MAX_KARMA *
 						damage * Variables.T_DAMAGE_REWARD));
 		}
 	}
