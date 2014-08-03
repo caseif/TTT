@@ -15,6 +15,7 @@ import net.amigocraft.mglib.api.Locale;
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.Minigame;
 import net.amigocraft.ttt.Metrics;
+import net.amigocraft.ttt.Metrics.Graph;
 import net.amigocraft.ttt.listeners.EntityListener;
 import net.amigocraft.ttt.listeners.MGListener;
 import net.amigocraft.ttt.listeners.PlayerListener;
@@ -173,6 +174,13 @@ public class Main extends JavaPlugin {
 		if (Variables.ENABLE_METRICS){
 			try {
 				Metrics metrics = new Metrics(this);
+				Graph graph = metrics.createGraph("MGLib Version");
+				graph.addPlotter(new Metrics.Plotter(Bukkit.getPluginManager().getPlugin("MGLib").getDescription().getVersion()){
+					public int getValue(){
+						return 1;
+					}
+				});
+				metrics.addGraph(graph);
 				metrics.start();
 			}
 			catch (IOException e){
