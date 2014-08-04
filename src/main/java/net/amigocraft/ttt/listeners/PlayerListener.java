@@ -86,23 +86,25 @@ public class PlayerListener implements Listener {
 								}
 							}
 							if (!found){ // it's a new body
-								for (Player p : e.getPlayer().getWorld().getPlayers()){
+								TTTPlayer tp = (TTTPlayer)Main.bodies.get(index).getPlayer();
+								if (tp != null){
 									if (Main.bodies.get(index).getPlayer().getTeam().equals("Innocent") &&
 											!Main.bodies.get(index).getPlayer().hasMetadata("detective"))
-										p.sendMessage(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
+										tp.getRound().broadcast(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
 												Main.locale.getMessage("found-body").replace("%",
 														Main.bodies.get(index).getPlayer().getName())  + ". " +
 														Main.locale.getMessage("was-innocent"));
 									else if (Main.bodies.get(index).getPlayer().getTeam().equals("Traitor"))
-										p.sendMessage(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
+										tp.getRound().broadcast(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
 												Main.locale.getMessage("found-body").replace("%",
 														Main.bodies.get(index).getPlayer().getName())  + ". " +
 														Main.locale.getMessage("was-traitor"));
 									else
-										p.sendMessage(ChatColor.DARK_BLUE + e.getPlayer().getName() + " " +
+										tp.getRound().broadcast(ChatColor.BLUE + e.getPlayer().getName() + " " +
 												Main.locale.getMessage("found-body").replace("%",
 														Main.bodies.get(index).getPlayer().getName())  + ". " +
 														Main.locale.getMessage("was-detective"));
+									tp.setPrefix("§m");
 								}
 								Main.foundBodies.add(Main.bodies.get(index));
 								Main.bodies.get(index).getPlayer().setBodyFound(true);
@@ -122,7 +124,7 @@ public class PlayerListener implements Listener {
 													if (killer != null){
 														if (Main.mg.isPlayer(killer.getName())){
 															if (!Main.mg.getMGPlayer(killer.getName()).isSpectating())
-															t.setMetadata("tracking", killer.getName());
+																t.setMetadata("tracking", killer.getName());
 															e.getPlayer().sendMessage(ChatColor.BLUE +
 																	Main.locale.getMessage("collected-sample")
 																	.replace("%", Main.bodies.get(index).getPlayer()
@@ -210,26 +212,26 @@ public class PlayerListener implements Listener {
 					Player damager = ed.getDamager().getType() == EntityType.PLAYER ?
 							(Player)ed.getDamager() :
 								(Player)((Projectile)ed.getDamager()).getShooter();
-					if (Main.mg.isPlayer(damager.getName())){
-						TTTPlayer dt = (TTTPlayer)Main.mg.getMGPlayer(damager.getName());
-						if (dt.getRound().getStage() != Stage.PLAYING){
-							e.setCancelled(true);
-							return;
-						}
-						else if (vt == null){
-							e.setCancelled(true);
-							return;
-						}
-						if (damager.getItemInHand() != null)
-							if (damager.getItemInHand().getItemMeta() != null)
-								if (damager.getItemInHand().getItemMeta().getDisplayName()
-										!= null)
-									if (damager.getItemInHand().getItemMeta().getDisplayName()
-											.endsWith(Main.locale.getMessage("crowbar")))
-										e.setDamage(Variables.CROWBAR_DAMAGE);
-						e.setDamage((int)(e.getDamage() * dt.getDamageReduction()));
-						KarmaManager.handleDamageKarma(dt, vt, e.getDamage());
-					}
+							if (Main.mg.isPlayer(damager.getName())){
+								TTTPlayer dt = (TTTPlayer)Main.mg.getMGPlayer(damager.getName());
+								if (dt.getRound().getStage() != Stage.PLAYING){
+									e.setCancelled(true);
+									return;
+								}
+								else if (vt == null){
+									e.setCancelled(true);
+									return;
+								}
+								if (damager.getItemInHand() != null)
+									if (damager.getItemInHand().getItemMeta() != null)
+										if (damager.getItemInHand().getItemMeta().getDisplayName()
+												!= null)
+											if (damager.getItemInHand().getItemMeta().getDisplayName()
+													.endsWith(Main.locale.getMessage("crowbar")))
+												e.setDamage(Variables.CROWBAR_DAMAGE);
+								e.setDamage((int)(e.getDamage() * dt.getDamageReduction()));
+								KarmaManager.handleDamageKarma(dt, vt, e.getDamage());
+							}
 				}
 			}
 		}

@@ -358,6 +358,7 @@ public class MGListener implements Listener {
 	@EventHandler
 	public void onMGPlayerDeath(MGPlayerDeathEvent e){
 		TTTPlayer t = (TTTPlayer)e.getPlayer();
+		t.setPrefix("§7");
 		t.getBukkitPlayer().setHealth(t.getBukkitPlayer().getMaxHealth());
 		t.setSpectating(true);
 		if (e.getKiller() != null && e.getKiller() instanceof Player){
@@ -387,6 +388,7 @@ public class MGListener implements Listener {
 				trapped = true;
 				break;
 			}
+		//TODO: Add check for doors and such
 		block.setType(trapped ? Material.TRAPPED_CHEST : Material.CHEST);
 		Chest chest = (Chest)block.getState();
 		// player identifier

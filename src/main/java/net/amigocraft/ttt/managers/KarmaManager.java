@@ -74,9 +74,9 @@ public class KarmaManager {
 				if (t.getKarma() > Variables.DEFAULT_KARMA){
 					if ((Variables.MAX_KARMA -
 							Variables.DEFAULT_KARMA) > 0){
-						add = (int)Math.round(30 * Math.pow(.5,
-								t.getKarma() - Variables.DEFAULT_KARMA /
-								((Variables.MAX_KARMA - Variables.DEFAULT_KARMA) * Variables.KARMA_CLEAN_HALF)));
+						add = (int)Math.round(Variables.KARMA_CLEAN_BONUS * Math.pow(.5,
+								(t.getKarma() - (double)Variables.DEFAULT_KARMA) /
+								((double)(Variables.MAX_KARMA - Variables.DEFAULT_KARMA) * Variables.KARMA_CLEAN_HALF)));
 					}
 				}
 				t.addKarma(add);

@@ -44,6 +44,7 @@ public class CommandManager implements CommandExecutor {
 									if (w != null){
 										try {
 											Main.mg.createArena(args[1], w.getSpawnLocation());
+											sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + Main.locale.getMessage("import-success"));
 										}
 										catch (ArenaExistsException e){
 											//TODO: replace this message with something more accurate
