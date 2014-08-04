@@ -18,6 +18,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -196,7 +197,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent e){
 		if (e.getEntityType() == EntityType.PLAYER){
 			TTTPlayer vt = (TTTPlayer)Main.mg.getMGPlayer(((Player)e.getEntity()).getName());
@@ -204,8 +205,11 @@ public class PlayerListener implements Listener {
 				e.setCancelled(true);
 			if (e instanceof EntityDamageByEntityEvent){
 				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
-				if (ed.getDamager().getType() == EntityType.PLAYER){
-					Player damager = (Player)ed.getDamager();
+				if (ed.getDamager().getType() == EntityType.PLAYER ||
+						(ed.getDamager() instanceof Projectile && ((Projectile)ed.getDamager()).getShooter() instanceof Player)){
+					Player damager = ed.getDamager().getType() == EntityType.PLAYER ?
+							(Player)ed.getDamager() :
+								(Player)((Projectile)ed.getDamager()).getShooter();
 					if (Main.mg.isPlayer(damager.getName())){
 						TTTPlayer dt = (TTTPlayer)Main.mg.getMGPlayer(damager.getName());
 						if (dt.getRound().getStage() != Stage.PLAYING){

@@ -99,7 +99,7 @@ public class TTTPlayer extends MGPlayer {
 		else if (this.karma < Main.maxKarma)
 			this.karma = Main.maxKarma;
 		if (Variables.KARMA_DEBUG)
-			Main.kLog.info(getName() + ": +" + karma + ". " + "New value: " + getKarma());
+			Main.kLog.info("[TTT Karma Debug] " + getName() + ": +" + karma + ". " + "New value: " + getKarma());
 	}
 
 	public void subtractKarma(int karma){
@@ -112,7 +112,7 @@ public class TTTPlayer extends MGPlayer {
 			teamKill = true;
 		}
 		if (Variables.KARMA_DEBUG)
-			Main.kLog.info(getName() + ": -" + karma + ". " + "New value: " + getKarma());
+			Main.kLog.info("[TTT Karma Debug] " + getName() + ": -" + karma + ". " + "New value: " + getKarma());
 	}
 
 	@Override

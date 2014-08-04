@@ -46,18 +46,19 @@ public class KarmaManager {
 	public static void loadKarma(String pName){
 		File karmaFile = new File(Main.plugin.getDataFolder(), "karma.yml");
 		try {
-			if (karmaFile.exists()){
-				YamlConfiguration karmaYaml = new YamlConfiguration();
-				karmaYaml.load(karmaFile);
-				String uuid = Minigame.getOnlineUUIDs().get(pName).toString();
-				if (karmaYaml.isSet(Minigame.getOnlineUUIDs().get(pName).toString()))
-					if (karmaYaml.getInt(uuid) > Variables.MAX_KARMA)
-						playerKarma.put(uuid, Variables.MAX_KARMA);
-					else
-						playerKarma.put(uuid, karmaYaml.getInt(pName));
+			String uuid = Minigame.getOnlineUUIDs().get(pName).toString();
+			if (!karmaFile.exists())
+				Main.createFile("karma.yml");
+			YamlConfiguration karmaYaml = new YamlConfiguration();
+			karmaYaml.load(karmaFile);
+			if (karmaYaml.isSet(uuid)){
+				if (karmaYaml.getInt(uuid) > Variables.MAX_KARMA)
+					playerKarma.put(pName, Variables.MAX_KARMA);
 				else
-					playerKarma.put(uuid, 1000);
+					playerKarma.put(pName, karmaYaml.getInt(uuid));
 			}
+			else
+				playerKarma.put(pName, Variables.DEFAULT_KARMA);
 		}
 		catch (Exception ex){
 			ex.printStackTrace();
@@ -74,8 +75,8 @@ public class KarmaManager {
 					if ((Variables.MAX_KARMA -
 							Variables.DEFAULT_KARMA) > 0){
 						add = (int)Math.round(30 * Math.pow(.5,
-								t.getKarma() - Variables.DEFAULT_KARMA) /
-								((Variables.MAX_KARMA - Variables.DEFAULT_KARMA) * Variables.KARMA_CLEAN_HALF));
+								t.getKarma() - Variables.DEFAULT_KARMA /
+								((Variables.MAX_KARMA - Variables.DEFAULT_KARMA) * Variables.KARMA_CLEAN_HALF)));
 					}
 				}
 				t.addKarma(add);

@@ -242,7 +242,7 @@ public class Main extends JavaPlugin {
 		lang = null;
 	}
 
-	public void createFile(String s){
+	public static void createFile(String s){
 		File f = new File(Main.plugin.getDataFolder(), s);
 		if (!f.exists()){
 			if (Variables.VERBOSE_LOGGING)
@@ -257,13 +257,13 @@ public class Main extends JavaPlugin {
 		}
 	}
 
-	public void createLocale(String s){
-		File exLocale = new File(getDataFolder() + File.separator + "locales", s);
+	public static void createLocale(String s){
+		File exLocale = new File(Main.plugin.getDataFolder() + File.separator + "locales", s);
 		if (!exLocale.exists()){
 			InputStream is = null;
 			OutputStream os = null;
 			try {
-				File dir = new File(getDataFolder(), "locales");
+				File dir = new File(Main.plugin.getDataFolder(), "locales");
 				dir.mkdir();
 				exLocale.createNewFile();
 				is = Main.class.getClassLoader().getResourceAsStream(
