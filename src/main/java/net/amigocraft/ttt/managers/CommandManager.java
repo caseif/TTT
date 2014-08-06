@@ -7,9 +7,9 @@ import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.exception.ArenaExistsException;
-import net.amigocraft.mglib.exception.ArenaNotExistsException;
+import net.amigocraft.mglib.exception.NoSuchArenaException;
 import net.amigocraft.mglib.exception.InvalidLocationException;
-import net.amigocraft.mglib.exception.PlayerNotPresentException;
+import net.amigocraft.mglib.exception.NoSuchPlayerException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
 import net.amigocraft.mglib.exception.PlayerPresentException;
 import net.amigocraft.mglib.exception.RoundFullException;
@@ -36,7 +36,7 @@ public class CommandManager implements CommandExecutor {
 		if (label.equalsIgnoreCase("ttt")){
 			if (args.length > 0){
 				if (args[0].equalsIgnoreCase("import") || args[0].equalsIgnoreCase("i")){
-					if (sender.hasPermission("ttt.import")){
+					if (sender.hasPermission("ttt.arena.import")){
 						if (args.length > 1){
 							if (new File(Bukkit.getWorldContainer(), args[1]).exists()){
 								if (FileUtils.isWorld(args[1])){
@@ -70,7 +70,7 @@ public class CommandManager implements CommandExecutor {
 				}
 				else if (args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("j")){
 					if (sender instanceof Player){
-						if (sender.hasPermission("ttt.join")){
+						if (sender.hasPermission("ttt.arena.join")){
 							if (args.length > 1){
 								Round r;
 								try {
@@ -79,7 +79,7 @@ public class CommandManager implements CommandExecutor {
 										r = Main.mg.createRound(args[1]);
 									r.addPlayer(sender.getName());
 								}
-								catch (ArenaNotExistsException ex){
+								catch (NoSuchArenaException ex){
 									sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("arena-invalid"));
 								}
 								catch (PlayerOfflineException ex){ // this should never be able to happen
@@ -103,16 +103,17 @@ public class CommandManager implements CommandExecutor {
 					else
 						sender.sendMessage(ChatColor.RED + Main.locale.getMessage("must-be-ingame"));
 				}
-				else if (args[0].equalsIgnoreCase("quit") || args[0].equalsIgnoreCase("q")){
+				else if (args[0].equalsIgnoreCase("leave") || args[0].equalsIgnoreCase("l") ||
+						args[0].equalsIgnoreCase("quit") || args[0].equalsIgnoreCase("q")){
 					if (sender instanceof Player){
-						if (sender.hasPermission("ttt.quit")){
+						if (sender.hasPermission("ttt.arena.leave")){
 							if (Main.mg.isPlayer(sender.getName())){
 								MGPlayer mp = Main.mg.getMGPlayer(sender.getName());
 								String arena = mp.getArena();
 								try {
 									mp.removeFromRound();
 								}
-								catch (PlayerNotPresentException ex){
+								catch (NoSuchPlayerException ex){
 									sender.sendMessage(Main.locale.getMessage("not-in-game"));
 								}
 								catch (PlayerOfflineException ex){}
@@ -215,7 +216,7 @@ public class CommandManager implements CommandExecutor {
 						catch (InvalidLocationException ex){
 							sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("same-world"));
 						}
-						catch (ArenaNotExistsException ex){
+						catch (NoSuchArenaException ex){
 							sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("arena-invalid"));
 						}
 					}

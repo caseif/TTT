@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -65,7 +66,15 @@ public class Main extends JavaPlugin {
 		kLog = Logger.getLogger("TTT Karma Debug");
 		plugin = this;
 
-		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !Minigame.isMGLibCompatible("0.3.0")){
+		boolean compatibleMethod = false;
+		if (Bukkit.getPluginManager().isPluginEnabled("MGLib")){
+			try {
+				Minigame.class.getMethod("isMGLibCompatible", new Class<?>[]{String.class});
+				compatibleMethod = true;
+			}
+			catch (NoSuchMethodException ex){}
+		}
+		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !compatibleMethod || !Minigame.isMGLibCompatible("0.3.0")){
 			MGLIB = false;
 			Main.log.info(ANSI_RED + "This version of TTT requires MGLib version 0.3.0 or higher. You can download and install it from " +
 					"http://dev.bukkit.org/bukkit-plugins/mglib/. Note that TTT *will not function* without it!" + ANSI_WHITE);

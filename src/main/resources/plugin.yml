@@ -1,5 +1,5 @@
 name: TTT
-version: 0.6.0
+version: 0.6.0-SNAPSHOT-jnks$BUILD
 main: net.amigocraft.ttt.Main
 author: Maxim Roncacé
 website: http://www.headswilllol.com/
@@ -17,6 +17,9 @@ commands:
     join:
       description: Adds player to a specified game of TTT.
       usage: /ttt join [map name]
+    leave:
+      description: Removes player from their current round/
+      usage: /ttt leave
     setexit:
       description: Sets the location to teleport players to upon round end.
       usage: /ttt setexit
@@ -29,9 +32,6 @@ commands:
     help:
       description: Displays available commands to the sender.
       usage: /ttt help
-  dlmglib:
-    description: Downloads and installs MGLib if not present.
-    usage: /dlmglib
 permissions:
   ttt.*:
     description: Allows for full control and manipulation of the plugin.
@@ -45,8 +45,7 @@ permissions:
       ttt.arena.leave: true
       ttt.setexit: true
       ttt.help: true
-      ttt.lobby.create: true
-      ttt.lobby.use: true
+      ttt.lobby.*: true
       ttt.build.warn: true
 
   ttt.admin:
@@ -90,6 +89,7 @@ permissions:
   ttt.help:
     description: Allows use of /ttt help.
     default: true
+
   ttt.lobby.create:
     description: Allows creation of lobby signs.
     default: op
@@ -99,6 +99,14 @@ permissions:
   ttt.lobby.use:
     description: Allows use of lobby signs.
     default: true
+  ttt.lobby.*:
+    description: Allows for full usage and manipulation of lobby signs.
+    default: op
+    children:
+      ttt.lobby.create: true
+      ttt.lobby.destroy: true
+      ttt.lobby.use: true
+
   ttt.build.warn:
     description: Players with this node will be warned of unstable builds on join.
     default: op

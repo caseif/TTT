@@ -8,6 +8,7 @@ import net.amigocraft.ttt.TTTPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -16,6 +17,8 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 public class ScoreManager {
+
+	public static boolean ENTRY_SUPPORT = false;
 
 	public static HashMap<String, ScoreManager> sbManagers = new HashMap<String, ScoreManager>();
 
@@ -33,6 +36,12 @@ public class ScoreManager {
 	public Team tTeamD;
 
 	public ScoreManager(String arenaName){
+
+		try {
+			Scoreboard.class.getMethod("getEntries", new Class<?>[0]);
+			ENTRY_SUPPORT = true;
+		}
+		catch (NoSuchMethodException ex){}
 
 		this.arenaName = arenaName;
 		innocent = manager.getNewScoreboard();
@@ -61,10 +70,18 @@ public class ScoreManager {
 	@SuppressWarnings("deprecation")
 	public void manage(){
 
-		for (String e : innocent.getEntries())
-			innocent.resetScores(e);
-		for (String e : traitor.getEntries())
-			traitor.resetScores(e);
+		if (ENTRY_SUPPORT){
+			for (String e : innocent.getEntries())
+				innocent.resetScores(e);
+			for (String e : traitor.getEntries())
+				traitor.resetScores(e);
+		}
+		else {
+			for (OfflinePlayer op : innocent.getPlayers())
+				innocent.resetScores(op);
+			for (OfflinePlayer op : traitor.getPlayers())
+				traitor.resetScores(op);
+		}
 
 		for (MGPlayer m : Main.mg.getRound(arenaName).getPlayerList()){
 			if (m.getBukkitPlayer() != null){
@@ -106,19 +123,13 @@ public class ScoreManager {
 		t.getBukkitPlayer().setDisplayName(ChatColor.BOLD +
 				t.getBukkitPlayer().getName().substring(0, Math.min(t.getBukkitPlayer().getName().length(), 14)));
 		String s = t.getBukkitPlayer().getDisplayName();
-		Score score1 = iObj.getScore(s);
-		score1.setScore(t.getDisplayKarma());
-		Score score2 = tObj.getScore(s);
-		score2.setScore(t.getDisplayKarma());
+		updateScore(s, t.getDisplayKarma());
 	}
 
 	private void handleMIAPlayer(TTTPlayer t){
 		t.getBukkitPlayer().setDisplayName(t.getBukkitPlayer().getName());
 		String s = t.getName();
-		Score score1 = iObj.getScore(s);
-		score1.setScore(t.getDisplayKarma());
-		Score score2 = tObj.getScore(s);
-		score2.setScore(t.getDisplayKarma());
+		updateScore(s, t.getDisplayKarma());
 	}
 
 	private void handleDeadPlayer(TTTPlayer t){
@@ -126,10 +137,23 @@ public class ScoreManager {
 		if (t.getBukkitPlayer().getDisplayName().length() > 16)
 			t.getBukkitPlayer().setDisplayName(t.getBukkitPlayer().getDisplayName().substring(0, 16));
 		String s = t.getBukkitPlayer().getDisplayName().substring(0, Math.min(t.getBukkitPlayer().getDisplayName().length(), 16));
-		Score score1 = iObj.getScore(s);
-		score1.setScore(t.getDisplayKarma());
-		Score score2 = tObj.getScore(s);
-		score2.setScore(t.getDisplayKarma());
+		updateScore(s, t.getDisplayKarma());
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void updateScore(String player, int score){
+		Score score1;
+		Score score2;
+		if (ENTRY_SUPPORT){
+		score1 = iObj.getScore(player);
+		score2 = tObj.getScore(player);
+		}
+		else {
+			score1 = iObj.getScore(Bukkit.getOfflinePlayer(player));
+			score2 = tObj.getScore(Bukkit.getOfflinePlayer(player));
+		}
+		score1.setScore(score);
+		score2.setScore(score);
 	}
 
 	public static void uninitialize(){

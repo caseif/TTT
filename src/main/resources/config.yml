@@ -28,7 +28,8 @@ detective-ratio: 0.15
 minimum-players-for-detective: 5
 
 # How many seconds should the DNA scanner take to charge?
-scanner-charge-time: 25
+# (Vanilla TTT uses 25 as default, but also displays the exact location rather than just the direction.)
+scanner-charge-time: 10
 
 ###################
 # Weapon Settings #
@@ -151,4 +152,4 @@ unstable-build-warning: true
 ignore-config-version: false
 
 #Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.6.0
+config-version: 0.6.0-SNAPSHOT-jnks$BUILD

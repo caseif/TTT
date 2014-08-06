@@ -11,7 +11,7 @@ import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Minigame;
 import net.amigocraft.mglib.api.Round;
-import net.amigocraft.mglib.exception.PlayerNotPresentException;
+import net.amigocraft.mglib.exception.NoSuchPlayerException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.TTTPlayer;
@@ -112,7 +112,7 @@ public class KarmaManager {
 			try {
 				t.removeFromRound();
 			}
-			catch (PlayerNotPresentException e){}
+			catch (NoSuchPlayerException e){}
 			catch (PlayerOfflineException e){} // neither can be thrown
 			if (Variables.KARMA_BAN){
 				File f = new File(Main.plugin.getDataFolder(), "bans.yml");
