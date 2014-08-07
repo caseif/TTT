@@ -2,6 +2,10 @@ package net.amigocraft.ttt.listeners;
 
 import net.amigocraft.mglib.api.Location3D;
 import net.amigocraft.mglib.api.Stage;
+import net.amigocraft.mglib.exception.NoSuchPlayerException;
+import net.amigocraft.mglib.exception.PlayerOfflineException;
+import net.amigocraft.mglib.exception.PlayerPresentException;
+import net.amigocraft.mglib.exception.RoundFullException;
 import net.amigocraft.ttt.Body;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.TTTPlayer;
@@ -25,6 +29,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -204,7 +209,20 @@ public class PlayerListener implements Listener {
 		if (e.getEntityType() == EntityType.PLAYER){
 			TTTPlayer vt = (TTTPlayer)Main.mg.getMGPlayer(((Player)e.getEntity()).getName());
 			if (vt != null && vt.getRound().getStage() != Stage.PLAYING)
-				e.setCancelled(true);
+				if (e.getCause() == DamageCause.VOID)
+					e.setCancelled(true);
+				else {
+					String r = vt.getArena();
+					try {
+						vt.removeFromRound();
+						vt.addToRound(r);
+					}
+					// none can happen
+					catch (NoSuchPlayerException e1){}
+					catch (PlayerOfflineException e1){}
+					catch (PlayerPresentException e1){}
+					catch (RoundFullException e1){}
+				}
 			if (e instanceof EntityDamageByEntityEvent){
 				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
 				if (ed.getDamager().getType() == EntityType.PLAYER ||
