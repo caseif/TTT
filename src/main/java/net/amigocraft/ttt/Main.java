@@ -47,6 +47,7 @@ public class Main extends JavaPlugin {
 	public static Locale locale;
 	public static String lang;
 
+	//TODO: associate bodies with rounds
 	public static List<Body> bodies = new ArrayList<Body>();
 	public static List<Body> foundBodies = new ArrayList<Body>();
 
@@ -222,9 +223,9 @@ public class Main extends JavaPlugin {
 		testers.add(UUID.fromString("63bcf544-1793-42c1-a9f9-dcfd34f72536")); // pdidy1
 		testers.add(UUID.fromString("3e2b55fe-5e77-4ecf-8053-9ac9f5b118a3")); // RokkeyCX
 		testers.add(UUID.fromString("9ffc9678-2c59-4fb5-9025-bf424e32a5f7")); // SuicideSilence_
-		testers.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
 		testers.add(UUID.fromString("93ed0f85-c30d-4204-9908-1b3557c9b611")); // Captn_Carles
 		testers.add(UUID.fromString("809cbc32-5d27-47ef-82ff-3f1ae8d6c3f8")); // MoustachedMudkip
+		testers.add(UUID.fromString("e7ddb2e9-c8ca-47dd-81ea-0dad36d61572")); // talkingmelon
 
 		translators.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
 		translators.add(UUID.fromString("dcd6037d-a68d-4593-a857-7853406ec11e")); // Nikkolo_DTU
@@ -232,6 +233,8 @@ public class Main extends JavaPlugin {
 		translators.add(UUID.fromString("abdaf9ad-3034-43a2-b22e-ba81fb949708")); // Rocoty
 		translators.add(UUID.fromString("3e2b55fe-5e77-4ecf-8053-9ac9f5b118a3")); // RokkeyCX
 		translators.add(UUID.fromString("9ffc9678-2c59-4fb5-9025-bf424e32a5f7")); // SuicideSilence_
+		translators.add(UUID.fromString("dc713cb2-d96d-490e-8f6b-758f2da08935")); // gasacz
+		translators.add(UUID.fromString("e4714759-8a41-468d-8f93-b796c0f17aaa")); // victormac737
 
 		if (Variables.VERBOSE_LOGGING)
 			mg.log(this + " " + locale.getMessage("enabled"), LogLevel.INFO);

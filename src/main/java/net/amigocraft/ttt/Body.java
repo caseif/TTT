@@ -4,18 +4,28 @@ import net.amigocraft.mglib.api.Location3D;
 // the class
 
 public class Body {
-	private TTTPlayer player;
+	private String player;
+	private String arena;
+	private String team;
 	private Location3D l;
 	private long time;
 
-	public Body(TTTPlayer player, Location3D l, long time){
+	public Body(String player, String arena, String team, Location3D l, long time){
 		this.player = player;
 		this.l = l;
 		this.time = time;
 	}
 	
-	public TTTPlayer getPlayer(){
+	public String getPlayer(){
 		return player;
+	}
+	
+	public String getArena(){
+		return arena;
+	}
+	
+	public String getTeam(){
+		return team;
 	}
 
 	public Location3D getLocation(){
@@ -27,7 +37,8 @@ public class Body {
 	}
 	
 	public boolean equals(Object b){
-		return player.equals(((Body)b).getPlayer()) && l.equals(((Body)b).getLocation());
+		return player.equals(((Body)b).getPlayer()) && arena.equals(((Body)b).getArena()) &&
+				team.equals(((Body)b).getTeam()) && l.equals(((Body)b).getLocation());
 	}
 	
 	public int hashCode(){

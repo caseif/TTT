@@ -426,7 +426,8 @@ public class MGListener implements Listener {
 		}
 		ti.setItemMeta(tiMeta);
 		chest.getInventory().addItem(new ItemStack[]{id, ti});
-		Main.bodies.add(new Body(t, Location3D.valueOf(block.getLocation()), System.currentTimeMillis()));
+		Main.bodies.add(new Body(t.getName(), t.getArena(), t.hasMetadata("detective") ? "Detective" : t.getTeam(),
+				Location3D.valueOf(block.getLocation()), System.currentTimeMillis()));
 	}
 
 }

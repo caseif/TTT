@@ -2,10 +2,6 @@ package net.amigocraft.ttt.listeners;
 
 import net.amigocraft.mglib.api.Location3D;
 import net.amigocraft.mglib.api.Stage;
-import net.amigocraft.mglib.exception.NoSuchPlayerException;
-import net.amigocraft.mglib.exception.PlayerOfflineException;
-import net.amigocraft.mglib.exception.PlayerPresentException;
-import net.amigocraft.mglib.exception.RoundFullException;
 import net.amigocraft.ttt.Body;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.TTTPlayer;
@@ -91,28 +87,25 @@ public class PlayerListener implements Listener {
 								}
 							}
 							if (!found){ // it's a new body
-								TTTPlayer tp = (TTTPlayer)Main.bodies.get(index).getPlayer();
-								if (tp != null){
-									if (Main.bodies.get(index).getPlayer().getTeam().equals("Innocent") &&
-											!Main.bodies.get(index).getPlayer().hasMetadata("detective"))
-										tp.getRound().broadcast(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
-												Main.locale.getMessage("found-body").replace("%",
-														Main.bodies.get(index).getPlayer().getName())  + ". " +
-														Main.locale.getMessage("was-innocent"));
-									else if (Main.bodies.get(index).getPlayer().getTeam().equals("Traitor"))
-										tp.getRound().broadcast(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
-												Main.locale.getMessage("found-body").replace("%",
-														Main.bodies.get(index).getPlayer().getName())  + ". " +
-														Main.locale.getMessage("was-traitor"));
-									else
-										tp.getRound().broadcast(ChatColor.BLUE + e.getPlayer().getName() + " " +
-												Main.locale.getMessage("found-body").replace("%",
-														Main.bodies.get(index).getPlayer().getName())  + ". " +
-														Main.locale.getMessage("was-detective"));
+								Body b = Main.bodies.get(index);
+								TTTPlayer tp = (TTTPlayer)Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer());
+								if (b.getTeam().equals("Innocent"))
+									Main.mg.getRound(b.getArena()).broadcast(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
+											Main.locale.getMessage("found-body").replace("%",
+													b.getPlayer())  + ". " + Main.locale.getMessage("was-innocent"));
+								else if (b.getTeam().equals("Traitor"))
+									Main.mg.getRound(b.getArena()).broadcast(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
+											Main.locale.getMessage("found-body").replace("%",
+													b.getPlayer())  + ". " + Main.locale.getMessage("was-traitor"));
+								else
+									Main.mg.getRound(b.getArena()).broadcast(ChatColor.BLUE + e.getPlayer().getName() + " " +
+											Main.locale.getMessage("found-body").replace("%",
+													b.getPlayer())  + ". " + Main.locale.getMessage("was-detective"));
+								if (tp != null && tp.getArena().equals(Main.bodies.get(index).getArena())){
 									tp.setPrefix("§m");
+									tp.setBodyFound(true);
 								}
 								Main.foundBodies.add(Main.bodies.get(index));
-								Main.bodies.get(index).getPlayer().setBodyFound(true);
 							}
 							if (t.hasMetadata("detective")){ // handle DNA scanning
 								if (e.getPlayer().getItemInHand() != null){
@@ -124,16 +117,14 @@ public class PlayerListener implements Listener {
 														.equals("§1" + Main.locale.getMessage("dna-scanner"))){
 													e.setCancelled(true);
 													Player killer = Main.plugin.getServer().getPlayer(
-															((TTTPlayer)Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer()
-																	.getName())).getKiller());
+															((TTTPlayer)Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer())).getKiller());
 													if (killer != null){
 														if (Main.mg.isPlayer(killer.getName())){
 															if (!Main.mg.getMGPlayer(killer.getName()).isSpectating())
 																t.setMetadata("tracking", killer.getName());
 															e.getPlayer().sendMessage(ChatColor.BLUE +
 																	Main.locale.getMessage("collected-sample")
-																	.replace("%", Main.bodies.get(index).getPlayer()
-																			.getName()));
+																	.replace("%", Main.bodies.get(index).getPlayer()));
 														}
 														else
 															e.getPlayer().sendMessage(ChatColor.BLUE +
@@ -204,25 +195,15 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent e){
 		if (e.getEntityType() == EntityType.PLAYER){
 			TTTPlayer vt = (TTTPlayer)Main.mg.getMGPlayer(((Player)e.getEntity()).getName());
 			if (vt != null && vt.getRound().getStage() != Stage.PLAYING)
 				if (e.getCause() == DamageCause.VOID)
+					vt.spawnIn();
+				else
 					e.setCancelled(true);
-				else {
-					String r = vt.getArena();
-					try {
-						vt.removeFromRound();
-						vt.addToRound(r);
-					}
-					// none can happen
-					catch (NoSuchPlayerException e1){}
-					catch (PlayerOfflineException e1){}
-					catch (PlayerPresentException e1){}
-					catch (RoundFullException e1){}
-				}
 			if (e instanceof EntityDamageByEntityEvent){
 				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
 				if (ed.getDamager().getType() == EntityType.PLAYER ||
