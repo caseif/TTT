@@ -117,9 +117,9 @@ public class MGListener implements Listener {
 					ChatColor.DARK_PURPLE;
 		}
 		Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + e.getPlayer().getName() + addition + " " +
-				Main.locale.getMessage("joined-map") + " \"" + e.getRound().getArena() + "\"");
+				Main.locale.getMessage("joined-map") + " \"" + e.getRound().getDisplayName() + "\"");
 
-		e.getPlayer().getBukkitPlayer().sendMessage(ChatColor.GREEN + Main.locale.getMessage("success-join") + " " + e.getRound().getArena());
+		e.getPlayer().getBukkitPlayer().sendMessage(ChatColor.GREEN + Main.locale.getMessage("success-join") + " " + e.getRound().getDisplayName());
 	}
 
 	@EventHandler
@@ -129,7 +129,7 @@ public class MGListener implements Listener {
 		((TTTPlayer)e.getPlayer()).setDisplayKarma(((TTTPlayer)e.getPlayer()).getKarma());
 		if (!e.getRound().hasEnded())
 				e.getRound().broadcast(ChatColor.DARK_PURPLE + e.getPlayer().getName() + " " +
-						Main.locale.getMessage("left-game").replace("%", e.getPlayer().getArena()));
+						Main.locale.getMessage("left-game").replace("%", e.getPlayer().getRound().getDisplayName()));
 	}
 
 	@SuppressWarnings({"deprecation"})

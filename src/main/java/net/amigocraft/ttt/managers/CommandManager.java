@@ -38,12 +38,16 @@ public class CommandManager implements CommandExecutor {
 				if (args[0].equalsIgnoreCase("import") || args[0].equalsIgnoreCase("i")){
 					if (sender.hasPermission("ttt.arena.import")){
 						if (args.length > 1){
-							if (new File(Bukkit.getWorldContainer(), args[1]).exists()){
+							String worldName = "";
+							for (File f : Bukkit.getWorldContainer().listFiles())
+								if (f.getName().equalsIgnoreCase(args[1]))
+									worldName = f.getName();
+							if (!worldName.equals("")){
 								if (FileUtils.isWorld(args[1])){
-									World w = Bukkit.createWorld(new WorldCreator(args[1]));
+									World w = Bukkit.createWorld(new WorldCreator(worldName));
 									if (w != null){
 										try {
-											Main.mg.createArena(args[1], w.getSpawnLocation());
+											Main.mg.createArena(worldName, w.getSpawnLocation());
 											sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + Main.locale.getMessage("import-success"));
 										}
 										catch (ArenaExistsException e){
@@ -109,7 +113,7 @@ public class CommandManager implements CommandExecutor {
 						if (sender.hasPermission("ttt.arena.leave")){
 							if (Main.mg.isPlayer(sender.getName())){
 								MGPlayer mp = Main.mg.getMGPlayer(sender.getName());
-								String arena = mp.getArena();
+								//String arena = mp.getArena();
 								try {
 									mp.removeFromRound();
 								}
@@ -117,8 +121,8 @@ public class CommandManager implements CommandExecutor {
 									sender.sendMessage(Main.locale.getMessage("not-in-game"));
 								}
 								catch (PlayerOfflineException ex){}
-								sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + " " +
-										Main.locale.getMessage("left-game").replace("%", arena));
+								//sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + " " +
+								//		Main.locale.getMessage("left-game").replace("%", arena));
 							}
 							else
 								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("not-in-game"));
