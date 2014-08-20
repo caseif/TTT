@@ -12,6 +12,8 @@ public class Body {
 
 	public Body(String player, String arena, String team, Location3D l, long time){
 		this.player = player;
+		this.arena = arena;
+		this.team = team;
 		this.l = l;
 		this.time = time;
 	}
