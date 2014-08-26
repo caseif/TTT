@@ -17,15 +17,15 @@ public class Body {
 		this.l = l;
 		this.time = time;
 	}
-	
+
 	public String getPlayer(){
 		return player;
 	}
-	
+
 	public String getArena(){
 		return arena;
 	}
-	
+
 	public String getTeam(){
 		return team;
 	}
@@ -33,16 +33,16 @@ public class Body {
 	public Location3D getLocation(){
 		return l;
 	}
-	
+
 	public long getTime(){
 		return time;
 	}
-	
+
 	public boolean equals(Object b){
-		return player.equals(((Body)b).getPlayer()) && arena.equals(((Body)b).getArena()) &&
-				team.equals(((Body)b).getTeam()) && l.equals(((Body)b).getLocation());
+		return player.equals(((Body) b).getPlayer()) && arena.equals(((Body) b).getArena()) &&
+				team.equals(((Body) b).getTeam()) && l.equals(((Body) b).getLocation());
 	}
-	
+
 	public int hashCode(){
 		return 41 * (41 + player.hashCode() + l.hashCode());
 	}

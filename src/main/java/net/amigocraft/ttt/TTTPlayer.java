@@ -1,15 +1,13 @@
 package net.amigocraft.ttt;
 
-import org.bukkit.Bukkit;
-
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
 import net.amigocraft.ttt.managers.KarmaManager;
+import org.bukkit.Bukkit;
 
 public class TTTPlayer extends MGPlayer {
 
 	private boolean discreet = false;
-	private String tracking;
 	private String killer;
 	private int karma;
 	private int dispKarma;
@@ -29,10 +27,6 @@ public class TTTPlayer extends MGPlayer {
 		return discreet;
 	}
 
-	public String getTracking(){
-		return tracking;
-	}
-
 	public String getKiller(){
 		return killer;
 	}
@@ -44,7 +38,7 @@ public class TTTPlayer extends MGPlayer {
 	public int getDisplayKarma(){
 		return dispKarma;
 	}
-	
+
 	public double getDamageReduction(){
 		return damageRed;
 	}
@@ -52,7 +46,7 @@ public class TTTPlayer extends MGPlayer {
 	public boolean hasTeamKilled(){
 		return teamKill;
 	}
-	
+
 	public boolean isBodyFound(){
 		return found;
 	}
@@ -72,11 +66,11 @@ public class TTTPlayer extends MGPlayer {
 	public void setDisplayKarma(int karma){
 		this.dispKarma = karma;
 	}
-	
+
 	public void setBodyFound(boolean found){
 		this.found = found;
 	}
-	
+
 	public void calculateDamageReduction(){
 		// Below is an approximation of the original game's formula. It was calculated on a TI Nspire, so it may not be 100% accurate.
 		double a = -1.5839260914526 * Math.pow(10, -7);
@@ -84,55 +78,67 @@ public class TTTPlayer extends MGPlayer {
 		double c = -6.969034697 * Math.pow(10, -4);
 		double d = 0.185644476098;
 		int x = karma;
-		this.damageRed = Math.round(a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x + d) / (double)100;
-		if (damageRed > 1)
+		this.damageRed = Math.round(a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x + d) / (double) 100;
+		if (damageRed > 1){
 			damageRed = 1;
-		else if (damageRed <= 0)
+		}
+		else if (damageRed <= 0){
 			damageRed = 0.01;
+		}
 	}
 
 	public void addKarma(int karma){
-		if (karma == 0 && Variables.KARMA_ROUND_TO_ONE)
+		if (karma == 0 && Variables.KARMA_ROUND_TO_ONE){
 			karma = 1;
-		if (this.karma + karma < Main.maxKarma)
+		}
+		if (this.karma + karma < Main.maxKarma){
 			this.karma += karma;
-		else if (this.karma < Main.maxKarma)
+		}
+		else if (this.karma < Main.maxKarma){
 			this.karma = Main.maxKarma;
-		if (Variables.KARMA_DEBUG)
+		}
+		if (Variables.KARMA_DEBUG){
 			Main.kLog.info("[TTT Karma Debug] " + getName() + ": +" + karma + ". " + "New value: " + getKarma());
+		}
 	}
 
 	public void subtractKarma(int karma){
-		if (karma == 0 && Variables.KARMA_ROUND_TO_ONE)
+		if (karma == 0 && Variables.KARMA_ROUND_TO_ONE){
 			karma = 1;
-		if (this.karma - karma < Variables.KARMA_KICK)
+		}
+		if (this.karma - karma < Variables.KARMA_KICK){
 			KarmaManager.handleKick(this);
+		}
 		else {
 			this.karma -= karma;
 			teamKill = true;
 		}
-		if (Variables.KARMA_DEBUG)
+		if (Variables.KARMA_DEBUG){
 			Main.kLog.info("[TTT Karma Debug] " + getName() + ": -" + karma + ". " + "New value: " + getKarma());
+		}
 	}
 
 	@Override
-	public void reset() throws PlayerOfflineException {
+	public void reset() throws PlayerOfflineException{
 		super.reset();
 		getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
 	}
 
 	public boolean equals(Object p){
-		TTTPlayer t = (TTTPlayer)p;
-		return getName().equals(t.getName()) && getArena().equals(t.getArena()) &&
-				getTeam().equals(t.getTeam());
+		if (p instanceof TTTPlayer){
+			TTTPlayer t = (TTTPlayer) p;
+			return getName().equals(t.getName()) && getArena().equals(t.getArena()) &&
+					getTeam().equals(t.getTeam());
+		}
+		return false;
 	}
 
 	public int hashCode(){
-		return 41 * (getName().hashCode() * 37 + getArena() != null ? getArena().hashCode() : 67 + getTeam().hashCode() * 53);
+		return 41 * (getName().hashCode() * 37 + getArena().hashCode() * 43 + getTeam().hashCode() * 53);
 	}
 
 	public boolean isTraitor(){
-		return getTeam().equals("Traitor");
+		return this.getTeam() != null && this.getTeam().equals("Traitor");
 	}
 
 }

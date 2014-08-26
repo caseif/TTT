@@ -1,34 +1,23 @@
 package net.amigocraft.ttt.managers;
 
-import java.io.File;
-
 import net.amigocraft.mglib.MGUtil;
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Round;
-import net.amigocraft.mglib.exception.ArenaExistsException;
-import net.amigocraft.mglib.exception.NoSuchArenaException;
-import net.amigocraft.mglib.exception.InvalidLocationException;
-import net.amigocraft.mglib.exception.NoSuchPlayerException;
-import net.amigocraft.mglib.exception.PlayerOfflineException;
-import net.amigocraft.mglib.exception.PlayerPresentException;
-import net.amigocraft.mglib.exception.RoundFullException;
+import net.amigocraft.mglib.exception.*;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.Variables;
 import net.amigocraft.ttt.utils.FileUtils;
 import net.amigocraft.ttt.utils.NumUtils;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import java.io.File;
 
 public class CommandManager implements CommandExecutor {
 
@@ -39,9 +28,11 @@ public class CommandManager implements CommandExecutor {
 					if (sender.hasPermission("ttt.arena.import")){
 						if (args.length > 1){
 							String worldName = "";
-							for (File f : Bukkit.getWorldContainer().listFiles())
-								if (f.getName().equalsIgnoreCase(args[1]))
+							for (File f : Bukkit.getWorldContainer().listFiles()){
+								if (f.getName().equalsIgnoreCase(args[1])){
 									worldName = f.getName();
+								}
+							}
 							if (!worldName.equals("")){
 								if (FileUtils.isWorld(args[1])){
 									World w = Bukkit.createWorld(new WorldCreator(worldName));
@@ -55,22 +46,26 @@ public class CommandManager implements CommandExecutor {
 											sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("already-imported"));
 										}
 									}
-									else
+									else {
 										sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("cannot-load-world"));
+									}
 								}
-								else
+								else {
 									sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("cannot-load-world"));
+								}
 							}
-							else
+							else {
 								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("folder-error"));
+							}
 						}
 						else {
 							sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-1"));
 							sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("usage-import"));
-						}						
+						}
 					}
-					else
+					else {
 						sender.sendMessage(ChatColor.RED + Main.locale.getMessage("no-permission-import"));
+					}
 				}
 				else if (args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("j")){
 					if (sender instanceof Player){
@@ -79,8 +74,9 @@ public class CommandManager implements CommandExecutor {
 								Round r;
 								try {
 									r = Main.mg.getRound(args[1]);
-									if (r == null)
+									if (r == null){
 										r = Main.mg.createRound(args[1]);
+									}
 									r.addPlayer(sender.getName());
 								}
 								catch (NoSuchArenaException ex){
@@ -101,11 +97,13 @@ public class CommandManager implements CommandExecutor {
 								sender.sendMessage(ChatColor.RED + Main.locale.getMessage("usage-join"));
 							}
 						}
-						else
+						else {
 							sender.sendMessage(ChatColor.RED + Main.locale.getMessage("no-permission-join"));
+						}
 					}
-					else
+					else {
 						sender.sendMessage(ChatColor.RED + Main.locale.getMessage("must-be-ingame"));
+					}
 				}
 				else if (args[0].equalsIgnoreCase("leave") || args[0].equalsIgnoreCase("l") ||
 						args[0].equalsIgnoreCase("quit") || args[0].equalsIgnoreCase("q")){
@@ -120,32 +118,37 @@ public class CommandManager implements CommandExecutor {
 								catch (NoSuchPlayerException ex){
 									sender.sendMessage(Main.locale.getMessage("not-in-game"));
 								}
-								catch (PlayerOfflineException ex){}
+								catch (PlayerOfflineException ex){
+									ex.printStackTrace();
+								}
 								//sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + " " +
 								//		Main.locale.getMessage("left-game").replace("%", arena));
 							}
-							else
+							else {
 								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("not-in-game"));
+							}
 						}
-						else
+						else {
 							sender.sendMessage(ChatColor.RED + "[TTT] " +
 									Main.locale.getMessage("no-permission-quit"));
+						}
 					}
-					else
+					else {
 						sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("must-be-ingame"));
+					}
 				}
 				else if (args[0].equalsIgnoreCase("carena") || args[0].equalsIgnoreCase("ca")){
 					if (sender.hasPermission("ttt.arena.create")){
-						String w = null;
-						int x = 0;
-						int y = 0;
-						int z = 0;
+						String w;
+						int x;
+						int y;
+						int z;
 						if (args.length == 2){ // use sender's location
 							if (sender instanceof Player){
-								w = ((Player)sender).getWorld().getName();
-								x = ((Player)sender).getLocation().getBlockX();
-								y = ((Player)sender).getLocation().getBlockY();
-								z = ((Player)sender).getLocation().getBlockZ();
+								w = ((Player) sender).getWorld().getName();
+								x = ((Player) sender).getLocation().getBlockX();
+								y = ((Player) sender).getLocation().getBlockY();
+								z = ((Player) sender).getLocation().getBlockZ();
 							}
 							else {
 								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("must-be-ingame"));
@@ -175,21 +178,22 @@ public class CommandManager implements CommandExecutor {
 							sender.sendMessage("already-imported");
 						}
 					}
-					else
+					else {
 						sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("no-permission"));
+					}
 				}
 				else if (args[0].equalsIgnoreCase("addspawn") || args[0].equalsIgnoreCase("as")){
 					if (sender.hasPermission("ttt.arena.addspawn")){
 						World w = null;
-						int x = 0;
-						int y = 0;
-						int z = 0;
+						int x;
+						int y;
+						int z;
 						if (args.length == 2){ // use sender's location
 							if (sender instanceof Player){
-								w = ((Player)sender).getWorld();
-								x = ((Player)sender).getLocation().getBlockX();
-								y = ((Player)sender).getLocation().getBlockY();
-								z = ((Player)sender).getLocation().getBlockZ();
+								w = ((Player) sender).getWorld();
+								x = ((Player) sender).getLocation().getBlockX();
+								y = ((Player) sender).getLocation().getBlockY();
+								z = ((Player) sender).getLocation().getBlockZ();
 							}
 							else {
 								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("must-be-ingame"));
@@ -212,10 +216,12 @@ public class CommandManager implements CommandExecutor {
 							return true;
 						}
 						try {
-							if (w == null)
+							if (w == null){
 								Main.mg.getArenaFactory(args[1]).addSpawn(x, y, z);
-							else
+							}
+							else {
 								Main.mg.getArenaFactory(args[1]).addSpawn(new Location(w, x, y, z));
+							}
 						}
 						catch (InvalidLocationException ex){
 							sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("same-world"));
@@ -224,8 +230,9 @@ public class CommandManager implements CommandExecutor {
 							sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("arena-invalid"));
 						}
 					}
-					else
+					else {
 						sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("no-permission"));
+					}
 				}
 				else if (args[0].equalsIgnoreCase("removespawn") || args[0].equalsIgnoreCase("rs")){
 					if (sender.hasPermission("ttt.arena.removespawn")){
@@ -235,22 +242,24 @@ public class CommandManager implements CommandExecutor {
 						int index = Integer.MAX_VALUE;
 						if (args.length == 2){ // use sender's location
 							if (sender instanceof Player){
-								x = ((Player)sender).getLocation().getBlockX();
-								y = ((Player)sender).getLocation().getBlockY();
-								z = ((Player)sender).getLocation().getBlockZ();
+								x = ((Player) sender).getLocation().getBlockX();
+								y = ((Player) sender).getLocation().getBlockY();
+								z = ((Player) sender).getLocation().getBlockZ();
 							}
 							else {
 								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("must-be-ingame"));
 								return true;
 							}
 						}
-						else if (args.length == 3)
-							if (NumUtils.isInt(args[2]))
+						else if (args.length == 3){
+							if (NumUtils.isInt(args[2])){
 								index = Integer.parseInt(args[2]);
+							}
 							else {
 								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
 								return true;
 							}
+						}
 						else if (args.length == 5){ // use 3 provided coords
 							if (NumUtils.isInt(args[2]) && NumUtils.isInt(args[3]) && NumUtils.isInt(args[4])){
 								x = Integer.parseInt(args[2]);
@@ -273,11 +282,13 @@ public class CommandManager implements CommandExecutor {
 									yaml.set(args[1] + ".spawns." + index, null);
 									MGUtil.saveArenaYaml("TTT", yaml);
 								}
-								else
+								else {
 									sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
+								}
 							}
-							else
+							else {
 								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("arena-invalid"));
+							}
 						}
 						else {
 							YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
@@ -292,12 +303,14 @@ public class CommandManager implements CommandExecutor {
 								}
 								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
 							}
-							else
+							else {
 								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("arena-invalid"));
+							}
 						}
 					}
-					else
+					else {
 						sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("no-permission"));
+					}
 				}
 				else if (args[0].equalsIgnoreCase("setexit") || args[0].equalsIgnoreCase("se") ||
 						args[0].equalsIgnoreCase("setspawn") || args[0].equalsIgnoreCase("ss")){
@@ -306,20 +319,20 @@ public class CommandManager implements CommandExecutor {
 							try {
 								File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
 								if (!spawnFile.exists()){
-									if (Variables.VERBOSE_LOGGING)
+									if (Variables.VERBOSE_LOGGING){
 										Main.mg.log("No spawn.yml found, creating...", LogLevel.INFO);
+									}
 									spawnFile.createNewFile();
 								}
 								YamlConfiguration spawnYaml = new YamlConfiguration();
 								spawnYaml.load(spawnFile);
-								spawnYaml.set("world", ((Player)sender).getLocation().getWorld().getName());
-								spawnYaml.set("x", ((Player)sender).getLocation().getBlockX() + 0.5);
-								spawnYaml.set("y", ((Player)sender).getLocation().getBlockY());
-								spawnYaml.set("z", ((Player)sender).getLocation().getBlockZ() + 0.5);
+								spawnYaml.set("world", ((Player) sender).getLocation().getWorld().getName());
+								spawnYaml.set("x", ((Player) sender).getLocation().getBlockX() + 0.5);
+								spawnYaml.set("y", ((Player) sender).getLocation().getBlockY());
+								spawnYaml.set("z", ((Player) sender).getLocation().getBlockZ() + 0.5);
 								spawnYaml.save(spawnFile);
-								Location l = ((Player)sender).getLocation();
-								Main.mg.getConfigManager().setDefaultExitLocation(
-										new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5));
+								Location l = ((Player) sender).getLocation();
+								Main.mg.getConfigManager().setDefaultExitLocation(new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5));
 								sender.sendMessage(ChatColor.DARK_PURPLE + "Successfully set TTT return point!");
 							}
 							catch (Exception ex){
@@ -327,11 +340,13 @@ public class CommandManager implements CommandExecutor {
 								sender.sendMessage(ChatColor.RED + "An error occurred while setting the TTT return point.");
 							}
 						}
-						else
+						else {
 							sender.sendMessage(ChatColor.RED + Main.locale.getMessage("must-be-ingame"));
+						}
 					}
-					else
+					else {
 						sender.sendMessage(ChatColor.RED + Main.locale.getMessage("no-permission"));
+					}
 
 				}
 				else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")){
@@ -353,40 +368,50 @@ public class CommandManager implements CommandExecutor {
 									Main.locale.getMessage("line") + " " +
 									ChatColor.GREEN + Main.locale.getMessage("number"));
 						}
-						else
+						else {
 							sender.sendMessage(Main.locale.getMessage("no-permission"));
+						}
 					}
 					else if (sender.hasPermission("ttt.help")){
 						sender.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE +
 								Main.locale.getMessage("commands"));
 						sender.sendMessage("");
-						if (sender.hasPermission("ttt.arena.join"))
+						if (sender.hasPermission("ttt.arena.join")){
 							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt join, j " + ChatColor.GREEN +
 									Main.locale.getMessage("join-help"));
-						if (sender.hasPermission("ttt.arena.quit"))
+						}
+						if (sender.hasPermission("ttt.arena.quit")){
 							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt quit, q " + ChatColor.GREEN +
 									Main.locale.getMessage("quit-help"));
-						if (sender.hasPermission("ttt.arena.import"))
+						}
+						if (sender.hasPermission("ttt.arena.import")){
 							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt import, i " + ChatColor.GREEN +
 									Main.locale.getMessage("import-help"));
-						if (sender.hasPermission("ttt.arena.create"))
+						}
+						if (sender.hasPermission("ttt.arena.create")){
 							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt carena, ca " + ChatColor.GREEN +
 									Main.locale.getMessage("createarena-help"));
-						if (sender.hasPermission("ttt.arena.addspawn"))
+						}
+						if (sender.hasPermission("ttt.arena.addspawn")){
 							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt addspawn, ad " + ChatColor.GREEN +
 									Main.locale.getMessage("addspawn-help"));
-						if (sender.hasPermission("ttt.arena.removespawn"))
+						}
+						if (sender.hasPermission("ttt.arena.removespawn")){
 							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt removespawn, rs " + ChatColor.GREEN +
 									Main.locale.getMessage("removespawn-help"));
-						if (sender.hasPermission("ttt.setspawn"))
+						}
+						if (sender.hasPermission("ttt.setspawn")){
 							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt setexit, se " + ChatColor.GREEN +
 									Main.locale.getMessage("spawn-help"));
-						if (sender.hasPermission("ttt.help"))
+						}
+						if (sender.hasPermission("ttt.help")){
 							sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt help, ? " + ChatColor.GREEN +
 									Main.locale.getMessage("help-help"));
+						}
 					}
-					else
+					else {
 						sender.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("no-permission"));
+					}
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));

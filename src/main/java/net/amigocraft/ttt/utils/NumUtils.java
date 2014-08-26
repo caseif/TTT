@@ -1,7 +1,7 @@
 package net.amigocraft.ttt.utils;
 
 public class NumUtils {
-	
+
 	public static boolean isInt(String s){
 		try {
 			Integer.parseInt(s);
@@ -11,5 +11,5 @@ public class NumUtils {
 			return false;
 		}
 	}
-	
+
 }

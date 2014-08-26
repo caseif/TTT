@@ -1,14 +1,8 @@
 package net.amigocraft.ttt.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.bukkit.Bukkit;
+
+import java.io.*;
 
 public class FileUtils {
 
@@ -16,28 +10,27 @@ public class FileUtils {
 	public static boolean isWorld(String worldName){
 		File folder = new File(Bukkit.getWorldContainer(), worldName);
 		if (folder.exists()){
-		File[] files = folder.listFiles(new FilenameFilter(){
-			@Override
-			public boolean accept(File file, String name){
-				return name.equalsIgnoreCase("level.dat");
+			File[] files = folder.listFiles(new FilenameFilter() {
+				@Override
+				public boolean accept(File file, String name){
+					return name.equalsIgnoreCase("level.dat");
+				}
+			});
+			if (files != null && files.length > 0){
+				return true;
 			}
-		});
-		if (files != null && files.length > 0){
-			return true;
-		}
 		}
 		return false;
 	}
 
-	public static void copyFile(File sourceLocation, File targetLocation) throws IOException {
+	public static void copyFile(File sourceLocation, File targetLocation) throws IOException{
 		if (sourceLocation.isDirectory()){
 			if (!targetLocation.exists()){
 				targetLocation.mkdir();
 			}
 			String[] children = sourceLocation.list();
-			for (int i=0; i<children.length; i++){
-				copyFile(new File(sourceLocation, children[i]),
-						new File(targetLocation, children[i]));
+			for (int i = 0; i < children.length; i++){
+				copyFile(new File(sourceLocation, children[i]), new File(targetLocation, children[i]));
 			}
 		}
 		else {
