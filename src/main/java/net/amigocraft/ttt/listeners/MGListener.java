@@ -369,12 +369,12 @@ public class MGListener implements Listener {
 
 		if (!e.getRound().hasMetadata("t-victory") || e.getRound().getMetadata("t-victory") == Boolean.FALSE){
 			Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " +
-					Main.locale.getMessage("innocent-win").replace("%", "\"" + e.getRound().getArena() + "\"") +
+					Main.locale.getMessage("innocent-win").replace("%", "\"" + e.getRound().getDisplayName() + "\"") +
 					"!");
 		}
 		else {
 			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " +
-					Main.locale.getMessage("traitor-win").replace("%", "\"" + e.getRound().getArena() + "\"") +
+					Main.locale.getMessage("traitor-win").replace("%", "\"" + e.getRound().getDisplayName() + "\"") +
 					"!");
 		}
 		for (Entity ent : Bukkit.getWorld(e.getRound().getWorld()).getEntities()){
@@ -382,6 +382,7 @@ public class MGListener implements Listener {
 				ent.remove();
 			}
 		}
+		ScoreManager.sbManagers.remove(e.getRound().getArena());
 	}
 
 	@EventHandler

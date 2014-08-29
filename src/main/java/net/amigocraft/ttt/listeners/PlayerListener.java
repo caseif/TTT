@@ -89,12 +89,16 @@ public class PlayerListener implements Listener {
 									Main.mg.getRound(b.getArena()).broadcast(ChatColor.BLUE + e.getPlayer().getName() + " " +
 											Main.locale.getMessage("found-body").replace("%", b.getPlayer()) + ". " + Main.locale.getMessage("was-detective"));
 								}
+								Main.foundBodies.add(Main.bodies.get(index));
 								if (tp != null && tp.getArena().equals(Main.bodies.get(index).getArena())){
 									tp.setPrefix("§m");
 									tp.setBodyFound(true);
-									ScoreManager.sbManagers.get(tp.getArena()).update(tp);
+									if (ScoreManager.sbManagers.containsKey(tp.getArena()))
+										ScoreManager.sbManagers.get(tp.getArena()).update(tp);
+									else
+										for (String s : ScoreManager.sbManagers.keySet())
+											System.out.println(tp.getArena() + ", " + s);
 								}
-								Main.foundBodies.add(Main.bodies.get(index));
 							}
 							if (t.hasMetadata("detective")){ // handle DNA scanning
 								if (e.getPlayer().getItemInHand() != null){
