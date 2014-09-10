@@ -46,7 +46,7 @@ public class MGListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onPlayerJoinMinigameRound(PlayerJoinMinigameRoundEvent e){
 		File f = new File(Main.plugin.getDataFolder(), "bans.yml");
 		YamlConfiguration y = new YamlConfiguration();

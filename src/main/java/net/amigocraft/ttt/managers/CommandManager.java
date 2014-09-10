@@ -5,6 +5,7 @@ import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.exception.*;
+import net.amigocraft.mglib.misc.JoinResult;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.Variables;
 import net.amigocraft.ttt.utils.FileUtils;
@@ -77,7 +78,8 @@ public class CommandManager implements CommandExecutor {
 									if (r == null){
 										r = Main.mg.createRound(args[1]);
 									}
-									r.addPlayer(sender.getName());
+									JoinResult result = r.addPlayer(sender.getName());
+
 								}
 								catch (NoSuchArenaException ex){
 									sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("arena-invalid"));
