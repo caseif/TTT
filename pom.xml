@@ -18,7 +18,7 @@
 	<repositories>
 		<repository>
 			<id>mglib-repo</id>
-			<url>http://repo.amigocraft.net/content/repositories/mglib/</url>
+			<url>http://repo.amigocraft.net/content/groups/public/</url>
 		</repository>
 		<repository>
 			<id>bukkit-repo</id>
