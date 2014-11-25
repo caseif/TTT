@@ -40,7 +40,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.amigocraft.mglib</groupId>
-			<artifactId>MGLib</artifactId>
+			<artifactId>mglib</artifactId>
 			<scope>provided</scope>
 			<version>0.3.0</version>
 		</dependency>
