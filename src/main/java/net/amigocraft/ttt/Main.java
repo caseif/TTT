@@ -31,7 +31,7 @@ import net.amigocraft.ttt.listeners.EntityListener;
 import net.amigocraft.ttt.listeners.MGListener;
 import net.amigocraft.ttt.listeners.PlayerListener;
 import net.amigocraft.ttt.listeners.SpecialPlayerListener;
-import net.amigocraft.ttt.managers.CommandManager;
+import net.amigocraft.ttt.managers.command.CommandManager;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
 import net.amigocraft.ttt.managers.SpecialCommandManager;

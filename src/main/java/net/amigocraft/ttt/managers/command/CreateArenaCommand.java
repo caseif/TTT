@@ -1,0 +1,87 @@
+/*
+ * TTT
+ * Copyright (c) 2014, Maxim Roncacé <http://bitbucket.org/mproncace>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package net.amigocraft.ttt.managers.command;
+
+import net.amigocraft.mglib.exception.ArenaExistsException;
+import net.amigocraft.ttt.Main;
+import net.amigocraft.ttt.utils.FileUtils;
+import net.amigocraft.ttt.utils.NumUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.WorldCreator;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+public class CreateArenaCommand extends SubcommandHandler {
+
+	public CreateArenaCommand(CommandSender sender, String[] args){
+		super(sender, args);
+	}
+
+	public void handle(){
+		if (sender.hasPermission("ttt.arena.create")){
+			String w;
+			int x;
+			int y;
+			int z;
+			if (args.length == 2){ // use sender's location
+				if (sender instanceof Player){
+					w = ((Player)sender).getWorld().getName();
+					x = ((Player)sender).getLocation().getBlockX();
+					y = ((Player)sender).getLocation().getBlockY();
+					z = ((Player)sender).getLocation().getBlockZ();
+				}
+				else {
+					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("must-be-ingame"));
+					return;
+				}
+			}
+			else if (args.length == 6){ // use 3 provided coords and world
+				if (NumUtils.isInt(args[2]) && NumUtils.isInt(args[3]) && NumUtils.isInt(args[4]) && FileUtils.isWorld(args[5])){
+					x = Integer.parseInt(args[2]);
+					y = Integer.parseInt(args[3]);
+					z = Integer.parseInt(args[4]);
+					w = args[5];
+				}
+				else {
+					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
+					return;
+				}
+			}
+			else {
+				sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
+				return;
+			}
+			try {
+				Main.mg.createArena(args[1], new Location(Bukkit.createWorld(new WorldCreator(w)), x, y, z));
+			}
+			catch (ArenaExistsException ex){
+				sender.sendMessage("already-imported");
+			}
+		}
+		else{
+			sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("no-permission"));
+		}
+	}
+}
