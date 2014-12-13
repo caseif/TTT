@@ -20,13 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.amigocraft.ttt.utils;
+package net.amigocraft.ttt.util;
 
 import org.bukkit.Bukkit;
 
 import java.io.*;
 
-public class FileUtils {
+public class FileUtil {
 
 	// world checking method from Multiverse
 	public static boolean isWorld(String worldName){

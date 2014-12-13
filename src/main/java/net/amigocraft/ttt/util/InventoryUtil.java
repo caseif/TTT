@@ -20,13 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.amigocraft.ttt.utils;
+package net.amigocraft.ttt.util;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class InventoryUtils {
+public class InventoryUtil {
 
 	public static void removeArrow(Inventory inv){
 		for (int i = 0; i < inv.getContents().length; i++){

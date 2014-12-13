@@ -30,7 +30,7 @@ import net.amigocraft.mglib.exception.NoSuchPlayerException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.TTTPlayer;
-import net.amigocraft.ttt.Variables;
+import net.amigocraft.ttt.Config;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -75,15 +75,15 @@ public class KarmaManager {
 			YamlConfiguration karmaYaml = new YamlConfiguration();
 			karmaYaml.load(karmaFile);
 			if (karmaYaml.isSet(uuid)){
-				if (karmaYaml.getInt(uuid) > Variables.MAX_KARMA){
-					playerKarma.put(pName, Variables.MAX_KARMA);
+				if (karmaYaml.getInt(uuid) > Config.MAX_KARMA){
+					playerKarma.put(pName, Config.MAX_KARMA);
 				}
 				else {
 					playerKarma.put(pName, karmaYaml.getInt(uuid));
 				}
 			}
 			else {
-				playerKarma.put(pName, Variables.DEFAULT_KARMA);
+				playerKarma.put(pName, Config.DEFAULT_KARMA);
 			}
 		}
 		catch (Exception ex){
@@ -94,12 +94,12 @@ public class KarmaManager {
 	public static void allocateKarma(Round round){
 		for (MGPlayer mp : round.getPlayerList()){
 			TTTPlayer t = (TTTPlayer) mp;
-			t.addKarma(Variables.KARMA_HEAL);
+			t.addKarma(Config.KARMA_HEAL);
 			if (!t.hasTeamKilled()){
-				int add = Variables.KARMA_CLEAN_BONUS;
-				if (t.getKarma() > Variables.DEFAULT_KARMA){
-					if ((Variables.MAX_KARMA - Variables.DEFAULT_KARMA) > 0){
-						add = (int) Math.round(Variables.KARMA_CLEAN_BONUS * Math.pow(.5, (t.getKarma() - (double) Variables.DEFAULT_KARMA) / ((double) (Variables.MAX_KARMA - Variables.DEFAULT_KARMA) * Variables.KARMA_CLEAN_HALF)));
+				int add = Config.KARMA_CLEAN_BONUS;
+				if (t.getKarma() > Config.DEFAULT_KARMA){
+					if ((Config.MAX_KARMA - Config.DEFAULT_KARMA) > 0){
+						add = (int) Math.round(Config.KARMA_CLEAN_BONUS * Math.pow(.5, (t.getKarma() - (double) Config.DEFAULT_KARMA) / ((double) (Config.MAX_KARMA - Config.DEFAULT_KARMA) * Config.KARMA_CLEAN_HALF)));
 					}
 				}
 				t.addKarma(add);
@@ -111,22 +111,22 @@ public class KarmaManager {
 		if (damager != null && victim != null){
 			if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor")) // team damage
 			{
-				damager.subtractKarma((int) (victim.getKarma() * (damage * Variables.DAMAGE_PENALTY)));
+				damager.subtractKarma((int) (victim.getKarma() * (damage * Config.DAMAGE_PENALTY)));
 			}
 			else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")){ // innocent damaging traitor
-				damager.addKarma((int) (Variables.MAX_KARMA *
-						damage * Variables.T_DAMAGE_REWARD));
+				damager.addKarma((int) (Config.MAX_KARMA *
+						damage * Config.T_DAMAGE_REWARD));
 			}
 		}
 	}
 
 	public static void handleKillKarma(TTTPlayer killer, TTTPlayer victim){
 		if (killer.isTraitor() == victim.isTraitor()){
-			handleDamageKarma(killer, victim, Variables.KILL_PENALTY);
+			handleDamageKarma(killer, victim, Config.KILL_PENALTY);
 		}
 		else if (!killer.isTraitor()){
-			killer.addKarma(Variables.TBONUS *
-					Variables.T_DAMAGE_REWARD * victim.getKarma());
+			killer.addKarma(Config.TBONUS *
+					Config.T_DAMAGE_REWARD * victim.getKarma());
 		}
 	}
 
@@ -142,22 +142,22 @@ public class KarmaManager {
 			catch (PlayerOfflineException ex){ // neither can be thrown
 				ex.printStackTrace();
 			}
-			if (Variables.KARMA_BAN){
+			if (Config.KARMA_BAN){
 				File f = new File(Main.plugin.getDataFolder(), "bans.yml");
 				YamlConfiguration y = new YamlConfiguration();
 				try {
 					y.load(f);
-					if (Variables.KARMA_BAN_TIME < 0){
+					if (Config.KARMA_BAN_TIME < 0){
 						y.set(t.getName(), -1);
 						y.save(f);
-						p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-permaban").replace("%", Variables.KARMA_KICK + "."));
+						p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-permaban").replace("%", Config.KARMA_KICK + "."));
 					}
 					else {
 						// store unban time as a Unix timestamp
-						int unbanTime = (int) System.currentTimeMillis() / 1000 + (Variables.KARMA_BAN_TIME * 60);
+						int unbanTime = (int) System.currentTimeMillis() / 1000 + (Config.KARMA_BAN_TIME * 60);
 						y.set(t.getName(), unbanTime);
 						y.save(f);
-						p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-ban").replace("&", Integer.toString(Variables.KARMA_BAN_TIME)).replace("%", Variables.KARMA_KICK + "."));
+						p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-ban").replace("&", Integer.toString(Config.KARMA_BAN_TIME)).replace("%", Config.KARMA_KICK + "."));
 					}
 				}
 				catch (Exception ex){
@@ -166,7 +166,7 @@ public class KarmaManager {
 				}
 			}
 			else {
-				p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-kick").replace("%", Integer.toString(Variables.KARMA_KICK)));
+				p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-kick").replace("%", Integer.toString(Config.KARMA_KICK)));
 			}
 		}
 	}

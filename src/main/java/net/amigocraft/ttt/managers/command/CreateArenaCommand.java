@@ -24,8 +24,8 @@ package net.amigocraft.ttt.managers.command;
 
 import net.amigocraft.mglib.exception.ArenaExistsException;
 import net.amigocraft.ttt.Main;
-import net.amigocraft.ttt.utils.FileUtils;
-import net.amigocraft.ttt.utils.NumUtils;
+import net.amigocraft.ttt.util.FileUtil;
+import net.amigocraft.ttt.util.NumUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -58,7 +58,7 @@ public class CreateArenaCommand extends SubcommandHandler {
 				}
 			}
 			else if (args.length == 6){ // use 3 provided coords and world
-				if (NumUtils.isInt(args[2]) && NumUtils.isInt(args[3]) && NumUtils.isInt(args[4]) && FileUtils.isWorld(args[5])){
+				if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4]) && FileUtil.isWorld(args[5])){
 					x = Integer.parseInt(args[2]);
 					y = Integer.parseInt(args[3]);
 					z = Integer.parseInt(args[4]);

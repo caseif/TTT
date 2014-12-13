@@ -24,7 +24,7 @@ package net.amigocraft.ttt.managers.command;
 
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.ttt.Main;
-import net.amigocraft.ttt.Variables;
+import net.amigocraft.ttt.Config;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -45,7 +45,7 @@ public class SetExitCommand extends SubcommandHandler {
 				try {
 					File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
 					if (!spawnFile.exists()){
-						if (Variables.VERBOSE_LOGGING){
+						if (Config.VERBOSE_LOGGING){
 							Main.mg.log("No spawn.yml found, creating...", LogLevel.INFO);
 						}
 						spawnFile.createNewFile();

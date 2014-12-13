@@ -35,7 +35,7 @@ import net.amigocraft.ttt.managers.command.CommandManager;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
 import net.amigocraft.ttt.managers.SpecialCommandManager;
-import net.amigocraft.ttt.utils.FileUtils;
+import net.amigocraft.ttt.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -114,12 +114,12 @@ public class Main extends JavaPlugin {
 		cm.setRandomSpawning(false);
 		cm.setTeleportationAllowed(false);
 		cm.setTeamChatEnabled(true);
-		cm.setDefaultPreparationTime(Variables.SETUP_TIME);
-		cm.setDefaultPlayingTime(Variables.TIME_LIMIT);
+		cm.setDefaultPreparationTime(Config.SETUP_TIME);
+		cm.setDefaultPlayingTime(Config.TIME_LIMIT);
 		cm.setAllowJoinRoundWhilePreparing(true);
 		cm.setAllowJoinRoundInProgress(false);
-		cm.setMinPlayers(Variables.MINIMUM_PLAYERS);
-		cm.setMaxPlayers(Variables.MAXIMUM_PLAYERS);
+		cm.setMinPlayers(Config.MINIMUM_PLAYERS);
+		cm.setMaxPlayers(Config.MAXIMUM_PLAYERS);
 		cm.setPvPAllowed(true);
 		cm.setTeamDamageAllowed(true);
 		cm.setOverrideDeathEvent(true);
@@ -171,10 +171,10 @@ public class Main extends JavaPlugin {
 		if (!new File(getDataFolder(), "config.yml").exists()){
 			saveDefaultConfig();
 		}
-		else if (!Variables.IGNORE_CONFIG_VERSION && !Variables.CONFIG_VERSION.equals(this.getDescription().getVersion())){
+		else if (!Config.IGNORE_CONFIG_VERSION && !Config.CONFIG_VERSION.equals(this.getDescription().getVersion())){
 			File config = new File(this.getDataFolder(), "config.yml");
 			try {
-				FileUtils.copyFile(config, new File(this.getDataFolder(), "config.old.yml"));
+				FileUtil.copyFile(config, new File(this.getDataFolder(), "config.old.yml"));
 			}
 			catch (Exception ex){
 				ex.printStackTrace();
@@ -184,7 +184,7 @@ public class Main extends JavaPlugin {
 			saveDefaultConfig();
 		}
 
-		if (Variables.ENABLE_VERSION_CHECK && !this.getDescription().getVersion().contains("SNAPSHOT")){
+		if (Config.ENABLE_VERSION_CHECK && !this.getDescription().getVersion().contains("SNAPSHOT")){
 			checkVersion();
 		}
 
@@ -192,12 +192,12 @@ public class Main extends JavaPlugin {
 		createFile("bans.yml");
 
 		// autoupdate
-		if (Variables.ENABLE_AUTO_UPDATE){
+		if (Config.ENABLE_AUTO_UPDATE){
 			new Updater(this, 52474, this.getFile(), Updater.UpdateType.DEFAULT, true);
 		}
 
 		// submit metrics
-		if (Variables.ENABLE_METRICS){
+		if (Config.ENABLE_METRICS){
 			try {
 				Metrics metrics = new Metrics(this);
 				Graph graph = metrics.createGraph("MGLib Version");
@@ -210,7 +210,7 @@ public class Main extends JavaPlugin {
 				metrics.start();
 			}
 			catch (IOException e){
-				if (Variables.VERBOSE_LOGGING){
+				if (Config.VERBOSE_LOGGING){
 					mg.log(locale.getMessage("metrics-fail"), LogLevel.INFO);
 				}
 			}
@@ -219,7 +219,7 @@ public class Main extends JavaPlugin {
 		File invDir = new File(this.getDataFolder() + File.separator + "inventories");
 		invDir.mkdir();
 
-		maxKarma = Variables.MAX_KARMA;
+		maxKarma = Config.MAX_KARMA;
 
 		// add special players to list
 		creator.add(UUID.fromString("8ea8a3c0-ab53-4d80-8449-fa5368798dfc")); // AngryNerd1
@@ -255,7 +255,7 @@ public class Main extends JavaPlugin {
 		translators.add(UUID.fromString("9ffc9678-2c59-4fb5-9025-bf424e32a5f7")); // SuicideSilence_
 		translators.add(UUID.fromString("e4714759-8a41-468d-8f93-b796c0f17aaa")); // victormac737
 
-		if (Variables.VERBOSE_LOGGING){
+		if (Config.VERBOSE_LOGGING){
 			mg.log(this + " " + locale.getMessage("enabled"), LogLevel.INFO);
 		}
 	}
@@ -266,7 +266,7 @@ public class Main extends JavaPlugin {
 			// uninitialize static variables so as not to cause memory leaks when reloading
 			KarmaManager.playerKarma = null;
 			ScoreManager.uninitialize();
-			if (Variables.VERBOSE_LOGGING){
+			if (Config.VERBOSE_LOGGING){
 				mg.log(this + " " + locale.getMessage("disabled"), LogLevel.INFO);
 			}
 		}
@@ -277,7 +277,7 @@ public class Main extends JavaPlugin {
 	public static void createFile(String s){
 		File f = new File(Main.plugin.getDataFolder(), s);
 		if (!f.exists()){
-			if (Variables.VERBOSE_LOGGING){
+			if (Config.VERBOSE_LOGGING){
 				mg.log(locale.getMessage("creating-file").replace("%", s), LogLevel.INFO);
 			}
 			try {

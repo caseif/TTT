@@ -24,7 +24,7 @@ package net.amigocraft.ttt.managers.command;
 
 import net.amigocraft.mglib.MGUtil;
 import net.amigocraft.ttt.Main;
-import net.amigocraft.ttt.utils.NumUtils;
+import net.amigocraft.ttt.util.NumUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -55,7 +55,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 				}
 			}
 			else if (args.length == 3){
-				if (NumUtils.isInt(args[2])){
+				if (NumUtil.isInt(args[2])){
 					index = Integer.parseInt(args[2]);
 				}
 				else {
@@ -64,7 +64,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 				}
 			}
 			else if (args.length == 5){ // use 3 provided coords
-				if (NumUtils.isInt(args[2]) && NumUtils.isInt(args[3]) && NumUtils.isInt(args[4])){
+				if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])){
 					x = Integer.parseInt(args[2]);
 					y = Integer.parseInt(args[3]);
 					z = Integer.parseInt(args[4]);

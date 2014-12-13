@@ -33,7 +33,7 @@ import net.amigocraft.mglib.event.round.MinigameRoundTickEvent;
 import net.amigocraft.ttt.Body;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.TTTPlayer;
-import net.amigocraft.ttt.Variables;
+import net.amigocraft.ttt.Config;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
 import org.bukkit.Bukkit;
@@ -79,7 +79,7 @@ public class MGListener implements Listener {
 				if (unbanTime <= System.currentTimeMillis() / 1000){
 					y.set(e.getPlayer().getName(), null);
 					y.save(f);
-					if (Variables.VERBOSE_LOGGING){
+					if (Config.VERBOSE_LOGGING){
 						Main.mg.log(e.getPlayer().getName() + "'s ban has been lifted", LogLevel.INFO);
 					}
 				}
@@ -176,7 +176,7 @@ public class MGListener implements Listener {
 			else if (e.getRound().getRemainingTime() == 0){
 				int players = e.getRound().getPlayers().size();
 				int traitorNum = 0;
-				int limit = (int) (players * Variables.TRAITOR_RATIO);
+				int limit = (int) (players * Config.TRAITOR_RATIO);
 				if (limit == 0){
 					limit = 1;
 				}
@@ -197,8 +197,8 @@ public class MGListener implements Listener {
 						traitorNum += 1;
 					}
 				}
-				int dLimit = (int) (players * Variables.DETECTIVE_RATIO);
-				if (players >= Variables.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0){
+				int dLimit = (int) (players * Config.DETECTIVE_RATIO);
+				if (players >= Config.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0){
 					dLimit += 1;
 				}
 				int detectiveNum = 0;
@@ -218,7 +218,7 @@ public class MGListener implements Listener {
 				ItemMeta gunMeta = crowbar.getItemMeta();
 				gunMeta.setDisplayName("§5" + Main.locale.getMessage("gun"));
 				gun.setItemMeta(gunMeta);
-				ItemStack ammo = new ItemStack(Material.ARROW, Variables.INITIAL_AMMO);
+				ItemStack ammo = new ItemStack(Material.ARROW, Config.INITIAL_AMMO);
 				ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
 				ItemMeta dnaMeta = dnaScanner.getItemMeta();
 				dnaMeta.setDisplayName("§1" + Main.locale.getMessage("dna-scanner"));
@@ -283,7 +283,7 @@ public class MGListener implements Listener {
 
 				for (MGPlayer mp : e.getRound().getPlayerList()){
 					TTTPlayer t = (TTTPlayer) mp;
-					if (Variables.DAMAGE_REDUCTION){
+					if (Config.DAMAGE_REDUCTION){
 						t.calculateDamageReduction();
 						String percentage = Main.locale.getMessage("full");
 						if (t.getDamageReduction() < 1){
@@ -313,7 +313,7 @@ public class MGListener implements Listener {
 					break;
 				}
 
-				if (p.hasMetadata("detective") && p.getRound().getTime() % Variables.SCANNER_CHARGE_TIME == 0){ // manage DNA Scanners every n seconds
+				if (p.hasMetadata("detective") && p.getRound().getTime() % Config.SCANNER_CHARGE_TIME == 0){ // manage DNA Scanners every n seconds
 					Player tracker = Main.plugin.getServer().getPlayer(p.getName());
 					if (p.hasMetadata("tracking")){
 						Player killer = Main.plugin.getServer().getPlayer((String) p.getMetadata("tracking"));

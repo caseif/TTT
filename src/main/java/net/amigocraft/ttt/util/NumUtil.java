@@ -20,9 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.amigocraft.ttt.utils;
+package net.amigocraft.ttt.util;
 
-public class NumUtils {
+public class NumUtil {
 
 	public static boolean isInt(String s){
 		try {

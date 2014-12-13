@@ -48,12 +48,12 @@ public class BuildChecker implements Runnable {
 				br = new BufferedReader(isr);
 				String status = br.readLine();
 				if (status.equals("STABLE")){
-					if (Variables.VERBOSE_LOGGING){
+					if (Config.VERBOSE_LOGGING){
 						Main.mg.log(Main.locale.getMessage("stable-build"), LogLevel.INFO);
 					}
 				}
 				else if (status.equals("UNSTABLE")){
-					if (Variables.UNSTABLE_BUILD_WARNING){
+					if (Config.UNSTABLE_BUILD_WARNING){
 						Main.mg.log(Main.ANSI_RED + Main.locale.getMessage("unstable-build") + Main.ANSI_WHITE, LogLevel.WARNING);
 					}
 					Main.stability = "unstable";
@@ -63,7 +63,7 @@ public class BuildChecker implements Runnable {
 					Main.stability = "pre";
 				}
 				else {
-					if (Variables.UNKNOWN_BUILD_WARNING){
+					if (Config.UNKNOWN_BUILD_WARNING){
 						Main.mg.log(Main.ANSI_RED + Main.locale.getMessage("unknown-build") + Main.ANSI_WHITE, LogLevel.WARNING);
 					}
 					Main.stability = "unknown";

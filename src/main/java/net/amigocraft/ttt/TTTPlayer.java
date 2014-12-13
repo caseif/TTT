@@ -110,7 +110,7 @@ public class TTTPlayer extends MGPlayer {
 	}
 
 	public void addKarma(int karma){
-		if (karma == 0 && Variables.KARMA_ROUND_TO_ONE){
+		if (karma == 0 && Config.KARMA_ROUND_TO_ONE){
 			karma = 1;
 		}
 		if (this.karma + karma < Main.maxKarma){
@@ -119,23 +119,23 @@ public class TTTPlayer extends MGPlayer {
 		else if (this.karma < Main.maxKarma){
 			this.karma = Main.maxKarma;
 		}
-		if (Variables.KARMA_DEBUG){
+		if (Config.KARMA_DEBUG){
 			Main.kLog.info("[TTT Karma Debug] " + getName() + ": +" + karma + ". " + "New value: " + getKarma());
 		}
 	}
 
 	public void subtractKarma(int karma){
-		if (karma == 0 && Variables.KARMA_ROUND_TO_ONE){
+		if (karma == 0 && Config.KARMA_ROUND_TO_ONE){
 			karma = 1;
 		}
-		if (this.karma - karma < Variables.KARMA_KICK){
+		if (this.karma - karma < Config.KARMA_KICK){
 			KarmaManager.handleKick(this);
 		}
 		else {
 			this.karma -= karma;
 			teamKill = true;
 		}
-		if (Variables.KARMA_DEBUG){
+		if (Config.KARMA_DEBUG){
 			Main.kLog.info("[TTT Karma Debug] " + getName() + ": -" + karma + ". " + "New value: " + getKarma());
 		}
 	}

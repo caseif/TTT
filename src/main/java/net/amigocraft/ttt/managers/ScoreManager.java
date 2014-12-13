@@ -25,13 +25,13 @@ package net.amigocraft.ttt.managers;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.TTTPlayer;
-import net.amigocraft.ttt.Variables;
+import net.amigocraft.ttt.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.*;
 
 import java.util.HashMap;
 
-import static net.amigocraft.ttt.Variables.*;
+import static net.amigocraft.ttt.Config.*;
 
 public class ScoreManager {
 
@@ -64,8 +64,8 @@ public class ScoreManager {
 		tObj = traitor.registerNewObjective("p", "dummy");
 		iObj.setDisplayName("Players");
 		tObj.setDisplayName("Players");
-		iObj.setDisplaySlot(Variables.SB_USE_SIDEBAR ? DisplaySlot.SIDEBAR : DisplaySlot.PLAYER_LIST);
-		tObj.setDisplaySlot(Variables.SB_USE_SIDEBAR ? DisplaySlot.SIDEBAR : DisplaySlot.PLAYER_LIST);
+		iObj.setDisplaySlot(Config.SB_USE_SIDEBAR ? DisplaySlot.SIDEBAR : DisplaySlot.PLAYER_LIST);
+		tObj.setDisplaySlot(Config.SB_USE_SIDEBAR ? DisplaySlot.SIDEBAR : DisplaySlot.PLAYER_LIST);
 
 		iTeamIA = innocent.registerNewTeam("ia");
 		iTeamIM = innocent.registerNewTeam("im");

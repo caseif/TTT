@@ -22,7 +22,7 @@
  */
 package net.amigocraft.ttt;
 
-public class Variables {
+public class Config {
 
 	public static final double DETECTIVE_RATIO;
 	public static final int MAXIMUM_PLAYERS;

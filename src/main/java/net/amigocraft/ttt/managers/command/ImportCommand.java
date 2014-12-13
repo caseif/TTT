@@ -24,7 +24,7 @@ package net.amigocraft.ttt.managers.command;
 
 import net.amigocraft.mglib.exception.ArenaExistsException;
 import net.amigocraft.ttt.Main;
-import net.amigocraft.ttt.utils.FileUtils;
+import net.amigocraft.ttt.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -49,7 +49,7 @@ public class ImportCommand extends SubcommandHandler {
 					}
 				}
 				if (!worldName.equals("")){
-					if (FileUtils.isWorld(args[1])){
+					if (FileUtil.isWorld(args[1])){
 						World w = Bukkit.createWorld(new WorldCreator(worldName));
 						if (w != null){
 							try {

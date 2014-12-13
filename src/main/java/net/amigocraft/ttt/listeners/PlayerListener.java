@@ -27,10 +27,10 @@ import net.amigocraft.mglib.api.Stage;
 import net.amigocraft.ttt.Body;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.TTTPlayer;
-import net.amigocraft.ttt.Variables;
+import net.amigocraft.ttt.Config;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
-import net.amigocraft.ttt.utils.InventoryUtils;
+import net.amigocraft.ttt.util.InventoryUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -164,11 +164,11 @@ public class PlayerListener implements Listener {
 						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().endsWith(Main.locale.getMessage("gun"))){
 							if ((Main.mg.isPlayer(e.getPlayer().getName()) &&
 									!Main.mg.getMGPlayer(e.getPlayer().getName()).isSpectating() &&
-									(Main.mg.getMGPlayer(e.getPlayer().getName()).getRound().getStage() == Stage.PLAYING) || Variables.GUNS_OUTSIDE_ARENAS)){
+									(Main.mg.getMGPlayer(e.getPlayer().getName()).getRound().getStage() == Stage.PLAYING) || Config.GUNS_OUTSIDE_ARENAS)){
 								e.setCancelled(true);
-								if (e.getPlayer().getInventory().contains(Material.ARROW) || !Variables.REQUIRE_AMMO_FOR_GUNS){
-									if (Variables.REQUIRE_AMMO_FOR_GUNS){
-										InventoryUtils.removeArrow(e.getPlayer().getInventory());
+								if (e.getPlayer().getInventory().contains(Material.ARROW) || !Config.REQUIRE_AMMO_FOR_GUNS){
+									if (Config.REQUIRE_AMMO_FOR_GUNS){
+										InventoryUtil.removeArrow(e.getPlayer().getInventory());
 										e.getPlayer().updateInventory();
 									}
 									e.getPlayer().launchProjectile(Arrow.class);
@@ -232,7 +232,7 @@ public class PlayerListener implements Listener {
 							if (damager.getItemInHand().getItemMeta() != null){
 								if (damager.getItemInHand().getItemMeta().getDisplayName() != null){
 									if (damager.getItemInHand().getItemMeta().getDisplayName().endsWith(Main.locale.getMessage("crowbar"))){
-										e.setDamage(Variables.CROWBAR_DAMAGE);
+										e.setDamage(Config.CROWBAR_DAMAGE);
 									}
 								}
 							}
@@ -262,7 +262,7 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
-		if (Variables.KARMA_PERSISTENCE){
+		if (Config.KARMA_PERSISTENCE){
 			KarmaManager.loadKarma(e.getPlayer().getName());
 		}
 		if (e.getPlayer().hasPermission("ttt.build.warn")){
@@ -280,7 +280,7 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e){
-		if (!Variables.KARMA_PERSISTENCE){
+		if (!Config.KARMA_PERSISTENCE){
 			KarmaManager.playerKarma.remove(e.getPlayer().getName());
 		}
 	}
