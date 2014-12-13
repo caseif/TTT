@@ -2,7 +2,6 @@
 .idea/
 bin/
 build/
-gradle/
 target/
 .classpath
 .project
