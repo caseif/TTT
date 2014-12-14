@@ -23,10 +23,10 @@
 package net.amigocraft.ttt.listeners;
 
 import net.amigocraft.mglib.api.Location3D;
+import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Stage;
 import net.amigocraft.ttt.Body;
 import net.amigocraft.ttt.Main;
-import net.amigocraft.ttt.TTTPlayer;
 import net.amigocraft.ttt.Config;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
@@ -46,7 +46,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
@@ -57,7 +56,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent e){
 		if (Main.mg.isPlayer(e.getPlayer().getName())){ // check if player is in TTT round
-			TTTPlayer t = (TTTPlayer) Main.mg.getMGPlayer(e.getPlayer().getName());
+			MGPlayer player = Main.mg.getMGPlayer(e.getPlayer().getName());
 			if (e.getAction() == Action.RIGHT_CLICK_BLOCK){
 				// disallow cheating/bed setting
 				if (e.getClickedBlock().getType() == Material.ENDER_CHEST || e.getClickedBlock().getType() == Material.BED_BLOCK){
@@ -66,15 +65,13 @@ public class PlayerListener implements Listener {
 				}
 				// handle body checking
 				if (e.getClickedBlock().getType() == Material.CHEST){
-					if (t.isSpectating()){
+					if (player.isSpectating()){
 						e.setCancelled(true);
 						for (Body b : Main.bodies){
 							if (b.getLocation().equals(Location3D.valueOf(e.getClickedBlock().getLocation()))){
 								Inventory chestInv = ((Chest) e.getClickedBlock().getState()).getInventory();
 								Inventory inv = Main.plugin.getServer().createInventory(chestInv.getHolder(), chestInv.getSize());
 								inv.setContents(chestInv.getContents());
-								e.getPlayer().sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("discreet"));
-								t.setDiscreet(true);
 								e.getPlayer().openInventory(inv);
 								break;
 							}
@@ -98,7 +95,7 @@ public class PlayerListener implements Listener {
 							}
 							if (!found){ // it's a new body
 								Body b = Main.bodies.get(index);
-								TTTPlayer tp = (TTTPlayer) Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer());
+								MGPlayer bodyPlayer = Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer());
 								if (b.getTeam().equals("Innocent")){
 									Main.mg.getRound(b.getArena()).broadcast(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
 											Main.locale.getMessage("found-body").replace("%", b.getPlayer()) + ". " +
@@ -115,17 +112,17 @@ public class PlayerListener implements Listener {
 											Main.locale.getMessage("was-detective"));
 								}
 								Main.foundBodies.add(Main.bodies.get(index));
-								if (tp != null && tp.getArena().equals(Main.bodies.get(index).getArena())){
-									tp.setPrefix("§m");
-									tp.setBodyFound(true);
-									if (ScoreManager.sbManagers.containsKey(tp.getArena()))
-										ScoreManager.sbManagers.get(tp.getArena()).update(tp);
+								if (bodyPlayer != null && bodyPlayer.getArena().equals(Main.bodies.get(index).getArena())){
+									bodyPlayer.setPrefix("§m");
+									bodyPlayer.setMetadata("bodyFound", true);
+									if (ScoreManager.sbManagers.containsKey(bodyPlayer.getArena()))
+										ScoreManager.sbManagers.get(bodyPlayer.getArena()).update(bodyPlayer);
 									else
 										for (String s : ScoreManager.sbManagers.keySet())
-											System.out.println(tp.getArena() + ", " + s);
+											System.out.println(bodyPlayer.getArena() + ", " + s);
 								}
 							}
-							if (t.hasMetadata("detective")){ // handle DNA scanning
+							if (player.hasMetadata("detective")){ // handle DNA scanning
 								if (e.getPlayer().getItemInHand() != null &&
 										e.getPlayer().getItemInHand().getType() == Material.COMPASS &&
 										e.getPlayer().getItemInHand().getItemMeta() != null &&
@@ -134,15 +131,11 @@ public class PlayerListener implements Listener {
 												"§1" + Main.locale.getMessage("dna-scanner"))
 										){
 									e.setCancelled(true);
-									Player killer = Main.plugin.getServer().getPlayer(
-											((TTTPlayer)Main.mg.getMGPlayer(
-													Main.bodies.get(index).getPlayer())
-											).getKiller()
-									);
+									Player killer = Main.plugin.getServer().getPlayer((String)Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer()).getMetadata("killer"));
 									if (killer != null){
 										if (Main.mg.isPlayer(killer.getName())){
 											if (!Main.mg.getMGPlayer(killer.getName()).isSpectating()){
-												t.setMetadata("tracking", killer.getName());
+												player.setMetadata("tracking", killer.getName());
 											}
 											e.getPlayer().sendMessage(ChatColor.BLUE + Main.locale.getMessage("collected-sample")
 													.replace("%", Main.bodies.get(index).getPlayer()));
@@ -184,7 +177,6 @@ public class PlayerListener implements Listener {
 									e.getPlayer().sendMessage(ChatColor.RED + Main.locale.getMessage("need-ammo"));
 								}
 							}
-							return;
 						}
 					}
 				}
@@ -216,10 +208,10 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent e){
 		if (e.getEntityType() == EntityType.PLAYER){
-			TTTPlayer vt = (TTTPlayer) Main.mg.getMGPlayer(((Player) e.getEntity()).getName());
-			if (vt != null && vt.getRound().getStage() != Stage.PLAYING){
+			MGPlayer victim = Main.mg.getMGPlayer(((Player)e.getEntity()).getName());
+			if (victim != null && victim.getRound().getStage() != Stage.PLAYING){
 				if (e.getCause() == DamageCause.VOID){
-					vt.spawnIn();
+					victim.spawnIn();
 				}
 				else {
 					e.setCancelled(true);
@@ -233,12 +225,12 @@ public class PlayerListener implements Listener {
 					                 (Player) ed.getDamager() :
 					                 (Player) ((Projectile) ed.getDamager()).getShooter();
 					if (Main.mg.isPlayer(damager.getName())){
-						TTTPlayer dt = (TTTPlayer) Main.mg.getMGPlayer(damager.getName());
-						if (dt.getRound().getStage() != Stage.PLAYING){
+						MGPlayer mgDamager = Main.mg.getMGPlayer(damager.getName());
+						if (mgDamager.getRound().getStage() != Stage.PLAYING){
 							e.setCancelled(true);
 							return;
 						}
-						else if (vt == null){
+						else if (victim == null){
 							e.setCancelled(true);
 							return;
 						}
@@ -251,8 +243,8 @@ public class PlayerListener implements Listener {
 								}
 							}
 						}
-						e.setDamage((int) (e.getDamage() * dt.getDamageReduction()));
-						KarmaManager.handleDamageKarma(dt, vt, e.getDamage());
+						e.setDamage((int) (e.getDamage() * (Double)mgDamager.getMetadata("damageRed")));
+						KarmaManager.handleDamageKarma(mgDamager, victim, e.getDamage());
 					}
 				}
 			}
@@ -309,18 +301,11 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent e){
-		if (Main.mg.isPlayer(e.getPlayer().getName())){
-			((TTTPlayer) Main.mg.getMGPlayer(e.getPlayer().getName())).setDiscreet(false);
-		}
-	}
-
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat(AsyncPlayerChatEvent e){
 		if (Main.mg.isPlayer(e.getPlayer().getName())){
-			TTTPlayer tPlayer = (TTTPlayer) Main.mg.getMGPlayer(e.getPlayer().getName());
-			if (tPlayer.hasMetadata("Detective")){
+			MGPlayer mp = Main.mg.getMGPlayer(e.getPlayer().getName());
+			if (mp.hasMetadata("Detective")){
 				final Player player = e.getPlayer();
 				e.getPlayer().setDisplayName(ChatColor.DARK_BLUE + "[Detective] " + ChatColor.DARK_BLUE + e.getPlayer().getDisplayName());
 				Main.plugin.getServer().getScheduler().runTask(Main.plugin, new Runnable() {
@@ -358,7 +343,7 @@ public class PlayerListener implements Listener {
 						if (b.getLocation().equals(Location3D.valueOf(block.getLocation()))){
 							found1 = true;
 							e.setCancelled(true);
-							if (block2 == null || found2){
+							if (block2 == null){
 								break;
 							}
 						}

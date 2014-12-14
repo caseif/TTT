@@ -24,8 +24,8 @@ package net.amigocraft.ttt.managers;
 
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.ttt.Main;
-import net.amigocraft.ttt.TTTPlayer;
 import net.amigocraft.ttt.Config;
+import net.amigocraft.ttt.util.MiscUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.*;
 
@@ -114,8 +114,7 @@ public class ScoreManager {
 
 		for (MGPlayer m : Main.mg.getRound(arenaName).getPlayerList()){
 			if (m.getBukkitPlayer() != null){
-				TTTPlayer t = (TTTPlayer) m;
-				update(t);
+				update(m);
 
 				/*if (t.isSpectating()){
 					if (t.isBodyFound())
@@ -124,16 +123,16 @@ public class ScoreManager {
 				else
 					handleAlivePlayer(t);*/
 
-				if (t.getTeam() != null){
-					if (!t.isTraitor()){
-						t.getBukkitPlayer().setScoreboard(innocent);
+				if (m.getTeam() != null){
+					if (!MiscUtil.isTraitor(m)){
+						m.getBukkitPlayer().setScoreboard(innocent);
 					}
 					else {
-						t.getBukkitPlayer().setScoreboard(traitor);
+						m.getBukkitPlayer().setScoreboard(traitor);
 					}
 				}
 				else {
-					t.getBukkitPlayer().setScoreboard(innocent);
+					m.getBukkitPlayer().setScoreboard(innocent);
 				}
 
 			}
@@ -142,80 +141,80 @@ public class ScoreManager {
 	}
 
 	@SuppressWarnings("deprecated")
-	public void update(TTTPlayer t){
+	public void update(MGPlayer player){
 
 		if (ENTRY_SUPPORT){
-			innocent.resetScores(t.getName());
-			traitor.resetScores(t.getName());
+			innocent.resetScores(player.getName());
+			traitor.resetScores(player.getName());
 		}
 		else {
-			innocent.resetScores(t.getName());
-			traitor.resetScores(t.getName());
+			innocent.resetScores(player.getName());
+			traitor.resetScores(player.getName());
 		}
 
-		if (innocent.getPlayerTeam(Bukkit.getOfflinePlayer(t.getName())) != null){
-			innocent.getPlayerTeam(Bukkit.getOfflinePlayer(t.getName()))
-					.removePlayer(Bukkit.getOfflinePlayer(t.getName()));
+		if (innocent.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName())) != null){
+			innocent.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName()))
+					.removePlayer(Bukkit.getOfflinePlayer(player.getName()));
 		}
-		if (traitor.getPlayerTeam(Bukkit.getOfflinePlayer(t.getName())) != null){
-			traitor.getPlayerTeam(Bukkit.getOfflinePlayer(t.getName()))
-					.removePlayer(Bukkit.getOfflinePlayer(t.getName()));
+		if (traitor.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName())) != null){
+			traitor.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName()))
+					.removePlayer(Bukkit.getOfflinePlayer(player.getName()));
 		}
 
-		if (t.hasMetadata("detective")){
-			if (!t.isSpectating()){
-				iTeamDA.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamDA.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+		if (player.hasMetadata("detective")){
+			if (!player.isSpectating()){
+				iTeamDA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+				tTeamDA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
-			else if (!t.isBodyFound()){
-				iTeamDM.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamDM.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+			else if (!player.hasMetadata("bodyFound")){
+				iTeamDM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+				tTeamDM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
 			else {
-				iTeamDD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamDD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+				iTeamDD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+				tTeamDD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
 		}
-		else if (t.getTeam() == null || t.getTeam().equals("Innocent")){
-			if (!t.isSpectating()){
-				iTeamIA.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamIA.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+		else if (player.getTeam() == null || player.getTeam().equals("Innocent")){
+			if (!player.isSpectating()){
+				iTeamIA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+				tTeamIA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
-			else if (!t.isBodyFound()){
-				iTeamIM.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamIM.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+			else if (!player.hasMetadata("bodyFound")){
+				iTeamIM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+				tTeamIM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
 			else {
-				iTeamID.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamID.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+				iTeamID.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+				tTeamID.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
 		}
-		else if (t.getTeam().equals("Traitor")){
-			if (!t.isSpectating()){
-				iTeamTA.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamTA.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+		else if (player.getTeam().equals("Traitor")){
+			if (!player.isSpectating()){
+				iTeamTA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+				tTeamTA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
-			else if (!t.isBodyFound()){
-				iTeamTM.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamTM.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+			else if (!player.hasMetadata("bodyFound")){
+				iTeamTM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+				tTeamTM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
 			else {
-				iTeamTD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
-				tTeamTD.addPlayer(Bukkit.getOfflinePlayer(t.getName()));
+				iTeamTD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+				tTeamTD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
 		}
 		Score score1;
 		Score score2;
 		if (ENTRY_SUPPORT){
-			score1 = iObj.getScore(t.getName());
-			score2 = tObj.getScore(t.getName());
+			score1 = iObj.getScore(player.getName());
+			score2 = tObj.getScore(player.getName());
 		}
 		else {
-			score1 = iObj.getScore(Bukkit.getOfflinePlayer(t.getName()));
-			score2 = tObj.getScore(Bukkit.getOfflinePlayer(t.getName()));
+			score1 = iObj.getScore(Bukkit.getOfflinePlayer(player.getName()));
+			score2 = tObj.getScore(Bukkit.getOfflinePlayer(player.getName()));
 		}
-		score1.setScore(t.getDisplayKarma());
-		score2.setScore(t.getDisplayKarma());
+		score1.setScore((Integer)player.getMetadata("displayKarma"));
+		score2.setScore((Integer)player.getMetadata("displayKarma"));
 	}
 
 	public static void uninitialize(){

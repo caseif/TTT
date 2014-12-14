@@ -32,7 +32,6 @@ import net.amigocraft.mglib.event.round.MinigameRoundStageChangeEvent;
 import net.amigocraft.mglib.event.round.MinigameRoundTickEvent;
 import net.amigocraft.ttt.Body;
 import net.amigocraft.ttt.Main;
-import net.amigocraft.ttt.TTTPlayer;
 import net.amigocraft.ttt.Config;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
@@ -63,7 +62,7 @@ public class MGListener implements Listener {
 		if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
 			ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
 			for (MGPlayer mp : e.getRound().getPlayerList()){
-				ScoreManager.sbManagers.get(e.getRound().getArena()).update((TTTPlayer) mp);
+				ScoreManager.sbManagers.get(e.getRound().getArena()).update(mp);
 			}
 		}
 	}
@@ -112,8 +111,13 @@ public class MGListener implements Listener {
 
 		e.getPlayer().getBukkitPlayer().setHealth(e.getPlayer().getBukkitPlayer().getMaxHealth());
 
+		KarmaManager.loadKarma(e.getPlayer().getName());
+		e.getPlayer().setMetadata("karma", KarmaManager.playerKarma.get(e.getPlayer().getName()));
+		e.getPlayer().setMetadata("displayKarma", KarmaManager.playerKarma.get(e.getPlayer().getName()));
+		e.getPlayer().getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
+
 		if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
-			ScoreManager.sbManagers.get(e.getRound().getArena()).update((TTTPlayer) e.getPlayer());
+			ScoreManager.sbManagers.get(e.getRound().getArena()).update(e.getPlayer());
 			e.getPlayer().getBukkitPlayer().setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
 		}
 
@@ -152,12 +156,13 @@ public class MGListener implements Listener {
 	public void onPlayerLeaveMinigameRoundEvent(PlayerLeaveMinigameRoundEvent e){
 		e.getPlayer().getBukkitPlayer().setScoreboard(Main.plugin.getServer().getScoreboardManager().getNewScoreboard());
 		e.getPlayer().getBukkitPlayer().setDisplayName(e.getPlayer().getBukkitPlayer().getName());
-		KarmaManager.saveKarma((TTTPlayer) e.getPlayer());
-		((TTTPlayer) e.getPlayer()).setDisplayKarma(((TTTPlayer) e.getPlayer()).getKarma());
+		KarmaManager.saveKarma(e.getPlayer());
+		(e.getPlayer()).setMetadata("displayKarma", e.getPlayer().getMetadata("karma"));
 		if (!e.getRound().hasEnded()){
 			e.getRound().broadcast(ChatColor.DARK_PURPLE + e.getPlayer().getName() + " " +
 					Main.locale.getMessage("left-game").replace("%", e.getPlayer().getRound().getDisplayName()));
 		}
+		e.getPlayer().getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
 	}
 
 	@SuppressWarnings({"deprecation"})
@@ -228,24 +233,24 @@ public class MGListener implements Listener {
 				dnaScanner.setItemMeta(dnaMeta);
 				for (String s : innocents){
 					Player pl = Main.plugin.getServer().getPlayer(s);
-					TTTPlayer t = (TTTPlayer) Main.mg.getMGPlayer(s);
-					if (pl != null && t != null){
-						t.setTeam("Innocent");
+					MGPlayer player = Main.mg.getMGPlayer(s);
+					if (pl != null && player != null){
+						player.setTeam("Innocent");
 						pl.sendMessage(ChatColor.DARK_GREEN + Main.locale.getMessage("you-are-innocent"));
 						pl.getInventory().addItem(crowbar, gun, ammo);
 						pl.setHealth(20);
 						pl.setFoodLevel(20);
 						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
 							pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
-							ScoreManager.sbManagers.get(e.getRound().getArena()).update(t);
+							ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
 						}
 					}
 				}
 				for (String s : traitors){
 					Player pl = Main.plugin.getServer().getPlayer(s);
-					TTTPlayer t = (TTTPlayer) Main.mg.getMGPlayer(s);
-					if (pl != null && t != null){
-						t.setTeam("Traitor");
+					MGPlayer player = Main.mg.getMGPlayer(s);
+					if (pl != null && player != null){
+						player.setTeam("Traitor");
 						pl.sendMessage(ChatColor.DARK_RED + Main.locale.getMessage("you-are-traitor"));
 						if (traitors.size() > 1){
 							pl.sendMessage(ChatColor.DARK_RED + Main.locale.getMessage("allies"));
@@ -263,37 +268,36 @@ public class MGListener implements Listener {
 						pl.setFoodLevel(20);
 						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
 							pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).traitor);
-							ScoreManager.sbManagers.get(e.getRound().getArena()).update(t);
+							ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
 						}
 					}
 				}
 				for (String s : detectives){
 					Player pl = Main.plugin.getServer().getPlayer(s);
-					TTTPlayer t = (TTTPlayer) Main.mg.getMGPlayer(s);
-					if (pl != null && t != null){
-						t.setTeam("Innocent");
-						t.setMetadata("detective", true);
+					MGPlayer player = Main.mg.getMGPlayer(s);
+					if (pl != null && player != null){
+						player.setTeam("Innocent");
+						player.setMetadata("detective", true);
 						pl.sendMessage(ChatColor.BLUE + Main.locale.getMessage("you-are-detective"));
 						pl.getInventory().addItem(crowbar, gun, ammo, dnaScanner);
 						pl.setHealth(20);
 						pl.setFoodLevel(20);
 						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
 							pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
-							ScoreManager.sbManagers.get(e.getRound().getArena()).update(t);
+							ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
 						}
 					}
 				}
 
 				for (MGPlayer mp : e.getRound().getPlayerList()){
-					TTTPlayer t = (TTTPlayer) mp;
 					if (Config.DAMAGE_REDUCTION){
-						t.calculateDamageReduction();
+						KarmaManager.calculateDamageReduction(mp);
 						String percentage = Main.locale.getMessage("full");
-						if (t.getDamageReduction() < 1){
-							percentage = Integer.toString((int) (t.getDamageReduction() * 100)) + "%";
+						if ((Double)mp.getMetadata("damageRed") < 1){
+							percentage = Integer.toString((int) ((Double)mp.getMetadata("damageRed") * 100)) + "%";
 						}
-						t.getBukkitPlayer().sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-damage")
-								.replace("%", Integer.toString(t.getKarma())).replace("&", percentage));
+						mp.getBukkitPlayer().sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-damage")
+								.replace("%", Integer.toString((Integer)mp.getMetadata("karma"))).replace("&", percentage));
 					}
 				}
 			}
@@ -367,7 +371,6 @@ public class MGListener implements Listener {
 						Main.locale.getMessage("left"));
 			}
 			for (MGPlayer mp : e.getRound().getPlayerList()){
-				TTTPlayer t = (TTTPlayer) mp;
 				if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
 					ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
 				}
@@ -420,20 +423,19 @@ public class MGListener implements Listener {
 
 	@EventHandler
 	public void onMGPlayerDeath(MGPlayerDeathEvent e){
-		TTTPlayer t = (TTTPlayer) e.getPlayer();
-		t.setPrefix("§7");
-		t.getBukkitPlayer().setHealth(t.getBukkitPlayer().getMaxHealth());
-		t.setSpectating(true);
-		if (ScoreManager.sbManagers.containsKey(t.getArena())){
-			ScoreManager.sbManagers.get(t.getArena()).update(t);
+		e.getPlayer().setPrefix("§7");
+		e.getPlayer().getBukkitPlayer().setHealth(e.getPlayer().getBukkitPlayer().getMaxHealth());
+		e.getPlayer().setSpectating(true);
+		if (ScoreManager.sbManagers.containsKey(e.getPlayer().getArena())){
+			ScoreManager.sbManagers.get(e.getPlayer().getArena()).update(e.getPlayer());
 		}
 		if (e.getKiller() != null && e.getKiller() instanceof Player){
 			// set killer's karma
-			TTTPlayer killer = (TTTPlayer) Main.mg.getMGPlayer(((Player) (e.getKiller())).getName());
-			KarmaManager.handleKillKarma(killer, t);
-			t.setKiller(((Player) e.getKiller()).getName());
+			MGPlayer killer = Main.mg.getMGPlayer(((Player) (e.getKiller())).getName());
+			KarmaManager.handleKillKarma(killer, e.getPlayer());
+			e.getPlayer().setMetadata("killer", ((Player)e.getKiller()).getName());
 		}
-		Block block = t.getBukkitPlayer().getLocation().getBlock();
+		Block block = e.getPlayer().getBukkitPlayer().getLocation().getBlock();
 		Main.mg.getRollbackManager().logBlockChange(block, e.getPlayer().getArena());
 		BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
 		boolean trapped = false;
@@ -452,20 +454,20 @@ public class MGListener implements Listener {
 		idMeta.setDisplayName(Main.locale.getMessage("id"));
 		List<String> idLore = new ArrayList<String>();
 		idLore.add(Main.locale.getMessage("body-of"));
-		idLore.add(t.getName());
+		idLore.add(e.getPlayer().getName());
 		idMeta.setLore(idLore);
 		id.setItemMeta(idMeta);
 		// role identifier
 		ItemStack ti = new ItemStack(Material.WOOL, 1);
 		ItemMeta tiMeta = ti.getItemMeta();
-		if (t.hasMetadata("detective")){
+		if (e.getPlayer().hasMetadata("detective")){
 			ti.setDurability((short) 11);
 			tiMeta.setDisplayName("§1" + Main.locale.getMessage("detective"));
 			List<String> lore = new ArrayList<String>();
 			lore.add(Main.locale.getMessage("detective-id"));
 			tiMeta.setLore(lore);
 		}
-		else if (t.getTeam() == null || t.getTeam().equals("Innocent")){
+		else if (e.getPlayer().getTeam() == null || e.getPlayer().getTeam().equals("Innocent")){
 			ti.setDurability((short) 5);
 			tiMeta.setDisplayName("§2" + Main.locale.getMessage("innocent"));
 			List<String> tiLore = new ArrayList<String>();
@@ -483,9 +485,9 @@ public class MGListener implements Listener {
 		chest.getInventory().addItem(id, ti);
 		Main.bodies.add(
 				new Body(
-						t.getName(),
-						t.getArena(),
-						t.hasMetadata("detective") ? "Detective" : t.getTeam(),
+						e.getPlayer().getName(),
+						e.getPlayer().getArena(),
+						e.getPlayer().hasMetadata("detective") ? "Detective" : e.getPlayer().getTeam(),
 						Location3D.valueOf(block.getLocation()),
 						System.currentTimeMillis()
 				)

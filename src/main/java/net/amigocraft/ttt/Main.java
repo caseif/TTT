@@ -111,7 +111,6 @@ public class Main extends JavaPlugin {
 		cm.setHangingBreakAllowed(false);
 		cm.setKitsAllowed(false);
 		cm.setPMsAllowed(false);
-		cm.setPlayerClass(TTTPlayer.class);
 		cm.setRandomSpawning(false);
 		cm.setTeleportationAllowed(false);
 		cm.setTeamChatEnabled(true);
