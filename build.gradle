@@ -5,11 +5,12 @@ plugins {
 	id 'idea'
 
     id 'com.github.hierynomus.license' version '0.11.0'
+	id 'com.github.johnrengelman.shadow' version '1.2.0'
 }
 
 apply plugin: 'checkstyle'
 
-defaultTasks 'clean', 'licenseFormat', 'build'
+defaultTasks 'clean', 'licenseFormat', 'build', 'shadowJar'
 
 // Project information
 group = 'net.amigocraft.ttt'
@@ -28,6 +29,7 @@ targetCompatibility = 1.6
 ext {
     bukkit = 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
 	mglib = 'net.amigocraft.mglib:mglib:0.3.1-SNAPSHOT'
+	updater = 'net.gravitydevelopment.updater:updater:2.3'
 }
 
 // Project repositories
@@ -35,12 +37,14 @@ repositories {
 	mavenCentral()
 	maven { url 'http://hub.spigotmc.org/nexus/content/groups/public/' }
 	maven { url 'http://repo.amigocraft.net/content/groups/public/' }
+	maven { url 'http://repo.gravitydevelopment.net' }
 }
 
 // Project dependencies
 dependencies {
     compile bukkit
 	compile mglib
+	compile updater
 }
 
 // Read source files using UTF-8
@@ -50,6 +54,16 @@ tasks.withType(JavaCompile) {
 
 processResources {
   filter { String line -> line.replace('%VERSION%', versionSuffix) }
+}
+
+jar { // The Pore classes will be created in Pore-VERSION-base.jar first
+	classifier = 'base'
+}
+
+shadowJar {
+	dependencies {
+		include dependency(updater)
+	}
 }
 
 // License header formatting

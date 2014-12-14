@@ -36,6 +36,7 @@ import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
 import net.amigocraft.ttt.managers.command.SpecialCommandManager;
 import net.amigocraft.ttt.util.FileUtil;
+import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
