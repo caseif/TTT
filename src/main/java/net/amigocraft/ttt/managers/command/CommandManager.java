@@ -23,12 +23,13 @@
 package net.amigocraft.ttt.managers.command;
 
 import net.amigocraft.ttt.Main;
+import net.amigocraft.ttt.managers.command.arena.*;
+import net.amigocraft.ttt.managers.command.misc.DefaultCommand;
+import net.amigocraft.ttt.managers.command.misc.HelpCommand;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
-import java.io.File;
 
 public class CommandManager implements CommandExecutor {
 

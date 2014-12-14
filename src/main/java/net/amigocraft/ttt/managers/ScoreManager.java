@@ -139,6 +139,7 @@ public class ScoreManager {
 
 	}
 
+	@SuppressWarnings("deprecated")
 	public void update(TTTPlayer t){
 
 		if (ENTRY_SUPPORT){

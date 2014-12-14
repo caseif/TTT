@@ -20,10 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.amigocraft.ttt.managers.command;
+package net.amigocraft.ttt.managers.command.arena;
 
 import net.amigocraft.mglib.exception.ArenaExistsException;
 import net.amigocraft.ttt.Main;
+import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.FileUtil;
 import net.amigocraft.ttt.util.NumUtil;
 import org.bukkit.Bukkit;

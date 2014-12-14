@@ -20,39 +20,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.amigocraft.ttt.managers.command;
+package net.amigocraft.ttt.managers.command.arena;
 
-import net.amigocraft.mglib.exception.InvalidLocationException;
-import net.amigocraft.mglib.exception.NoSuchArenaException;
+import net.amigocraft.mglib.MGUtil;
 import net.amigocraft.ttt.Main;
+import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.NumUtil;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class AddSpawnCommand extends SubcommandHandler {
+public class RemoveSpawnCommand extends SubcommandHandler {
 
-	public AddSpawnCommand(CommandSender sender, String[] args){
+	public RemoveSpawnCommand(CommandSender sender, String[] args){
 		super(sender, args);
 	}
 
 	public void handle(){
-		if (sender.hasPermission("ttt.arena.addspawn")){
-			World w = null;
-			int x;
-			int y;
-			int z;
+		if (sender.hasPermission("ttt.arena.removespawn")){
+			int x = 0;
+			int y = 0;
+			int z = 0;
+			int index = Integer.MAX_VALUE;
 			if (args.length == 2){ // use sender's location
 				if (sender instanceof Player){
-					w = ((Player) sender).getWorld();
 					x = ((Player) sender).getLocation().getBlockX();
 					y = ((Player) sender).getLocation().getBlockY();
 					z = ((Player) sender).getLocation().getBlockZ();
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("must-be-ingame"));
+					return;
+				}
+			}
+			else if (args.length == 3){
+				if (NumUtil.isInt(args[2])){
+					index = Integer.parseInt(args[2]);
+				}
+				else {
+					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
 					return;
 				}
 			}
@@ -71,19 +79,37 @@ public class AddSpawnCommand extends SubcommandHandler {
 				sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
 				return;
 			}
-			try {
-				if (w == null){
-					Main.mg.getArenaFactory(args[1]).addSpawn(x, y, z);
+			if (index != Integer.MAX_VALUE){
+				YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
+				if (yaml.isSet(args[1] + ".spawns")){
+					if (yaml.isSet(args[1] + ".spawns." + index)){
+						yaml.set(args[1] + ".spawns." + index, null);
+						MGUtil.saveArenaYaml("TTT", yaml);
+					}
+					else {
+						sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
+					}
 				}
 				else {
-					Main.mg.getArenaFactory(args[1]).addSpawn(new Location(w, x, y, z));
+					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("arena-invalid"));
 				}
 			}
-			catch (InvalidLocationException ex){
-				sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("same-world"));
-			}
-			catch (NoSuchArenaException ex){
-				sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("arena-invalid"));
+			else {
+				YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
+				if (yaml.isSet(args[1] + ".spawns")){
+					ConfigurationSection cs = yaml.getConfigurationSection(args[1] + ".spawns");
+					for (String k : cs.getKeys(false)){
+						if (cs.getInt(k + ".x") == x && cs.getInt(k + ".y") == y && cs.getInt(k + ".z") == z){
+							cs.set(k, null);
+							MGUtil.saveArenaYaml("TTT", yaml);
+							return;
+						}
+					}
+					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
+				}
+				else {
+					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("arena-invalid"));
+				}
 			}
 		}
 		else {

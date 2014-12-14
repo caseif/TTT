@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.amigocraft.ttt.managers.command;
+package net.amigocraft.ttt.managers.command.arena;
 
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.exception.NoSuchArenaException;
@@ -29,6 +29,7 @@ import net.amigocraft.mglib.exception.PlayerPresentException;
 import net.amigocraft.mglib.exception.RoundFullException;
 import net.amigocraft.mglib.misc.JoinResult;
 import net.amigocraft.ttt.Main;
+import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

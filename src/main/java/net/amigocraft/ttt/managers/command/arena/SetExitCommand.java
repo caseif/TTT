@@ -20,11 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.amigocraft.ttt.managers.command;
+package net.amigocraft.ttt.managers.command.arena;
 
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.Config;
+import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
