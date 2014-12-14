@@ -161,7 +161,9 @@ public class KarmaManager {
 						int unbanTime = (int) System.currentTimeMillis() / 1000 + (Config.KARMA_BAN_TIME * 60);
 						y.set(t.getName(), unbanTime);
 						y.save(f);
-						p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-ban").replace("&", Integer.toString(Config.KARMA_BAN_TIME)).replace("%", Config.KARMA_KICK + "."));
+						p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-ban")
+								.replace("&", Integer.toString(Config.KARMA_BAN_TIME))
+								.replace("%", Config.KARMA_KICK + "."));
 					}
 				}
 				catch (Exception ex){

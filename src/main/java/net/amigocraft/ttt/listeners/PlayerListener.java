@@ -101,15 +101,18 @@ public class PlayerListener implements Listener {
 								TTTPlayer tp = (TTTPlayer) Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer());
 								if (b.getTeam().equals("Innocent")){
 									Main.mg.getRound(b.getArena()).broadcast(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
-											Main.locale.getMessage("found-body").replace("%", b.getPlayer()) + ". " + Main.locale.getMessage("was-innocent"));
+											Main.locale.getMessage("found-body").replace("%", b.getPlayer()) + ". " +
+											Main.locale.getMessage("was-innocent"));
 								}
 								else if (b.getTeam().equals("Traitor")){
 									Main.mg.getRound(b.getArena()).broadcast(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
-											Main.locale.getMessage("found-body").replace("%", b.getPlayer()) + ". " + Main.locale.getMessage("was-traitor"));
+											Main.locale.getMessage("found-body").replace("%", b.getPlayer()) + ". " +
+											Main.locale.getMessage("was-traitor"));
 								}
 								else {
 									Main.mg.getRound(b.getArena()).broadcast(ChatColor.BLUE + e.getPlayer().getName() + " " +
-											Main.locale.getMessage("found-body").replace("%", b.getPlayer()) + ". " + Main.locale.getMessage("was-detective"));
+											Main.locale.getMessage("found-body").replace("%", b.getPlayer()) + ". " +
+											Main.locale.getMessage("was-detective"));
 								}
 								Main.foundBodies.add(Main.bodies.get(index));
 								if (tp != null && tp.getArena().equals(Main.bodies.get(index).getArena())){
@@ -123,32 +126,35 @@ public class PlayerListener implements Listener {
 								}
 							}
 							if (t.hasMetadata("detective")){ // handle DNA scanning
-								if (e.getPlayer().getItemInHand() != null){
-									if (e.getPlayer().getItemInHand().getType() == Material.COMPASS){
-										if (e.getPlayer().getItemInHand().getItemMeta() != null){
-											if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null){
-												if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§1" + Main.locale.getMessage("dna-scanner"))){
-													e.setCancelled(true);
-													Player killer = Main.plugin.getServer().getPlayer(((TTTPlayer) Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer())).getKiller());
-													if (killer != null){
-														if (Main.mg.isPlayer(killer.getName())){
-															if (!Main.mg.getMGPlayer(killer.getName()).isSpectating()){
-																t.setMetadata("tracking", killer.getName());
-															}
-															e.getPlayer().sendMessage(ChatColor.BLUE + Main.locale.getMessage("collected-sample").replace("%", Main.bodies.get(index).getPlayer()));
-														}
-														else {
-															e.getPlayer().sendMessage(ChatColor.BLUE + Main.locale.getMessage("killer-left"));
-														}
-													}
-													else {
-														e.getPlayer().sendMessage(ChatColor.BLUE + Main.locale.getMessage("killer-left"));
-													}
-													return;
-												}
+								if (e.getPlayer().getItemInHand() != null &&
+										e.getPlayer().getItemInHand().getType() == Material.COMPASS &&
+										e.getPlayer().getItemInHand().getItemMeta() != null &&
+										e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null &&
+										e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(
+												"§1" + Main.locale.getMessage("dna-scanner"))
+										){
+									e.setCancelled(true);
+									Player killer = Main.plugin.getServer().getPlayer(
+											((TTTPlayer)Main.mg.getMGPlayer(
+													Main.bodies.get(index).getPlayer())
+											).getKiller()
+									);
+									if (killer != null){
+										if (Main.mg.isPlayer(killer.getName())){
+											if (!Main.mg.getMGPlayer(killer.getName()).isSpectating()){
+												t.setMetadata("tracking", killer.getName());
 											}
+											e.getPlayer().sendMessage(ChatColor.BLUE + Main.locale.getMessage("collected-sample")
+													.replace("%", Main.bodies.get(index).getPlayer()));
+										}
+										else {
+											e.getPlayer().sendMessage(ChatColor.BLUE + Main.locale.getMessage("killer-left"));
 										}
 									}
+									else {
+										e.getPlayer().sendMessage(ChatColor.BLUE + Main.locale.getMessage("killer-left"));
+									}
+									return;
 								}
 							}
 						}
@@ -164,7 +170,8 @@ public class PlayerListener implements Listener {
 						if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().endsWith(Main.locale.getMessage("gun"))){
 							if ((Main.mg.isPlayer(e.getPlayer().getName()) &&
 									!Main.mg.getMGPlayer(e.getPlayer().getName()).isSpectating() &&
-									(Main.mg.getMGPlayer(e.getPlayer().getName()).getRound().getStage() == Stage.PLAYING) || Config.GUNS_OUTSIDE_ARENAS)){
+									(Main.mg.getMGPlayer(e.getPlayer().getName()).getRound().getStage() == Stage.PLAYING) ||
+									Config.GUNS_OUTSIDE_ARENAS)){
 								e.setCancelled(true);
 								if (e.getPlayer().getInventory().contains(Material.ARROW) || !Config.REQUIRE_AMMO_FOR_GUNS){
 									if (Config.REQUIRE_AMMO_FOR_GUNS){
@@ -193,7 +200,11 @@ public class PlayerListener implements Listener {
 				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("no-kits"));
 			}
 		}
-		else if (e.getMessage().startsWith("msg") || e.getMessage().startsWith("tell") || e.getMessage().startsWith("r") || e.getMessage().startsWith("msg") || e.getMessage().startsWith("me")){
+		else if (e.getMessage().startsWith("msg") ||
+				e.getMessage().startsWith("tell") ||
+				e.getMessage().startsWith("r") ||
+				e.getMessage().startsWith("msg") ||
+				e.getMessage().startsWith("me")){
 			String p = e.getPlayer().getName();
 			if (Main.mg.isPlayer(p)){
 				e.setCancelled(true);
@@ -216,8 +227,11 @@ public class PlayerListener implements Listener {
 			}
 			if (e instanceof EntityDamageByEntityEvent){
 				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent) e;
-				if (ed.getDamager().getType() == EntityType.PLAYER || (ed.getDamager() instanceof Projectile && ((Projectile) ed.getDamager()).getShooter() instanceof Player)){
-					Player damager = ed.getDamager().getType() == EntityType.PLAYER ? (Player) ed.getDamager() : (Player) ((Projectile) ed.getDamager()).getShooter();
+				if (ed.getDamager().getType() == EntityType.PLAYER ||
+						(ed.getDamager() instanceof Projectile && ((Projectile) ed.getDamager()).getShooter() instanceof Player)){
+					Player damager = ed.getDamager().getType() == EntityType.PLAYER ?
+					                 (Player) ed.getDamager() :
+					                 (Player) ((Projectile) ed.getDamager()).getShooter();
 					if (Main.mg.isPlayer(damager.getName())){
 						TTTPlayer dt = (TTTPlayer) Main.mg.getMGPlayer(damager.getName());
 						if (dt.getRound().getStage() != Stage.PLAYING){
@@ -334,6 +348,9 @@ public class PlayerListener implements Listener {
 					else if (e.getInventory().getHolder() instanceof DoubleChest){
 						block = ((Chest) ((DoubleChest) e.getInventory().getHolder()).getLeftSide()).getBlock();
 						block2 = ((Chest) ((DoubleChest) e.getInventory().getHolder()).getRightSide()).getBlock();
+					}
+					else {
+						return;
 					}
 					boolean found1 = false;
 					boolean found2 = false;

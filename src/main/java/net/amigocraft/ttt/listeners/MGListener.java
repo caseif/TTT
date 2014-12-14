@@ -168,10 +168,12 @@ public class MGListener implements Listener {
 
 		if (e.getRound().getStage() == Stage.PREPARING){
 			if ((e.getRound().getRemainingTime() % 10) == 0 && e.getRound().getRemainingTime() > 0){
-				e.getRound().broadcast(ChatColor.DARK_PURPLE + Main.locale.getMessage("begin").replace("%", e.getRound().getRemainingTime() + " " + Main.locale.getMessage("seconds") + "!"));
+				e.getRound().broadcast(ChatColor.DARK_PURPLE + Main.locale.getMessage("begin").replace("%", e.getRound().getRemainingTime() + " " +
+						Main.locale.getMessage("seconds") + "!"));
 			}
 			else if (e.getRound().getRemainingTime() > 0 && e.getRound().getRemainingTime() < 10){
-				e.getRound().broadcast(ChatColor.DARK_PURPLE + Main.locale.getMessage("begin").replace("%", e.getRound().getRemainingTime() + " " + Main.locale.getMessage("seconds") + "!"));
+				e.getRound().broadcast(ChatColor.DARK_PURPLE + Main.locale.getMessage("begin").replace("%", e.getRound().getRemainingTime() + " " +
+						Main.locale.getMessage("seconds") + "!"));
 			}
 			else if (e.getRound().getRemainingTime() == 0){
 				int players = e.getRound().getPlayers().size();
@@ -289,7 +291,8 @@ public class MGListener implements Listener {
 						if (t.getDamageReduction() < 1){
 							percentage = Integer.toString((int) (t.getDamageReduction() * 100)) + "%";
 						}
-						t.getBukkitPlayer().sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-damage").replace("%", Integer.toString(t.getKarma())).replace("&", percentage));
+						t.getBukkitPlayer().sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-damage")
+								.replace("%", Integer.toString(t.getKarma())).replace("&", percentage));
 					}
 				}
 			}
@@ -328,7 +331,14 @@ public class MGListener implements Listener {
 					}
 					else {
 						Random r = new Random();
-						tracker.setCompassTarget(new Location(tracker.getWorld(), tracker.getLocation().getX() + r.nextInt(10) - 5, tracker.getLocation().getY(), tracker.getLocation().getZ() + r.nextInt(10) - 5));
+						tracker.setCompassTarget(
+								new Location(
+										tracker.getWorld(),
+										tracker.getLocation().getX() + r.nextInt(10) - 5,
+										tracker.getLocation().getY(),
+										tracker.getLocation().getZ() + r.nextInt(10) - 5
+								)
+						);
 					}
 				}
 			}
@@ -470,7 +480,15 @@ public class MGListener implements Listener {
 		}
 		ti.setItemMeta(tiMeta);
 		chest.getInventory().addItem(id, ti);
-		Main.bodies.add(new Body(t.getName(), t.getArena(), t.hasMetadata("detective") ? "Detective" : t.getTeam(), Location3D.valueOf(block.getLocation()), System.currentTimeMillis()));
+		Main.bodies.add(
+				new Body(
+						t.getName(),
+						t.getArena(),
+						t.hasMetadata("detective") ? "Detective" : t.getTeam(),
+						Location3D.valueOf(block.getLocation()),
+						System.currentTimeMillis()
+				)
+		);
 	}
 
 	@EventHandler

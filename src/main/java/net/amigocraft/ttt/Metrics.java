@@ -442,7 +442,9 @@ class Metrics {
 		connection.setDoOutput(true);
 
 		if (debug){
-			System.out.println("[Metrics] Prepared request for " + pluginName + " uncompressed=" + uncompressed.length + " compressed=" + compressed.length);
+			System.out.println(
+					"[Metrics] Prepared request for " + pluginName + " uncompressed=" + uncompressed.length + " compressed=" + compressed.length
+			);
 		}
 
 		// Write the data

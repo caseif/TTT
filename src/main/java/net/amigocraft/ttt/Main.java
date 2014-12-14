@@ -335,7 +335,8 @@ public class Main extends JavaPlugin {
 			if (t.isAlive() || (BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
 					(BuildChecker.response >= 500 && BuildChecker.response <= 599)){
 				t.interrupt();
-				if ((BuildChecker.response >= 400 && BuildChecker.response <= 499) || (BuildChecker.response >= 500 && BuildChecker.response <= 599)){
+				if ((BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
+						(BuildChecker.response >= 500 && BuildChecker.response <= 599)){
 					mg.log(locale.getMessage("connect-fail-1"), LogLevel.INFO);
 				}
 				else {
@@ -349,7 +350,8 @@ public class Main extends JavaPlugin {
 						(BuildChecker.response >= 500 && BuildChecker.response <= 599)){
 					t2.interrupt();
 					String response = "";
-					if ((BuildChecker.response >= 400 && BuildChecker.response <= 499) || (BuildChecker.response >= 500 && BuildChecker.response <= 599)){
+					if ((BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
+							(BuildChecker.response >= 500 && BuildChecker.response <= 599)){
 						response = " (" + locale.getMessage("response").replace("%", Integer.toString(BuildChecker.response) + ")");
 					}
 					mg.log(locale.getMessage("connect-fail-3").replace(" %", response), LogLevel.WARNING);
