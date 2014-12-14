@@ -8,12 +8,15 @@ softdepend: [MGLib]
 
 commands:
   ttt:
+    description: The plugin's primary command.
+    usage: /ttt [subcommand]
+    # all below keys are useless, but are there for reference
     import:
       description: Imports a TTT map from a specified folder in the server's root directory.
       usage: /ttt import [folder name]
     carena:
       description: Creates a new arena for use with TTT at the sender's or a specified location.
-      usage: /ttt carena [arena name] {x} {y} {z} {world}
+      usage: /ttt carena [arena name] {[x] [y] [z] [world]}
     join:
       description: Adds player to a specified game of TTT.
       usage: /ttt join [map name]
@@ -25,10 +28,10 @@ commands:
       usage: /ttt setexit
     addspawn:
       description: Adds the sender's or a specified location as a spawn to a specified arena.
-      usage: /ttt addspawn [arena name] {x} {y} {z}
-    removespawn:
+      usage: /ttt addspawn [arena name] {[x] [y] [z]}
+    removespawn
       description: Removes the sender's or a specified location or an index as a spawn from the specified arena.
-      usage: /ttt removespawn [arena name] {x|index} {y|blank} {z|blank}
+      usage: /ttt removespawn [arena name] {index}|{[x] [y] [z]}
     help:
       description: Displays available commands to the sender.
       usage: /ttt help
@@ -48,11 +51,32 @@ permissions:
       ttt.lobby.*: true
       ttt.build.warn: true
 
-  ttt.admin:
-    description: Allows for full control and manipulation of the plugin.
+  ttt.admin.*:
+    description: Allows for full use of administrative commands.
     default: op
     children:
-      ttt.*: true
+      ttt.admin.prepare: true
+      ttt.admin.start: true
+      ttt.admin.end: true
+      ttt.admin.kick: true
+      ttt.admin.ban: true
+
+  ttt.admin.prepare:
+    description: Allows player to force rounds to enter preparation stage.
+    default: op
+  ttt.admin.start:
+    description: Allows player to force rounds to enter playing stage.
+    default: op
+  ttt.admin.end:
+    description: Allows player to force rounds to end.
+    default: op
+  ttt.admin.kick:
+    description: Allows player to kick players from their current TTT round.
+    default: op
+  ttt.admin.ban:
+    description: Allows player to ban players from joining TTT rounds.
+    default: op
+
   ttt.arena.*:
     description: Grants all permissions beginning with ttt.arena.
     default: op
@@ -90,6 +114,13 @@ permissions:
     description: Allows use of /ttt help.
     default: true
 
+  ttt.lobby.*:
+    description: Allows for full usage and manipulation of lobby signs.
+    default: op
+    children:
+      ttt.lobby.create: true
+      ttt.lobby.destroy: true
+      ttt.lobby.use: true
   ttt.lobby.create:
     description: Allows creation of lobby signs.
     default: op
@@ -99,18 +130,12 @@ permissions:
   ttt.lobby.use:
     description: Allows use of lobby signs.
     default: true
-  ttt.lobby.*:
-    description: Allows for full usage and manipulation of lobby signs.
-    default: op
-    children:
-      ttt.lobby.create: true
-      ttt.lobby.destroy: true
-      ttt.lobby.use: true
 
   ttt.build.warn:
     description: Players with this node will be warned of unstable builds on join.
     default: op
 
+  # deprecated nodes
   ttt.import:
     description: Allows player to import worlds into the plugin. (deprecated)
     default: op
