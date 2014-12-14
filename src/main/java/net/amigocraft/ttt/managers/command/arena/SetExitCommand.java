@@ -40,6 +40,7 @@ public class SetExitCommand extends SubcommandHandler {
 		super(sender, args);
 	}
 
+	@Override
 	public void handle(){
 		if (sender.hasPermission("ttt.setexit")){
 			if (sender instanceof Player){

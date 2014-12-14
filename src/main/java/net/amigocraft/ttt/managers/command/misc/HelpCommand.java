@@ -33,6 +33,7 @@ public class HelpCommand extends SubcommandHandler {
 		super(sender, args);
 	}
 
+	@Override
 	public void handle(){
 		if (args.length > 1 && args[1].equalsIgnoreCase("lobby")){
 			if (sender.hasPermission("ttt.lobby.create")){

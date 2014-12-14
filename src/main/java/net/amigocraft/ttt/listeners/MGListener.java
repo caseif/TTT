@@ -500,6 +500,7 @@ public class MGListener implements Listener {
 				sm.iObj.unregister();
 				sm.tObj.unregister();
 				ScoreManager.sbManagers.remove(e.getRound().getArena());
+				mp.setTeam(null);
 			}
 		}
 	}

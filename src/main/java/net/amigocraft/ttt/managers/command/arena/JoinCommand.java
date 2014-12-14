@@ -40,6 +40,7 @@ public class JoinCommand extends SubcommandHandler {
 		super(sender, args);
 	}
 
+	@Override
 	public void handle(){
 		if (sender instanceof Player){
 			if (sender.hasPermission("ttt.arena.join")){

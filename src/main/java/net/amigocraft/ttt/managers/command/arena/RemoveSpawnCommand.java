@@ -38,6 +38,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 		super(sender, args);
 	}
 
+	@Override
 	public void handle(){
 		if (sender.hasPermission("ttt.arena.removespawn")){
 			int x = 0;

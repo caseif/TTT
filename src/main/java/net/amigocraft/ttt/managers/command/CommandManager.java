@@ -23,6 +23,7 @@
 package net.amigocraft.ttt.managers.command;
 
 import net.amigocraft.ttt.Main;
+import net.amigocraft.ttt.managers.command.admin.PrepareCommand;
 import net.amigocraft.ttt.managers.command.arena.*;
 import net.amigocraft.ttt.managers.command.misc.DefaultCommand;
 import net.amigocraft.ttt.managers.command.misc.HelpCommand;
@@ -36,6 +37,7 @@ public class CommandManager implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		if (label.equalsIgnoreCase("ttt")){
 			if (args.length > 0){
+				// arena commands
 				if (args[0].equalsIgnoreCase("import") || args[0].equalsIgnoreCase("i")){
 					new ImportCommand(sender, args).handle();
 				}
@@ -55,6 +57,11 @@ public class CommandManager implements CommandExecutor {
 				else if (args[0].equalsIgnoreCase("removespawn") || args[0].equalsIgnoreCase("rs")){
 					new RemoveSpawnCommand(sender, args).handle();
 				}
+				// administrative commands
+				else if (args[0].equalsIgnoreCase("prepare")){
+					new PrepareCommand(sender, args);
+				}
+				// misc. commands
 				else if (args[0].equalsIgnoreCase("setexit") || args[0].equalsIgnoreCase("se") ||
 						args[0].equalsIgnoreCase("setspawn") || args[0].equalsIgnoreCase("ss")){
 					new SetExitCommand(sender, args).handle();

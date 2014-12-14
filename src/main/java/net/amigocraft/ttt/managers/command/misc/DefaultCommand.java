@@ -33,6 +33,7 @@ public class DefaultCommand extends SubcommandHandler {
 		super(sender, args);
 	}
 
+	@Override
 	public void handle(){
 		sender.sendMessage(ChatColor.LIGHT_PURPLE + "This server is running TTT version " +
 				Main.plugin.getDescription().getVersion() + " by Maxim Roncacé.");

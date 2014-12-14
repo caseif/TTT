@@ -39,6 +39,7 @@ public class AddSpawnCommand extends SubcommandHandler {
 		super(sender, args);
 	}
 
+	@Override
 	public void handle(){
 		if (sender.hasPermission("ttt.arena.addspawn")){
 			World w = null;

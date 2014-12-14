@@ -40,6 +40,7 @@ public class CreateArenaCommand extends SubcommandHandler {
 		super(sender, args);
 	}
 
+	@Override
 	public void handle(){
 		if (sender.hasPermission("ttt.arena.create")){
 			String w;
