@@ -493,7 +493,8 @@ public class MGListener implements Listener {
 
 	@EventHandler
 	public void onStageChange(MinigameRoundStageChangeEvent e){
-		if ((e.getStageBefore() == Stage.PREPARING || e.getStageBefore() == Stage.PLAYING) && e.getStageAfter() == Stage.PREPARING){
+		if ((e.getStageBefore() == Stage.PREPARING || e.getStageBefore() == Stage.PLAYING) &&
+				(e.getStageAfter() == Stage.PREPARING)){
 			for (MGPlayer mp : e.getRound().getPlayerList()){
 				mp.getBukkitPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 				ScoreManager sm = ScoreManager.sbManagers.get(e.getRound().getArena());

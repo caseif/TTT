@@ -24,6 +24,7 @@ package net.amigocraft.ttt.managers.command;
 
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.admin.PrepareCommand;
+import net.amigocraft.ttt.managers.command.admin.StartCommand;
 import net.amigocraft.ttt.managers.command.arena.*;
 import net.amigocraft.ttt.managers.command.misc.DefaultCommand;
 import net.amigocraft.ttt.managers.command.misc.HelpCommand;
@@ -60,6 +61,9 @@ public class CommandManager implements CommandExecutor {
 				// administrative commands
 				else if (args[0].equalsIgnoreCase("prepare")){
 					new PrepareCommand(sender, args);
+				}
+				else if (args[0].equalsIgnoreCase("start")){
+					new StartCommand(sender, args);
 				}
 				// misc. commands
 				else if (args[0].equalsIgnoreCase("setexit") || args[0].equalsIgnoreCase("se") ||
