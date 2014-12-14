@@ -2,7 +2,7 @@ name: TTT
 version: 0.6.1-SNAPSHOT%VERSION%
 main: net.amigocraft.ttt.Main
 author: Maxim Roncacé
-website: http://www.headswilllol.com/
+website: http://dev.bukkit.org/bukkit-plugins/ttt
 description: A Bukkit minigame based off the Garry's Mod gamemode Trouble In Terrorist Town.
 softdepend: [MGLib]
 
