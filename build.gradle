@@ -28,7 +28,7 @@ targetCompatibility = 1.6
 
 ext {
     bukkit = 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
-	mglib = 'net.amigocraft.mglib:mglib:0.3.1-SNAPSHOT'
+	mglib = 'net.amigocraft.mglib:mglib:0.3.0'
 	updater = 'net.gravitydevelopment.updater:updater:2.3'
 }
 
