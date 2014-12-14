@@ -118,7 +118,8 @@ public class MGListener implements Listener {
 		}
 
 		String addition = "";
-		@SuppressWarnings("static-access") UUID uuid = Main.mg.getOnlineUUIDs().get(e.getPlayer().getName());
+		@SuppressWarnings("static-access")
+		UUID uuid = Main.mg.getOnlineUUIDs().get(e.getPlayer().getName());
 		if (Main.creator.contains(uuid)){
 			addition = ", " + ChatColor.DARK_RED + Main.locale.getMessage("creator") + "," + ChatColor.DARK_PURPLE;
 		}

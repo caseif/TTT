@@ -30,6 +30,6 @@ public class StartCommand extends SubcommandHandler {
 				sender.sendMessage(ChatColor.RED + "[TTT] Cannot find a round in arena " + ChatColor.ITALIC + arena + ChatColor.RED + "!");
 		}
 		else
-			sender.sendMessage(ChatColor.RED + "[TTT] Too few arguments! Usage: /ttt start [arena name] {play time}");
+			sender.sendMessage(ChatColor.RED + "[TTT]" + Main.locale.getMessage("invalid-args-1"));
 	}
 }
