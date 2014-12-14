@@ -64,6 +64,7 @@ shadowJar {
 	dependencies {
 		include dependency(updater)
 	}
+	classifier = ''
 }
 
 // License header formatting
