@@ -45,7 +45,9 @@ public class ScoreManager {
 	public Objective iObj;
 	public Objective tObj;
 	public String arenaName;
-	public Team iTeamIA, iTeamIM, iTeamID, iTeamTA, iTeamTM, iTeamTD, iTeamDA, iTeamDM, iTeamDD, tTeamIA, tTeamIM, tTeamID, tTeamTA, tTeamTM, tTeamTD, tTeamDA, tTeamDM, tTeamDD;
+	public Team
+			iTeamIA, iTeamIM, iTeamID, iTeamTA, iTeamTM, iTeamTD, iTeamDA, iTeamDM, iTeamDD,
+			tTeamIA, tTeamIM, tTeamID, tTeamTA, tTeamTM, tTeamTD, tTeamDA, tTeamDM, tTeamDD;
 
 	@SuppressWarnings("deprecation")
 	public ScoreManager(String arenaName){
@@ -152,10 +154,12 @@ public class ScoreManager {
 		}
 
 		if (innocent.getPlayerTeam(Bukkit.getOfflinePlayer(t.getName())) != null){
-			innocent.getPlayerTeam(Bukkit.getOfflinePlayer(t.getName())).removePlayer(Bukkit.getOfflinePlayer(t.getName()));
+			innocent.getPlayerTeam(Bukkit.getOfflinePlayer(t.getName()))
+					.removePlayer(Bukkit.getOfflinePlayer(t.getName()));
 		}
 		if (traitor.getPlayerTeam(Bukkit.getOfflinePlayer(t.getName())) != null){
-			traitor.getPlayerTeam(Bukkit.getOfflinePlayer(t.getName())).removePlayer(Bukkit.getOfflinePlayer(t.getName()));
+			traitor.getPlayerTeam(Bukkit.getOfflinePlayer(t.getName()))
+					.removePlayer(Bukkit.getOfflinePlayer(t.getName()));
 		}
 
 		if (t.hasMetadata("detective")){

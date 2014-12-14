@@ -45,7 +45,7 @@ class Metrics {
 	/**
 	 * The current revision number
 	 */
-	private final static int REVISION = 7;
+	private static final int REVISION = 7;
 
 	/**
 	 * The base url of the metrics domain
@@ -350,7 +350,7 @@ class Metrics {
 		String osname = System.getProperty("os.name");
 		String osarch = System.getProperty("os.arch");
 		String osversion = System.getProperty("os.version");
-		String java_version = System.getProperty("java.version");
+		String javaVersion = System.getProperty("java.version");
 		int coreCount = Runtime.getRuntime().availableProcessors();
 
 		// normalize os arch .. amd64 -> x86_64
@@ -363,7 +363,7 @@ class Metrics {
 		appendJSONPair(json, "osversion", osversion);
 		appendJSONPair(json, "cores", Integer.toString(coreCount));
 		appendJSONPair(json, "auth_mode", onlineMode ? "1" : "0");
-		appendJSONPair(json, "java_version", java_version);
+		appendJSONPair(json, "java_version", javaVersion);
 
 		// If we're pinging, append it
 		if (isPing){
@@ -705,7 +705,7 @@ class Metrics {
 	/**
 	 * Interface used to collect custom data for a plugin
 	 */
-	public static abstract class Plotter {
+	public abstract static class Plotter {
 
 		/**
 		 * The plot's name

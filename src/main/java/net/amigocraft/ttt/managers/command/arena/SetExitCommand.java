@@ -59,7 +59,9 @@ public class SetExitCommand extends SubcommandHandler {
 					spawnYaml.set("z", ((Player) sender).getLocation().getBlockZ() + 0.5);
 					spawnYaml.save(spawnFile);
 					Location l = ((Player) sender).getLocation();
-					Main.mg.getConfigManager().setDefaultExitLocation(new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5));
+					Main.mg.getConfigManager().setDefaultExitLocation(
+							new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5)
+					);
 					sender.sendMessage(ChatColor.DARK_PURPLE + "Successfully set TTT return point!");
 				}
 				catch (Exception ex){

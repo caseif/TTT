@@ -34,7 +34,7 @@ import net.amigocraft.ttt.listeners.SpecialPlayerListener;
 import net.amigocraft.ttt.managers.command.CommandManager;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
-import net.amigocraft.ttt.managers.SpecialCommandManager;
+import net.amigocraft.ttt.managers.command.SpecialCommandManager;
 import net.amigocraft.ttt.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

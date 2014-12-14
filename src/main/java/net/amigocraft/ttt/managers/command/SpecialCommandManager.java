@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.amigocraft.ttt.managers;
+package net.amigocraft.ttt.managers.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

@@ -345,7 +345,8 @@ public class Updater {
 					fout.close();
 				}
 			}
-			catch (final Exception ex){
+			catch (Exception ex){
+				ex.printStackTrace();
 			}
 		}
 	}
@@ -522,7 +523,8 @@ public class Updater {
 			}
 			else {
 				this.plugin.getLogger().warning("The updater could not contact dev.bukkit.org for updating.");
-				this.plugin.getLogger().warning("If you have not recently modified your configuration and this is the first time you are seeing this message, the site may be experiencing temporary downtime.");
+				this.plugin.getLogger().warning("If you have not recently modified your configuration and this is the first time you are seeing " +
+						"this message, the site may be experiencing temporary downtime.");
 				this.result = UpdateResult.FAIL_DBO;
 			}
 			e.printStackTrace();

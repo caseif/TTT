@@ -7,6 +7,8 @@ plugins {
     id 'com.github.hierynomus.license' version '0.11.0'
 }
 
+apply plugin: 'checkstyle'
+
 defaultTasks 'clean', 'licenseFormat', 'build'
 
 // Project information
@@ -60,4 +62,13 @@ license {
 	mapping {
 		java = 'SLASHSTAR_STYLE'
 	}
+}
+
+// check code style
+checkstyle {
+    configProperties = [
+            "name"        : project.name,
+            "year"        : project.inceptionYear
+    ]
+    configFile = file("etc/checkstyle.xml")
 }

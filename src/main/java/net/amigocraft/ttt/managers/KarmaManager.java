@@ -99,7 +99,12 @@ public class KarmaManager {
 				int add = Config.KARMA_CLEAN_BONUS;
 				if (t.getKarma() > Config.DEFAULT_KARMA){
 					if ((Config.MAX_KARMA - Config.DEFAULT_KARMA) > 0){
-						add = (int) Math.round(Config.KARMA_CLEAN_BONUS * Math.pow(.5, (t.getKarma() - (double) Config.DEFAULT_KARMA) / ((double) (Config.MAX_KARMA - Config.DEFAULT_KARMA) * Config.KARMA_CLEAN_HALF)));
+						add = (int) Math.round(
+								Config.KARMA_CLEAN_BONUS * Math.pow(
+										.5, (t.getKarma() - (double) Config.DEFAULT_KARMA) /
+												((double) (Config.MAX_KARMA - Config.DEFAULT_KARMA) * Config.KARMA_CLEAN_HALF)
+								)
+						);
 					}
 				}
 				t.addKarma(add);
@@ -109,8 +114,7 @@ public class KarmaManager {
 
 	public static void handleDamageKarma(TTTPlayer damager, TTTPlayer victim, double damage){
 		if (damager != null && victim != null){
-			if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor")) // team damage
-			{
+			if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor")){ // team damage
 				damager.subtractKarma((int) (victim.getKarma() * (damage * Config.DAMAGE_PENALTY)));
 			}
 			else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")){ // innocent damaging traitor
