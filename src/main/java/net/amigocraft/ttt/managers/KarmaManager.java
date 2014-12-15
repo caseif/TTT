@@ -145,28 +145,15 @@ public class KarmaManager {
 				ex.printStackTrace();
 			}
 			if (Config.KARMA_BAN){
-				File f = new File(Main.plugin.getDataFolder(), "bans.yml");
-				YamlConfiguration y = new YamlConfiguration();
-				try {
-					y.load(f);
-					if (Config.KARMA_BAN_TIME < 0){
-						y.set(player.getName(), -1);
-						y.save(f);
-						p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-permaban").replace("%", Config.KARMA_KICK + "."));
-					}
-					else {
-						// store unban time as a Unix timestamp
-						int unbanTime = (int) System.currentTimeMillis() / 1000 + (Config.KARMA_BAN_TIME * 60);
-						y.set(player.getName(), unbanTime);
-						y.save(f);
-						p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-ban")
-								.replace("&", Integer.toString(Config.KARMA_BAN_TIME))
-								.replace("%", Config.KARMA_KICK + "."));
-					}
+				MiscUtil.ban(p.getUniqueId(), Config.KARMA_BAN_TIME);
+				if (Config.KARMA_BAN_TIME < 0){
+					p.sendMessage(ChatColor.DARK_PURPLE +
+							Main.locale.getMessage("karma-permaban").replace("%", Config.KARMA_KICK + "."));
 				}
-				catch (Exception ex){
-					ex.printStackTrace();
-					Main.mg.log(Main.locale.getMessage("ban-fail").replace("%", player.getName()), LogLevel.WARNING);
+				else {
+					p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-ban")
+							.replace("&", Integer.toString(Config.KARMA_BAN_TIME))
+							.replace("%", Config.KARMA_KICK + "."));
 				}
 			}
 			else {

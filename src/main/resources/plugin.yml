@@ -52,7 +52,9 @@ commands:
     ban:
       description: Bans a player from joining TTT rounds.
       usage: /ttt ban [player name] {minutes}
-
+    pardon:
+      description: Unbans a player from joining TTT rounds.
+      usage: /ttt pardon [player name] {minutes}
     # general commands
     setexit:
       description: Sets the location to teleport players to upon round end.
@@ -107,7 +109,7 @@ permissions:
     description: Allows player to kick players from their current TTT round.
     default: op
   ttt.admin.ban:
-    description: Allows player to ban players from joining TTT rounds.
+    description: Allows player to ban and unban players from joining TTT rounds.
     default: op
 
   ttt.arena.*:
