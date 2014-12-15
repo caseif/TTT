@@ -23,6 +23,8 @@
 package net.amigocraft.ttt.managers.command;
 
 import net.amigocraft.ttt.Main;
+import net.amigocraft.ttt.managers.command.admin.EndCommand;
+import net.amigocraft.ttt.managers.command.admin.KickCommand;
 import net.amigocraft.ttt.managers.command.admin.PrepareCommand;
 import net.amigocraft.ttt.managers.command.admin.StartCommand;
 import net.amigocraft.ttt.managers.command.arena.*;
@@ -64,6 +66,12 @@ public class CommandManager implements CommandExecutor {
 				}
 				else if (args[0].equalsIgnoreCase("start")){
 					new StartCommand(sender, args);
+				}
+				else if (args[0].equalsIgnoreCase("end")){
+					new EndCommand(sender, args);
+				}
+				else if (args[0].equalsIgnoreCase("kick")){
+					new KickCommand(sender, args);
 				}
 				// misc. commands
 				else if (args[0].equalsIgnoreCase("setexit") || args[0].equalsIgnoreCase("se") ||
