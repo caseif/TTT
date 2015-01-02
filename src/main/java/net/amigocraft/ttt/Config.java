@@ -125,7 +125,7 @@ public class Config {
 
 	public static String getString(String a){
 		String value = Main.plugin.getConfig().getString(a);
-		return value == null ? "" : value;
+		return value;
 	}
 
 	public static boolean getBoolean(String a){
