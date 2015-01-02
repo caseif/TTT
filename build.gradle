@@ -17,7 +17,7 @@ group = 'net.amigocraft.ttt'
 version = '0.7.0-SNAPSHOT'
 
 // Extended project information
-ext.projectName = 'TTT'
+ext.projectName = 'ttt'
 ext.description = 'A Bukkit minigame based off the Garry\'s Mod gamemode Trouble In Terrorist Town.'
 ext.inceptionYear = '2013'
 ext.packaging = 'jar'
@@ -56,7 +56,7 @@ processResources {
 	filter { String line -> line.replace('SNAPSHOT', 'SNAPSHOT' + versionSuffix) }
 }
 
-jar { // The Pore classes will be created in Pore-VERSION-base.jar first
+jar {
 	classifier = 'base'
 }
 
@@ -70,7 +70,10 @@ shadowJar {
 // License header formatting
 license {
 	header file('LICENSE')
-	exclude '*.txt'
+	excludes([
+			'**/*.csv',
+			'**/*.yml'
+	])
 	sourceSets = project.sourceSets
 	ignoreFailures false
 	strictCheck true
@@ -86,4 +89,9 @@ checkstyle {
             "year"        : project.inceptionYear
     ]
     configFile = file("etc/checkstyle.xml")
+}
+
+tasks.withType(Checkstyle){
+	exclude '**/*.csv'
+	exclude '**/*.yml'
 }
