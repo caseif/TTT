@@ -72,7 +72,8 @@ license {
 	header file('LICENSE')
 	excludes([
 			'**/*.csv',
-			'**/*.yml'
+			'**/*.yml',
+			'**/Metrics.java'
 	])
 	sourceSets = project.sourceSets
 	ignoreFailures false
