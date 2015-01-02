@@ -88,14 +88,6 @@ folder-rename|Pre-0.5 gagna mappa ("Trouble In Terrorist Town") fundin. Þetta v
 folder-rename-error|Villa kom á meðan reynt var að endurnefna gagn möppu. Þú gætir þurft að gera það handvirkt.
 already-entered|Þú ert nú þegar í þessum leik!
 round-full|Áhorfanda leikur er fullur!
-connect-fail-1|Hámark tengingar tími af 1000ms farið yfir. Reyni aftur...
-connect-fail-2|Undartekning átti sér stað þegar skoðað var byggingastöðu. Reyni aftur...
-connect-fail-3|Gat ekki tengst vefþjón %. Núverandi byggingastaða verður kjurr óskoð þangað til viðbótin er kveikt á aftur.
-response|svaraði við %
-stable-build|Núverandi TTT bygging er stöðug.
-unstable-build|Núverandi TTT bygging er óstöðug! Hugsaðu um að færa þig á stöðuga byggingu.
-unknown-build|Get ekki náð í stöðu TTT byggingu. Ef þú hefur ekki breytt plugin.yml fæl (eða veist ekki hvað það er), tuðaðu í verktaka til að uppfæra stöðu þessar gerðar.
-build-check-fail|Undantekning gerðist meðan kíkt var á nýjasta byggingastöðu.
 config-copy-fail|Mistókst að afrita stillingar!
 write-fail|Mistókst að skrifa á %!
 creating-file|% ekki fundin; bý til...

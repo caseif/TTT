@@ -88,14 +88,6 @@ folder-rename|Pré-0.5 pasta de dados ("Trouble In Terrorist Town") detectada. E
 folder-rename-error|Ocorreu um erro enquanto a pasta de dados foi renomeada. Você pode precisar fazer isso manualmente.
 already-entered|Você já está nesta rodada!
 round-full|A rodada especificada está cheia!
-connect-fail-1|tempo máximo de ligação de 1000ms ultrapassado. Repetindo ...
-connect-fail-2|A exceção ocorreu durante a verificação do estado das builds. Repetindo ...
-connect-fail-3|Não foi possível conectar ao servidor %. Estado build atual permanecerá desmarcado até o plugin ser ativado novamente.
-response|respondeu com %
-stable-build|Atual versão TTT é estável.
-unstable-build|Atual versão TTT é instável! Considere a atualização para a versão mais recente ou dev build.
-unknown-build|Não é possível determinar a estabilidade da corrente versão TTT. Se você não tiver modificado o arquivo plugin.yml (ou não sei o que é), erro ao desenvolvedor atualizar o status desta versão.
-build-check-fail|Ocorreu uma exceção ao verificar o status de construção atual.
 config-copy-fail|Falha ao copiar configuração antiga!
 write-fail|Falha ao gravar a %!
 creating-file|% não foi encontrado, a criação de ...

@@ -87,14 +87,6 @@ folder-rename|Pre-0.5 data folder ("Trouble In Terrorist Town") detected. This w
 folder-rename-error|An error occurred while renaming the data folder. You may need to do this manually.
 already-entered|You are already in this round!
 round-full|The specified round is full!
-connect-fail-1|Maximum connection time of 1000ms exceeded. Retrying...
-connect-fail-2|A exception occurred while checking the build status. Retrying...
-connect-fail-3|Could not connect to server %. Current build status will remain unchecked until the plugin is enabled again.
-response|responded with %
-stable-build|Current TTT build is stable.
-unstable-build|Current TTT build is unstable! Consider updating to the latest release or dev build.
-unknown-build|Cannot determine stability of current TTT build. If you haven't modified the plugin.yml file (or don't know what that is), bug the developer to update the status of this version.
-build-check-fail|An exception occurred while checking the current build status.
 config-copy-fail|Failed to copy old config!
 write-fail|Failed to write to %!
 creating-file|% not found; creating...

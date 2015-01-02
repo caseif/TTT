@@ -88,14 +88,6 @@ folder-rename|Pre-0.5 Daten-Ordner ("Trouble In Terrorist Town") erkannt. Dadurc
 folder-rename-error|Fehler beim Umbenennen der Daten-Ordner. Möglicherweise müssen Sie dies manuell tun.
 already-entered|Sie sind bereits in dieser Runde!
 round-full|Die angegebene Runde ist voll!
-connect-fail-1|Maximale Verbindungsdauer von 1000ms überschritten. Erneuter Versuch ...
-connect-fail-2|A Ausnahme beim Üœberprüfen der Build-Status. Erneuter Versuch ...
-connect-fail-3|Konnte keine Verbindung zum Server% anschließen. Aktuelle Build Status bleibt deaktiviert, bis das Plugin wieder aktiviert ist.
-response|% antworteten mit
-stable-build|Aktuelle TTT Build ist stabil.
-unstable-build|Aktuelle TTT Build ist instabil! Betrachten Sie eine Aktualisierung auf die neueste Version oder dev build.
-unknown-build|Kann nicht bestimmen Stabilität des aktuellen TTT build. Wenn Sie noch nicht die plugin.yml Datei (oder nicht wissen, was das ist), Fehler der Entwickler, um den Status dieser Version aktualisieren modifiziert.
-build-check-fail|Eine Ausnahme ist aufgetreten, während Sie die aktuelle Build-Status.
 config-copy-fail|Fehler alten Config kopieren!
 write-fail|Es ist erfolglos, % schreiben!
 creating-file|% nicht gefunden, die Schaffung...

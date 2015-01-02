@@ -87,14 +87,6 @@ Folder-rename|Pre-0.5 Folder danych ("Trouble In Terrorist Town") wykryte. Ten z
 Folder-rename-error|Wystąpił błąd podczas zmiany nazwy danych folderów. Być może trzeba to zrobić ręcznie.
 already-entered|Jesteś już w tej rundzie!
 round-full|określone runda jest pełna!
-connect-fail-1|maksymalny czas połączenia z 1000ms przekroczone. Ponowna próba ...
-connect-fail-2|wyjątek podczas sprawdzania stanu kompilacji. Ponowna próba ...
-connect-fail-3|Nie można się połączyć z serwerem %. Stan obecny build pozostanie niezaznaczone, aż plugin jest włączony ponownie.
-response|odpowiedział %
-stable-build|Aktualna TTT build jest stabilny.
-unstable-build|Aktualna TTT build jest niestabilna! Zalecamy aktualizację do najnowszej wersji lub dev build.
-unknown-build|Nie można określić stabilność obecnego TTT bud. Jeśli nie zmodyfikował plugin.yml plik (lub nie wiesz co to jest), Bug deweloper zaktualizować status tej wersji.
-build-check-fail|wyjątek podczas sprawdzania aktualnego stanu budowy.
 config-copy-fail|Nie można skopiować starej konfiguracji!
 write-fail|Nie można zapisać do %!
 creating-file|nie znaleziono %, tworzenie...

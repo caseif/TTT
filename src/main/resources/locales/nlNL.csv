@@ -88,14 +88,6 @@ folder-rename|Pre-0.5 map data ("Trouble In Terrorist Town") gedetecteerd. Dit z
 folder-rename-error|een fout opgetreden bij het hernoemen van de map van de gegevens. Mogelijk moet u dit handmatig doen.
 already-entered|U bent al in deze ronde!
 round-full|Het opgegeven ronde is vol!
-connect-fail-1|Maximale aansluiting moment van 1000ms overschreden. Nieuwe poging ...
-connect-fail-2|Een uitzondering opgetreden tijdens het controleren van de build-status. Nieuwe poging ...
-connect-fail-3|Kan niet verbinden met server %. Huidige build status ongecontroleerd blijven totdat de plugin weer wordt ingeschakeld.
-response|reageerde met %
-stable-build|Huidige TTT build is stabiel.
-unstable-build|Huidige TTT build is instabiel! Overweeg een update naar de nieuwste versie of dev build.
-unknown-build|Kan de stabiliteit van de huidige TTT build niet bepalen. Als je het plugin.yml bestand (of niet weten wat dat is), bug de ontwikkelaar om de status van deze versie updaten niet hebben gewijzigd.
-build-check-fail|Een uitzondering opgetreden tijdens het controleren van de huidige build-status.
 config-copy-fail|mislukt oude config kopiëren!
 write-fail|mislukt schrijven naar %!
 creating-file|% niet gevonden; creëren ...

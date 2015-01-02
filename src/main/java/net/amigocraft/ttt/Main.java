@@ -184,10 +184,6 @@ public class Main extends JavaPlugin {
 			saveDefaultConfig();
 		}
 
-		if (Config.ENABLE_VERSION_CHECK && !this.getDescription().getVersion().contains("SNAPSHOT")){
-			checkVersion();
-		}
-
 		createFile("karma.yml");
 		createFile("bans.yml");
 
@@ -323,43 +319,6 @@ public class Main extends JavaPlugin {
 					exc.printStackTrace();
 				}
 			}
-		}
-	}
-
-	public void checkVersion(){
-		try {
-			Thread t = new Thread(new BuildChecker());
-			t.start();
-			t.join(1000);
-			if (t.isAlive() || (BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
-					(BuildChecker.response >= 500 && BuildChecker.response <= 599)){
-				t.interrupt();
-				if ((BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
-						(BuildChecker.response >= 500 && BuildChecker.response <= 599)){
-					mg.log(locale.getMessage("connect-fail-1"), LogLevel.INFO);
-				}
-				else {
-					mg.log(locale.getMessage("connect-fail-2"), LogLevel.INFO);
-				}
-				BuildChecker.response = 0;
-				Thread t2 = new Thread(new BuildChecker());
-				t2.start();
-				t2.join(1000);
-				if (t2.isAlive() || (BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
-						(BuildChecker.response >= 500 && BuildChecker.response <= 599)){
-					t2.interrupt();
-					String response = "";
-					if ((BuildChecker.response >= 400 && BuildChecker.response <= 499) ||
-							(BuildChecker.response >= 500 && BuildChecker.response <= 599)){
-						response = " (" + locale.getMessage("response").replace("%", Integer.toString(BuildChecker.response) + ")");
-					}
-					mg.log(locale.getMessage("connect-fail-3").replace(" %", response), LogLevel.WARNING);
-				}
-			}
-		}
-		catch (Exception ex){
-			ex.printStackTrace();
-			mg.log(locale.getMessage("build-check-fail"), LogLevel.WARNING);
 		}
 	}
 

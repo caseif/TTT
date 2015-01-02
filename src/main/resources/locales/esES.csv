@@ -88,14 +88,6 @@ folder-rename|Carpeta de datos pre-0.5 ("Trouble In Town Terrorist") detectados.
 folder-rename-error|Se ha producido un error al cambiar el nombre de la carpeta de datos. Es posible que tenga que hacer esto manualmente.
 already-entered|Ya estas en esta ronda!
 round-full|La ronda especificada esta llena!
-connect-fail-1|El tiempo máximo de conexión es de 1000ms superado. Intentando de nuevo ...
-connect-fail-2|Una excepción ocurrió mientras se comprueba el estado de la compilación. Intentando de nuevo ...
-connect-fail-3|No se pudo conectar con el servidor % . Estado de creación actual permanecerá desactivada hasta que el plugin está habilitado de nuevo.
-response|respondido con %
-stable-build|La version actual de TTT es estable.
-unstable-build|La estructura actual del plugin es inestable se recomienda actualizar a una nueva.
-unknown-build|No se puede determinar la estabilidad de la corriente TTT build. Si no ha modificado el archivo plugin.yml (o no saben lo que es), fallo del desarrollador para actualizar el estado de esta versión.
-build-check-fail|Se produjo una excepción al comprobar el estado actual de construcción.
 config-copy-fail|Fallo al copiar la antigua configuracion!
 write-fail|Fallo al escribir %!
 creating-file|% no encontrado; creando...

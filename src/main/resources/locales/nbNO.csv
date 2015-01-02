@@ -85,14 +85,6 @@ folder-rename|Pre-0.5 datamappe ("Trouble In Terrorist Town") oppdaget. Denne vi
 folder-rename-error|En feel oppsto mens datamappen fikk nytt navn. Du må kanskje gjøre dette manuelt.
 already-entered|Du er allerede i denne runden
 round-full|Den spesifiserte runden er full!
-connect-fail-1|Maks tilkoblingstid av 1000ms er overskridet. Prøver på nytt...
-connect-fail-2|En feel oppsto mens build status ble sjekket. Prøver på nytt...
-connect-fail-3|Kunne ikke koble til server %. Nåværende build status vil forbli usjekket inntil plugin'en er akrivert igjen.
-response|responderte med %
-stable-build|Nåværende TTT build er stabil.
-unstable-build|Nåværende TTT build er ikke stabil! Oppdater til seneste utgivelse eller dev build.
-unknown-build|Kan ikke finne ut stabiliteten til nåværende TTT build. Hvis du ikke har modifisert plugin.yml-fila (eller ikke vet hva det er), klag til utvikleren om å oppdatere statusen til denne versjonen.
-build-check-fail|En feil oppsto mens nåværende build status ble sjekket.
 config-copy-fail|Kunne ikke kopiere gammel config!
 write-fail|Kunne ikke skrive til %!
 creating-file|Kunne ikke finne %; lager ny...

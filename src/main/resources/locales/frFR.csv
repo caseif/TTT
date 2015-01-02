@@ -88,14 +88,6 @@ folder-rename|Dossier Pre-0.5 ("Trouble In Terrorist Town") détecté. Cela va r
 folder-rename-error|Une erreure est survenue pendant le renommement du dossier, vous devez le faire manuellement.
 already-entered|Vous êtes déjà dans la partie!
 round-full|Cette partie spécifique est complet!
-connect-fail-1|Teamps de réponse de 1000ms dépassé. Tentative de...
-connect-fail-2|Une exception est survenue pendant la vérification de la version. Tentative de...
-connect-fail-3|Impossible de se connecter au serveur %. La version actuel sera pas vérifié jusqu'a ce que le plugin est réactivé.
-response|répondu avec %
-stable-build|La version actuelle de TTT est stable.
-unstable-build|La version actuelle de TTT est instable.Nous vous conseillons de prendre la dernière version du plugin.
-unknown-build|Impossible de déterminer la stabiliter de la version actuel de TTT.Si vous n'avez pas modifié le fichier plugin.yml (ou que vous ne savez pas ce que c'est), dite au développeur de mettre a jour ca version.
-build-check-fail|Une exception est survenue pendant la vérification de la version actuel.
 config-copy-fail|Echouage de la copie de config!
 write-fail|Echouage d'écriture de %!
 creating-file|% non trouvé; création de...
