@@ -89,7 +89,7 @@ public class Main extends JavaPlugin {
 				Minigame.class.getMethod("isMGLibCompatible", String.class);
 				compatibleMethod = true;
 			}
-			catch (NoSuchMethodException ex){}
+			catch (NoSuchMethodException swallow){}
 		}
 		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !compatibleMethod || !Minigame.isMGLibCompatible("0.3.0")){
 			MGLIB = false;

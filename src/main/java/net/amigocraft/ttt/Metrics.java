@@ -325,10 +325,10 @@ class Metrics {
 		// workaround for Wolverness's brilliant plan to change the return type of Bukkit.getOnlinePlayers()
 		try {
 			if (Bukkit.class.getMethod("getOnlinePlayers", new Class<?>[0]).getReturnType() == Collection.class){
-				playersOnline = ((Collection<?>) Bukkit.class.getMethod("getOnlinePlayers", new Class<?>[0]).invoke(null, new Object[0])).size();
+				playersOnline = ((Collection<?>) Bukkit.class.getMethod("getOnlinePlayers", new Class<?>[0]).invoke(null)).size();
 			}
 			else {
-				playersOnline = ((Player[]) Bukkit.class.getMethod("getOnlinePlayers", new Class<?>[0]).invoke(null, new Object[0])).length;
+				playersOnline = ((Player[]) Bukkit.class.getMethod("getOnlinePlayers", new Class<?>[0]).invoke(null)).length;
 			}
 		}
 		catch (NoSuchMethodException ex){} // can never happen
@@ -603,7 +603,7 @@ class Metrics {
 				default:
 					if (chr < ' '){
 						String t = "000" + Integer.toHexString(chr);
-						builder.append("\\u" + t.substring(t.length() - 4));
+						builder.append("\\u").append(t.substring(t.length() - 4));
 					}
 					else {
 						builder.append(chr);

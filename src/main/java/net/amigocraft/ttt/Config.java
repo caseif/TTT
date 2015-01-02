@@ -122,20 +122,20 @@ public class Config {
 		SB_USE_SIDEBAR = getBoolean("sb-use-sidebar");
 	}
 
-	public static final String getString(String a){
+	public static String getString(String a){
 		String value = Main.plugin.getConfig().getString(a);
 		return value == null ? "" : value;
 	}
 
-	public static final boolean getBoolean(String a){
+	public static boolean getBoolean(String a){
 		return Main.plugin.getConfig().getBoolean(a);
 	}
 
-	public static final int getInt(String a){
+	public static int getInt(String a){
 		return Main.plugin.getConfig().getInt(a);
 	}
 
-	public static final double getDouble(String a){
+	public static double getDouble(String a){
 		return Main.plugin.getConfig().getDouble(a);
 	}
 }

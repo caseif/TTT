@@ -51,8 +51,8 @@ public class FileUtil {
 				targetLocation.mkdir();
 			}
 			String[] children = sourceLocation.list();
-			for (int i = 0; i < children.length; i++){
-				copyFile(new File(sourceLocation, children[i]), new File(targetLocation, children[i]));
+			for (String aChildren : children){
+				copyFile(new File(sourceLocation, aChildren), new File(targetLocation, aChildren));
 			}
 		}
 		else {

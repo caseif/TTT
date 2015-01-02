@@ -131,7 +131,9 @@ public class PlayerListener implements Listener {
 												"§1" + Main.locale.getMessage("dna-scanner"))
 										){
 									e.setCancelled(true);
-									Player killer = Main.plugin.getServer().getPlayer((String)Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer()).getMetadata("killer"));
+									Player killer = Main.plugin.getServer().getPlayer(
+											(String)Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer()).getMetadata("killer")
+									);
 									if (killer != null){
 										if (Main.mg.isPlayer(killer.getName())){
 											if (!Main.mg.getMGPlayer(killer.getName()).isSpectating()){
@@ -325,7 +327,7 @@ public class PlayerListener implements Listener {
 			Player p = (Player) he;
 			if (Main.mg.isPlayer(p.getName())){
 				if (e.getInventory().getType() == InventoryType.CHEST){
-					Block block = null;
+					Block block;
 					Block block2 = null;
 					if (e.getInventory().getHolder() instanceof Chest){
 						block = ((Chest) e.getInventory().getHolder()).getBlock();
@@ -338,7 +340,6 @@ public class PlayerListener implements Listener {
 						return;
 					}
 					boolean found1 = false;
-					boolean found2 = false;
 					for (Body b : Main.bodies){
 						if (b.getLocation().equals(Location3D.valueOf(block.getLocation()))){
 							found1 = true;

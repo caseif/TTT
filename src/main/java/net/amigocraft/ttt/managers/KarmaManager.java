@@ -22,7 +22,6 @@
  */
 package net.amigocraft.ttt.managers;
 
-import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Minigame;
 import net.amigocraft.mglib.api.Round;

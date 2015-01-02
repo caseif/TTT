@@ -61,7 +61,7 @@ public class Body {
 	}
 
 	public boolean equals(Object b){
-		return player.equals(((Body) b).getPlayer()) && arena.equals(((Body) b).getArena()) &&
+		return b instanceof Body && player.equals(((Body) b).getPlayer()) && arena.equals(((Body) b).getArena()) &&
 				team.equals(((Body) b).getTeam()) && l.equals(((Body) b).getLocation());
 	}
 

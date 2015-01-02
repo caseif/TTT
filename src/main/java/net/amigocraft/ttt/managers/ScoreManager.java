@@ -35,7 +35,7 @@ import static net.amigocraft.ttt.Config.*;
 
 public class ScoreManager {
 
-	public static boolean ENTRY_SUPPORT = false;
+	public static final boolean ENTRY_SUPPORT;
 
 	public static HashMap<String, ScoreManager> sbManagers = new HashMap<String, ScoreManager>();
 
@@ -49,14 +49,18 @@ public class ScoreManager {
 			iTeamIA, iTeamIM, iTeamID, iTeamTA, iTeamTM, iTeamTD, iTeamDA, iTeamDM, iTeamDD,
 			tTeamIA, tTeamIM, tTeamID, tTeamTA, tTeamTM, tTeamTD, tTeamDA, tTeamDM, tTeamDD;
 
-	@SuppressWarnings("deprecation")
-	public ScoreManager(String arenaName){
-
+	static {
+		boolean support = false;
 		try {
 			Scoreboard.class.getMethod("getEntries");
-			ENTRY_SUPPORT = true;
+			support = true;
 		}
-		catch (NoSuchMethodException ex){}
+		catch (NoSuchMethodException swallow){}
+		ENTRY_SUPPORT = support;
+	}
+
+	@SuppressWarnings("deprecation")
+	public ScoreManager(String arenaName){
 
 		this.arenaName = arenaName;
 		innocent = manager.getNewScoreboard();
@@ -140,7 +144,7 @@ public class ScoreManager {
 
 	}
 
-	@SuppressWarnings("deprecated")
+	@SuppressWarnings("deprecation")
 	public void update(MGPlayer player){
 
 		if (ENTRY_SUPPORT){

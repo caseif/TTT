@@ -370,6 +370,7 @@ public class MGListener implements Listener {
 						Main.locale.getMessage("seconds") + " " +
 						Main.locale.getMessage("left"));
 			}
+			//TODO: this loop is probably an unnecessary artifact but I'm leaving it for now in case removing it causes odd side-effects
 			for (MGPlayer mp : e.getRound().getPlayerList()){
 				if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
 					ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
