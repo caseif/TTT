@@ -68,12 +68,8 @@ permissions:
     description: Allows for full control and manipulation of the plugin.
     default: op
     children:
-      ttt.arena.import: true
-      ttt.arena.create: true
-      ttt.arena.addspawn: true
-      ttt.arena.removespawn: true
-      ttt.arena.join: true
-      ttt.arena.leave: true
+      ttt.admin.*: true
+      ttt.arena.*: true
       ttt.setexit: true
       ttt.help: true
       ttt.lobby.*: true
