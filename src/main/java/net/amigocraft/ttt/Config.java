@@ -45,6 +45,7 @@ public class Config {
 	public static final int T_DAMAGE_REWARD;
 	public static final int TBONUS;
 	public static final boolean KARMA_ROUND_TO_ONE;
+	public static final boolean KARMA_STRICT;
 	public static final int KARMA_KICK;
 	public static final boolean KARMA_BAN;
 	public static final int KARMA_BAN_TIME;
@@ -97,6 +98,7 @@ public class Config {
 		T_DAMAGE_REWARD = getInt("t-damage-reward");
 		TBONUS = getInt("tbonus");
 		KARMA_ROUND_TO_ONE = getBoolean("karma-round-to-one");
+		KARMA_STRICT = getBoolean("karma-strict");
 		KARMA_KICK = getInt("karma-kick");
 		KARMA_BAN = getBoolean("karma-ban");
 		KARMA_BAN_TIME = getInt("karma-ban-time");

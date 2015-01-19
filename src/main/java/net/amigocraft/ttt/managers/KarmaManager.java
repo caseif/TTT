@@ -202,17 +202,11 @@ public class KarmaManager {
 	}
 
 	public static void calculateDamageReduction(MGPlayer player){
-		// Below is an approximation of the original game's formula. It was calculated on a TI Nspire, so it may not be 100% accurate.
-		double a = -1.5839260914526 * Math.pow(10, -7);
-		double b = 2.591955951727 * Math.pow(10, -4);
-		double c = -6.969034697 * Math.pow(10, -4);
-		double d = 0.185644476098;
-		int x = getKarma(player);
-		double damageRed = Math.round(a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x + d) / (double) 100;
-		if (damageRed > 1){
-			damageRed = 1;
-		}
-		else if (damageRed <= 0){
+		int baseKarma = getKarma(player) - 1000;
+		double damageRed =
+				Config.KARMA_STRICT ? -2e-6 * Math.pow(baseKarma, 2) + 7e-4 * baseKarma + 1 :
+		        -2.5e-6 * Math.pow(baseKarma, 2) + 1;
+		if (damageRed <= 0){
 			damageRed = 0.01;
 		}
 		player.setMetadata("damageRed", damageRed);

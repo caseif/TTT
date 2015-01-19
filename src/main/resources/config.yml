@@ -89,6 +89,10 @@ tbonus: 40
 # Should added or subtracted karma be rounded up to 1 if it is between 0 and 1?
 karma-round-to-one: true
 
+# When strict is off, the damage penalty is very low when people stay above 800.
+# However, beyond this limit it will follow a more parabolic curve, dropping more severely the lower the player's karma.
+karma-strict: true
+
 # Players will be kicked from the round once they reach or go under this karma level. (Set to -1 for no autokick.)
 karma-kick: -1
 
