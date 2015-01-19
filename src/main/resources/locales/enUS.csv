@@ -16,7 +16,6 @@ in-progress|You may not join a round already in progress!
 waiting|Waiting for players...
 arena-invalid|The specified arena has not yet been created or imported!
 round-starting|Round is starting!
-no-kits|You may not use kits whilst in a game!
 creator|creator of TTT
 alpha-tester|alpha tester of TTT
 tester|tester of TTT
@@ -72,7 +71,6 @@ dna-decay|This DNA sample will decay in %
 karma|Karma
 karma-damage|Your karma is %, so you deal % damage this round.
 full|full
-no-pm|You may not send private messages while in a game!
 left-game|has left map %!
 commands|Commands available to you:
 import-help|Imports a world from a given folder into the plugin

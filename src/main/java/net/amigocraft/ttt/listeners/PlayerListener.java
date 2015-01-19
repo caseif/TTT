@@ -189,27 +189,6 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler
-	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e){
-		if (e.getMessage().startsWith("kit")){
-			if (Main.mg.isPlayer(e.getPlayer().getName())){
-				e.setCancelled(true);
-				e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "no-kits"));
-			}
-		}
-		else if (e.getMessage().startsWith("msg") ||
-				e.getMessage().startsWith("tell") ||
-				e.getMessage().startsWith("r") ||
-				e.getMessage().startsWith("msg") ||
-				e.getMessage().startsWith("me")){
-			String p = e.getPlayer().getName();
-			if (Main.mg.isPlayer(p)){
-				e.setCancelled(true);
-				e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "no-pm"));
-			}
-		}
-	}
-
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent e){
 		if (e.getEntityType() == EntityType.PLAYER){

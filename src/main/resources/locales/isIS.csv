@@ -15,7 +15,6 @@ in-progress|Þú mátt ekki fara inn í leik sem er í gangi!
 waiting|Bíð eftir spilurum...
 arena-invalid|Tilgreint vettvangi hefur ekki enn verið búið til eða flutt!
 round-starting|Umferð er að byrja!
-no-kits|Þú mátt ekki nota pakka á meðan þú ert í leik!
 creator|Höfundur af TTT
 alpha-tester|Alfa prófari af TTT
 tester|Prófari af TTT
@@ -72,7 +71,6 @@ dna-decay|Þetta DNA sýni mun rotna eftir %
 karma|Heiðarleiki
 karma-damage|Heiðarleiki þinn er %, svo þú gerir % árásarstig.
 full|fullt
-no-pm|Þú mátt ekki senda einkaskilaboð á meðan þú spilar!
 left-game|fór úr veröldinni %!
 commands|Skipanir sem þú getur gert:
 import-help|Setur inn veröld frá uppgefni möppu í viðbótina

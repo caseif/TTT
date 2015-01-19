@@ -15,7 +15,6 @@ in-progress|Du må ikke tilslutte et spil der er igang!
 waiting|Venter på spillere...
 arena-invalid|Den angivne arena er endnu ikke blevet oprettet eller importeret!
 round-starting|Runden starter!
-no-kits|Du kan ikke bruge kits når du er i spillet!
 creator|laveren af TTT
 alpha-tester|alpha tester af TTT
 tester|tester af TTT
@@ -72,7 +71,6 @@ dna-decay|Denne DNA-prøven vil henfalde om %
 karma|Karma
 karma-damage|Dit karma er %, så du skader % skade denne runde.
 full|fuld
-no-pm|Du må ikke sende private beskeder, mens i et spil!
 left-game|Har forladt kort %!
 commands|Tilgængelige kommandoer for dig:
 import-help|Importerer en verden fra en given mappe ind i pluginnet

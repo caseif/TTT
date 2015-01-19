@@ -28,7 +28,6 @@ import net.amigocraft.mglib.api.Locale;
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.Minigame;
 import net.amigocraft.ttt.Metrics.Graph;
-import net.amigocraft.ttt.listeners.EntityListener;
 import net.amigocraft.ttt.listeners.MGListener;
 import net.amigocraft.ttt.listeners.PlayerListener;
 import net.amigocraft.ttt.listeners.SpecialPlayerListener;
@@ -149,7 +148,6 @@ public class Main extends JavaPlugin {
 		}
 
 		// register events, commands, and the plugin variable
-		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getServer().getPluginManager().registerEvents(new MGListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		getCommand("ttt").setExecutor(new CommandManager());

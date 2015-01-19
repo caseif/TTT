@@ -15,7 +15,6 @@ in-progress|Du kan ikke bli med i et spill som allerede har startet!
 waiting|Venter på spillere...
 arena-invalid|The specified arena has not yet been created or imported!
 round-starting|Runden starter!
-no-kits|Du kan ikke bruke kits mens du spiller!
 creator|skaperen av TTT
 alpha-tester|alphatester av TTT
 tester|tester av TTT
@@ -71,7 +70,6 @@ dna-decay|Denne DNA-prøven vil utløpe om %
 karma|Karma
 karma-damage|Din karma er %, så du gjør % skade denne runden.
 full|fullt
-no-pm|Du kan ikke sende private meldinger mens du spiller!
 left-game|har forlatt banen %!
 offline|Denne pluginen støtter ikke offline spillere!
 bungee|Serveren bruker trolig BungeeCord, og tillater pluginen å laste

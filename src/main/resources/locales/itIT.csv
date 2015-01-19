@@ -15,7 +15,6 @@ in-progress|Non puoi entrare in un game gia in progresso!
 waiting|Aspettando per altri players...
 arena-invalid|L'arena specificato non è ancora stato creato o importato!
 round-starting|Il game sta iniziando!
-no-kits|Non puoi usare i kits mentre sei ingame!
 creator|creatore di Trouble in Terrorist Town
 alpha-tester|alpha tester di Trouble in Terrorist Town
 tester|tester di Trouble in Terrorist Town
@@ -72,7 +71,6 @@ dna-decay|Questo campione di DNA scomparira tra' %
 karma|Karma
 karma-damage|Il tuo Karma e' %, quindi affronti % di danno questo round.
 full|pieno
-no-pm|Non puoi mandare messaggi privati ingame!
 left-game|e' uscito dalla mappa %!
 commands|Comandi a cui hai accesso:
 import-help|Importa un mondo dalla cartella dentro il plugin

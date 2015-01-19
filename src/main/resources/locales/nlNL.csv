@@ -15,7 +15,6 @@ in-progress|Je mag een spel dat al bezig is niet joinen!
 waiting|Wachten op spelers...
 arena-invalid|De opgegeven arena is nog niet gemaakt of geïmporteerd!
 round-starting|De ronde begint!
-no-kits|Je mag geen kits gebruiken terwijl je in het spel bent!
 creator|Maker van TTT
 alpha-tester|alpha tester van TTT
 tester|tester van TTT
@@ -72,7 +71,6 @@ dna-decay|Dit DNA monster zal vergaan over %
 karma|Karma
 karma-damage|Jou karma is %, dus jij richt in deze ronde % schade aan.
 full|vol
-no-pm|Je mag geen priveberichten sturen, terwijl in een spel!
 left-game|heeft map % over!
 commands|Opdrachten voor u beschikbaar:
 import-help|Invoer een wereld van een bepaalde map in de plugin

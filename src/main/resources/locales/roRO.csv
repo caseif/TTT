@@ -15,7 +15,6 @@ in-progress|Nu poti intra intr-un joc dejea inceput!
 waiting|Astept playeri
 arena-invalid|Arena specificat nu a fost încă creat sau importat!
 round-starting|Runda incepe, pregateste-te!
-no-kits|Nu poti folosii kit-uri intr-un joc!
 creator|creatorul TTT
 alpha-tester|tester-ul alpha TTT
 tester|tester-ul TTT
@@ -72,7 +71,6 @@ dna-decay|Acest DNA se va distruge %
 karma|Karma
 karma-damage|Karma ta este %, deci te descurci % daune această rundă.
 full|plin
-no-pm|Nu poti trimite mesaje private intr-un joc!
 left-game|A iesit din mapa %!
 commands|Comenzile disponibile pentru tine:
 import-help|Importurile-o lume dintr-un anumit dosar în plugin-ul

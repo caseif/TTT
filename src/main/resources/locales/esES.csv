@@ -15,7 +15,6 @@ in-progress|No te puedes unir a una partida en progreso!
 waiting|Esperando a los jugadores...
 arena-invalid|La arena se especifica aún no se ha creado o importado!
 round-starting|Ronda iniciada!
-no-kits|No puedes usar kits en juego!
 creator|creador de TTT
 alpha-tester|alpha tester de TTT
 tester|testeador de TTT
@@ -72,7 +71,6 @@ dna-decay|Esta muestra de ADN decaerá en %
 karma|Karma
 karma-damage|Tu karma is %, asi que negociaras % de dolor en esta ronda.
 full|Lleno
-no-pm|No puedes enviar mensajes privados mientras juegas!
 left-game|Ha salido del mapa %!
 commands|Estos son los comandos disponibles:
 import-help|Importa los mundos a la carpeta del plugin

@@ -15,7 +15,6 @@ in-progress|Das Spiel hat bereits begonnen!
 waiting|Es wird auf Spieler gewartet..
 arena-invalid|Fehler: Diese Map existiert nicht!
 round-starting|Spiel wird gestartet!
-no-kits|Du kannst im Spiel keine Kits wählen!
 creator|Ersteller von TTT
 alpha-tester|Alpha Tester von TTT
 tester|Tester von TTT
@@ -72,7 +71,6 @@ dna-decay|Diese DNA Probe wird in % verschwinden
 karma|Karma
 karma-damage|Deine Karma ist % also machst du % Schaden in dieser Runde
 full|voll
-no-pm|Du darfst keine Privaten Nachrichten schicken während du in einem Spiel bist
 left-game|hat die Map % verlassen!
 commands|Verfügbare Befehle für du:
 import-help|Imports eine Welt aus einem bestimmten Ordner in zu den Plugin
