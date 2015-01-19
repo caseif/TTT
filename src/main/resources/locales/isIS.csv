@@ -70,7 +70,7 @@ dna-scanner|DNA Skannari
 killer-left|Morðingi þessa spilara er ekki lengur í leiknum!
 dna-decay|Þetta DNA sýni mun rotna eftir %
 karma|Heiðarleiki
-karma-damage|Heiðarleiki þinn er %, svo þú gerir & árásarstig.
+karma-damage|Heiðarleiki þinn er %, svo þú gerir % árásarstig.
 full|fullt
 no-pm|Þú mátt ekki senda einkaskilaboð á meðan þú spilar!
 left-game|fór úr veröldinni %!
@@ -80,8 +80,10 @@ join-help|Lætur þig fara í ákveðnan leik
 quit-help|Tekur þig úr leik sem þú ert í
 spawn-help|Setur byrjunarstaðinn á enda leiks til staðinn sem þú ert á
 help-help|Sýnir hjálp valmynd
+permaban|Þú hefur verið bannaður að eilífu frá TTT á þessum server
 karma-permaban|Þú hefur verið bannaður að eilífu frá TTT á þessum server því heiðarleiki hefur fallið niður fyrir %
-karma-ban|Þú hefur verið bannaður frá TTT á þessum vefþjón útaf & því heiðarleiki hefur fallið niður fyrir %
+ban|Þú hefur verið bannaður frá TTT á þessum vefþjón útaf %
+karma-ban|Þú hefur verið bannaður frá TTT á þessum vefþjón útaf % því heiðarleiki hefur fallið niður fyrir %
 karma-kick|Þú hefur sjálfkrafa verið tekinn úr leiknum því heiðarleiki hefur fallið fyrir neðan %
 ban-fail|Mistókst að hlaða banni fyrir %
 folder-rename|Pre-0.5 gagna mappa ("Trouble In Terrorist Town") fundin. Þetta verður sjálfkrafa endurnefnt sem "TTT." Samt, það verður að vera handvikrt breytt til baka ef þú villt breyta til baka í pre-0.5 gerð.

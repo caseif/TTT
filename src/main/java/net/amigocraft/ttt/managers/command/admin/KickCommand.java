@@ -45,17 +45,17 @@ public class KickCommand extends SubcommandHandler {
 			if (mp != null){
 				try {
 					mp.removeFromRound();
-					mp.getBukkitPlayer().sendMessage(ChatColor.DARK_PURPLE + "[TTT] You have been kicked from your current round!");
+					mp.getBukkitPlayer().sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + Main.locale.getMessage("kick"));
 				}
 				catch (NoSuchPlayerException ex){
-					sender.sendMessage(ChatColor.RED + "[TTT] The specified player is not in a round!"); // shouldn't ever happen
+					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("player-not-in-round")); // shouldn't ever happen
 				}
 				catch (PlayerOfflineException ex){
-					sender.sendMessage(ChatColor.RED + "[TTT] The specified player is not online!");
+					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("player-offline"));
 				}
 			}
 			else
-				sender.sendMessage(ChatColor.RED + "[TTT] The specified player is not in a round!");
+				sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("player-not-in-round"));
 		}
 		else
 			sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-1"));

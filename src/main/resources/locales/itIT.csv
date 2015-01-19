@@ -70,7 +70,7 @@ dna-scanner|Scanner di DNA
 killer-left|L'assassino di questa partita non e' piu' ingame!
 dna-decay|Questo campione di DNA scomparira tra' %
 karma|Karma
-karma-damage|Il tuo Karma e' %, quindi affronti & di danno questo round.
+karma-damage|Il tuo Karma e' %, quindi affronti % di danno questo round.
 full|pieno
 no-pm|Non puoi mandare messaggi privati ingame!
 left-game|e' uscito dalla mappa %!
@@ -80,8 +80,10 @@ join-help|Entra in un gioco esistente
 quit-help|Esci da un gioco esistente
 spawn-help|Setta il punto di uscita di un gioco
 help-help|Mostra il menu di aiuto
+permaban|Sei stato bannato permanente dal usare questo minigame su questo server
 karma-permaban|Sei stato bannato permanente dal usare questo minigame su questo server perche' il tuo karma e' sceso sotto %
-karma-ban|Sei stato bannato dal usare questo minigame su questo server perche' il tuo karma e' sceso sotto %
+ban|Sei stato bannato dal usare questo minigame su questo server per %
+karma-ban|Sei stato bannato dal usare questo minigame su questo server per % perche' il tuo karma e' sceso sotto %
 karma-kick|Sei stato rimosso automaticamente dal gioco perche' il tuo karma e' sceso sotto %
 ban-fail|Impossibile creare il ban per %
 folder-rename|Cartella dati pre-0.5 ("Trouble In Terrorist Town") rilevata. Verra' automaticamente rinominata in "TTT." Tuttavia, dovrai rinominarla manualmente se desideri tornare alla versione pre-0.5.

@@ -148,12 +148,12 @@ public class KarmaManager {
 				MiscUtil.ban(p.getUniqueId(), Config.KARMA_BAN_TIME);
 				if (Config.KARMA_BAN_TIME < 0){
 					p.sendMessage(ChatColor.DARK_PURPLE +
-							Main.locale.getMessage("karma-permaban").replace("%", Config.KARMA_KICK + "."));
+							Main.locale.getMessage("karma-permaban").replace("%", Config.KARMA_KICK + ""));
 				}
 				else {
 					p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-ban")
-							.replace("&", Integer.toString(Config.KARMA_BAN_TIME))
-							.replace("%", Config.KARMA_KICK + "."));
+							.replaceFirst("%", Integer.toString(Config.KARMA_BAN_TIME))
+							.replaceFirst("%", Config.KARMA_KICK + ""));
 				}
 			}
 			else {

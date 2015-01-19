@@ -70,7 +70,7 @@ dna-scanner|DNA Scanner
 killer-left|De moordenaar van deze speler is niet langer in het spel.
 dna-decay|Dit DNA monster zal vergaan over %
 karma|Karma
-karma-damage|Jou karma is %, dus jij richt in deze ronde & schade aan.
+karma-damage|Jou karma is %, dus jij richt in deze ronde % schade aan.
 full|vol
 no-pm|Je mag geen priveberichten sturen, terwijl in een spel!
 left-game|heeft map % over!
@@ -80,8 +80,10 @@ join-help|Voert u in een bepaald spel
 quit-help|Verwijdert u van uw huidige spel
 spawn-help|Stelt het spawn point na ronde uitgang naar uw huidige locatie
 help-help|Geeft deze help menu
+permaban|Je bent permanent verbannen van het gebruik van TTT op deze server
 karma-permaban|Je bent permanent verbannen van het gebruik van TTT op deze server, omdat je karma onder % is gedaald
-karma-ban|Je bent verbannen van het gebruik van TTT op deze server voor en omdat je karma onder % is gedaald
+ban|Je bent verbannen van het gebruik van TTT op deze server voor %
+karma-ban|Je bent verbannen van het gebruik van TTT op deze server voor % omdat je karma onder % is gedaald
 karma-kick|U bent automatisch verwijderd uit de ronde omdat je karma onder % is gedaald
 ban-fail|Mislukt speler verbod voor % registreren
 folder-rename|Pre-0.5 map data ("Trouble In Terrorist Town") gedetecteerd. Dit zal automatisch worden hernoemd naar "TTT." Het zal echter moeten handmatig worden gewijzigd terug als u wenst om terug te schakelen naar een pre-0.5 versie.

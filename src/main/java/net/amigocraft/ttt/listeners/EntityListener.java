@@ -30,6 +30,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
+//TODO: remove this in the next commit
 public class EntityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)

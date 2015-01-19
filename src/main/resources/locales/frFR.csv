@@ -70,7 +70,7 @@ dna-scanner|Scanner ADN
 killer-left|Le tueur de ce joueur n'est plus dans le jeu!
 dna-decay|Cet échantillon d'ADN se décomposera en %
 karma|karma
-karma-damage|Votre karma est %, donc vous traitez et endommager ce tour.
+karma-damage|Votre karma est %, donc vous traitez % endommager ce tour.
 full|Complet
 no-pm|Vous ne pouvez pas envoyer de messages privés alors que dans un jeu!
 left-game|a laissé carte %!
@@ -80,8 +80,10 @@ join-help|Vous entrez dans un jeu donné
 quit-help|Vous supprime de la partie actuel
 spawn-help|Définit le point de spawn à la sortie ronde de votre position actuelle
 help-help|Affiche le menu d'aide
+peramban|Vous avez était définitivement banni par TTT sur ce serveur
 karma-permaban|Vous avez était définitivement banni par TTT sur ce serveur parce que votre karma est descendu trop bas
-karma-ban|Vous avez était banni par TTT sur ce serveur pendant & parce que votre karma est descendu trop bas %
+ban|Vous avez était banni par TTT sur ce serveur pendant %
+karma-ban|Vous avez était banni par TTT sur ce serveur pendant % parce que votre karma est descendu trop bas %
 karma-kick|Vous avait été automatiquement enlevé de ce tour parce que votre karma est descendu trop bas
 ban-fail|Impossible d'inscrire le ban du joueur pendant
 folder-rename|Dossier Pre-0.5 ("Trouble In Terrorist Town") détecté. Cela va renommer automatiquement en "TTT". Cependant, il doit être fait manuellement si vous retournez en Pre-0.5.

@@ -64,11 +64,11 @@ public class SetExitCommand extends SubcommandHandler {
 					Main.mg.getConfigManager().setDefaultExitLocation(
 							new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5)
 					);
-					sender.sendMessage(ChatColor.DARK_PURPLE + "Successfully set TTT return point!");
+					sender.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("set-exit"));
 				}
 				catch (Exception ex){
 					ex.printStackTrace();
-					sender.sendMessage(ChatColor.RED + "An error occurred while setting the TTT return point.");
+					sender.sendMessage(ChatColor.RED + Main.locale.getMessage("error-setting-exit"));
 				}
 			}
 			else {

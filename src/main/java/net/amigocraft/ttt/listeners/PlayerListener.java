@@ -23,6 +23,9 @@
  */
 package net.amigocraft.ttt.listeners;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.api.Location3D;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Stage;
@@ -32,7 +35,6 @@ import net.amigocraft.ttt.Config;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
 import net.amigocraft.ttt.util.InventoryUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -98,19 +100,19 @@ public class PlayerListener implements Listener {
 								Body b = Main.bodies.get(index);
 								MGPlayer bodyPlayer = Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer());
 								if (b.getTeam().equals("Innocent")){
-									Main.mg.getRound(b.getArena()).broadcast(ChatColor.DARK_GREEN + e.getPlayer().getName() + " " +
-											Main.locale.getMessage("found-body").replace("%", b.getPlayer()) + ". " +
-											Main.locale.getMessage("was-innocent"));
+									Main.mg.getRound(b.getArena()).broadcast(INNOCENT_COLOR + e.getPlayer().getName() + " " +
+											getMessage(INNOCENT_COLOR, "found-body", false, b.getPlayer()) + ". " +
+											getMessage(INNOCENT_COLOR, "was-innocent", false));
 								}
 								else if (b.getTeam().equals("Traitor")){
-									Main.mg.getRound(b.getArena()).broadcast(ChatColor.DARK_RED + e.getPlayer().getName() + " " +
-											Main.locale.getMessage("found-body").replace("%", b.getPlayer()) + ". " +
-											Main.locale.getMessage("was-traitor"));
+									Main.mg.getRound(b.getArena()).broadcast(TRAITOR_COLOR + e.getPlayer().getName() + " " +
+											getMessage(TRAITOR_COLOR, "found-body", false, b.getPlayer()) + ". " +
+											getMessage(TRAITOR_COLOR, "was-traitor", false));
 								}
 								else {
-									Main.mg.getRound(b.getArena()).broadcast(ChatColor.BLUE + e.getPlayer().getName() + " " +
-											Main.locale.getMessage("found-body").replace("%", b.getPlayer()) + ". " +
-											Main.locale.getMessage("was-detective"));
+									Main.mg.getRound(b.getArena()).broadcast(DETECTIVE_COLOR + e.getPlayer().getName() + " " +
+											getMessage(DETECTIVE_COLOR, "found-body", false).replace("%", b.getPlayer()) + ". " +
+											getMessage(DETECTIVE_COLOR, "was-detective", false));
 								}
 								Main.foundBodies.add(Main.bodies.get(index));
 								if (bodyPlayer != null && bodyPlayer.getArena().equals(Main.bodies.get(index).getArena())){
@@ -129,7 +131,7 @@ public class PlayerListener implements Listener {
 										e.getPlayer().getItemInHand().getItemMeta() != null &&
 										e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null &&
 										e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(
-												"§1" + Main.locale.getMessage("dna-scanner"))
+												getMessage(DETECTIVE_COLOR, "dna-scanner", false))
 										){
 									e.setCancelled(true);
 									Player killer = Main.plugin.getServer().getPlayer(
@@ -140,15 +142,15 @@ public class PlayerListener implements Listener {
 											if (!Main.mg.getMGPlayer(killer.getName()).isSpectating()){
 												player.setMetadata("tracking", killer.getName());
 											}
-											e.getPlayer().sendMessage(ChatColor.BLUE + Main.locale.getMessage("collected-sample")
+											e.getPlayer().sendMessage(getMessage(INFO_COLOR, "collected-sample")
 													.replace("%", Main.bodies.get(index).getPlayer()));
 										}
 										else {
-											e.getPlayer().sendMessage(ChatColor.BLUE + Main.locale.getMessage("killer-left"));
+											e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "killer-left"));
 										}
 									}
 									else {
-										e.getPlayer().sendMessage(ChatColor.BLUE + Main.locale.getMessage("killer-left"));
+										e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "killer-left"));
 									}
 									return;
 								}
@@ -177,7 +179,7 @@ public class PlayerListener implements Listener {
 									e.getPlayer().launchProjectile(Arrow.class);
 								}
 								else {
-									e.getPlayer().sendMessage(ChatColor.RED + Main.locale.getMessage("need-ammo"));
+									e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "need-ammo"));
 								}
 							}
 						}
@@ -192,7 +194,7 @@ public class PlayerListener implements Listener {
 		if (e.getMessage().startsWith("kit")){
 			if (Main.mg.isPlayer(e.getPlayer().getName())){
 				e.setCancelled(true);
-				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("no-kits"));
+				e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "no-kits"));
 			}
 		}
 		else if (e.getMessage().startsWith("msg") ||
@@ -203,7 +205,7 @@ public class PlayerListener implements Listener {
 			String p = e.getPlayer().getName();
 			if (Main.mg.isPlayer(p)){
 				e.setCancelled(true);
-				e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("no-pm"));
+				e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "no-pm"));
 			}
 		}
 	}
@@ -265,7 +267,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerDropItem(PlayerDropItemEvent e){
 		if (Main.mg.isPlayer(e.getPlayer().getName())){
 			e.setCancelled(true);
-			e.getPlayer().sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("no-drop"));
+			e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "no-drop"));
 		}
 	}
 
@@ -276,13 +278,13 @@ public class PlayerListener implements Listener {
 		}
 		if (e.getPlayer().hasPermission("ttt.build.warn")){
 			if (Main.stability.equals("unstable")){
-				e.getPlayer().sendMessage(ChatColor.DARK_RED + "[TTT] " + Main.locale.getMessage("unstable-build"));
+				e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "unstable-build"));
 			}
 			else if (Main.stability.equals("unknown")){
-				e.getPlayer().sendMessage(ChatColor.DARK_RED + "[TTT] " + Main.locale.getMessage("unknown-build"));
+				e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "unknown-build"));
 			}
 			else if (Main.stability.equals("pre")){
-				e.getPlayer().sendMessage(ChatColor.DARK_RED + "[TTT] " + Main.locale.getMessage("prerelease"));
+				e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "prerelease"));
 			}
 		}
 	}
@@ -310,11 +312,11 @@ public class PlayerListener implements Listener {
 			MGPlayer mp = Main.mg.getMGPlayer(e.getPlayer().getName());
 			if (mp.hasMetadata("Detective")){
 				final Player player = e.getPlayer();
-				e.getPlayer().setDisplayName(ChatColor.DARK_BLUE + "[Detective] " + ChatColor.DARK_BLUE + e.getPlayer().getDisplayName());
+				e.getPlayer().setDisplayName(DETECTIVE_COLOR + "[Detective] " + DETECTIVE_COLOR + e.getPlayer().getDisplayName());
 				Main.plugin.getServer().getScheduler().runTask(Main.plugin, new Runnable() {
 					public void run(){
 						String name = player.getDisplayName();
-						name = name.replace(ChatColor.DARK_BLUE + "[Detective] " + ChatColor.DARK_BLUE, "");
+						name = name.replace(DETECTIVE_COLOR + "[Detective] " + DETECTIVE_COLOR, "");
 						player.setDisplayName(name);
 					}
 				});

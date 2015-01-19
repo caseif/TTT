@@ -70,7 +70,7 @@ dna-scanner|DNA Scanner
 killer-left|Ucigasul acestui player a iesit din joc!
 dna-decay|Acest DNA se va distruge %
 karma|Karma
-karma-damage|Karma ta este %, asa ca ai luptat si ai primit in aceasta lupta!
+karma-damage|Karma ta este %, deci te descurci % daune această rundă.
 full|plin
 no-pm|Nu poti trimite mesaje private intr-un joc!
 left-game|A iesit din mapa %!
@@ -80,8 +80,10 @@ alature-help|Va intra într-un anumit joc
 renuntat-help|Te scoate din joc curent
 spawn-help|Seteaza punctul de spawn la iesirea rotund la locatia curenta
 help-help|Afiseaza acest meniu de ajutor
+permaban|Ai au fost interzise definitiv de la folosirea TTT pe acest server
 karma-permaban|Ai au fost interzise definitiv de la folosirea TTT pe acest server, deoarece karma ta a scazut sub %
-karma-ban|Ai au fost interzise de la utilizarea TTT pe acest server pentru & deoarece karma ta a scazut sub %
+ban|Ai au fost interzise de la utilizarea TTT pe acest server pentru %
+karma-ban|Ai au fost interzise de la utilizarea TTT pe acest server pentru % deoarece karma ta a scazut sub %
 karma-kick|Ai au fost eliminate în mod automat din runda, deoarece karma ta a scazut sub %
 ban-fail|Nu a reusit sa se înregistreze ban jucator pentru %
 folder-rename|Un Pre-0.5 TTT folder a fost gasit. Acesta va fi redenumit ca "TTT". Chiar daca , va trebuii schimbat inapoi daca doresti sa te intorci la pre-0.5 version.

@@ -26,6 +26,7 @@ package net.amigocraft.ttt.util;
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.ttt.Main;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -60,6 +61,18 @@ public class MiscUtil {
 			ex.printStackTrace();
 			Main.mg.log(Main.locale.getMessage("ban-fail").replace("%", player.toString()), LogLevel.WARNING);
 		}
+	}
+
+	public static String getMessage(ChatColor color, String key, boolean prefix, String... replacements) {
+		String s = Main.locale.getMessage(key);
+		for (String rep : replacements) {
+			s.replaceFirst("%", rep + color);
+		}
+		return color + (prefix ? "[TTT] " : "") + s;
+	}
+
+	public static String getMessage(ChatColor color, String key, String... replacements) {
+		return getMessage(color, key, true, replacements);
 	}
 
 }

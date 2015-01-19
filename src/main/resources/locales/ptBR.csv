@@ -70,7 +70,7 @@ dna-scanner|Scanner de DNA
 killer-left|O assasino deste jogador não esta mais jogando!
 dna-decay|Esta amostra ira estragar em %
 karma|Carma
-karma-damage|Seu karma é de %, assim você levará danos nesta rodada.
+karma-damage|Seu karma é de %, assim você levará danos % nesta rodada.
 full|Cheia
 no-pm|Você não pode enviar mensagens privadas, enquanto em um jogo!
 left-game|deixou mapa %!
@@ -80,8 +80,10 @@ join-help|Você entra em um determinado jogo
 quit-help|Remove você da partida atual
 spawn-help|Define o ponto de spawn para a sua localização atual
 help-help|Mostra este menu de ajuda
+permaban|Você foi banido permanentemente de usar TTT neste servidor
 karma-permaban|Você foi banido permanentemente de usar TTT neste servidor, porque o seu karma caiu abaixo %
-karma-ban|Você foi banido de usar a TTT no servidor de e porque o seu karma caiu abaixo %
+ban|Você foi banido de usar a TTT no servidor de %
+karma-ban|Você foi banido de usar a TTT no servidor de % porque o seu karma caiu abaixo %
 karma-kick|Você foi automaticamente removido da rodada, porque o seu karma caiu abaixo %
 ban-fail|Falha ao registrar proibição jogador para %
 folder-rename|Pré-0.5 pasta de dados ("Trouble In Terrorist Town") detectada. Esta será automaticamente renomeada para "TTT". No entanto, ele terá de ser alterado manualmente para trás, se você quiser voltar para uma versão pré-0.5.

@@ -94,8 +94,7 @@ public class Main extends JavaPlugin {
 		}
 		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !compatibleMethod || !Minigame.isMGLibCompatible("0.3.0")){
 			MGLIB = false;
-			Main.log.info(ANSI_RED + "This version of TTT requires MGLib version 0.3.0 or higher. You can download and install it from " +
-					"http://dev.bukkit.org/bukkit-plugins/mglib/. Note that TTT *will not function* without it!" + ANSI_WHITE);
+			Main.log.info(ANSI_RED + Main.locale.getMessage("mglib-required") + ANSI_WHITE);
 			getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
 			getCommand("ttt").setExecutor(new SpecialCommandManager());
 			return;
@@ -137,7 +136,7 @@ public class Main extends JavaPlugin {
 					w = Bukkit.createWorld(new WorldCreator(spawnYaml.getString("world")));
 				}
 				if (w == null){
-					mg.log("Failed to set default exit location!", LogLevel.WARNING);
+					mg.log(Main.locale.getMessage("error-setting-exit"), LogLevel.WARNING);
 				}
 				else {
 					cm.setDefaultExitLocation(new Location(w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z")));
@@ -146,7 +145,7 @@ public class Main extends JavaPlugin {
 		}
 		catch (Exception ex){
 			ex.printStackTrace();
-			mg.log("Failed to load default exit location from disk!", LogLevel.WARNING);
+			mg.log(Main.locale.getMessage("error-loading-exit"), LogLevel.WARNING);
 		}
 
 		// register events, commands, and the plugin variable

@@ -23,7 +23,7 @@
  */
 package net.amigocraft.ttt;
 
-public class Config {
+public final class Config {
 
 	public static final double DETECTIVE_RATIO;
 	public static final int MAXIMUM_PLAYERS;
@@ -126,8 +126,7 @@ public class Config {
 	}
 
 	public static String getString(String a){
-		String value = Main.plugin.getConfig().getString(a);
-		return value;
+		return Main.plugin.getConfig().getString(a);
 	}
 
 	public static boolean getBoolean(String a){

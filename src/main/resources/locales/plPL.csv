@@ -69,7 +69,7 @@ dna-scanner|DNA Skaner
 killer-left|Zabojca tego gracza nie jest juz w grze!
 dna-decay|Ta probka DNA ulegnie rozpadowi w %
 karma|Karma
-karma-damage|Twoja Karma wynosi %, zadales & obrazen w tej rundzie.
+karma-damage|Twoja Karma wynosi %, zadales % obrazen w tej rundzie.
 full|pelna
 no-pm|Nie mozesz wylac prywatnej wiadomosci w trakcie gry!
 left-game|opuscil mape %!
@@ -79,7 +79,9 @@ join-help|Dolaczasz do wybranej gry
 quit-help|Usuwa Cie z danej gry
 spawn-help|Sets the spawn point upon round exit to your current location
 help-help|Pokazuje menu pomocy
+permaban|Nie mozesz grac na TTT permamentnie
 karma-permaban|Nie mozesz grac na TTT permamentnie poniewaz twoja Karma spadla ponizej %
+ban|Nie mozesz grac na TTT przez %
 karma-ban|Nie mozesz grac na TTT przez % poniewaz twoja Karma spadla ponizej %
 karma-kick|Zostales automatycznie usuniety z gry poniewaz twoja karma spadla ponizej %
 ban-fail|Failed to register player ban for %

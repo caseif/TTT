@@ -1,17 +1,18 @@
 key|message|comments*
 *Comments are ignored by the plugin
 no-permission|You do not have permission to do this!
-no-permission-join|You do not have permission to join a game!
-no-permission-quit|You do not have permission to leave a game!
+no-permission-join|You do not have permission to join a round!
+no-permission-quit|You do not have permission to leave a round!
 no-permission-import|You do not have permission to import a map!
 usage-1|Usage: /ttt [command]
 usage-join|Usage: /ttt join [world name]
 usage-import|Usage: /ttt import [world name]
 invalid-args-1|Too few arguments! Type /ttt help for help
 invalid-args-2|Invalid arguments! Type /ttt help for help
-not-in-game|You are not currently in a game!
+help-command|Type /ttt help for help
+not-in-game|You are not currently in a round!
 must-be-ingame|You must be an ingame player to perform this command!
-in-progress|You may not join a game already in progress!
+in-progress|You may not join a round already in progress!
 waiting|Waiting for players...
 arena-invalid|The specified arena has not yet been created or imported!
 round-starting|Round is starting!
@@ -69,7 +70,7 @@ dna-scanner|DNA Scanner
 killer-left|The killer of this player is no longer in the game!
 dna-decay|This DNA sample will decay in %
 karma|Karma
-karma-damage|Your karma is %, so you deal & damage this round.
+karma-damage|Your karma is %, so you deal % damage this round.
 full|full
 no-pm|You may not send private messages while in a game!
 left-game|has left map %!
@@ -79,9 +80,12 @@ join-help|Enters you into a given game
 quit-help|Removes you from your current game
 spawn-help|Sets the exit point upon round exit to your current location
 help-help|Displays this help menu
+permaban|You have been permanently banned from using TTT on this server
 karma-permaban|You have been permanently banned from using TTT on this server because your karma has fallen below %
-karma-ban|You have been banned from using TTT on this server for & because your karma has fallen below %
-karma-kick|You have been automatically removed from the round because your karma has fallen below %
+ban|You have been banned from using TTT on this server for %
+karma-ban|You have been banned from using TTT on this server for % because your karma has fallen below %
+banned-until|You have been banned from using TTT on this server until %
+karma-autokick|You have been automatically removed from the round because your karma has fallen below %
 ban-fail|Failed to register player ban for %
 folder-rename|Pre-0.5 data folder ("Trouble In Terrorist Town") detected. This will be automatically renamed to "TTT." However, it will need to be manually changed back if you wish to switch back to a pre-0.5 version.
 folder-rename-error|An error occurred while renaming the data folder. You may need to do this manually.
@@ -118,3 +122,19 @@ addspawn-help|Adds a spawn to the specified arena. Three coordinates and optiona
 removespawn-help|Removes a spawn from the specified arena. Three coordinates and optionally a world may be provided. If no extra arguments are provided, the sender's location will be used. A single index may also be used.
 same-world|You must be in the same world as the arena!
 exception|An internal error occured while performing the requested task.
+mglib-required|This version of TTT requires MGLib version 0.3.0 or higher. You can download and install it from http://dev.bukkit.org/bukkit-plugins/mglib/. Note that TTT will not function without it!
+is-disabled|TTT is currently disabled!
+uuid-fail|Failed to get player UUID!
+ban-time-number|Ban time must be a number!
+no-round-in-arena|Cannot find a round in arena %!
+kick|You have been kicked from the current round
+player-not-in-round|The specified player is not in a round!
+player-offline|The specified player is not online!
+set-preparing|Set stage in arena % to preparing
+set-playing|Set stage in arena % to playing
+no-such-round|Cannot find a round in arena %!
+set-exit|Successfully set TTT exit point!
+error-setting-exit|An error occurred while setting the TTT exit point
+error-loading-exit|Failed to load default exit location from disk!
+ttt-version|This server is running TTT version % by %
+trackee-left-round|The player you're tracking has left the round!

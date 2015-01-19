@@ -47,10 +47,12 @@ public class StartCommand extends SubcommandHandler {
 					r.setPlayingTime(Integer.parseInt(args[2]));
 				r.setStage(Stage.PREPARING); // force player reset
 				r.setTime(r.getPreparationTime() + 1); // this is a weird way of doing things but it should only stay preparing for less than 1 tick
-				sender.sendMessage(ChatColor.GREEN + "[TTT] Set stage in arena " + ChatColor.ITALIC + r.getArena() + ChatColor.GREEN + " to playing");
+				sender.sendMessage(ChatColor.GREEN + "[TTT] " +
+						Main.locale.getMessage("set-playing").replace("%", ChatColor.ITALIC + r.getArena() + ChatColor.GREEN));
 			}
 			else
-				sender.sendMessage(ChatColor.RED + "[TTT] Cannot find a round in arena " + ChatColor.ITALIC + arena + ChatColor.RED + "!");
+				sender.sendMessage(ChatColor.RED + "[TTT] " +
+						Main.locale.getMessage("no-such-round").replace("%", ChatColor.ITALIC + arena + ChatColor.RED));
 		}
 		else
 			sender.sendMessage(ChatColor.RED + "[TTT]" + Main.locale.getMessage("invalid-args-1"));

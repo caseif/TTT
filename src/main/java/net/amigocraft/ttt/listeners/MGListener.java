@@ -23,6 +23,9 @@
  */
 package net.amigocraft.ttt.listeners;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.api.*;
 import net.amigocraft.mglib.event.player.MGPlayerDeathEvent;
 import net.amigocraft.mglib.event.player.PlayerJoinMinigameRoundEvent;
@@ -59,7 +62,7 @@ public class MGListener implements Listener {
 
 	@EventHandler
 	public void onMinigameRoundPrepareEvent(MinigameRoundPrepareEvent e){
-		e.getRound().broadcast(ChatColor.DARK_PURPLE + Main.locale.getMessage("round-starting"));
+		e.getRound().broadcast(getMessage(INFO_COLOR, "round-starting"));
 		if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
 			ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
 			for (MGPlayer mp : e.getRound().getPlayerList()){
@@ -84,21 +87,21 @@ public class MGListener implements Listener {
 					}
 				}
 				else {
-					String m = ChatColor.DARK_PURPLE + "[TTT] ";
+					String m;
 					if (unbanTime == -1){
-						m += Main.locale.getMessage("karma-permaban");
+						m = getMessage(ERROR_COLOR, "permaban");
 					}
-					Calendar cal = Calendar.getInstance();
-					cal.setTimeInMillis(unbanTime * 1000);
-					String year = Integer.toString(cal.get(Calendar.YEAR) + 1);
-					String month = Integer.toString(cal.get(Calendar.MONTH) + 1);
-					String day = Integer.toString(cal.get(Calendar.DAY_OF_MONTH));
-					String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
-					String min = Integer.toString(cal.get(Calendar.MINUTE));
-					String sec = Integer.toString(cal.get(Calendar.SECOND));
-					m += Main.locale.getMessage("karma-ban") + " " +
-							hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" +
-							year + ".";
+					else {
+						Calendar cal = Calendar.getInstance();
+						cal.setTimeInMillis(unbanTime * 1000);
+						String year = Integer.toString(cal.get(Calendar.YEAR) + 1);
+						String month = Integer.toString(cal.get(Calendar.MONTH) + 1);
+						String day = Integer.toString(cal.get(Calendar.DAY_OF_MONTH));
+						String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
+						String min = Integer.toString(cal.get(Calendar.MINUTE));
+						String sec = Integer.toString(cal.get(Calendar.SECOND));
+						m = getMessage(ERROR_COLOR, "banned-until", hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + ".");
+					}
 					e.getPlayer().getBukkitPlayer().sendMessage(m);
 					e.getPlayer().removeFromRound();
 					return;
@@ -126,31 +129,30 @@ public class MGListener implements Listener {
 		@SuppressWarnings("static-access")
 		UUID uuid = Main.mg.getOnlineUUIDs().get(e.getPlayer().getName());
 		if (Main.creator.contains(uuid)){
-			addition = ", " + ChatColor.DARK_RED + Main.locale.getMessage("creator") + "," + ChatColor.DARK_PURPLE;
+			addition = ", " + getMessage(TRAITOR_COLOR, "creator") + "," + INFO_COLOR;
 		}
 		if (Main.alpha.contains(uuid) && Main.translators.contains(uuid)){
-			addition += ", " + ChatColor.DARK_RED + Main.locale.getMessage("alpha-tester") + ", " +
-					Main.locale.getMessage("translator") + "," + ChatColor.DARK_PURPLE;
+			addition += ", " +
+					getMessage(TRAITOR_COLOR, "alpha-tester") + ", " +
+					getMessage(TRAITOR_COLOR, "translator") + "," + INFO_COLOR;
 		}
 		else if (Main.testers.contains(uuid) && Main.translators.contains(uuid)){
-			addition += ", " + ChatColor.DARK_RED + Main.locale.getMessage("tester") + ", " +
-					Main.locale.getMessage("translator") + "," + ChatColor.DARK_PURPLE;
+			addition += ", " + getMessage(TRAITOR_COLOR, "tester") + ", " +
+					Main.locale.getMessage("translator") + "," + INFO_COLOR;
 		}
 		else if (Main.alpha.contains(uuid)){
-			addition += ", " + ChatColor.DARK_RED + Main.locale.getMessage("alpha-tester") + "," + ChatColor.DARK_PURPLE;
+			addition += ", " + getMessage(TRAITOR_COLOR, "alpha-tester") + "," + INFO_COLOR;
 		}
 		else if (Main.testers.contains(uuid)){
-			addition += ", " + ChatColor.DARK_RED + Main.locale.getMessage("tester") + "," +
-					ChatColor.DARK_PURPLE;
+			addition += ", " + getMessage(TRAITOR_COLOR, "tester") + "," + INFO_COLOR;
 		}
 		else if (Main.translators.contains(uuid)){
-			addition += ", " + ChatColor.DARK_RED + Main.locale.getMessage("translator") + "," +
-					ChatColor.DARK_PURPLE;
+			addition += ", " + getMessage(TRAITOR_COLOR, "translator") + "," + INFO_COLOR;
 		}
-		Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "[TTT] " + e.getPlayer().getName() + addition + " " +
-				Main.locale.getMessage("joined-map") + " \"" + e.getRound().getDisplayName() + "\"");
+		Bukkit.broadcastMessage(e.getPlayer().getName() + addition + " " +
+				getMessage(INFO_COLOR, "joined-map") + " \"" + e.getRound().getDisplayName() + "\"");
 
-		e.getPlayer().getBukkitPlayer().sendMessage(ChatColor.GREEN + Main.locale.getMessage("success-join") + " " + e.getRound().getDisplayName());
+		e.getPlayer().getBukkitPlayer().sendMessage(getMessage(INFO_COLOR, "success-join") + " " + e.getRound().getDisplayName());
 	}
 
 	@EventHandler
@@ -160,8 +162,8 @@ public class MGListener implements Listener {
 		KarmaManager.saveKarma(e.getPlayer());
 		(e.getPlayer()).setMetadata("displayKarma", e.getPlayer().getMetadata("karma"));
 		if (!e.getRound().hasEnded()){
-			e.getRound().broadcast(ChatColor.DARK_PURPLE + e.getPlayer().getName() + " " +
-					Main.locale.getMessage("left-game").replace("%", e.getPlayer().getRound().getDisplayName()));
+			e.getRound().broadcast(INFO_COLOR + e.getPlayer().getName() + " " +
+					getMessage(INFO_COLOR, "left-game", e.getPlayer().getRound().getDisplayName()));
 		}
 		e.getPlayer().getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
 	}
@@ -174,13 +176,9 @@ public class MGListener implements Listener {
 		//ScoreManager.sbManagers.get(e.getRound().getArena()).manage();
 
 		if (e.getRound().getStage() == Stage.PREPARING){
-			if ((e.getRound().getRemainingTime() % 10) == 0 && e.getRound().getRemainingTime() > 0){
-				e.getRound().broadcast(ChatColor.DARK_PURPLE + Main.locale.getMessage("begin").replace("%", e.getRound().getRemainingTime() + " " +
-						Main.locale.getMessage("seconds") + "!"));
-			}
-			else if (e.getRound().getRemainingTime() > 0 && e.getRound().getRemainingTime() < 10){
-				e.getRound().broadcast(ChatColor.DARK_PURPLE + Main.locale.getMessage("begin").replace("%", e.getRound().getRemainingTime() + " " +
-						Main.locale.getMessage("seconds") + "!"));
+			if (((e.getRound().getRemainingTime() % 10) == 0 || e.getRound().getRemainingTime() < 10) && e.getRound().getRemainingTime() > 0){
+				e.getRound().broadcast(getMessage(INFO_COLOR, "begin", e.getRound().getRemainingTime() + " " +
+						getMessage(INFO_COLOR, "seconds") + "!"));
 			}
 			else if (e.getRound().getRemainingTime() == 0){
 				int players = e.getRound().getPlayers().size();
@@ -194,7 +192,7 @@ public class MGListener implements Listener {
 				List<String> detectives = new ArrayList<String>();
 				for (MGPlayer p : e.getRound().getPlayerList()){
 					innocents.add(p.getName());
-					p.getBukkitPlayer().sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("begun"));
+					p.getBukkitPlayer().sendMessage(getMessage(INFO_COLOR, "begun"));
 				}
 				while (traitorNum < limit){
 					Random randomGenerator = new Random();
@@ -221,23 +219,23 @@ public class MGListener implements Listener {
 				}
 				ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
 				ItemMeta cbMeta = crowbar.getItemMeta();
-				cbMeta.setDisplayName("§5" + Main.locale.getMessage("crowbar"));
+				cbMeta.setDisplayName(getMessage(INFO_COLOR, "crowbar", false));
 				crowbar.setItemMeta(cbMeta);
 				ItemStack gun = new ItemStack(Material.ANVIL, 1);
 				ItemMeta gunMeta = crowbar.getItemMeta();
-				gunMeta.setDisplayName("§5" + Main.locale.getMessage("gun"));
+				gunMeta.setDisplayName(getMessage(INFO_COLOR, "gun", false));
 				gun.setItemMeta(gunMeta);
 				ItemStack ammo = new ItemStack(Material.ARROW, Config.INITIAL_AMMO);
 				ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
 				ItemMeta dnaMeta = dnaScanner.getItemMeta();
-				dnaMeta.setDisplayName("§1" + Main.locale.getMessage("dna-scanner"));
+				dnaMeta.setDisplayName(getMessage(DETECTIVE_COLOR, "dna-scanner", false));
 				dnaScanner.setItemMeta(dnaMeta);
 				for (String s : innocents){
 					Player pl = Main.plugin.getServer().getPlayer(s);
 					MGPlayer player = Main.mg.getMGPlayer(s);
 					if (pl != null && player != null){
 						player.setTeam("Innocent");
-						pl.sendMessage(ChatColor.DARK_GREEN + Main.locale.getMessage("you-are-innocent"));
+						pl.sendMessage(getMessage(INNOCENT_COLOR, "you-are-innocent", false));
 						pl.getInventory().addItem(crowbar, gun, ammo);
 						pl.setHealth(20);
 						pl.setFoodLevel(20);
@@ -252,17 +250,17 @@ public class MGListener implements Listener {
 					MGPlayer player = Main.mg.getMGPlayer(s);
 					if (pl != null && player != null){
 						player.setTeam("Traitor");
-						pl.sendMessage(ChatColor.DARK_RED + Main.locale.getMessage("you-are-traitor"));
+						pl.sendMessage(getMessage(TRAITOR_COLOR, "you-are-traitor", false));
 						if (traitors.size() > 1){
-							pl.sendMessage(ChatColor.DARK_RED + Main.locale.getMessage("allies"));
+							pl.sendMessage(getMessage(TRAITOR_COLOR, "allies", false));
 							for (String tr : traitors){
 								if (!tr.equals(s)){
-									pl.sendMessage(ChatColor.DARK_RED + "- " + tr);
+									pl.sendMessage(TRAITOR_COLOR + "- " + tr);
 								}
 							}
 						}
 						else {
-							pl.sendMessage(ChatColor.DARK_RED + Main.locale.getMessage("alone"));
+							pl.sendMessage(getMessage(TRAITOR_COLOR, "alone", false));
 						}
 						pl.getInventory().addItem(crowbar, gun, ammo);
 						pl.setHealth(20);
@@ -279,7 +277,7 @@ public class MGListener implements Listener {
 					if (pl != null && player != null){
 						player.setTeam("Innocent");
 						player.setMetadata("detective", true);
-						pl.sendMessage(ChatColor.BLUE + Main.locale.getMessage("you-are-detective"));
+						pl.sendMessage(getMessage(DETECTIVE_COLOR, "you-are-detective", false));
 						pl.getInventory().addItem(crowbar, gun, ammo, dnaScanner);
 						pl.setHealth(20);
 						pl.setFoodLevel(20);
@@ -293,12 +291,12 @@ public class MGListener implements Listener {
 				for (MGPlayer mp : e.getRound().getPlayerList()){
 					if (Config.DAMAGE_REDUCTION){
 						KarmaManager.calculateDamageReduction(mp);
-						String percentage = Main.locale.getMessage("full");
+						String percentage = getMessage(INFO_COLOR, "full", false);
 						if ((Double)mp.getMetadata("damageRed") < 1){
 							percentage = Integer.toString((int) ((Double)mp.getMetadata("damageRed") * 100)) + "%";
 						}
-						mp.getBukkitPlayer().sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-damage")
-								.replace("%", Integer.toString((Integer)mp.getMetadata("karma"))).replace("&", percentage));
+						mp.getBukkitPlayer().sendMessage(getMessage(INFO_COLOR, "karma-damage",
+								Integer.toString((Integer)mp.getMetadata("karma")), percentage));
 					}
 				}
 			}
@@ -330,7 +328,7 @@ public class MGListener implements Listener {
 							tracker.setCompassTarget(killer.getLocation());
 						}
 						else {
-							tracker.sendMessage(ChatColor.DARK_PURPLE + "The player you're tracking has left the round!");
+							tracker.sendMessage(getMessage(INFO_COLOR, "trackee-left-round"));
 							p.removeMetadata("tracking");
 							tracker.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 						}
@@ -357,19 +355,19 @@ public class MGListener implements Listener {
 			Round r = e.getRound();
 			int rTime = r.getRemainingTime();
 			if (rTime % 60 == 0 && rTime >= 60){
-				r.broadcast(ChatColor.DARK_PURPLE + Integer.toString(rTime / 60) +
-						" " + Main.locale.getMessage("minutes") + " " +
-						Main.locale.getMessage("left"));
+				r.broadcast(INFO_COLOR + Integer.toString(rTime / 60) + " " +
+						getMessage(INFO_COLOR, "minutes", false) + " " +
+						getMessage(INFO_COLOR, "left", false));
 			}
 			else if (rTime % 10 == 0 && rTime > 10 && rTime < 60){
-				r.broadcast(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " +
-						Main.locale.getMessage("seconds") + " " +
-						Main.locale.getMessage("left"));
+				r.broadcast(INFO_COLOR + Integer.toString(rTime) + " " +
+						getMessage(INFO_COLOR, "seconds", false) + " " +
+						getMessage(INFO_COLOR, "left", false));
 			}
 			else if (rTime < 10 && rTime > 0){
-				r.broadcast(ChatColor.DARK_PURPLE + Integer.toString(rTime) + " " +
-						Main.locale.getMessage("seconds") + " " +
-						Main.locale.getMessage("left"));
+				r.broadcast(INFO_COLOR + Integer.toString(rTime) + " " +
+						getMessage(INFO_COLOR, "seconds", false) + " " +
+						getMessage(INFO_COLOR, "left", false));
 			}
 			//TODO: this loop is probably an unnecessary artifact but I'm leaving it for now in case removing it causes odd side-effects
 			for (MGPlayer mp : e.getRound().getPlayerList()){
@@ -406,14 +404,10 @@ public class MGListener implements Listener {
 		KarmaManager.allocateKarma(e.getRound());
 
 		if (!e.getRound().hasMetadata("t-victory") || e.getRound().getMetadata("t-victory") == Boolean.FALSE){
-			Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "[TTT] " +
-					Main.locale.getMessage("innocent-win").replace("%", "\"" + e.getRound().getDisplayName() + "\"") +
-					"!");
+			Bukkit.broadcastMessage(getMessage(INNOCENT_COLOR, "innocent-win", ChatColor.ITALIC + e.getRound().getDisplayName()) + "!");
 		}
 		else {
-			Bukkit.broadcastMessage(ChatColor.DARK_RED + "[TTT] " +
-					Main.locale.getMessage("traitor-win").replace("%", "\"" + e.getRound().getDisplayName() + "\"") +
-					"!");
+			Bukkit.broadcastMessage(getMessage(TRAITOR_COLOR, "traitor-win", ChatColor.ITALIC + e.getRound().getDisplayName()) + "!");
 		}
 		for (Entity ent : Bukkit.getWorld(e.getRound().getWorld()).getEntities()){
 			if (ent.getType() == EntityType.ARROW){
@@ -453,9 +447,9 @@ public class MGListener implements Listener {
 		// player identifier
 		ItemStack id = new ItemStack(Material.PAPER, 1);
 		ItemMeta idMeta = id.getItemMeta();
-		idMeta.setDisplayName(Main.locale.getMessage("id"));
+		idMeta.setDisplayName(getMessage(ChatColor.RESET, "id", false));
 		List<String> idLore = new ArrayList<String>();
-		idLore.add(Main.locale.getMessage("body-of"));
+		idLore.add(getMessage(ChatColor.RESET, "body-of", false));
 		idLore.add(e.getPlayer().getName());
 		idMeta.setLore(idLore);
 		id.setItemMeta(idMeta);
@@ -463,24 +457,24 @@ public class MGListener implements Listener {
 		ItemStack ti = new ItemStack(Material.WOOL, 1);
 		ItemMeta tiMeta = ti.getItemMeta();
 		if (e.getPlayer().hasMetadata("detective")){
-			ti.setDurability((short) 11);
-			tiMeta.setDisplayName("§1" + Main.locale.getMessage("detective"));
+			ti.setDurability((short)11);
+			tiMeta.setDisplayName(getMessage(DETECTIVE_COLOR, "detective", false));
 			List<String> lore = new ArrayList<String>();
 			lore.add(Main.locale.getMessage("detective-id"));
 			tiMeta.setLore(lore);
 		}
 		else if (e.getPlayer().getTeam() == null || e.getPlayer().getTeam().equals("Innocent")){
 			ti.setDurability((short) 5);
-			tiMeta.setDisplayName("§2" + Main.locale.getMessage("innocent"));
+			tiMeta.setDisplayName(getMessage(INNOCENT_COLOR, "innocent", false));
 			List<String> tiLore = new ArrayList<String>();
-			tiLore.add(Main.locale.getMessage("innocent-id"));
+			tiLore.add(getMessage(ChatColor.RESET, "innocent-id", false));
 			tiMeta.setLore(tiLore);
 		}
 		else {
 			ti.setDurability((short) 14);
-			tiMeta.setDisplayName("§4" + Main.locale.getMessage("traitor"));
+			tiMeta.setDisplayName(getMessage(TRAITOR_COLOR, "traitor", false));
 			List<String> lore = new ArrayList<String>();
-			lore.add(Main.locale.getMessage("traitor-id"));
+			lore.add(getMessage(ChatColor.RESET, "traitor-id", false));
 			tiMeta.setLore(lore);
 		}
 		ti.setItemMeta(tiMeta);

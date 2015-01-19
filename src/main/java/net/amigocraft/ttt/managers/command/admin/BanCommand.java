@@ -23,13 +23,14 @@
  */
 package net.amigocraft.ttt.managers.command.admin;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.UUIDFetcher;
-import net.amigocraft.ttt.Main;
-import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.MiscUtil;
 import net.amigocraft.ttt.util.NumUtil;
-import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.util.UUID;
@@ -49,31 +50,27 @@ public class BanCommand extends SubcommandHandler {
 				if (args.length > 2){
 					if (NumUtil.isInt(args[2])){
 						time = Integer.parseInt(args[2]);
-						try {
-							UUID uuid = UUIDFetcher.getUUIDOf(name);
-							if (uuid == null)
-								throw new Exception();
-							MiscUtil.ban(uuid, time);
-						}
-						catch (Exception ex){
-							sender.sendMessage("Failed to get player UUID!");
-						}
 					}
 					else {
-						sender.sendMessage(ChatColor.RED + "[TTT] Ban time must be a number!");
+						sender.sendMessage(getMessage(ERROR_COLOR, "ban-time-number"));
 						return;
 					}
 				}
 				try {
-					MiscUtil.ban(UUIDFetcher.getUUIDOf(name), time);
+					UUID uuid = UUIDFetcher.getUUIDOf(name);
+					if (uuid == null)
+						throw new Exception();
+					MiscUtil.ban(uuid, time);
+					Bukkit.getPlayer(uuid).sendMessage(
+							(time == -1 ? getMessage(ERROR_COLOR, "permaban") : getMessage(ERROR_COLOR, "ban", time + ""))
+					);
 				}
 				catch (Exception ex){
-					ex.printStackTrace();
-					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("exception"));
+					sender.sendMessage(getMessage(ERROR_COLOR, "uuid-fail"));
 				}
 			}
 		}
 		else
-			sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-1"));
+			sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-1"));
 	}
 }

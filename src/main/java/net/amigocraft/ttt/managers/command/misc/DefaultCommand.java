@@ -36,8 +36,9 @@ public class DefaultCommand extends SubcommandHandler {
 
 	@Override
 	public void handle(){
-		sender.sendMessage(ChatColor.LIGHT_PURPLE + "This server is running TTT version " +
-				Main.plugin.getDescription().getVersion() + " by Maxim Roncacé.");
-		sender.sendMessage(ChatColor.LIGHT_PURPLE + "Type \"/ttt help\" for help.");
+		sender.sendMessage(ChatColor.LIGHT_PURPLE + Main.locale.getMessage("ttt-version")
+						.replaceFirst("%", Main.plugin.getDescription().getVersion())
+						.replaceFirst("%", "Maxim Roncacé"));
+		sender.sendMessage(ChatColor.LIGHT_PURPLE + Main.locale.getMessage("help-command"));
 	}
 }

@@ -48,11 +48,12 @@ public class PrepareCommand extends SubcommandHandler {
 				r.setStage(Stage.PREPARING);
 				r.setTime(0); // this is automatic in MGLib 0.3.1 but I'd rather not bump the required version for something so simple
 				// resetting the players is handled by MGListener
-				sender.sendMessage(ChatColor.GREEN + "[TTT] Set stage in arena " + ChatColor.ITALIC + r.getArena() + ChatColor.GREEN +
-						" to preparing");
+				sender.sendMessage(ChatColor.GREEN + "[TTT] " +
+						Main.locale.getMessage("set-preparing").replace("%", ChatColor.ITALIC + r.getArena() + ChatColor.GREEN));
 			}
 			else
-				sender.sendMessage(ChatColor.RED + "[TTT] Cannot find a round in arena " + ChatColor.ITALIC + arena + ChatColor.RED + "!");
+				sender.sendMessage(ChatColor.RED + "[TTT] " +
+						Main.locale.getMessage("no-such-round").replace("%", ChatColor.ITALIC + arena + ChatColor.RED));
 		}
 		else
 			sender.sendMessage(ChatColor.RED + "[TTT]" + Main.locale.getMessage("invalid-args-1"));
