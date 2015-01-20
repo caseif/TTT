@@ -23,12 +23,14 @@
  */
 package net.amigocraft.ttt.managers.command.admin;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.exception.NoSuchPlayerException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class KickCommand extends SubcommandHandler {
@@ -45,19 +47,20 @@ public class KickCommand extends SubcommandHandler {
 			if (mp != null){
 				try {
 					mp.removeFromRound();
-					mp.getBukkitPlayer().sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + Main.locale.getMessage("kick"));
+					mp.getBukkitPlayer().sendMessage(getMessage(INFO_COLOR, "kick"));
+					sender.sendMessage(getMessage(INFO_COLOR, "player-kicked", mp.getBukkitPlayer().getName()));
 				}
 				catch (NoSuchPlayerException ex){
-					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("player-not-in-round")); // shouldn't ever happen
+					sender.sendMessage(getMessage(ERROR_COLOR, "player-not-in-round")); // shouldn't ever happen
 				}
 				catch (PlayerOfflineException ex){
-					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("player-offline"));
+					sender.sendMessage(getMessage(ERROR_COLOR, "player-offline"));
 				}
 			}
 			else
-				sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("player-not-in-round"));
+				sender.sendMessage(getMessage(ERROR_COLOR, "player-not-in-round"));
 		}
 		else
-			sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-1"));
+			sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-1"));
 	}
 }

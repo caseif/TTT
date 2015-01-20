@@ -100,7 +100,8 @@ public class MGListener implements Listener {
 						String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
 						String min = Integer.toString(cal.get(Calendar.MINUTE));
 						String sec = Integer.toString(cal.get(Calendar.SECOND));
-						m = getMessage(ERROR_COLOR, "banned-until", hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + ".");
+						m = getMessage(ERROR_COLOR, "banned-until", hour + ":" + min + ":" + sec + " on " + month +
+								"/" + day + "/" + year + ".");
 					}
 					e.getPlayer().getBukkitPlayer().sendMessage(m);
 					e.getPlayer().removeFromRound();
@@ -404,10 +405,12 @@ public class MGListener implements Listener {
 		KarmaManager.allocateKarma(e.getRound());
 
 		if (!e.getRound().hasMetadata("t-victory") || e.getRound().getMetadata("t-victory") == Boolean.FALSE){
-			Bukkit.broadcastMessage(getMessage(INNOCENT_COLOR, "innocent-win", ChatColor.ITALIC + e.getRound().getDisplayName()) + "!");
+			Bukkit.broadcastMessage(getMessage(INNOCENT_COLOR, "innocent-win", ARENA_COLOR +
+					e.getRound().getDisplayName()) + "!");
 		}
 		else {
-			Bukkit.broadcastMessage(getMessage(TRAITOR_COLOR, "traitor-win", ChatColor.ITALIC + e.getRound().getDisplayName()) + "!");
+			Bukkit.broadcastMessage(getMessage(TRAITOR_COLOR, "traitor-win", ARENA_COLOR +
+					e.getRound().getDisplayName()) + "!");
 		}
 		for (Entity ent : Bukkit.getWorld(e.getRound().getWorld()).getEntities()){
 			if (ent.getType() == EntityType.ARROW){

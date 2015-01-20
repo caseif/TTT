@@ -55,9 +55,9 @@ inv-load-error|Fehler: Inventar konnte nicht geladen werden!
 left|hat das Spiel verlassen!
 rollback|Die Welt wurde zurückgesetzt!
 found-body|hat den Körper von % gefunden!
-was-innocent|Dieser Spieler war ein Innocent.
-was-traitor|Dieser Spieler war ein Verräter!
-was-detective|Dieser Spieler war ein Detektiv.
+was-innocent|Sie waren ein Innocent.
+was-traitor|Sie waren ein Verräter!
+was-detective|Sie waren ein Detektiv.
 need-ammo|Du brauchst mehr Munition!
 discreet|Suche Körper von diskret.
 no-drop|Du kannst im Spiel keine Items droppen!

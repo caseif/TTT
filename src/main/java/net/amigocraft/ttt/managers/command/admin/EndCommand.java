@@ -23,11 +23,13 @@
  */
 package net.amigocraft.ttt.managers.command.admin;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.api.Stage;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class EndCommand extends SubcommandHandler {
@@ -48,16 +50,16 @@ public class EndCommand extends SubcommandHandler {
 					else if (args[2].equalsIgnoreCase("i"))
 						r.setMetadata("t-victory", false);
 					else {
-						sender.sendMessage(ChatColor.RED + "[TTT]" + Main.locale.getMessage("invalid-args-2"));
+						sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-2"));
 						return;
 					}
 				}
 				r.end();
 			}
 			else
-				sender.sendMessage(ChatColor.RED + "[TTT]  " + ChatColor.ITALIC + arena + ChatColor.RED + "!");
+				sender.sendMessage(getMessage(ERROR_COLOR, "no-active-round", ARENA_COLOR + r.getArena()));
 		}
 		else
-			sender.sendMessage(ChatColor.RED + "[TTT]" + Main.locale.getMessage("invalid-args-1"));
+			sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-1"));
 	}
 }

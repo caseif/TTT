@@ -100,29 +100,26 @@ public class PlayerListener implements Listener {
 								Body b = Main.bodies.get(index);
 								MGPlayer bodyPlayer = Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer());
 								if (b.getTeam().equals("Innocent")){
-									Main.mg.getRound(b.getArena()).broadcast(INNOCENT_COLOR + e.getPlayer().getName() + " " +
-											getMessage(INNOCENT_COLOR, "found-body", false, b.getPlayer()) + ". " +
-											getMessage(INNOCENT_COLOR, "was-innocent", false));
+									Main.mg.getRound(b.getArena()).broadcast(INNOCENT_COLOR + e.getPlayer().getName() +
+											" " + getMessage(INNOCENT_COLOR, "found-body", false, b.getPlayer()) +
+											". " + getMessage(INNOCENT_COLOR, "was-innocent", false));
 								}
 								else if (b.getTeam().equals("Traitor")){
-									Main.mg.getRound(b.getArena()).broadcast(TRAITOR_COLOR + e.getPlayer().getName() + " " +
-											getMessage(TRAITOR_COLOR, "found-body", false, b.getPlayer()) + ". " +
-											getMessage(TRAITOR_COLOR, "was-traitor", false));
+									Main.mg.getRound(b.getArena()).broadcast(TRAITOR_COLOR + e.getPlayer().getName() +
+											" " + getMessage(TRAITOR_COLOR, "found-body", false, b.getPlayer()) +
+											". " + getMessage(TRAITOR_COLOR, "was-traitor", false));
 								}
 								else {
-									Main.mg.getRound(b.getArena()).broadcast(DETECTIVE_COLOR + e.getPlayer().getName() + " " +
-											getMessage(DETECTIVE_COLOR, "found-body", false).replace("%", b.getPlayer()) + ". " +
-											getMessage(DETECTIVE_COLOR, "was-detective", false));
+									Main.mg.getRound(b.getArena()).broadcast(DETECTIVE_COLOR + e.getPlayer().getName() +
+											" " + getMessage(DETECTIVE_COLOR, "found-body", false, b.getPlayer()) +
+											". " + getMessage(DETECTIVE_COLOR, "was-detective", false));
 								}
 								Main.foundBodies.add(Main.bodies.get(index));
 								if (bodyPlayer != null && bodyPlayer.getArena().equals(Main.bodies.get(index).getArena())){
-									bodyPlayer.setPrefix("§m");
+									bodyPlayer.setPrefix(Config.SB_ALIVE_PREFIX);
 									bodyPlayer.setMetadata("bodyFound", true);
 									if (ScoreManager.sbManagers.containsKey(bodyPlayer.getArena()))
 										ScoreManager.sbManagers.get(bodyPlayer.getArena()).update(bodyPlayer);
-									else
-										for (String s : ScoreManager.sbManagers.keySet())
-											System.out.println(bodyPlayer.getArena() + ", " + s);
 								}
 							}
 							if (player.hasMetadata("detective")){ // handle DNA scanning

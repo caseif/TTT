@@ -62,7 +62,9 @@ public class BanCommand extends SubcommandHandler {
 						throw new Exception();
 					MiscUtil.ban(uuid, time);
 					Bukkit.getPlayer(uuid).sendMessage(
-							(time == -1 ? getMessage(ERROR_COLOR, "permaban") : getMessage(ERROR_COLOR, "ban", time + ""))
+							time == -1 ?
+									getMessage(ERROR_COLOR, "permaban") :
+									getMessage(ERROR_COLOR, "ban", time + "")
 					);
 				}
 				catch (Exception ex){

@@ -55,9 +55,9 @@ inv-load-error|Failed to load stored inventory!
 left|left in the game!
 rollback|Successfully rolled back world!
 found-body|found the body of %
-was-innocent|He was innocent.
-was-traitor|He was a traitor!
-was-detective|He was a detective.
+was-innocent|They were innocent.
+was-traitor|They were a traitor!
+was-detective|They were a detective.
 need-ammo|You need more ammo!
 discreet|Searching body discreetly
 no-drop|You may not drop items while in a game!
@@ -126,6 +126,7 @@ uuid-fail|Failed to get player UUID!
 ban-time-number|Ban time must be a number!
 no-round-in-arena|Cannot find a round in arena %!
 kick|You have been kicked from the current round
+player-kicked|% has been kicked from their current round.
 player-not-in-round|The specified player is not in a round!
 player-offline|The specified player is not online!
 set-preparing|Set stage in arena % to preparing
@@ -136,3 +137,4 @@ error-setting-exit|An error occurred while setting the TTT exit point
 error-loading-exit|Failed to load default exit location from disk!
 ttt-version|This server is running TTT version % by %
 trackee-left-round|The player you're tracking has left the round!
+no-active-round|Arena % does not contain an active round!

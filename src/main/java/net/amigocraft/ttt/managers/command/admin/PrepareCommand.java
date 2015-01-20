@@ -23,12 +23,14 @@
  */
 package net.amigocraft.ttt.managers.command.admin;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.api.Stage;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.NumUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class PrepareCommand extends SubcommandHandler {
@@ -48,14 +50,12 @@ public class PrepareCommand extends SubcommandHandler {
 				r.setStage(Stage.PREPARING);
 				r.setTime(0); // this is automatic in MGLib 0.3.1 but I'd rather not bump the required version for something so simple
 				// resetting the players is handled by MGListener
-				sender.sendMessage(ChatColor.GREEN + "[TTT] " +
-						Main.locale.getMessage("set-preparing").replace("%", ChatColor.ITALIC + r.getArena() + ChatColor.GREEN));
+				sender.sendMessage(getMessage(INFO_COLOR, "set-preparing", ARENA_COLOR + r.getArena()));
 			}
 			else
-				sender.sendMessage(ChatColor.RED + "[TTT] " +
-						Main.locale.getMessage("no-such-round").replace("%", ChatColor.ITALIC + arena + ChatColor.RED));
+				sender.sendMessage(getMessage(ERROR_COLOR, "no-such-round", ARENA_COLOR + arena));
 		}
 		else
-			sender.sendMessage(ChatColor.RED + "[TTT]" + Main.locale.getMessage("invalid-args-1"));
+			sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-1"));
 	}
 }

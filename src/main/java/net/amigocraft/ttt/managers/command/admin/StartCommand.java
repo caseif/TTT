@@ -23,12 +23,14 @@
  */
 package net.amigocraft.ttt.managers.command.admin;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.api.Stage;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.NumUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class StartCommand extends SubcommandHandler {
@@ -46,15 +48,14 @@ public class StartCommand extends SubcommandHandler {
 				if (args.length > 2 && NumUtil.isInt(args[2]))
 					r.setPlayingTime(Integer.parseInt(args[2]));
 				r.setStage(Stage.PREPARING); // force player reset
-				r.setTime(r.getPreparationTime() + 1); // this is a weird way of doing things but it should only stay preparing for less than 1 tick
-				sender.sendMessage(ChatColor.GREEN + "[TTT] " +
-						Main.locale.getMessage("set-playing").replace("%", ChatColor.ITALIC + r.getArena() + ChatColor.GREEN));
+				// this is a weird way of doing things but it should only stay preparing for less than 1 tick
+				r.setTime(r.getPreparationTime() + 1);
+				sender.sendMessage(getMessage(INFO_COLOR, "set-playing", ARENA_COLOR + r.getArena()));
 			}
 			else
-				sender.sendMessage(ChatColor.RED + "[TTT] " +
-						Main.locale.getMessage("no-such-round").replace("%", ChatColor.ITALIC + arena + ChatColor.RED));
+				sender.sendMessage(getMessage(ERROR_COLOR, "no-such-round", ARENA_COLOR + arena));
 		}
 		else
-			sender.sendMessage(ChatColor.RED + "[TTT]" + Main.locale.getMessage("invalid-args-1"));
+			sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-1"));
 	}
 }
