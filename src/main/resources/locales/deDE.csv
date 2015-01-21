@@ -13,7 +13,7 @@ not-in-game|Sie sind in keinem Spiel!
 must-be-ingame|Sie können diesen Befehl nur in einem Spiel ausführen!
 in-progress|Das Spiel hat bereits begonnen!
 waiting|Es wird auf Spieler gewartet..
-arena-invalid|Fehler: Diese Map existiert nicht!
+arena-invalid|Fehler: diese Map existiert nicht!
 round-starting|Spiel wird gestartet!
 creator|Ersteller von TTT
 alpha-tester|Alpha Tester von TTT
@@ -82,7 +82,7 @@ permaban|Sie würden dauerhaft von der Nutzung TTT auf diesem Server verboten
 karma-permaban|Sie würden dauerhaft von der Nutzung TTT auf diesem Server verboten, weil Ihr Karma unter % gesunken ist
 ban|Ihr Nutzung von TTT auf diesem Server für % wurde verboten
 karma-ban|Ihr Nutzung von TTT auf diesem Server für % wurde verboten, weil Ihr Karma unter % gesunken ist
-karma-kick|You were automatically removed from the round because your karma is below 550
+karma-kick|Sie wurde automatisch entfernt haben, weil Ihr Karma unter % gesunken ist
 ban-fail|Fehler beim Player-Verbot für % registrieren
 folder-rename|Pre-0.5 Daten-Ordner ("Trouble In Terrorist Town") erkannt. Dadurch wird automatisch umbenannt werden "TTT". Allerdings wird es brauchen, um manuell geändert werden, wenn Sie zurück zu wechseln zurück zu einem pre-0.5-Version wünschen.
 folder-rename-error|Fehler beim Umbenennen der Daten-Ordner. Möglicherweise müssen Sie dies manuell tun.
@@ -116,4 +116,21 @@ addspawn-help|Fügt eine Ausgeburt an die angegebene Arena. Drei Koordinaten und
 removespawn-help|Entfernt einen Spawn aus dem angegebenen Bereich. Drei Koordinaten und gegebenenfalls eine Welt bereitgestellt werden. Wenn keine zusätzlichen Argumente angegeben werden, wird Standort des Absenders verwendet werden. Ein einzelner Index kann auch verwendet werden.
 same-world|Sie müssen in der gleichen Welt wie die Arena zu sein!
 exception|Ein interner Fehler hat während der Durchführung dieser Befehl aufgetreten.
-mglib-required|Diese Version von TTT erforderlich MGLIB Version 0.3.0 oder höher. Man kann es herunderladen von http://dev.bukkit.org/bukkit-plugins/mglib. Beachten Sie, dass TTT ohne es wird nicht funkzuneiren!
+mglib-required|Diese Version von TTT erforderlich MGLib Version 0.3.0 oder höher. Man kann es herunderladen von http://dev.bukkit.org/bukkit-plugins/mglib. Beachten Sie, dass TTT ohne es wird nicht funkzuneiren!
+is-disabled|TTT ist zur Zeit deakteviert!
+uuid-fail|Könnte nickt Spieler UUID erhalten!
+ban-time-number|Verbot-Zeit muss ein Nummer sein!
+no-round-in-arena|Könnte nicht eine Runde in Arena % gefunden!
+kick|Sie haben von den gegenwärtige Runde gekickt
+player-kicked|% war von den gegenwärtige Runde gekickt
+player-not-in-round|Der spezifiziert Spieler ist nicht in eine Runde!
+player-offline|Der spezifiziert Spieler ist nicht online!
+set-preparing|Gesetzt Bühne in Runde % zu vorbereitung
+set-playing|Gesetzt Bühne in Runde % zu spielen
+no-such-round|Können eine Runde in Arena % nicht gefunden!
+set-exit|Erfolgreich gesetzt TTT Abfahrt-Punkt!
+error-setting-exit|Ein Fehler hat aufgetreten, während die Abfahrt-Punkt gesetzt.
+error-setting-exit|Könnte nicht voreinstellen Abfahrt-Punkt von der Festplatte laden!
+ttt-version|Dieser Server ausgeführt wird % von %
+trackee-left-round|Der Spieler der Sie verfolgen hat die Runde verlassen!
+no-active-round|Arena % enthält keine aktive Runde!
