@@ -58,7 +58,7 @@ public class CreateArenaCommand extends SubcommandHandler {
 					z = ((Player)sender).getLocation().getBlockZ();
 				}
 				else {
-					sender.sendMessage(getMessage(ERROR_COLOR, "must-be-ingame"));
+					sender.sendMessage(getMessage("must-be-ingame", ERROR_COLOR));
 					return;
 				}
 			}
@@ -70,12 +70,12 @@ public class CreateArenaCommand extends SubcommandHandler {
 					w = args[5];
 				}
 				else {
-					sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-2"));
+					sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
 					return;
 				}
 			}
 			else {
-				sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-2"));
+				sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
 				return;
 			}
 			try {
@@ -86,7 +86,7 @@ public class CreateArenaCommand extends SubcommandHandler {
 			}
 		}
 		else{
-			sender.sendMessage(getMessage(ERROR_COLOR, "no-permission"));
+			sender.sendMessage(getMessage("no-permission", ERROR_COLOR));
 		}
 	}
 }

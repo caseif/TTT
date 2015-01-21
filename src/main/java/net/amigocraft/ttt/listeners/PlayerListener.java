@@ -76,7 +76,7 @@ public class PlayerListener implements Listener {
 								Inventory inv = Main.plugin.getServer().createInventory(chestInv.getHolder(), chestInv.getSize());
 								inv.setContents(chestInv.getContents());
 								e.getPlayer().openInventory(inv);
-								e.getPlayer().sendMessage(getMessage(INFO_COLOR, "discreet"));
+								e.getPlayer().sendMessage(getMessage("discreet", INFO_COLOR));
 								break;
 							}
 						}
@@ -102,18 +102,18 @@ public class PlayerListener implements Listener {
 								MGPlayer bodyPlayer = Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer());
 								if (b.getTeam().equals("Innocent")){
 									Main.mg.getRound(b.getArena()).broadcast(INNOCENT_COLOR + e.getPlayer().getName() +
-											" " + getMessage(INNOCENT_COLOR, "found-body", false, b.getPlayer()) +
-											". " + getMessage(INNOCENT_COLOR, "was-innocent", false));
+											" " + getMessage("found-body", INNOCENT_COLOR, false, b.getPlayer()) +
+											". " + getMessage("was-innocent", INNOCENT_COLOR, false));
 								}
 								else if (b.getTeam().equals("Traitor")){
 									Main.mg.getRound(b.getArena()).broadcast(TRAITOR_COLOR + e.getPlayer().getName() +
-											" " + getMessage(TRAITOR_COLOR, "found-body", false, b.getPlayer()) +
-											". " + getMessage(TRAITOR_COLOR, "was-traitor", false));
+											" " + getMessage("found-body", TRAITOR_COLOR, false, b.getPlayer()) +
+											". " + getMessage("was-traitor", TRAITOR_COLOR, false));
 								}
 								else {
 									Main.mg.getRound(b.getArena()).broadcast(DETECTIVE_COLOR + e.getPlayer().getName() +
-											" " + getMessage(DETECTIVE_COLOR, "found-body", false, b.getPlayer()) +
-											". " + getMessage(DETECTIVE_COLOR, "was-detective", false));
+											" " + getMessage("found-body", DETECTIVE_COLOR, false, b.getPlayer()) +
+											". " + getMessage("was-detective", DETECTIVE_COLOR, false));
 								}
 								Main.foundBodies.add(Main.bodies.get(index));
 								if (bodyPlayer != null && bodyPlayer.getArena().equals(Main.bodies.get(index).getArena())){
@@ -129,7 +129,7 @@ public class PlayerListener implements Listener {
 										e.getPlayer().getItemInHand().getItemMeta() != null &&
 										e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null &&
 										e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(
-												getMessage(DETECTIVE_COLOR, "dna-scanner", false))
+												getMessage("dna-scanner", DETECTIVE_COLOR, false))
 										){
 									e.setCancelled(true);
 									Player killer = Main.plugin.getServer().getPlayer(
@@ -140,15 +140,15 @@ public class PlayerListener implements Listener {
 											if (!Main.mg.getMGPlayer(killer.getName()).isSpectating()){
 												player.setMetadata("tracking", killer.getName());
 											}
-											e.getPlayer().sendMessage(getMessage(INFO_COLOR, "collected-sample")
+											e.getPlayer().sendMessage(getMessage("collected-sample", INFO_COLOR)
 													.replace("%", Main.bodies.get(index).getPlayer()));
 										}
 										else {
-											e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "killer-left"));
+											e.getPlayer().sendMessage(getMessage("killer-left", ERROR_COLOR));
 										}
 									}
 									else {
-										e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "killer-left"));
+										e.getPlayer().sendMessage(getMessage("killer-left", ERROR_COLOR));
 									}
 									return;
 								}
@@ -177,7 +177,7 @@ public class PlayerListener implements Listener {
 									e.getPlayer().launchProjectile(Arrow.class);
 								}
 								else {
-									e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "need-ammo"));
+									e.getPlayer().sendMessage(getMessage("need-ammo", ERROR_COLOR));
 								}
 							}
 						}
@@ -244,7 +244,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerDropItem(PlayerDropItemEvent e){
 		if (Main.mg.isPlayer(e.getPlayer().getName())){
 			e.setCancelled(true);
-			e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "no-drop"));
+			e.getPlayer().sendMessage(getMessage("no-drop", ERROR_COLOR));
 		}
 	}
 
@@ -255,13 +255,13 @@ public class PlayerListener implements Listener {
 		}
 		if (e.getPlayer().hasPermission("ttt.build.warn")){
 			if (Main.stability.equals("unstable")){
-				e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "unstable-build"));
+				e.getPlayer().sendMessage(getMessage("unstable-build", ERROR_COLOR));
 			}
 			else if (Main.stability.equals("unknown")){
-				e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "unknown-build"));
+				e.getPlayer().sendMessage(getMessage("unknown-build", ERROR_COLOR));
 			}
 			else if (Main.stability.equals("pre")){
-				e.getPlayer().sendMessage(getMessage(ERROR_COLOR, "prerelease"));
+				e.getPlayer().sendMessage(getMessage("prerelease", ERROR_COLOR));
 			}
 		}
 	}

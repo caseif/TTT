@@ -50,12 +50,12 @@ public class StartCommand extends SubcommandHandler {
 				r.setStage(Stage.PREPARING); // force player reset
 				// this is a weird way of doing things but it should only stay preparing for less than 1 tick
 				r.setTime(r.getPreparationTime() + 1);
-				sender.sendMessage(getMessage(INFO_COLOR, "set-playing", ARENA_COLOR + r.getArena()));
+				sender.sendMessage(getMessage("set-playing", INFO_COLOR, ARENA_COLOR + r.getArena()));
 			}
 			else
-				sender.sendMessage(getMessage(ERROR_COLOR, "no-such-round", ARENA_COLOR + arena));
+				sender.sendMessage(getMessage("no-such-round", ERROR_COLOR, ARENA_COLOR + arena));
 		}
 		else
-			sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-1"));
+			sender.sendMessage(getMessage("invalid-args-1", ERROR_COLOR));
 	}
 }

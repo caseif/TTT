@@ -52,7 +52,7 @@ public class LeaveCommand extends SubcommandHandler {
 						mp.removeFromRound();
 					}
 					catch (NoSuchPlayerException ex){
-						sender.sendMessage(getMessage(ERROR_COLOR, "not-in-game"));
+						sender.sendMessage(getMessage("not-in-game", ERROR_COLOR));
 					}
 					catch (PlayerOfflineException ex){
 						ex.printStackTrace();
@@ -61,15 +61,15 @@ public class LeaveCommand extends SubcommandHandler {
 					//		Main.locale.getMessage("left-game").replace("%", arena));
 				}
 				else {
-					sender.sendMessage(getMessage(ERROR_COLOR, "not-in-game"));
+					sender.sendMessage(getMessage("not-in-game", ERROR_COLOR));
 				}
 			}
 			else {
-				sender.sendMessage(getMessage(ERROR_COLOR, "no-permission-quit"));
+				sender.sendMessage(getMessage("no-permission-quit", ERROR_COLOR));
 			}
 		}
 		else {
-			sender.sendMessage(getMessage(ERROR_COLOR, "must-be-ingame"));
+			sender.sendMessage(getMessage("must-be-ingame", ERROR_COLOR));
 		}
 	}
 }

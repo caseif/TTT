@@ -52,7 +52,7 @@ public class BanCommand extends SubcommandHandler {
 						time = Integer.parseInt(args[2]);
 					}
 					else {
-						sender.sendMessage(getMessage(ERROR_COLOR, "ban-time-number"));
+						sender.sendMessage(getMessage("ban-time-number", ERROR_COLOR));
 						return;
 					}
 				}
@@ -63,16 +63,16 @@ public class BanCommand extends SubcommandHandler {
 					MiscUtil.ban(uuid, time);
 					Bukkit.getPlayer(uuid).sendMessage(
 							time == -1 ?
-									getMessage(ERROR_COLOR, "permaban") :
-									getMessage(ERROR_COLOR, "ban", time + "")
+									getMessage("permaban", ERROR_COLOR) :
+									getMessage("ban", ERROR_COLOR, time + "")
 					);
 				}
 				catch (Exception ex){
-					sender.sendMessage(getMessage(ERROR_COLOR, "uuid-fail"));
+					sender.sendMessage(getMessage("uuid-fail", ERROR_COLOR));
 				}
 			}
 		}
 		else
-			sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-1"));
+			sender.sendMessage(getMessage("invalid-args-1", ERROR_COLOR));
 	}
 }
