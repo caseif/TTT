@@ -23,6 +23,9 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.Config;
@@ -49,7 +52,7 @@ public class SetExitCommand extends SubcommandHandler {
 					File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
 					if (!spawnFile.exists()){
 						if (Config.VERBOSE_LOGGING){
-							Main.mg.log("No spawn.yml found, creating...", LogLevel.INFO);
+							Main.mg.log(getMessage(null, "no-spawn-yml", false), LogLevel.INFO);
 						}
 						spawnFile.createNewFile();
 					}
@@ -64,19 +67,19 @@ public class SetExitCommand extends SubcommandHandler {
 					Main.mg.getConfigManager().setDefaultExitLocation(
 							new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5)
 					);
-					sender.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("set-exit"));
+					sender.sendMessage(getMessage(INFO_COLOR, "set-exit"));
 				}
 				catch (Exception ex){
 					ex.printStackTrace();
-					sender.sendMessage(ChatColor.RED + Main.locale.getMessage("error-setting-exit"));
+					sender.sendMessage(getMessage(ERROR_COLOR, "error-setting-exit"));
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + Main.locale.getMessage("must-be-ingame"));
+				sender.sendMessage(getMessage(ERROR_COLOR, "must-be-ingame"));
 			}
 		}
 		else {
-			sender.sendMessage(ChatColor.RED + Main.locale.getMessage("no-permission"));
+			sender.sendMessage(getMessage(ERROR_COLOR, "no-permission"));
 		}
 	}
 }

@@ -23,6 +23,9 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.exception.NoSuchPlayerException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
@@ -49,7 +52,7 @@ public class LeaveCommand extends SubcommandHandler {
 						mp.removeFromRound();
 					}
 					catch (NoSuchPlayerException ex){
-						sender.sendMessage(Main.locale.getMessage("not-in-game"));
+						sender.sendMessage(getMessage(ERROR_COLOR, "not-in-game"));
 					}
 					catch (PlayerOfflineException ex){
 						ex.printStackTrace();
@@ -58,16 +61,15 @@ public class LeaveCommand extends SubcommandHandler {
 					//		Main.locale.getMessage("left-game").replace("%", arena));
 				}
 				else {
-					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("not-in-game"));
+					sender.sendMessage(getMessage(ERROR_COLOR, "not-in-game"));
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + "[TTT] " +
-						Main.locale.getMessage("no-permission-quit"));
+				sender.sendMessage(getMessage(ERROR_COLOR, "no-permission-quit"));
 			}
 		}
 		else {
-			sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("must-be-ingame"));
+			sender.sendMessage(getMessage(ERROR_COLOR, "must-be-ingame"));
 		}
 	}
 }

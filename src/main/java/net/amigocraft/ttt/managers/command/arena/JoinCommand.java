@@ -23,6 +23,9 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.exception.NoSuchArenaException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
@@ -31,7 +34,6 @@ import net.amigocraft.mglib.exception.RoundFullException;
 import net.amigocraft.mglib.misc.JoinResult;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -53,32 +55,31 @@ public class JoinCommand extends SubcommandHandler {
 							r = Main.mg.createRound(args[1]);
 						}
 						JoinResult result = r.addPlayer(sender.getName());
-
 					}
 					catch (NoSuchArenaException ex){
-						sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("arena-invalid"));
+						sender.sendMessage(getMessage(ERROR_COLOR, "arena-invalid"));
 					}
 					catch (PlayerOfflineException ex){ // this should never be able to happen
 						ex.printStackTrace();
 					}
 					catch (PlayerPresentException ex){
-						sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("already-entered"));
+						sender.sendMessage(getMessage(ERROR_COLOR, "already-entered"));
 					}
 					catch (RoundFullException ex){
-						sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("round-full"));
+						sender.sendMessage(getMessage(ERROR_COLOR, "round-full"));
 					}
 				}
 				else {
-					sender.sendMessage(ChatColor.RED + Main.locale.getMessage("invalid-args-1"));
-					sender.sendMessage(ChatColor.RED + Main.locale.getMessage("usage-join"));
+					sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-1"));
+					sender.sendMessage(getMessage(ERROR_COLOR, "usage-join"));
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + Main.locale.getMessage("no-permission-join"));
+				sender.sendMessage(getMessage(ERROR_COLOR, "no-permission-join"));
 			}
 		}
 		else {
-			sender.sendMessage(ChatColor.RED + Main.locale.getMessage("must-be-ingame"));
+			sender.sendMessage(getMessage(ERROR_COLOR, "must-be-ingame"));
 		}
 	}
 }

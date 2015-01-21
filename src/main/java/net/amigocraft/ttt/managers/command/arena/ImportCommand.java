@@ -23,12 +23,14 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.exception.ArenaExistsException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.FileUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
@@ -57,32 +59,32 @@ public class ImportCommand extends SubcommandHandler {
 						if (w != null){
 							try {
 								Main.mg.createArena(worldName, w.getSpawnLocation());
-								sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + Main.locale.getMessage("import-success"));
+								sender.sendMessage(getMessage(INFO_COLOR, "import-success"));
 							}
 							catch (ArenaExistsException e){
 								//TODO: replace this message with something more accurate
-								sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("already-imported"));
+								sender.sendMessage(getMessage(ERROR_COLOR, "already-imported"));
 							}
 						}
 						else {
-							sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("cannot-load-world"));
+							sender.sendMessage(getMessage(ERROR_COLOR, "cannot-load-world"));
 						}
 					}
 					else {
-						sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("cannot-load-world"));
+						sender.sendMessage(getMessage(ERROR_COLOR, "cannot-load-world"));
 					}
 				}
 				else {
-					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("folder-error"));
+					sender.sendMessage(getMessage(ERROR_COLOR, "folder-error"));
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-1"));
-				sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("usage-import"));
+				sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-1"));
+				sender.sendMessage(getMessage(ERROR_COLOR, "usage-import"));
 			}
 		}
 		else {
-			sender.sendMessage(ChatColor.RED + Main.locale.getMessage("no-permission-import"));
+			sender.sendMessage(getMessage(ERROR_COLOR, "no-permission-import"));
 		}
 	}
 }

@@ -68,7 +68,7 @@ public class MiscUtil {
 		for (String rep : replacements) {
 			s.replaceFirst("%", rep + color);
 		}
-		return color + (prefix ? "[TTT] " : "") + s;
+		return (color != null ? color : "") + (prefix ? "[TTT] " : "") + s;
 	}
 
 	public static String getMessage(ChatColor color, String key, String... replacements) {

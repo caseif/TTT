@@ -23,13 +23,15 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.exception.ArenaExistsException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.FileUtil;
 import net.amigocraft.ttt.util.NumUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
@@ -56,7 +58,7 @@ public class CreateArenaCommand extends SubcommandHandler {
 					z = ((Player)sender).getLocation().getBlockZ();
 				}
 				else {
-					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("must-be-ingame"));
+					sender.sendMessage(getMessage(ERROR_COLOR, "must-be-ingame"));
 					return;
 				}
 			}
@@ -68,12 +70,12 @@ public class CreateArenaCommand extends SubcommandHandler {
 					w = args[5];
 				}
 				else {
-					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
+					sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-2"));
 					return;
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
+				sender.sendMessage(getMessage(ERROR_COLOR, "invalid-args-2"));
 				return;
 			}
 			try {
@@ -84,7 +86,7 @@ public class CreateArenaCommand extends SubcommandHandler {
 			}
 		}
 		else{
-			sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("no-permission"));
+			sender.sendMessage(getMessage(ERROR_COLOR, "no-permission"));
 		}
 	}
 }
