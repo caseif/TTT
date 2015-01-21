@@ -76,6 +76,7 @@ public class PlayerListener implements Listener {
 								Inventory inv = Main.plugin.getServer().createInventory(chestInv.getHolder(), chestInv.getSize());
 								inv.setContents(chestInv.getContents());
 								e.getPlayer().openInventory(inv);
+								e.getPlayer().sendMessage(getMessage(INFO_COLOR, "discreet"));
 								break;
 							}
 						}
