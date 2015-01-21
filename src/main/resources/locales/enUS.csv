@@ -112,9 +112,6 @@ type|Sign Type
 round|Round Name
 number|Sign Number (only for "players" signs)|Translator note: do not translate "players"
 prerelease|We have detected that you are running a prerelease build of TTT. If there is a newer release available, we highly recommend updating to that. If not, please report any bugs you find in this build to the plugin author.
-
-Everything below this line has been translated only by Google Translate. Feel free to correct it if it's inaccurate. :)
-
 createarena-help|Creates an arena by the specified name. Three coordinates and optionally a world may be provided. If no extra arguments are provided, the sender's location will be used.
 addspawn-help|Adds a spawn to the specified arena. Three coordinates and optionally a world may be provided. If no extra arguments are provided, the sender's location will be used.
 removespawn-help|Removes a spawn from the specified arena. Three coordinates and optionally a world may be provided. If no extra arguments are provided, the sender's location will be used. A single index may also be used.
