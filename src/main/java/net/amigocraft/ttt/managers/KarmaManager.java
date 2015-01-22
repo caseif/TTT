@@ -94,16 +94,15 @@ public class KarmaManager {
 
 	public static void allocateKarma(Round round){
 		for (MGPlayer mp : round.getPlayerList()){
-			//TTTPlayer t = (TTTPlayer) mp;
 			addKarma(mp, Config.KARMA_HEAL);
 			if (!mp.hasMetadata("hasTeamKilled")){
 				int karmaHeal = Config.KARMA_CLEAN_BONUS;
-				if (getKarma(mp) > Config.DEFAULT_KARMA){
-					if ((Config.MAX_KARMA - Config.DEFAULT_KARMA) > 0){
+				if (getKarma(mp) > 1000){
+					if ((Config.MAX_KARMA - 1000) > 0){
 						karmaHeal = (int) Math.round(
 								Config.KARMA_CLEAN_BONUS * Math.pow(
-										.5, (getKarma(mp) - (double) Config.DEFAULT_KARMA) /
-												((double) (Config.MAX_KARMA - Config.DEFAULT_KARMA) *
+										.5, (getKarma(mp) - 1000.0) /
+												((double) (Config.MAX_KARMA - 1000) *
 														Config.KARMA_CLEAN_HALF)
 								)
 						);

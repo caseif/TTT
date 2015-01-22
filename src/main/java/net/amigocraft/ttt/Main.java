@@ -70,8 +70,6 @@ public class Main extends JavaPlugin {
 
 	public static int maxKarma = 1000;
 
-	public static String stability = "stable";
-
 	public static List<UUID> creator = new ArrayList<UUID>();
 	public static List<UUID> alpha = new ArrayList<UUID>();
 	public static List<UUID> testers = new ArrayList<UUID>();

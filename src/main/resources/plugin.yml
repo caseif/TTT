@@ -73,7 +73,6 @@ permissions:
       ttt.setexit: true
       ttt.help: true
       ttt.lobby.*: true
-      ttt.build.warn: true
 
   ttt.admin.*:
     description: Allows for full use of administrative commands.
@@ -161,10 +160,6 @@ permissions:
   ttt.lobby.use:
     description: Allows use of lobby signs.
     default: true
-
-  ttt.build.warn:
-    description: Players with this node will be warned of unstable builds on join.
-    default: op
 
   # deprecated nodes
   ttt.import:

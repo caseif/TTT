@@ -253,17 +253,6 @@ public class PlayerListener implements Listener {
 		if (Config.KARMA_PERSISTENCE){
 			KarmaManager.loadKarma(e.getPlayer().getName());
 		}
-		if (e.getPlayer().hasPermission("ttt.build.warn")){
-			if (Main.stability.equals("unstable")){
-				e.getPlayer().sendMessage(getMessage("unstable-build", ERROR_COLOR));
-			}
-			else if (Main.stability.equals("unknown")){
-				e.getPlayer().sendMessage(getMessage("unknown-build", ERROR_COLOR));
-			}
-			else if (Main.stability.equals("pre")){
-				e.getPlayer().sendMessage(getMessage("prerelease", ERROR_COLOR));
-			}
-		}
 	}
 
 	@EventHandler
