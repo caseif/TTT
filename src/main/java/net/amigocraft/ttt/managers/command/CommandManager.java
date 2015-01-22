@@ -23,7 +23,9 @@
  */
 package net.amigocraft.ttt.managers.command;
 
-import net.amigocraft.ttt.Main;
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.ttt.managers.command.admin.EndCommand;
 import net.amigocraft.ttt.managers.command.admin.KickCommand;
 import net.amigocraft.ttt.managers.command.admin.PrepareCommand;
@@ -31,7 +33,6 @@ import net.amigocraft.ttt.managers.command.admin.StartCommand;
 import net.amigocraft.ttt.managers.command.arena.*;
 import net.amigocraft.ttt.managers.command.misc.DefaultCommand;
 import net.amigocraft.ttt.managers.command.misc.HelpCommand;
-import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -41,50 +42,51 @@ public class CommandManager implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		if (label.equalsIgnoreCase("ttt")){
 			if (args.length > 0){
+				final String subCmd = args[0];
 				// arena commands
-				if (args[0].equalsIgnoreCase("import") || args[0].equalsIgnoreCase("i")){
+				if (subCmd.equalsIgnoreCase("import") || subCmd.equalsIgnoreCase("i")){
 					new ImportCommand(sender, args).handle();
 				}
-				else if (args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("j")){
+				else if (subCmd.equalsIgnoreCase("join") || subCmd.equalsIgnoreCase("j")){
 					new JoinCommand(sender, args).handle();
 				}
-				else if (args[0].equalsIgnoreCase("leave") || args[0].equalsIgnoreCase("l") ||
-						args[0].equalsIgnoreCase("quit") || args[0].equalsIgnoreCase("q")){
+				else if (subCmd.equalsIgnoreCase("leave") || subCmd.equalsIgnoreCase("l") ||
+						subCmd.equalsIgnoreCase("quit") || subCmd.equalsIgnoreCase("q")){
 					new LeaveCommand(sender, args).handle();
 				}
-				else if (args[0].equalsIgnoreCase("carena") || args[0].equalsIgnoreCase("ca")){
+				else if (subCmd.equalsIgnoreCase("carena") || subCmd.equalsIgnoreCase("ca")){
 					new CreateArenaCommand(sender, args).handle();
 				}
-				else if (args[0].equalsIgnoreCase("addspawn") || args[0].equalsIgnoreCase("as")){
+				else if (subCmd.equalsIgnoreCase("addspawn") || subCmd.equalsIgnoreCase("as")){
 					new AddSpawnCommand(sender, args).handle();
 				}
-				else if (args[0].equalsIgnoreCase("removespawn") || args[0].equalsIgnoreCase("rs")){
+				else if (subCmd.equalsIgnoreCase("removespawn") || subCmd.equalsIgnoreCase("rs")){
 					new RemoveSpawnCommand(sender, args).handle();
 				}
 				// administrative commands
-				else if (args[0].equalsIgnoreCase("prepare")){
+				else if (subCmd.equalsIgnoreCase("prepare")){
 					new PrepareCommand(sender, args);
 				}
-				else if (args[0].equalsIgnoreCase("start")){
+				else if (subCmd.equalsIgnoreCase("start")){
 					new StartCommand(sender, args);
 				}
-				else if (args[0].equalsIgnoreCase("end")){
+				else if (subCmd.equalsIgnoreCase("end")){
 					new EndCommand(sender, args);
 				}
-				else if (args[0].equalsIgnoreCase("kick")){
+				else if (subCmd.equalsIgnoreCase("kick")){
 					new KickCommand(sender, args);
 				}
 				// misc. commands
-				else if (args[0].equalsIgnoreCase("setexit") || args[0].equalsIgnoreCase("se") ||
-						args[0].equalsIgnoreCase("setspawn") || args[0].equalsIgnoreCase("ss")){
+				else if (subCmd.equalsIgnoreCase("setexit") || subCmd.equalsIgnoreCase("se") ||
+						subCmd.equalsIgnoreCase("setspawn") || subCmd.equalsIgnoreCase("ss")){
 					new SetExitCommand(sender, args).handle();
 				}
-				else if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")){
+				else if (subCmd.equalsIgnoreCase("help") || subCmd.equalsIgnoreCase("?")){
 					new HelpCommand(sender, args).handle();
 				}
 				else {
-					sender.sendMessage(ChatColor.RED + "[TTT] " + Main.locale.getMessage("invalid-args-2"));
-					sender.sendMessage(ChatColor.RED + Main.locale.getMessage("usage-1"));
+					sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
+					sender.sendMessage(getMessage("usage-1", ERROR_COLOR));
 				}
 			}
 			else {

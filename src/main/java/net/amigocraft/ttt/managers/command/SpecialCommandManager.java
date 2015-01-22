@@ -23,8 +23,9 @@
  */
 package net.amigocraft.ttt.managers.command;
 
-import net.amigocraft.ttt.Main;
-import org.bukkit.ChatColor;
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -35,10 +36,10 @@ public class SpecialCommandManager implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		if (label.equalsIgnoreCase("ttt")){
 			if (sender.hasPermission("ttt.build.warn")){
-				sender.sendMessage(ChatColor.RED + Main.locale.getMessage("mglib-required"));
+				sender.sendMessage(getMessage("mglib-required", ERROR_COLOR, MIN_MGLIB_VERSION));
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + Main.locale.getMessage("is-disabled"));
+				sender.sendMessage(getMessage("is-disabled", ERROR_COLOR));
 			}
 			return true;
 		}

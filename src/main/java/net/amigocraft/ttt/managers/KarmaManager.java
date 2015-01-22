@@ -23,6 +23,9 @@
  */
 package net.amigocraft.ttt.managers;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Minigame;
 import net.amigocraft.mglib.api.Round;
@@ -31,7 +34,6 @@ import net.amigocraft.mglib.exception.PlayerOfflineException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.Config;
 import net.amigocraft.ttt.util.MiscUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -95,29 +97,34 @@ public class KarmaManager {
 			//TTTPlayer t = (TTTPlayer) mp;
 			addKarma(mp, Config.KARMA_HEAL);
 			if (!mp.hasMetadata("hasTeamKilled")){
-				int add = Config.KARMA_CLEAN_BONUS;
+				int karmaHeal = Config.KARMA_CLEAN_BONUS;
 				if (getKarma(mp) > Config.DEFAULT_KARMA){
 					if ((Config.MAX_KARMA - Config.DEFAULT_KARMA) > 0){
-						add = (int) Math.round(
+						karmaHeal = (int) Math.round(
 								Config.KARMA_CLEAN_BONUS * Math.pow(
 										.5, (getKarma(mp) - (double) Config.DEFAULT_KARMA) /
-												((double) (Config.MAX_KARMA - Config.DEFAULT_KARMA) * Config.KARMA_CLEAN_HALF)
+												((double) (Config.MAX_KARMA - Config.DEFAULT_KARMA) *
+														Config.KARMA_CLEAN_HALF)
 								)
 						);
 					}
 				}
-				addKarma(mp, add);
+				addKarma(mp, karmaHeal);
 			}
 		}
 	}
 
 	public static void handleDamageKarma(MGPlayer damager, MGPlayer victim, double damage){
 		if (damager != null && victim != null){
-			if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor")){ // team damage
-				subtractKarma(damager, (int)(getKarma(victim) * (damage * Config.DAMAGE_PENALTY)));
+			// team damage
+			if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor")){
+				int penalty = (int)(getKarma(victim) * (damage * Config.DAMAGE_PENALTY));
+				subtractKarma(damager, penalty);
 			}
-			else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")){ // innocent damaging traitor
-				addKarma(damager, (int)(Config.MAX_KARMA * damage * Config.T_DAMAGE_REWARD));
+			// innocent damaging traitor
+			else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")){
+				int reward = (int)(Config.MAX_KARMA * damage * Config.T_DAMAGE_REWARD);
+				addKarma(damager, reward);
 			}
 		}
 	}
@@ -127,8 +134,8 @@ public class KarmaManager {
 			handleDamageKarma(killer, victim, Config.KILL_PENALTY);
 		}
 		else if (!MiscUtil.isTraitor(killer)){
-			addKarma(killer, Config.TBONUS *
-					Config.T_DAMAGE_REWARD * getKarma(victim));
+			int reward = Config.TBONUS * Config.T_DAMAGE_REWARD * getKarma(victim);
+			addKarma(killer, reward);
 		}
 	}
 
@@ -147,17 +154,16 @@ public class KarmaManager {
 			if (Config.KARMA_BAN){
 				MiscUtil.ban(p.getUniqueId(), Config.KARMA_BAN_TIME);
 				if (Config.KARMA_BAN_TIME < 0){
-					p.sendMessage(ChatColor.DARK_PURPLE +
-							Main.locale.getMessage("karma-permaban").replace("%", Config.KARMA_KICK + ""));
+					p.sendMessage(getMessage("karma-permaban", INFO_COLOR, Config.KARMA_KICK + ""));
 				}
 				else {
-					p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-ban")
-							.replaceFirst("%", Integer.toString(Config.KARMA_BAN_TIME))
-							.replaceFirst("%", Config.KARMA_KICK + ""));
+					p.sendMessage(getMessage("karma-ban", INFO_COLOR,
+							Integer.toString(Config.KARMA_BAN_TIME),
+							Config.KARMA_KICK + ""));
 				}
 			}
 			else {
-				p.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("karma-kick").replace("%", Integer.toString(Config.KARMA_KICK)));
+				p.sendMessage(getMessage("karma-kick", INFO_COLOR, Integer.toString(Config.KARMA_KICK)));
 			}
 		}
 	}
@@ -179,7 +185,8 @@ public class KarmaManager {
 		}
 		mp.setMetadata("karma", karma);
 		if (Config.KARMA_DEBUG){
-			Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": +" + amount + ". " + "New value: " + mp.getMetadata("karma"));
+			Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": +" + amount + ". " +
+					"New value: " + mp.getMetadata("karma"));
 		}
 	}
 
@@ -197,7 +204,8 @@ public class KarmaManager {
 		}
 		mp.setMetadata("karma", karma);
 		if (Config.KARMA_DEBUG){
-			Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": -" + amount + ". " + "New value: " + mp.getMetadata("karma"));
+			Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": -" + amount + ". " +
+					"New value: " + mp.getMetadata("karma"));
 		}
 	}
 
@@ -205,7 +213,7 @@ public class KarmaManager {
 		int baseKarma = getKarma(player) - 1000;
 		double damageRed =
 				Config.KARMA_STRICT ? -2e-6 * Math.pow(baseKarma, 2) + 7e-4 * baseKarma + 1 :
-		        -2.5e-6 * Math.pow(baseKarma, 2) + 1;
+						-2.5e-6 * Math.pow(baseKarma, 2) + 1;
 		if (damageRed <= 0){
 			damageRed = 0.01;
 		}
