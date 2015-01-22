@@ -23,9 +23,11 @@
  */
 package net.amigocraft.ttt.managers.command.misc;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class DefaultCommand extends SubcommandHandler {
@@ -36,9 +38,8 @@ public class DefaultCommand extends SubcommandHandler {
 
 	@Override
 	public void handle(){
-		sender.sendMessage(ChatColor.LIGHT_PURPLE + Main.locale.getMessage("ttt-version")
-						.replaceFirst("%", Main.plugin.getDescription().getVersion())
-						.replaceFirst("%", "Maxim Roncacé"));
-		sender.sendMessage(ChatColor.LIGHT_PURPLE + Main.locale.getMessage("help-command"));
+		sender.sendMessage(getMessage("ttt-version", SPECIAL_COLOR,
+				Main.plugin.getDescription().getVersion(), "Maxim Roncacé"));
+		sender.sendMessage(getMessage("help-command", INFO_COLOR));
 	}
 }

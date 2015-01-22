@@ -23,9 +23,11 @@
  */
 package net.amigocraft.ttt.managers.command.misc;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class HelpCommand extends SubcommandHandler {
@@ -38,65 +40,59 @@ public class HelpCommand extends SubcommandHandler {
 	public void handle(){
 		if (args.length > 1 && args[1].equalsIgnoreCase("lobby")){
 			if (sender.hasPermission("ttt.lobby.create")){
-				sender.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE +
-						Main.locale.getMessage("lobby-help"));
+				sender.sendMessage(getMessage("lobby-help", SPECIAL_COLOR));
 				sender.sendMessage("");
-				sender.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("first") + " " +
-						Main.locale.getMessage("line") + " " +
-						ChatColor.GREEN + "[TTT]");
-				sender.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("second") + " " +
-						Main.locale.getMessage("line") + " " +
-						ChatColor.GREEN + Main.locale.getMessage("type"));
-				sender.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("third") + " " +
-						Main.locale.getMessage("line") + " " +
-						ChatColor.GREEN + Main.locale.getMessage("round"));
-				sender.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("fourth") + " " +
-						Main.locale.getMessage("line") + " " +
-						ChatColor.GREEN + Main.locale.getMessage("number"));
+				sender.sendMessage(getMessage("first", INFO_COLOR) + " " + getMessage("line", INFO_COLOR) + " " +
+						DESCRIPTION_COLOR + "[TTT]");
+				sender.sendMessage(getMessage("second", INFO_COLOR) + " " + getMessage("line", INFO_COLOR) + " " +
+						getMessage("type", DESCRIPTION_COLOR));
+				sender.sendMessage(getMessage("third", INFO_COLOR) + " " + getMessage("line", INFO_COLOR) + " " +
+						getMessage("round", DESCRIPTION_COLOR));
+				sender.sendMessage(getMessage("fourth", INFO_COLOR) + " " + getMessage("line", INFO_COLOR) + " " +
+						getMessage("number", DESCRIPTION_COLOR));
 			}
 			else {
 				sender.sendMessage(Main.locale.getMessage("no-permission"));
 			}
 		}
 		else if (sender.hasPermission("ttt.help")){
-			sender.sendMessage(ChatColor.GOLD + "" + ChatColor.UNDERLINE +
-					Main.locale.getMessage("commands"));
+			sender.sendMessage(getMessage("commands", SPECIAL_COLOR));
 			sender.sendMessage("");
 			if (sender.hasPermission("ttt.arena.join")){
-				sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt join, j " + ChatColor.GREEN +
-						Main.locale.getMessage("join-help"));
+				sender.sendMessage(INFO_COLOR + "/ttt join, j " +
+						getMessage("join-help", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.arena.quit")){
-				sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt quit, q " + ChatColor.GREEN +
-						Main.locale.getMessage("quit-help"));
+				sender.sendMessage(INFO_COLOR + "/ttt quit, q " +
+						getMessage("quit-help", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.arena.import")){
-				sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt import, i " + ChatColor.GREEN +
-						Main.locale.getMessage("import-help"));
+				sender.sendMessage(INFO_COLOR + "/ttt import, i " +
+						getMessage("import-help", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.arena.create")){
-				sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt carena, ca " + ChatColor.GREEN +
-						Main.locale.getMessage("createarena-help"));
+				sender.sendMessage(INFO_COLOR + "/ttt carena, ca " +
+						getMessage("createarena-help", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.arena.addspawn")){
-				sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt addspawn, ad " + ChatColor.GREEN +
-						Main.locale.getMessage("addspawn-help"));
+				sender.sendMessage(INFO_COLOR + "/ttt addspawn, ad " +
+						getMessage("addspawn-help", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.arena.removespawn")){
-				sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt removespawn, rs " + ChatColor.GREEN +
-						Main.locale.getMessage("removespawn-help"));
+				sender.sendMessage(INFO_COLOR + "/ttt removespawn, rs " +
+						getMessage("removespawn-help", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.setspawn")){
-				sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt setexit, se " + ChatColor.GREEN +
-						Main.locale.getMessage("spawn-help"));
+				sender.sendMessage(INFO_COLOR + "/ttt setexit, se " +
+						getMessage("spawn-help", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.help")){
-				sender.sendMessage(ChatColor.DARK_PURPLE + "/ttt help, ? " + ChatColor.GREEN +
-						Main.locale.getMessage("help-help"));
+				sender.sendMessage(INFO_COLOR + "/ttt help, ? " +
+						getMessage("help-help", DESCRIPTION_COLOR));
 			}
 		}
 		else {
-			sender.sendMessage(ChatColor.DARK_PURPLE + Main.locale.getMessage("no-permission"));
+			sender.sendMessage(getMessage("no-permission", ERROR_COLOR));
 		}
 	}
 }

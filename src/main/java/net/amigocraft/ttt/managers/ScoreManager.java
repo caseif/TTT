@@ -121,13 +121,6 @@ public class ScoreManager {
 			if (m.getBukkitPlayer() != null){
 				update(m);
 
-				/*if (t.isSpectating()){
-					if (t.isBodyFound())
-						handleDeadPlayer(t);
-				}
-				else
-					handleAlivePlayer(t);*/
-
 				if (m.getTeam() != null){
 					if (!MiscUtil.isTraitor(m)){
 						m.getBukkitPlayer().setScoreboard(innocent);

@@ -46,20 +46,20 @@ public class MiscUtil {
 	/**
 	 * Bans the player by the specified name from using TTT for a set amount of time.
 	 * @param player the UUID of the player to ban
-	 * @param minutes the amount of time to ban the player for.
+	 * @param minutes the length of time to ban the player for.
 	 */
 	public static void ban(UUID player, int minutes){
 		File f = new File(Main.plugin.getDataFolder(), "bans.yml");
 		YamlConfiguration y = new YamlConfiguration();
 		try {
 			y.load(f);
-			int unbanTime = minutes < 0 ? -1 : (int)System.currentTimeMillis() / 1000 + (minutes * 60);
+			long unbanTime = minutes < 0 ? -1 : System.currentTimeMillis() / 1000L + (minutes * 60);
 			y.set(player.toString(), unbanTime);
 			y.save(f);
 		}
 		catch (Exception ex){
 			ex.printStackTrace();
-			Main.mg.log(Main.locale.getMessage("ban-fail").replace("%", player.toString()), LogLevel.WARNING);
+			Main.mg.log(getMessage("ban-fail", null, false, player.toString()), LogLevel.WARNING);
 		}
 	}
 

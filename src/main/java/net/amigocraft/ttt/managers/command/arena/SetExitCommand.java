@@ -30,7 +30,6 @@ import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.Config;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
