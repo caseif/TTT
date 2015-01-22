@@ -23,12 +23,9 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.mglib.api.LogLevel;
-import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.Config;
+import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -37,20 +34,24 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class SetExitCommand extends SubcommandHandler {
 
-	public SetExitCommand(CommandSender sender, String[] args){
+	public SetExitCommand(CommandSender sender, String[] args) {
 		super(sender, args);
 	}
 
 	@Override
-	public void handle(){
-		if (sender.hasPermission("ttt.setexit")){
-			if (sender instanceof Player){
+	public void handle() {
+		if (sender.hasPermission("ttt.setexit")) {
+			if (sender instanceof Player) {
 				try {
 					File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
-					if (!spawnFile.exists()){
-						if (Config.VERBOSE_LOGGING){
+					if (!spawnFile.exists()) {
+						if (Config.VERBOSE_LOGGING) {
 							Main.mg.log(getMessage("no-spawn-yml", null, false), LogLevel.INFO);
 						}
 						spawnFile.createNewFile();
@@ -68,7 +69,7 @@ public class SetExitCommand extends SubcommandHandler {
 					);
 					sender.sendMessage(getMessage("set-exit", INFO_COLOR));
 				}
-				catch (Exception ex){
+				catch (Exception ex) {
 					ex.printStackTrace();
 					sender.sendMessage(getMessage("error-setting-exit", ERROR_COLOR));
 				}

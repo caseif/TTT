@@ -23,9 +23,6 @@
  */
 package net.amigocraft.ttt.listeners;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.mglib.api.*;
 import net.amigocraft.mglib.event.player.MGPlayerDeathEvent;
 import net.amigocraft.mglib.event.player.PlayerJoinMinigameRoundEvent;
@@ -35,8 +32,8 @@ import net.amigocraft.mglib.event.round.MinigameRoundPrepareEvent;
 import net.amigocraft.mglib.event.round.MinigameRoundStageChangeEvent;
 import net.amigocraft.mglib.event.round.MinigameRoundTickEvent;
 import net.amigocraft.ttt.Body;
-import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.Config;
+import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
 import org.bukkit.Bukkit;
@@ -58,37 +55,40 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.io.File;
 import java.util.*;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class MGListener implements Listener {
 
 	@EventHandler
-	public void onMinigameRoundPrepareEvent(MinigameRoundPrepareEvent e){
+	public void onMinigameRoundPrepareEvent(MinigameRoundPrepareEvent e) {
 		e.getRound().broadcast(getMessage("round-starting", INFO_COLOR));
-		if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
+		if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
 			ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
-			for (MGPlayer mp : e.getRound().getPlayerList()){
+			for (MGPlayer mp : e.getRound().getPlayerList()) {
 				ScoreManager.sbManagers.get(e.getRound().getArena()).update(mp);
 			}
 		}
 	}
 
 	@EventHandler(ignoreCancelled = true)
-	public void onPlayerJoinMinigameRound(PlayerJoinMinigameRoundEvent e){
+	public void onPlayerJoinMinigameRound(PlayerJoinMinigameRoundEvent e) {
 		File f = new File(Main.plugin.getDataFolder(), "bans.yml");
 		YamlConfiguration y = new YamlConfiguration();
 		try {
 			y.load(f);
-			if (y.isSet(e.getPlayer().getName())){
+			if (y.isSet(e.getPlayer().getName())) {
 				int unbanTime = y.getInt(e.getPlayer().getName());
-				if (unbanTime <= System.currentTimeMillis() / 1000){
+				if (unbanTime <= System.currentTimeMillis() / 1000) {
 					y.set(e.getPlayer().getName(), null);
 					y.save(f);
-					if (Config.VERBOSE_LOGGING){
+					if (Config.VERBOSE_LOGGING) {
 						Main.mg.log(e.getPlayer().getName() + "'s ban has been lifted", LogLevel.INFO);
 					}
 				}
 				else {
 					String m;
-					if (unbanTime == -1){
+					if (unbanTime == -1) {
 						m = getMessage("permaban", ERROR_COLOR);
 					}
 					else {
@@ -109,7 +109,7 @@ public class MGListener implements Listener {
 				}
 			}
 		}
-		catch (Exception ex){
+		catch (Exception ex) {
 			ex.printStackTrace();
 			Main.mg.log("Failed to load bans from disk!", LogLevel.WARNING);
 		}
@@ -121,7 +121,7 @@ public class MGListener implements Listener {
 		e.getPlayer().setMetadata("displayKarma", KarmaManager.playerKarma.get(e.getPlayer().getName()));
 		e.getPlayer().getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 
-		if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
+		if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
 			ScoreManager.sbManagers.get(e.getRound().getArena()).update(e.getPlayer());
 			e.getPlayer().getBukkitPlayer().setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
 		}
@@ -129,25 +129,25 @@ public class MGListener implements Listener {
 		String addition = "";
 		@SuppressWarnings("static-access")
 		UUID uuid = Main.mg.getOnlineUUIDs().get(e.getPlayer().getName());
-		if (Main.creator.contains(uuid)){
+		if (Main.creator.contains(uuid)) {
 			addition = ", " + getMessage("creator", TRAITOR_COLOR) + "," + INFO_COLOR;
 		}
-		if (Main.alpha.contains(uuid) && Main.translators.contains(uuid)){
+		if (Main.alpha.contains(uuid) && Main.translators.contains(uuid)) {
 			addition += ", " +
 					getMessage("alpha-tester", TRAITOR_COLOR) + ", " +
 					getMessage("translator", TRAITOR_COLOR) + "," + INFO_COLOR;
 		}
-		else if (Main.testers.contains(uuid) && Main.translators.contains(uuid)){
+		else if (Main.testers.contains(uuid) && Main.translators.contains(uuid)) {
 			addition += ", " + getMessage("tester", TRAITOR_COLOR) + ", " +
 					Main.locale.getMessage("translator") + "," + INFO_COLOR;
 		}
-		else if (Main.alpha.contains(uuid)){
+		else if (Main.alpha.contains(uuid)) {
 			addition += ", " + getMessage("alpha-tester", TRAITOR_COLOR) + "," + INFO_COLOR;
 		}
-		else if (Main.testers.contains(uuid)){
+		else if (Main.testers.contains(uuid)) {
 			addition += ", " + getMessage("tester", TRAITOR_COLOR) + "," + INFO_COLOR;
 		}
-		else if (Main.translators.contains(uuid)){
+		else if (Main.translators.contains(uuid)) {
 			addition += ", " + getMessage("translator", TRAITOR_COLOR) + "," + INFO_COLOR;
 		}
 		Bukkit.broadcastMessage(e.getPlayer().getName() + addition + " " +
@@ -158,12 +158,14 @@ public class MGListener implements Listener {
 	}
 
 	@EventHandler
-	public void onPlayerLeaveMinigameRoundEvent(PlayerLeaveMinigameRoundEvent e){
-		e.getPlayer().getBukkitPlayer().setScoreboard(Main.plugin.getServer().getScoreboardManager().getNewScoreboard());
+	public void onPlayerLeaveMinigameRoundEvent(PlayerLeaveMinigameRoundEvent e) {
+		e.getPlayer().getBukkitPlayer().setScoreboard(
+				Main.plugin.getServer().getScoreboardManager().getNewScoreboard()
+		);
 		e.getPlayer().getBukkitPlayer().setDisplayName(e.getPlayer().getBukkitPlayer().getName());
 		KarmaManager.saveKarma(e.getPlayer());
 		(e.getPlayer()).setMetadata("displayKarma", e.getPlayer().getMetadata("karma"));
-		if (!e.getRound().hasEnded()){
+		if (!e.getRound().hasEnded()) {
 			e.getRound().broadcast(INFO_COLOR + e.getPlayer().getName() + " " +
 					getMessage("left-game", INFO_COLOR, e.getPlayer().getRound().getDisplayName()));
 		}
@@ -172,46 +174,47 @@ public class MGListener implements Listener {
 
 	@SuppressWarnings({"deprecation"})
 	@EventHandler
-	public void onRoundTick(MinigameRoundTickEvent e){
+	public void onRoundTick(MinigameRoundTickEvent e) {
 
 		// manage scoreboards
 		//ScoreManager.sbManagers.get(e.getRound().getArena()).manage();
 
-		if (e.getRound().getStage() == Stage.PREPARING){
-			if (((e.getRound().getRemainingTime() % 10) == 0 || e.getRound().getRemainingTime() < 10) && e.getRound().getRemainingTime() > 0){
+		if (e.getRound().getStage() == Stage.PREPARING) {
+			if (((e.getRound().getRemainingTime() % 10) == 0 ||
+					e.getRound().getRemainingTime() < 10) && e.getRound().getRemainingTime() > 0) {
 				e.getRound().broadcast(getMessage("begin", INFO_COLOR, e.getRound().getRemainingTime() + " " +
 						getMessage("seconds" + "!", INFO_COLOR)));
 			}
-			else if (e.getRound().getRemainingTime() == 0){
+			else if (e.getRound().getRemainingTime() == 0) {
 				int players = e.getRound().getPlayers().size();
 				int traitorNum = 0;
 				int limit = (int) (players * Config.TRAITOR_RATIO);
-				if (limit == 0){
+				if (limit == 0) {
 					limit = 1;
 				}
 				List<String> innocents = new ArrayList<String>();
 				List<String> traitors = new ArrayList<String>();
 				List<String> detectives = new ArrayList<String>();
-				for (MGPlayer p : e.getRound().getPlayerList()){
+				for (MGPlayer p : e.getRound().getPlayerList()) {
 					innocents.add(p.getName());
 					p.getBukkitPlayer().sendMessage(getMessage("begun", INFO_COLOR));
 				}
-				while (traitorNum < limit){
+				while (traitorNum < limit) {
 					Random randomGenerator = new Random();
 					int index = randomGenerator.nextInt(players);
 					String traitor = innocents.get(index);
-					if (innocents.contains(traitor)){
+					if (innocents.contains(traitor)) {
 						innocents.remove(traitor);
 						traitors.add(traitor);
 						traitorNum += 1;
 					}
 				}
 				int dLimit = (int) (players * Config.DETECTIVE_RATIO);
-				if (players >= Config.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0){
+				if (players >= Config.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0) {
 					dLimit += 1;
 				}
 				int detectiveNum = 0;
-				while (detectiveNum < dLimit){
+				while (detectiveNum < dLimit) {
 					Random randomGenerator = new Random();
 					int index = randomGenerator.nextInt(innocents.size());
 					String detective = innocents.get(index);
@@ -232,31 +235,31 @@ public class MGListener implements Listener {
 				ItemMeta dnaMeta = dnaScanner.getItemMeta();
 				dnaMeta.setDisplayName(getMessage("dna-scanner", DETECTIVE_COLOR, false));
 				dnaScanner.setItemMeta(dnaMeta);
-				for (String s : innocents){
+				for (String s : innocents) {
 					Player pl = Main.plugin.getServer().getPlayer(s);
 					MGPlayer player = Main.mg.getMGPlayer(s);
-					if (pl != null && player != null){
+					if (pl != null && player != null) {
 						player.setTeam("Innocent");
 						pl.sendMessage(getMessage("you-are-innocent", INNOCENT_COLOR, false));
 						pl.getInventory().addItem(crowbar, gun, ammo);
 						pl.setHealth(20);
 						pl.setFoodLevel(20);
-						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
+						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
 							pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
 							ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
 						}
 					}
 				}
-				for (String s : traitors){
+				for (String s : traitors) {
 					Player pl = Main.plugin.getServer().getPlayer(s);
 					MGPlayer player = Main.mg.getMGPlayer(s);
-					if (pl != null && player != null){
+					if (pl != null && player != null) {
 						player.setTeam("Traitor");
 						pl.sendMessage(getMessage("you-are-traitor", TRAITOR_COLOR, false));
-						if (traitors.size() > 1){
+						if (traitors.size() > 1) {
 							pl.sendMessage(getMessage("allies", TRAITOR_COLOR, false));
-							for (String tr : traitors){
-								if (!tr.equals(s)){
+							for (String tr : traitors) {
+								if (!tr.equals(s)) {
 									pl.sendMessage(TRAITOR_COLOR + "- " + tr);
 								}
 							}
@@ -267,53 +270,53 @@ public class MGListener implements Listener {
 						pl.getInventory().addItem(crowbar, gun, ammo);
 						pl.setHealth(20);
 						pl.setFoodLevel(20);
-						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
+						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
 							pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).traitor);
 							ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
 						}
 					}
 				}
-				for (String s : detectives){
+				for (String s : detectives) {
 					Player pl = Main.plugin.getServer().getPlayer(s);
 					MGPlayer player = Main.mg.getMGPlayer(s);
-					if (pl != null && player != null){
+					if (pl != null && player != null) {
 						player.setTeam("Innocent");
 						player.setMetadata("detective", true);
 						pl.sendMessage(getMessage("you-are-detective", DETECTIVE_COLOR, false));
 						pl.getInventory().addItem(crowbar, gun, ammo, dnaScanner);
 						pl.setHealth(20);
 						pl.setFoodLevel(20);
-						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
+						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
 							pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
 							ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
 						}
 					}
 				}
 
-				for (MGPlayer mp : e.getRound().getPlayerList()){
-					if (Config.DAMAGE_REDUCTION){
+				for (MGPlayer mp : e.getRound().getPlayerList()) {
+					if (Config.DAMAGE_REDUCTION) {
 						KarmaManager.calculateDamageReduction(mp);
 						String percentage = getMessage("full", INFO_COLOR, false);
-						if ((Double)mp.getMetadata("damageRed") < 1){
-							percentage = Integer.toString((int) ((Double)mp.getMetadata("damageRed") * 100)) + "%";
+						if ((Double) mp.getMetadata("damageRed") < 1) {
+							percentage = Integer.toString((int) ((Double) mp.getMetadata("damageRed") * 100)) + "%";
 						}
 						mp.getBukkitPlayer().sendMessage(getMessage("karma-damage", INFO_COLOR,
-								Integer.toString((Integer)mp.getMetadata("karma")), percentage));
+								Integer.toString((Integer) mp.getMetadata("karma")), percentage));
 					}
 				}
 			}
 		}
-		else if (e.getRound().getStage() == Stage.PLAYING){
+		else if (e.getRound().getStage() == Stage.PLAYING) {
 			// check if game is over
 			boolean iLeft = false;
 			boolean tLeft = false;
-			for (MGPlayer p : e.getRound().getPlayerList()){
-				if (!tLeft || !iLeft){
-					if (!p.isSpectating()){
-						if (!iLeft && !p.getTeam().equals("Traitor")){
+			for (MGPlayer p : e.getRound().getPlayerList()) {
+				if (!tLeft || !iLeft) {
+					if (!p.isSpectating()) {
+						if (!iLeft && !p.getTeam().equals("Traitor")) {
 							iLeft = true;
 						}
-						if (!tLeft && p.getTeam().equals("Traitor")){
+						if (!tLeft && p.getTeam().equals("Traitor")) {
 							tLeft = true;
 						}
 					}
@@ -322,11 +325,12 @@ public class MGListener implements Listener {
 					break;
 				}
 
-				if (p.hasMetadata("detective") && p.getRound().getTime() % Config.SCANNER_CHARGE_TIME == 0){ // manage DNA Scanners every n seconds
+				// manage DNA Scanners every n seconds
+				if (p.hasMetadata("detective") && p.getRound().getTime() % Config.SCANNER_CHARGE_TIME == 0) {
 					Player tracker = Main.plugin.getServer().getPlayer(p.getName());
-					if (p.hasMetadata("tracking")){
+					if (p.hasMetadata("tracking")) {
 						Player killer = Main.plugin.getServer().getPlayer((String) p.getMetadata("tracking"));
-						if (killer != null && Main.mg.isPlayer((String) p.getMetadata("tracking"))){
+						if (killer != null && Main.mg.isPlayer((String) p.getMetadata("tracking"))) {
 							tracker.setCompassTarget(killer.getLocation());
 						}
 						else {
@@ -348,7 +352,7 @@ public class MGListener implements Listener {
 					}
 				}
 			}
-			if (!(tLeft && iLeft)){
+			if (!(tLeft && iLeft)) {
 				e.getRound().setMetadata("t-victory", tLeft);
 				e.getRound().end();
 				return;
@@ -356,47 +360,47 @@ public class MGListener implements Listener {
 
 			Round r = e.getRound();
 			int rTime = r.getRemainingTime();
-			if (rTime % 60 == 0 && rTime >= 60){
+			if (rTime % 60 == 0 && rTime >= 60) {
 				r.broadcast(INFO_COLOR + Integer.toString(rTime / 60) + " " +
 						getMessage("minutes", INFO_COLOR, false) + " " +
 						getMessage("left", INFO_COLOR, false));
 			}
-			else if (rTime % 10 == 0 && rTime > 10 && rTime < 60){
+			else if (rTime % 10 == 0 && rTime > 10 && rTime < 60) {
 				r.broadcast(INFO_COLOR + Integer.toString(rTime) + " " +
 						getMessage("seconds", INFO_COLOR, false) + " " +
 						getMessage("left", INFO_COLOR, false));
 			}
-			else if (rTime < 10 && rTime > 0){
+			else if (rTime < 10 && rTime > 0) {
 				r.broadcast(INFO_COLOR + Integer.toString(rTime) + " " +
 						getMessage("seconds", INFO_COLOR, false) + " " +
 						getMessage("left", INFO_COLOR, false));
 			}
-			//TODO: this loop is probably an unnecessary artifact but I'm leaving it for now in case removing it causes odd side-effects
-			for (MGPlayer mp : e.getRound().getPlayerList()){
-				if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())){
+			//TODO: this loop is probably an unnecessary artifact but I'm leaving it for now in case removing it causes
+			// odd side-effects
+			for (MGPlayer mp : e.getRound().getPlayerList()) {
+				if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
 					ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
 				}
-				//ScoreManager.sbManagers.get(e.getRound().getArena()).update(t);
 			}
 		}
 	}
 
 	@EventHandler
-	public void onMinigameRoundEnd(MinigameRoundEndEvent e){
+	public void onMinigameRoundEnd(MinigameRoundEndEvent e) {
 		List<Body> removeBodies = new ArrayList<Body>();
 		List<Body> removeFoundBodies = new ArrayList<Body>();
-		for (Body b : Main.bodies){
+		for (Body b : Main.bodies) {
 			removeBodies.add(b);
-			if (Main.foundBodies.contains(b)){
+			if (Main.foundBodies.contains(b)) {
 				removeFoundBodies.add(b);
 			}
 		}
 
-		for (Body b : removeBodies){
+		for (Body b : removeBodies) {
 			Main.bodies.remove(b);
 		}
 
-		for (Body b : removeFoundBodies){
+		for (Body b : removeFoundBodies) {
 			Main.foundBodies.remove(b);
 		}
 
@@ -405,7 +409,7 @@ public class MGListener implements Listener {
 
 		KarmaManager.allocateKarma(e.getRound());
 
-		if (!e.getRound().hasMetadata("t-victory") || e.getRound().getMetadata("t-victory") == Boolean.FALSE){
+		if (!e.getRound().hasMetadata("t-victory") || e.getRound().getMetadata("t-victory") == Boolean.FALSE) {
 			Bukkit.broadcastMessage(getMessage("innocent-win", INNOCENT_COLOR, ARENA_COLOR +
 					e.getRound().getDisplayName()) + "!");
 		}
@@ -413,8 +417,8 @@ public class MGListener implements Listener {
 			Bukkit.broadcastMessage(getMessage("traitor-win", TRAITOR_COLOR, ARENA_COLOR +
 					e.getRound().getDisplayName()) + "!");
 		}
-		for (Entity ent : Bukkit.getWorld(e.getRound().getWorld()).getEntities()){
-			if (ent.getType() == EntityType.ARROW){
+		for (Entity ent : Bukkit.getWorld(e.getRound().getWorld()).getEntities()) {
+			if (ent.getType() == EntityType.ARROW) {
 				ent.remove();
 			}
 		}
@@ -422,25 +426,25 @@ public class MGListener implements Listener {
 	}
 
 	@EventHandler
-	public void onMGPlayerDeath(MGPlayerDeathEvent e){
+	public void onMGPlayerDeath(MGPlayerDeathEvent e) {
 		e.getPlayer().setPrefix("§7");
 		e.getPlayer().getBukkitPlayer().setHealth(e.getPlayer().getBukkitPlayer().getMaxHealth());
 		e.getPlayer().setSpectating(true);
-		if (ScoreManager.sbManagers.containsKey(e.getPlayer().getArena())){
+		if (ScoreManager.sbManagers.containsKey(e.getPlayer().getArena())) {
 			ScoreManager.sbManagers.get(e.getPlayer().getArena()).update(e.getPlayer());
 		}
-		if (e.getKiller() != null && e.getKiller() instanceof Player){
+		if (e.getKiller() != null && e.getKiller() instanceof Player) {
 			// set killer's karma
 			MGPlayer killer = Main.mg.getMGPlayer(((Player) (e.getKiller())).getName());
 			KarmaManager.handleKillKarma(killer, e.getPlayer());
-			e.getPlayer().setMetadata("killer", ((Player)e.getKiller()).getName());
+			e.getPlayer().setMetadata("killer", ((Player) e.getKiller()).getName());
 		}
 		Block block = e.getPlayer().getBukkitPlayer().getLocation().getBlock();
 		Main.mg.getRollbackManager().logBlockChange(block, e.getPlayer().getArena());
 		BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
 		boolean trapped = false;
-		for (BlockFace bf : faces){
-			if (block.getRelative(bf).getType() == Material.CHEST){
+		for (BlockFace bf : faces) {
+			if (block.getRelative(bf).getType() == Material.CHEST) {
 				trapped = true;
 				break;
 			}
@@ -460,14 +464,14 @@ public class MGListener implements Listener {
 		// role identifier
 		ItemStack ti = new ItemStack(Material.WOOL, 1);
 		ItemMeta tiMeta = ti.getItemMeta();
-		if (e.getPlayer().hasMetadata("detective")){
-			ti.setDurability((short)11);
+		if (e.getPlayer().hasMetadata("detective")) {
+			ti.setDurability((short) 11);
 			tiMeta.setDisplayName(getMessage("detective", DETECTIVE_COLOR, false));
 			List<String> lore = new ArrayList<String>();
 			lore.add(Main.locale.getMessage("detective-id"));
 			tiMeta.setLore(lore);
 		}
-		else if (e.getPlayer().getTeam() == null || e.getPlayer().getTeam().equals("Innocent")){
+		else if (e.getPlayer().getTeam() == null || e.getPlayer().getTeam().equals("Innocent")) {
 			ti.setDurability((short) 5);
 			tiMeta.setDisplayName(getMessage("innocent", INNOCENT_COLOR, false));
 			List<String> tiLore = new ArrayList<String>();
@@ -495,10 +499,10 @@ public class MGListener implements Listener {
 	}
 
 	@EventHandler
-	public void onStageChange(MinigameRoundStageChangeEvent e){
+	public void onStageChange(MinigameRoundStageChangeEvent e) {
 		if ((e.getStageBefore() == Stage.PREPARING || e.getStageBefore() == Stage.PLAYING) &&
-				(e.getStageAfter() == Stage.PREPARING)){
-			for (MGPlayer mp : e.getRound().getPlayerList()){
+				(e.getStageAfter() == Stage.PREPARING)) {
+			for (MGPlayer mp : e.getRound().getPlayerList()) {
 				mp.getBukkitPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 				ScoreManager sm = ScoreManager.sbManagers.get(e.getRound().getArena());
 				sm.iObj.unregister();

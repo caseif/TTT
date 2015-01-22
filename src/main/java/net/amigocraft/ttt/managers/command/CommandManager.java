@@ -23,9 +23,6 @@
  */
 package net.amigocraft.ttt.managers.command;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.ttt.managers.command.admin.EndCommand;
 import net.amigocraft.ttt.managers.command.admin.KickCommand;
 import net.amigocraft.ttt.managers.command.admin.PrepareCommand;
@@ -37,51 +34,54 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class CommandManager implements CommandExecutor {
 
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-		if (label.equalsIgnoreCase("ttt")){
-			if (args.length > 0){
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (label.equalsIgnoreCase("ttt")) {
+			if (args.length > 0) {
 				final String subCmd = args[0];
 				// arena commands
-				if (subCmd.equalsIgnoreCase("import") || subCmd.equalsIgnoreCase("i")){
+				if (subCmd.equalsIgnoreCase("import") || subCmd.equalsIgnoreCase("i")) {
 					new ImportCommand(sender, args).handle();
 				}
-				else if (subCmd.equalsIgnoreCase("join") || subCmd.equalsIgnoreCase("j")){
+				else if (subCmd.equalsIgnoreCase("join") || subCmd.equalsIgnoreCase("j")) {
 					new JoinCommand(sender, args).handle();
 				}
 				else if (subCmd.equalsIgnoreCase("leave") || subCmd.equalsIgnoreCase("l") ||
-						subCmd.equalsIgnoreCase("quit") || subCmd.equalsIgnoreCase("q")){
+						subCmd.equalsIgnoreCase("quit") || subCmd.equalsIgnoreCase("q")) {
 					new LeaveCommand(sender, args).handle();
 				}
-				else if (subCmd.equalsIgnoreCase("carena") || subCmd.equalsIgnoreCase("ca")){
+				else if (subCmd.equalsIgnoreCase("carena") || subCmd.equalsIgnoreCase("ca")) {
 					new CreateArenaCommand(sender, args).handle();
 				}
-				else if (subCmd.equalsIgnoreCase("addspawn") || subCmd.equalsIgnoreCase("as")){
+				else if (subCmd.equalsIgnoreCase("addspawn") || subCmd.equalsIgnoreCase("as")) {
 					new AddSpawnCommand(sender, args).handle();
 				}
-				else if (subCmd.equalsIgnoreCase("removespawn") || subCmd.equalsIgnoreCase("rs")){
+				else if (subCmd.equalsIgnoreCase("removespawn") || subCmd.equalsIgnoreCase("rs")) {
 					new RemoveSpawnCommand(sender, args).handle();
 				}
 				// administrative commands
-				else if (subCmd.equalsIgnoreCase("prepare")){
+				else if (subCmd.equalsIgnoreCase("prepare")) {
 					new PrepareCommand(sender, args);
 				}
-				else if (subCmd.equalsIgnoreCase("start")){
+				else if (subCmd.equalsIgnoreCase("start")) {
 					new StartCommand(sender, args);
 				}
-				else if (subCmd.equalsIgnoreCase("end")){
+				else if (subCmd.equalsIgnoreCase("end")) {
 					new EndCommand(sender, args);
 				}
-				else if (subCmd.equalsIgnoreCase("kick")){
+				else if (subCmd.equalsIgnoreCase("kick")) {
 					new KickCommand(sender, args);
 				}
 				// misc. commands
 				else if (subCmd.equalsIgnoreCase("setexit") || subCmd.equalsIgnoreCase("se") ||
-						subCmd.equalsIgnoreCase("setspawn") || subCmd.equalsIgnoreCase("ss")){
+						subCmd.equalsIgnoreCase("setspawn") || subCmd.equalsIgnoreCase("ss")) {
 					new SetExitCommand(sender, args).handle();
 				}
-				else if (subCmd.equalsIgnoreCase("help") || subCmd.equalsIgnoreCase("?")){
+				else if (subCmd.equalsIgnoreCase("help") || subCmd.equalsIgnoreCase("?")) {
 					new HelpCommand(sender, args).handle();
 				}
 				else {

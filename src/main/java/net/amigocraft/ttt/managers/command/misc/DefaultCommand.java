@@ -23,21 +23,22 @@
  */
 package net.amigocraft.ttt.managers.command.misc;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import org.bukkit.command.CommandSender;
 
+import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
+import static net.amigocraft.ttt.util.Constants.SPECIAL_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class DefaultCommand extends SubcommandHandler {
 
-	public DefaultCommand(CommandSender sender, String[] args){
+	public DefaultCommand(CommandSender sender, String[] args) {
 		super(sender, args);
 	}
 
 	@Override
-	public void handle(){
+	public void handle() {
 		sender.sendMessage(getMessage("ttt-version", SPECIAL_COLOR,
 				Main.plugin.getDescription().getVersion(), "Maxim Roncacé"));
 		sender.sendMessage(getMessage("help-command", INFO_COLOR));

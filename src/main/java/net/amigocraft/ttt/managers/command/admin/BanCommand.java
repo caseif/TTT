@@ -23,9 +23,6 @@
  */
 package net.amigocraft.ttt.managers.command.admin;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.mglib.UUIDFetcher;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.MiscUtil;
@@ -35,20 +32,23 @@ import org.bukkit.command.CommandSender;
 
 import java.util.UUID;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class BanCommand extends SubcommandHandler {
 
-	public BanCommand(CommandSender sender, String[] args){
+	public BanCommand(CommandSender sender, String[] args) {
 		super(sender, args);
 	}
 
 	@Override
-	public void handle(){
-		if (args.length > 1){
-			if (sender.hasPermission("ttt.admin.ban")){
+	public void handle() {
+		if (args.length > 1) {
+			if (sender.hasPermission("ttt.admin.ban")) {
 				String name = args[1];
 				int time = -1;
-				if (args.length > 2){
-					if (NumUtil.isInt(args[2])){
+				if (args.length > 2) {
+					if (NumUtil.isInt(args[2])) {
 						time = Integer.parseInt(args[2]);
 					}
 					else {
@@ -67,7 +67,7 @@ public class BanCommand extends SubcommandHandler {
 									getMessage("ban", ERROR_COLOR, time + "")
 					);
 				}
-				catch (Exception ex){
+				catch (Exception ex) {
 					sender.sendMessage(getMessage("uuid-fail", ERROR_COLOR));
 				}
 			}

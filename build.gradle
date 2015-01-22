@@ -4,7 +4,7 @@ plugins {
 	id 'eclipse'
 	id 'idea'
 
-    id 'com.github.hierynomus.license' version '0.11.0'
+	id 'com.github.hierynomus.license' version '0.11.0'
 	id 'com.github.johnrengelman.shadow' version '1.2.0'
 }
 
@@ -27,7 +27,7 @@ sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
 ext {
-    bukkit = 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
+	bukkit = 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
 	mglib = 'net.amigocraft.mglib:mglib:0.3.0'
 	updater = 'net.gravitydevelopment.updater:updater:2.3'
 }
@@ -42,7 +42,7 @@ repositories {
 
 // Project dependencies
 dependencies {
-    compile bukkit
+	compile bukkit
 	compile mglib
 	compile updater
 }
@@ -71,9 +71,10 @@ shadowJar {
 license {
 	header file('LICENSE')
 	excludes([
-			'**/*.csv',
+			'**/*.properties',
 			'**/*.yml',
-			'**/Metrics.java'
+			'**/Metrics.java',
+			'**/LICENSE'
 	])
 	sourceSets = project.sourceSets
 	ignoreFailures false
@@ -85,14 +86,14 @@ license {
 
 // check code style
 checkstyle {
-    configProperties = [
-            "name"        : project.name,
-            "year"        : project.inceptionYear
-    ]
-    configFile = file("etc/checkstyle.xml")
+	configProperties = [
+			"name": project.name,
+			"year": project.inceptionYear
+	]
+	configFile = file("etc/checkstyle.xml")
 }
 
-tasks.withType(Checkstyle){
-	exclude '**/*.csv'
+tasks.withType(Checkstyle) {
+	exclude '**/*.properties'
 	exclude '**/*.yml'
 }

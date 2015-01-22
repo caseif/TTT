@@ -71,7 +71,7 @@ public final class Config {
 	public static final String SB_T_DETECTIVE_PREFIX;
 	public static final boolean SB_USE_SIDEBAR;
 
-	static{
+	static {
 		TIME_LIMIT = getInt("time-limit");
 		SETUP_TIME = getInt("setup-time");
 		MINIMUM_PLAYERS = getInt("minimum-players");
@@ -119,19 +119,19 @@ public final class Config {
 		SB_USE_SIDEBAR = getBoolean("sb-use-sidebar");
 	}
 
-	public static String getString(String a){
+	public static String getString(String a) {
 		return Main.plugin.getConfig().getString(a);
 	}
 
-	public static boolean getBoolean(String a){
+	public static boolean getBoolean(String a) {
 		return Main.plugin.getConfig().getBoolean(a);
 	}
 
-	public static int getInt(String a){
+	public static int getInt(String a) {
 		return Main.plugin.getConfig().getInt(a);
 	}
 
-	public static double getDouble(String a){
+	public static double getDouble(String a) {
 		return Main.plugin.getConfig().getDouble(a);
 	}
 }

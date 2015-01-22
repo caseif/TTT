@@ -30,7 +30,7 @@ public abstract class SubcommandHandler {
 	protected CommandSender sender;
 	protected String[] args;
 
-	public SubcommandHandler(CommandSender sender, String[] args){
+	public SubcommandHandler(CommandSender sender, String[] args) {
 		this.sender = sender;
 		this.args = args;
 	}

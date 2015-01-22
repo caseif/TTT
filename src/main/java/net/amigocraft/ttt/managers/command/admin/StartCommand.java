@@ -23,9 +23,6 @@
  */
 package net.amigocraft.ttt.managers.command.admin;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.api.Stage;
 import net.amigocraft.ttt.Main;
@@ -33,18 +30,21 @@ import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.NumUtil;
 import org.bukkit.command.CommandSender;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class StartCommand extends SubcommandHandler {
 
-	public StartCommand(CommandSender sender, String[] args){
+	public StartCommand(CommandSender sender, String[] args) {
 		super(sender, args);
 	}
 
 	@Override
-	public void handle(){
-		if (args.length > 1){
+	public void handle() {
+		if (args.length > 1) {
 			String arena = args[1];
 			Round r = Main.mg.getRound(arena);
-			if (r != null){
+			if (r != null) {
 				if (args.length > 2 && NumUtil.isInt(args[2]))
 					r.setPlayingTime(Integer.parseInt(args[2]));
 				r.setStage(Stage.PREPARING); // force player reset

@@ -23,9 +23,6 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.mglib.exception.ArenaExistsException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
@@ -37,31 +34,35 @@ import org.bukkit.command.CommandSender;
 
 import java.io.File;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class ImportCommand extends SubcommandHandler {
 
-	public ImportCommand(CommandSender sender, String[] args){
+	public ImportCommand(CommandSender sender, String[] args) {
 		super(sender, args);
 	}
 
 	@Override
-	public void handle(){
-		if (sender.hasPermission("ttt.arena.import")){
-			if (args.length > 1){
+	public void handle() {
+		if (sender.hasPermission("ttt.arena.import")) {
+			if (args.length > 1) {
 				String worldName = "";
-				for (File f : Bukkit.getWorldContainer().listFiles()){
-					if (f.getName().equalsIgnoreCase(args[1])){
+				for (File f : Bukkit.getWorldContainer().listFiles()) {
+					if (f.getName().equalsIgnoreCase(args[1])) {
 						worldName = f.getName();
 					}
 				}
-				if (!worldName.equals("")){
-					if (FileUtil.isWorld(args[1])){
+				if (!worldName.equals("")) {
+					if (FileUtil.isWorld(args[1])) {
 						World w = Bukkit.createWorld(new WorldCreator(worldName));
-						if (w != null){
+						if (w != null) {
 							try {
 								Main.mg.createArena(worldName, w.getSpawnLocation());
 								sender.sendMessage(getMessage("import-success", INFO_COLOR));
 							}
-							catch (ArenaExistsException e){
+							catch (ArenaExistsException e) {
 								//TODO: replace this message with something more accurate
 								sender.sendMessage(getMessage("already-imported", ERROR_COLOR));
 							}

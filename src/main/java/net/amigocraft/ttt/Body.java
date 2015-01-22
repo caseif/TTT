@@ -33,7 +33,7 @@ public class Body {
 	private Location3D l;
 	private long time;
 
-	public Body(String player, String arena, String team, Location3D l, long time){
+	public Body(String player, String arena, String team, Location3D l, long time) {
 		this.player = player;
 		this.arena = arena;
 		this.team = team;
@@ -41,32 +41,32 @@ public class Body {
 		this.time = time;
 	}
 
-	public String getPlayer(){
+	public String getPlayer() {
 		return player;
 	}
 
-	public String getArena(){
+	public String getArena() {
 		return arena;
 	}
 
-	public String getTeam(){
+	public String getTeam() {
 		return team;
 	}
 
-	public Location3D getLocation(){
+	public Location3D getLocation() {
 		return l;
 	}
 
-	public long getTime(){
+	public long getTime() {
 		return time;
 	}
 
-	public boolean equals(Object b){
+	public boolean equals(Object b) {
 		return b instanceof Body && player.equals(((Body) b).getPlayer()) && arena.equals(((Body) b).getArena()) &&
 				team.equals(((Body) b).getTeam()) && l.equals(((Body) b).getLocation());
 	}
 
-	public int hashCode(){
+	public int hashCode() {
 		return 41 * (41 + player.hashCode() + l.hashCode());
 	}
 }

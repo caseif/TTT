@@ -25,12 +25,12 @@ package net.amigocraft.ttt.util;
 
 public class NumUtil {
 
-	public static boolean isInt(String s){
+	public static boolean isInt(String s) {
 		try {
 			Integer.parseInt(s);
 			return true;
 		}
-		catch (NumberFormatException ex){
+		catch (NumberFormatException ex) {
 			return false;
 		}
 	}

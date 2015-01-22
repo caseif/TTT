@@ -23,19 +23,20 @@
  */
 package net.amigocraft.ttt.managers.command;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.Constants.MIN_MGLIB_VERSION;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class SpecialCommandManager implements CommandExecutor {
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-		if (label.equalsIgnoreCase("ttt")){
-			if (sender.hasPermission("ttt.build.warn")){
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (label.equalsIgnoreCase("ttt")) {
+			if (sender.hasPermission("ttt.build.warn")) {
 				sender.sendMessage(getMessage("mglib-required", ERROR_COLOR, MIN_MGLIB_VERSION));
 			}
 			else {

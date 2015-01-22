@@ -23,9 +23,6 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.exception.NoSuchArenaException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
@@ -37,35 +34,38 @@ import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class JoinCommand extends SubcommandHandler {
 
-	public JoinCommand(CommandSender sender, String[] args){
+	public JoinCommand(CommandSender sender, String[] args) {
 		super(sender, args);
 	}
 
 	@Override
-	public void handle(){
-		if (sender instanceof Player){
-			if (sender.hasPermission("ttt.arena.join")){
-				if (args.length > 1){
+	public void handle() {
+		if (sender instanceof Player) {
+			if (sender.hasPermission("ttt.arena.join")) {
+				if (args.length > 1) {
 					Round r;
 					try {
 						r = Main.mg.getRound(args[1]);
-						if (r == null){
+						if (r == null) {
 							r = Main.mg.createRound(args[1]);
 						}
 						JoinResult result = r.addPlayer(sender.getName());
 					}
-					catch (NoSuchArenaException ex){
+					catch (NoSuchArenaException ex) {
 						sender.sendMessage(getMessage("arena-invalid", ERROR_COLOR));
 					}
-					catch (PlayerOfflineException ex){ // this should never be able to happen
+					catch (PlayerOfflineException ex) { // this should never be able to happen
 						ex.printStackTrace();
 					}
-					catch (PlayerPresentException ex){
+					catch (PlayerPresentException ex) {
 						sender.sendMessage(getMessage("already-entered", ERROR_COLOR));
 					}
-					catch (RoundFullException ex){
+					catch (RoundFullException ex) {
 						sender.sendMessage(getMessage("round-full", ERROR_COLOR));
 					}
 				}

@@ -23,18 +23,18 @@
  */
 package net.amigocraft.ttt.listeners;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class SpecialPlayerListener implements Listener {
 
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent e){
-		if (e.getPlayer().hasPermission("ttt.build.warn")){
+	public void onPlayerJoin(PlayerJoinEvent e) {
+		if (e.getPlayer().hasPermission("ttt.build.warn")) {
 			e.getPlayer().sendMessage(getMessage("mglib-required", ERROR_COLOR));
 		}
 	}

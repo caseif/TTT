@@ -23,9 +23,6 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.mglib.exception.InvalidLocationException;
 import net.amigocraft.mglib.exception.NoSuchArenaException;
 import net.amigocraft.ttt.Main;
@@ -36,21 +33,24 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class AddSpawnCommand extends SubcommandHandler {
 
-	public AddSpawnCommand(CommandSender sender, String[] args){
+	public AddSpawnCommand(CommandSender sender, String[] args) {
 		super(sender, args);
 	}
 
 	@Override
-	public void handle(){
-		if (sender.hasPermission("ttt.arena.addspawn")){
+	public void handle() {
+		if (sender.hasPermission("ttt.arena.addspawn")) {
 			World w = null;
 			int x;
 			int y;
 			int z;
-			if (args.length == 2){ // use sender's location
-				if (sender instanceof Player){
+			if (args.length == 2) { // use sender's location
+				if (sender instanceof Player) {
 					w = ((Player) sender).getWorld();
 					x = ((Player) sender).getLocation().getBlockX();
 					y = ((Player) sender).getLocation().getBlockY();
@@ -61,8 +61,8 @@ public class AddSpawnCommand extends SubcommandHandler {
 					return;
 				}
 			}
-			else if (args.length == 5){ // use 3 provided coords
-				if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])){
+			else if (args.length == 5) { // use 3 provided coords
+				if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])) {
 					x = Integer.parseInt(args[2]);
 					y = Integer.parseInt(args[3]);
 					z = Integer.parseInt(args[4]);
@@ -77,17 +77,17 @@ public class AddSpawnCommand extends SubcommandHandler {
 				return;
 			}
 			try {
-				if (w == null){
+				if (w == null) {
 					Main.mg.getArenaFactory(args[1]).addSpawn(x, y, z);
 				}
 				else {
 					Main.mg.getArenaFactory(args[1]).addSpawn(new Location(w, x, y, z));
 				}
 			}
-			catch (InvalidLocationException ex){
+			catch (InvalidLocationException ex) {
 				sender.sendMessage(getMessage("same-world", ERROR_COLOR));
 			}
-			catch (NoSuchArenaException ex){
+			catch (NoSuchArenaException ex) {
 				sender.sendMessage(getMessage("arena-invalid", ERROR_COLOR));
 			}
 		}

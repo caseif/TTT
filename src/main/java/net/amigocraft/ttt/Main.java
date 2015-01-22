@@ -23,6 +23,9 @@
  */
 package net.amigocraft.ttt;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.*;
+
 import net.amigocraft.mglib.api.ConfigManager;
 import net.amigocraft.mglib.api.Locale;
 import net.amigocraft.mglib.api.LogLevel;
@@ -31,9 +34,9 @@ import net.amigocraft.ttt.Metrics.Graph;
 import net.amigocraft.ttt.listeners.MGListener;
 import net.amigocraft.ttt.listeners.PlayerListener;
 import net.amigocraft.ttt.listeners.SpecialPlayerListener;
-import net.amigocraft.ttt.managers.command.CommandManager;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
+import net.amigocraft.ttt.managers.command.CommandManager;
 import net.amigocraft.ttt.managers.command.SpecialCommandManager;
 import net.amigocraft.ttt.util.FileUtil;
 import net.gravitydevelopment.updater.Updater;
@@ -76,22 +79,24 @@ public class Main extends JavaPlugin {
 	public static List<UUID> translators = new ArrayList<UUID>();
 
 	@Override
-	public void onEnable(){
+	public void onEnable() {
 		log = this.getLogger();
 		kLog = Logger.getLogger("TTT Karma Debug");
 		plugin = this;
 
 		boolean compatibleMethod = false;
-		if (Bukkit.getPluginManager().isPluginEnabled("MGLib")){
+		if (Bukkit.getPluginManager().isPluginEnabled("MGLib")) {
 			try {
 				Minigame.class.getMethod("isMGLibCompatible", String.class);
 				compatibleMethod = true;
 			}
-			catch (NoSuchMethodException swallow){}
+			catch (NoSuchMethodException swallow) {
+			}
 		}
-		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !compatibleMethod || !Minigame.isMGLibCompatible("0.3.0")){
+		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !compatibleMethod ||
+				!Minigame.isMGLibCompatible(MIN_MGLIB_VERSION)) {
 			MGLIB = false;
-			Main.log.info(ANSI_RED + Main.locale.getMessage("mglib-required") + ANSI_WHITE);
+			Main.log.info(ANSI_RED + getMessage("mglib-required", null, MIN_MGLIB_VERSION) + ANSI_WHITE);
 			getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
 			getCommand("ttt").setExecutor(new SpecialCommandManager());
 			return;
@@ -125,24 +130,26 @@ public class Main extends JavaPlugin {
 
 		try {
 			File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
-			if (spawnFile.exists()){
+			if (spawnFile.exists()) {
 				YamlConfiguration spawnYaml = new YamlConfiguration();
 				spawnYaml.load(spawnFile);
 				World w = Bukkit.getWorld(spawnYaml.getString("world"));
-				if (w == null){
+				if (w == null) {
 					w = Bukkit.createWorld(new WorldCreator(spawnYaml.getString("world")));
 				}
-				if (w == null){
-					mg.log(Main.locale.getMessage("error-setting-exit"), LogLevel.WARNING);
+				if (w == null) {
+					mg.log(locale.getMessage("error-setting-exit"), LogLevel.WARNING);
 				}
 				else {
-					cm.setDefaultExitLocation(new Location(w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z")));
+					cm.setDefaultExitLocation(new Location(
+							w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z")
+					);
 				}
 			}
 		}
-		catch (Exception ex){
+		catch (Exception ex) {
 			ex.printStackTrace();
-			mg.log(Main.locale.getMessage("error-loading-exit"), LogLevel.WARNING);
+			mg.log(locale.getMessage("error-loading-exit"), LogLevel.WARNING);
 		}
 
 		// register events, commands, and the plugin variable
@@ -152,27 +159,27 @@ public class Main extends JavaPlugin {
 
 		// copy pre-0.5 folder
 		File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
-		if (old.exists() && !getDataFolder().exists()){
+		if (old.exists() && !getDataFolder().exists()) {
 			mg.log(locale.getMessage("folder-rename"), LogLevel.INFO);
 			try {
 				old.renameTo(getDataFolder());
 			}
-			catch (Exception ex){
+			catch (Exception ex) {
 				ex.printStackTrace();
 				mg.log(locale.getMessage("folder-rename-error"), LogLevel.WARNING);
 			}
 		}
 
 		// check if config should be overwritten
-		if (!new File(getDataFolder(), "config.yml").exists()){
+		if (!new File(getDataFolder(), "config.yml").exists()) {
 			saveDefaultConfig();
 		}
-		else if (!Config.IGNORE_CONFIG_VERSION && !Config.CONFIG_VERSION.equals(this.getDescription().getVersion())){
+		else if (!Config.IGNORE_CONFIG_VERSION && !Config.CONFIG_VERSION.equals(this.getDescription().getVersion())) {
 			File config = new File(this.getDataFolder(), "config.yml");
 			try {
 				FileUtil.copyFile(config, new File(this.getDataFolder(), "config.old.yml"));
 			}
-			catch (Exception ex){
+			catch (Exception ex) {
 				ex.printStackTrace();
 				mg.log(locale.getMessage("config-copy-fail"), LogLevel.INFO);
 			}
@@ -184,25 +191,27 @@ public class Main extends JavaPlugin {
 		createFile("bans.yml");
 
 		// autoupdate
-		if (Config.ENABLE_AUTO_UPDATE){
+		if (Config.ENABLE_AUTO_UPDATE) {
 			new Updater(this, 52474, this.getFile(), Updater.UpdateType.DEFAULT, true);
 		}
 
 		// submit metrics
-		if (Config.ENABLE_METRICS){
+		if (Config.ENABLE_METRICS) {
 			try {
 				Metrics metrics = new Metrics(this);
 				Graph graph = metrics.createGraph("MGLib Version");
-				graph.addPlotter(new Metrics.Plotter(Bukkit.getPluginManager().getPlugin("MGLib").getDescription().getVersion()) {
-					public int getValue(){
+				graph.addPlotter(new Metrics.Plotter(
+						Bukkit.getPluginManager().getPlugin("MGLib").getDescription().getVersion()
+				) {
+					public int getValue() {
 						return 1;
 					}
 				});
 				metrics.addGraph(graph);
 				metrics.start();
 			}
-			catch (IOException e){
-				if (Config.VERBOSE_LOGGING){
+			catch (IOException e) {
+				if (Config.VERBOSE_LOGGING) {
 					mg.log(locale.getMessage("metrics-fail"), LogLevel.INFO);
 				}
 			}
@@ -241,24 +250,25 @@ public class Main extends JavaPlugin {
 		translators.add(UUID.fromString("8baab7be-4942-4742-854b-0687d783b985")); // guigo007
 		translators.add(UUID.fromString("ece5d120-402a-4a32-b78a-fdfaf5adab33")); // JeyWake
 		translators.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
+		//TODO: add minecrell
 		translators.add(UUID.fromString("dcd6037d-a68d-4593-a857-7853406ec11e")); // Nikkolo_DTU
 		translators.add(UUID.fromString("abdaf9ad-3034-43a2-b22e-ba81fb949708")); // Rocoty
 		translators.add(UUID.fromString("3e2b55fe-5e77-4ecf-8053-9ac9f5b118a3")); // RokkeyCX
 		translators.add(UUID.fromString("9ffc9678-2c59-4fb5-9025-bf424e32a5f7")); // SuicideSilence_
 		translators.add(UUID.fromString("e4714759-8a41-468d-8f93-b796c0f17aaa")); // victormac737
 
-		if (Config.VERBOSE_LOGGING){
+		if (Config.VERBOSE_LOGGING) {
 			mg.log(this + " " + locale.getMessage("enabled"), LogLevel.INFO);
 		}
 	}
 
 	@Override
-	public void onDisable(){
-		if (MGLIB){
+	public void onDisable() {
+		if (MGLIB) {
 			// uninitialize static variables so as not to cause memory leaks when reloading
 			KarmaManager.playerKarma = null;
 			ScoreManager.uninitialize();
-			if (Config.VERBOSE_LOGGING){
+			if (Config.VERBOSE_LOGGING) {
 				mg.log(this + " " + locale.getMessage("disabled"), LogLevel.INFO);
 			}
 		}
@@ -266,25 +276,25 @@ public class Main extends JavaPlugin {
 		lang = null;
 	}
 
-	public static void createFile(String s){
+	public static void createFile(String s) {
 		File f = new File(Main.plugin.getDataFolder(), s);
-		if (!f.exists()){
-			if (Config.VERBOSE_LOGGING){
+		if (!f.exists()) {
+			if (Config.VERBOSE_LOGGING) {
 				mg.log(locale.getMessage("creating-file").replace("%", s), LogLevel.INFO);
 			}
 			try {
 				f.createNewFile();
 			}
-			catch (Exception ex){
+			catch (Exception ex) {
 				ex.printStackTrace();
 				mg.log(locale.getMessage("write-fail").replace("%", s), LogLevel.INFO);
 			}
 		}
 	}
 
-	public static void createLocale(String s){
+	public static void createLocale(String s) {
 		File exLocale = new File(Main.plugin.getDataFolder() + File.separator + "locales", s);
-		if (!exLocale.exists()){
+		if (!exLocale.exists()) {
 			InputStream is = null;
 			OutputStream os = null;
 			try {
@@ -295,27 +305,26 @@ public class Main extends JavaPlugin {
 				os = new FileOutputStream(exLocale);
 				byte[] buffer = new byte[1024];
 				int len;
-				while ((len = is.read(buffer)) != -1){
+				while ((len = is.read(buffer)) != -1) {
 					os.write(buffer, 0, len);
 				}
 			}
-			catch (Exception ex){
+			catch (Exception ex) {
 				ex.printStackTrace();
 			}
 			finally {
 				try {
-					if (is != null){
+					if (is != null) {
 						is.close();
 					}
-					if (os != null){
+					if (os != null) {
 						os.close();
 					}
 				}
-				catch (Exception exc){
+				catch (Exception exc) {
 					exc.printStackTrace();
 				}
 			}
 		}
 	}
-
 }

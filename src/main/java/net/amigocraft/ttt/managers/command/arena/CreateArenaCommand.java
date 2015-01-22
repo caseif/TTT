@@ -23,9 +23,6 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.mglib.exception.ArenaExistsException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
@@ -37,33 +34,36 @@ import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class CreateArenaCommand extends SubcommandHandler {
 
-	public CreateArenaCommand(CommandSender sender, String[] args){
+	public CreateArenaCommand(CommandSender sender, String[] args) {
 		super(sender, args);
 	}
 
 	@Override
-	public void handle(){
-		if (sender.hasPermission("ttt.arena.create")){
+	public void handle() {
+		if (sender.hasPermission("ttt.arena.create")) {
 			String w;
 			int x;
 			int y;
 			int z;
-			if (args.length == 2){ // use sender's location
-				if (sender instanceof Player){
-					w = ((Player)sender).getWorld().getName();
-					x = ((Player)sender).getLocation().getBlockX();
-					y = ((Player)sender).getLocation().getBlockY();
-					z = ((Player)sender).getLocation().getBlockZ();
+			if (args.length == 2) { // use sender's location
+				if (sender instanceof Player) {
+					w = ((Player) sender).getWorld().getName();
+					x = ((Player) sender).getLocation().getBlockX();
+					y = ((Player) sender).getLocation().getBlockY();
+					z = ((Player) sender).getLocation().getBlockZ();
 				}
 				else {
 					sender.sendMessage(getMessage("must-be-ingame", ERROR_COLOR));
 					return;
 				}
 			}
-			else if (args.length == 6){ // use 3 provided coords and world
-				if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4]) && FileUtil.isWorld(args[5])){
+			else if (args.length == 6) { // use 3 provided coords and world
+				if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4]) && FileUtil.isWorld(args[5])) {
 					x = Integer.parseInt(args[2]);
 					y = Integer.parseInt(args[3]);
 					z = Integer.parseInt(args[4]);
@@ -81,11 +81,11 @@ public class CreateArenaCommand extends SubcommandHandler {
 			try {
 				Main.mg.createArena(args[1], new Location(Bukkit.createWorld(new WorldCreator(w)), x, y, z));
 			}
-			catch (ArenaExistsException ex){
+			catch (ArenaExistsException ex) {
 				sender.sendMessage("already-imported");
 			}
 		}
-		else{
+		else {
 			sender.sendMessage(getMessage("no-permission", ERROR_COLOR));
 		}
 	}

@@ -23,9 +23,6 @@
  */
 package net.amigocraft.ttt.managers.command.admin;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.exception.NoSuchPlayerException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
@@ -33,27 +30,31 @@ import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import org.bukkit.command.CommandSender;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class KickCommand extends SubcommandHandler {
 
-	public KickCommand(CommandSender sender, String[] args){
+	public KickCommand(CommandSender sender, String[] args) {
 		super(sender, args);
 	}
 
 	@Override
-	public void handle(){
-		if (args.length > 1){
+	public void handle() {
+		if (args.length > 1) {
 			String name = args[1];
 			MGPlayer mp = Main.mg.getMGPlayer(name);
-			if (mp != null){
+			if (mp != null) {
 				try {
 					mp.removeFromRound();
 					mp.getBukkitPlayer().sendMessage(getMessage("kick", INFO_COLOR));
 					sender.sendMessage(getMessage("player-kicked", INFO_COLOR, mp.getBukkitPlayer().getName()));
 				}
-				catch (NoSuchPlayerException ex){
+				catch (NoSuchPlayerException ex) {
 					sender.sendMessage(getMessage("player-not-in-round", ERROR_COLOR)); // shouldn't ever happen
 				}
-				catch (PlayerOfflineException ex){
+				catch (PlayerOfflineException ex) {
 					sender.sendMessage(getMessage("player-offline", ERROR_COLOR));
 				}
 			}

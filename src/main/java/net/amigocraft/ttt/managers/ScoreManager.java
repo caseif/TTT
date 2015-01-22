@@ -24,8 +24,8 @@
 package net.amigocraft.ttt.managers;
 
 import net.amigocraft.mglib.api.MGPlayer;
-import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.Config;
+import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.util.MiscUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.*;
@@ -56,12 +56,13 @@ public class ScoreManager {
 			Scoreboard.class.getMethod("getEntries");
 			support = true;
 		}
-		catch (NoSuchMethodException swallow){}
+		catch (NoSuchMethodException swallow) {
+		}
 		ENTRY_SUPPORT = support;
 	}
 
 	@SuppressWarnings("deprecation")
-	public ScoreManager(String arenaName){
+	public ScoreManager(String arenaName) {
 
 		this.arenaName = arenaName;
 		innocent = manager.getNewScoreboard();
@@ -117,12 +118,12 @@ public class ScoreManager {
 		tTeamDM.setPrefix(SB_T_DETECTIVE_PREFIX + SB_MIA_PREFIX);
 		tTeamDD.setPrefix(SB_T_DETECTIVE_PREFIX + SB_DEAD_PREFIX);
 
-		for (MGPlayer m : Main.mg.getRound(arenaName).getPlayerList()){
-			if (m.getBukkitPlayer() != null){
+		for (MGPlayer m : Main.mg.getRound(arenaName).getPlayerList()) {
+			if (m.getBukkitPlayer() != null) {
 				update(m);
 
-				if (m.getTeam() != null){
-					if (!MiscUtil.isTraitor(m)){
+				if (m.getTeam() != null) {
+					if (!MiscUtil.isTraitor(m)) {
 						m.getBukkitPlayer().setScoreboard(innocent);
 					}
 					else {
@@ -139,9 +140,9 @@ public class ScoreManager {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void update(MGPlayer player){
+	public void update(MGPlayer player) {
 
-		if (ENTRY_SUPPORT){
+		if (ENTRY_SUPPORT) {
 			innocent.resetScores(player.getName());
 			traitor.resetScores(player.getName());
 		}
@@ -150,21 +151,21 @@ public class ScoreManager {
 			traitor.resetScores(player.getName());
 		}
 
-		if (innocent.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName())) != null){
+		if (innocent.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName())) != null) {
 			innocent.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName()))
 					.removePlayer(Bukkit.getOfflinePlayer(player.getName()));
 		}
-		if (traitor.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName())) != null){
+		if (traitor.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName())) != null) {
 			traitor.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName()))
 					.removePlayer(Bukkit.getOfflinePlayer(player.getName()));
 		}
 
-		if (player.hasMetadata("detective")){
-			if (!player.isSpectating()){
+		if (player.hasMetadata("detective")) {
+			if (!player.isSpectating()) {
 				iTeamDA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 				tTeamDA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
-			else if (!player.hasMetadata("bodyFound")){
+			else if (!player.hasMetadata("bodyFound")) {
 				iTeamDM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 				tTeamDM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
@@ -173,12 +174,12 @@ public class ScoreManager {
 				tTeamDD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
 		}
-		else if (player.getTeam() == null || player.getTeam().equals("Innocent")){
-			if (!player.isSpectating()){
+		else if (player.getTeam() == null || player.getTeam().equals("Innocent")) {
+			if (!player.isSpectating()) {
 				iTeamIA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 				tTeamIA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
-			else if (!player.hasMetadata("bodyFound")){
+			else if (!player.hasMetadata("bodyFound")) {
 				iTeamIM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 				tTeamIM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
@@ -187,12 +188,12 @@ public class ScoreManager {
 				tTeamID.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
 		}
-		else if (player.getTeam().equals("Traitor")){
-			if (!player.isSpectating()){
+		else if (player.getTeam().equals("Traitor")) {
+			if (!player.isSpectating()) {
 				iTeamTA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 				tTeamTA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
-			else if (!player.hasMetadata("bodyFound")){
+			else if (!player.hasMetadata("bodyFound")) {
 				iTeamTM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 				tTeamTM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 			}
@@ -203,7 +204,7 @@ public class ScoreManager {
 		}
 		Score score1;
 		Score score2;
-		if (ENTRY_SUPPORT){
+		if (ENTRY_SUPPORT) {
 			score1 = iObj.getScore(player.getName());
 			score2 = tObj.getScore(player.getName());
 		}
@@ -211,12 +212,12 @@ public class ScoreManager {
 			score1 = iObj.getScore(Bukkit.getOfflinePlayer(player.getName()));
 			score2 = tObj.getScore(Bukkit.getOfflinePlayer(player.getName()));
 		}
-		score1.setScore((Integer)player.getMetadata("displayKarma"));
-		score2.setScore((Integer)player.getMetadata("displayKarma"));
+		score1.setScore((Integer) player.getMetadata("displayKarma"));
+		score2.setScore((Integer) player.getMetadata("displayKarma"));
 	}
 
-	public static void uninitialize(){
-		for (ScoreManager sm : sbManagers.values()){
+	public static void uninitialize() {
+		for (ScoreManager sm : sbManagers.values()) {
 			sm.iObj.unregister();
 			sm.tObj.unregister();
 		}

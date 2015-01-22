@@ -36,19 +36,21 @@ public class MiscUtil {
 
 	/**
 	 * Determines whether a given {@link MGPlayer player} is marked as a Traitor.
+	 *
 	 * @param player the player to check
 	 * @return whether the player is a traitor
 	 */
-	public static boolean isTraitor(MGPlayer player){
+	public static boolean isTraitor(MGPlayer player) {
 		return player.getTeam() != null && player.getTeam().equals("Traitor");
 	}
 
 	/**
 	 * Bans the player by the specified name from using TTT for a set amount of time.
-	 * @param player the UUID of the player to ban
+	 *
+	 * @param player  the UUID of the player to ban
 	 * @param minutes the length of time to ban the player for.
 	 */
-	public static void ban(UUID player, int minutes){
+	public static void ban(UUID player, int minutes) {
 		File f = new File(Main.plugin.getDataFolder(), "bans.yml");
 		YamlConfiguration y = new YamlConfiguration();
 		try {
@@ -57,7 +59,7 @@ public class MiscUtil {
 			y.set(player.toString(), unbanTime);
 			y.save(f);
 		}
-		catch (Exception ex){
+		catch (Exception ex) {
 			ex.printStackTrace();
 			Main.mg.log(getMessage("ban-fail", null, false, player.toString()), LogLevel.WARNING);
 		}

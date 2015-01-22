@@ -23,9 +23,6 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
-
 import net.amigocraft.mglib.MGUtil;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.NumUtil;
@@ -34,21 +31,24 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 public class RemoveSpawnCommand extends SubcommandHandler {
 
-	public RemoveSpawnCommand(CommandSender sender, String[] args){
+	public RemoveSpawnCommand(CommandSender sender, String[] args) {
 		super(sender, args);
 	}
 
 	@Override
-	public void handle(){
-		if (sender.hasPermission("ttt.arena.removespawn")){
+	public void handle() {
+		if (sender.hasPermission("ttt.arena.removespawn")) {
 			int x = 0;
 			int y = 0;
 			int z = 0;
 			int index = Integer.MAX_VALUE;
-			if (args.length == 2){ // use sender's location
-				if (sender instanceof Player){
+			if (args.length == 2) { // use sender's location
+				if (sender instanceof Player) {
 					x = ((Player) sender).getLocation().getBlockX();
 					y = ((Player) sender).getLocation().getBlockY();
 					z = ((Player) sender).getLocation().getBlockZ();
@@ -58,8 +58,8 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 					return;
 				}
 			}
-			else if (args.length == 3){
-				if (NumUtil.isInt(args[2])){
+			else if (args.length == 3) {
+				if (NumUtil.isInt(args[2])) {
 					index = Integer.parseInt(args[2]);
 				}
 				else {
@@ -67,8 +67,8 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 					return;
 				}
 			}
-			else if (args.length == 5){ // use 3 provided coords
-				if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])){
+			else if (args.length == 5) { // use 3 provided coords
+				if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])) {
 					x = Integer.parseInt(args[2]);
 					y = Integer.parseInt(args[3]);
 					z = Integer.parseInt(args[4]);
@@ -82,10 +82,10 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 				sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
 				return;
 			}
-			if (index != Integer.MAX_VALUE){
+			if (index != Integer.MAX_VALUE) {
 				YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
-				if (yaml.isSet(args[1] + ".spawns")){
-					if (yaml.isSet(args[1] + ".spawns." + index)){
+				if (yaml.isSet(args[1] + ".spawns")) {
+					if (yaml.isSet(args[1] + ".spawns." + index)) {
 						yaml.set(args[1] + ".spawns." + index, null);
 						MGUtil.saveArenaYaml("TTT", yaml);
 					}
@@ -99,10 +99,10 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 			}
 			else {
 				YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
-				if (yaml.isSet(args[1] + ".spawns")){
+				if (yaml.isSet(args[1] + ".spawns")) {
 					ConfigurationSection cs = yaml.getConfigurationSection(args[1] + ".spawns");
-					for (String k : cs.getKeys(false)){
-						if (cs.getInt(k + ".x") == x && cs.getInt(k + ".y") == y && cs.getInt(k + ".z") == z){
+					for (String k : cs.getKeys(false)) {
+						if (cs.getInt(k + ".x") == x && cs.getInt(k + ".y") == y && cs.getInt(k + ".z") == z) {
 							cs.set(k, null);
 							MGUtil.saveArenaYaml("TTT", yaml);
 							return;
