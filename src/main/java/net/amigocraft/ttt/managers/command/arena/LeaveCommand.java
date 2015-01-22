@@ -23,6 +23,9 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.exception.NoSuchPlayerException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
@@ -30,9 +33,6 @@ import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
 
 public class LeaveCommand extends SubcommandHandler {
 
@@ -46,21 +46,25 @@ public class LeaveCommand extends SubcommandHandler {
 			if (sender.hasPermission("ttt.arena.leave")) {
 				if (Main.mg.isPlayer(sender.getName())) {
 					MGPlayer mp = Main.mg.getMGPlayer(sender.getName());
-					//String arena = mp.getArena();
 					try {
-						mp.removeFromRound();
+						if (mp.getRound() != null) {
+							String roundName = mp.getRound().getDisplayName();
+							mp.removeFromRound();
+							sender.sendMessage(getMessage("success-leave", INFO_COLOR, roundName));
+						}
+						else {
+							throw new NoSuchPlayerException();
+						}
 					}
 					catch (NoSuchPlayerException ex) {
-						sender.sendMessage(getMessage("not-in-game", ERROR_COLOR));
+						sender.sendMessage(getMessage("not-in-round", ERROR_COLOR));
 					}
 					catch (PlayerOfflineException ex) {
 						ex.printStackTrace();
 					}
-					//sender.sendMessage(ChatColor.DARK_PURPLE + "[TTT] " + sender.getName() + " " +
-					//		Main.locale.getMessage("left-game").replace("%", arena));
 				}
 				else {
-					sender.sendMessage(getMessage("not-in-game", ERROR_COLOR));
+					sender.sendMessage(getMessage("not-in-round", ERROR_COLOR));
 				}
 			}
 			else {

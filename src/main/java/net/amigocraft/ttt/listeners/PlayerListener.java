@@ -104,19 +104,22 @@ public class PlayerListener implements Listener {
 								Body b = Main.bodies.get(index);
 								MGPlayer bodyPlayer = Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer());
 								if (b.getTeam().equals("Innocent")) {
-									Main.mg.getRound(b.getArena()).broadcast(INNOCENT_COLOR + e.getPlayer().getName() +
-											" " + getMessage("found-body", INNOCENT_COLOR, false, b.getPlayer()) +
-											". " + getMessage("was-innocent", INNOCENT_COLOR, false));
+									Main.mg.getRound(b.getArena()).broadcast(
+											getMessage("found-body", INNOCENT_COLOR, false,
+													e.getPlayer().getName(),b.getPlayer()) + " " +
+											getMessage("was-innocent", INNOCENT_COLOR, false));
 								}
 								else if (b.getTeam().equals("Traitor")) {
-									Main.mg.getRound(b.getArena()).broadcast(TRAITOR_COLOR + e.getPlayer().getName() +
-											" " + getMessage("found-body", TRAITOR_COLOR, false, b.getPlayer()) +
-											". " + getMessage("was-traitor", TRAITOR_COLOR, false));
+									Main.mg.getRound(b.getArena()).broadcast(
+											getMessage("found-body", TRAITOR_COLOR, false,
+													e.getPlayer().getName(),b.getPlayer()) + " " +
+													getMessage("was-traitor", TRAITOR_COLOR, false));
 								}
 								else {
-									Main.mg.getRound(b.getArena()).broadcast(DETECTIVE_COLOR + e.getPlayer().getName() +
-											" " + getMessage("found-body", DETECTIVE_COLOR, false, b.getPlayer()) +
-											". " + getMessage("was-detective", DETECTIVE_COLOR, false));
+									Main.mg.getRound(b.getArena()).broadcast(
+											getMessage("found-body", DETECTIVE_COLOR, false,
+													e.getPlayer().getName(),b.getPlayer()) + " " +
+													getMessage("was-detective", DETECTIVE_COLOR, false));
 								}
 								Main.foundBodies.add(Main.bodies.get(index));
 								if (bodyPlayer != null &&
@@ -145,8 +148,8 @@ public class PlayerListener implements Listener {
 											if (!Main.mg.getMGPlayer(killer.getName()).isSpectating()) {
 												player.setMetadata("tracking", killer.getName());
 											}
-											e.getPlayer().sendMessage(getMessage("collected-sample", INFO_COLOR)
-													.replace("%", Main.bodies.get(index).getPlayer()));
+											e.getPlayer().sendMessage(getMessage("collected-sample", INFO_COLOR,
+													Main.bodies.get(index).getPlayer()));
 										}
 										else {
 											e.getPlayer().sendMessage(getMessage("killer-left", ERROR_COLOR));

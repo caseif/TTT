@@ -39,7 +39,7 @@ public class DefaultCommand extends SubcommandHandler {
 
 	@Override
 	public void handle() {
-		sender.sendMessage(getMessage("ttt-version", SPECIAL_COLOR,
+		sender.sendMessage(getMessage("plugin-info", SPECIAL_COLOR,
 				Main.plugin.getDescription().getVersion(), "Maxim Roncacé"));
 		sender.sendMessage(getMessage("help-command", INFO_COLOR));
 	}

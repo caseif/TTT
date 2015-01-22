@@ -150,11 +150,11 @@ public class MGListener implements Listener {
 		else if (Main.translators.contains(uuid)) {
 			addition += ", " + getMessage("translator", TRAITOR_COLOR) + "," + INFO_COLOR;
 		}
-		Bukkit.broadcastMessage(e.getPlayer().getName() + addition + " " +
-				getMessage("joined-map" + " \"" + e.getRound().getDisplayName() + "\"", INFO_COLOR));
+		Bukkit.broadcastMessage(getMessage("joined-arena", INFO_COLOR,
+				e.getPlayer().getName() + addition, ARENA_COLOR + e.getRound().getDisplayName()));
 
-		e.getPlayer().getBukkitPlayer().sendMessage(getMessage("success-join" + " ", INFO_COLOR) +
-				e.getRound().getDisplayName());
+		e.getPlayer().getBukkitPlayer().sendMessage(getMessage("success-join", INFO_COLOR,
+				ARENA_COLOR + e.getRound().getDisplayName()));
 	}
 
 	@EventHandler
@@ -166,8 +166,8 @@ public class MGListener implements Listener {
 		KarmaManager.saveKarma(e.getPlayer());
 		(e.getPlayer()).setMetadata("displayKarma", e.getPlayer().getMetadata("karma"));
 		if (!e.getRound().hasEnded()) {
-			e.getRound().broadcast(INFO_COLOR + e.getPlayer().getName() + " " +
-					getMessage("left-game", INFO_COLOR, e.getPlayer().getRound().getDisplayName()));
+			e.getRound().broadcast(getMessage("left-arena", INFO_COLOR,
+					e.getPlayer().getName(), e.getPlayer().getRound().getDisplayName()));
 		}
 		e.getPlayer().getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
 	}
@@ -182,12 +182,12 @@ public class MGListener implements Listener {
 		if (e.getRound().getStage() == Stage.PREPARING) {
 			if (((e.getRound().getRemainingTime() % 10) == 0 ||
 					e.getRound().getRemainingTime() < 10) && e.getRound().getRemainingTime() > 0) {
-				e.getRound().broadcast(getMessage("begin", INFO_COLOR, e.getRound().getRemainingTime() + " " +
-						getMessage("seconds" + "!", INFO_COLOR)));
+				e.getRound().broadcast(getMessage("begin", INFO_COLOR,
+						getMessage("seconds", INFO_COLOR, Integer.toString(e.getRound().getRemainingTime()))));
 			}
 			else if (e.getRound().getRemainingTime() == 0) {
 				int players = e.getRound().getPlayers().size();
-				int traitorNum = 0;
+				int traitorCount = 0;
 				int limit = (int) (players * Config.TRAITOR_RATIO);
 				if (limit == 0) {
 					limit = 1;
@@ -199,14 +199,14 @@ public class MGListener implements Listener {
 					innocents.add(p.getName());
 					p.getBukkitPlayer().sendMessage(getMessage("begun", INFO_COLOR));
 				}
-				while (traitorNum < limit) {
+				while (traitorCount < limit) {
 					Random randomGenerator = new Random();
 					int index = randomGenerator.nextInt(players);
 					String traitor = innocents.get(index);
 					if (innocents.contains(traitor)) {
 						innocents.remove(traitor);
 						traitors.add(traitor);
-						traitorNum += 1;
+						traitorCount += 1;
 					}
 				}
 				int dLimit = (int) (players * Config.DETECTIVE_RATIO);
@@ -361,19 +361,12 @@ public class MGListener implements Listener {
 			Round r = e.getRound();
 			int rTime = r.getRemainingTime();
 			if (rTime % 60 == 0 && rTime >= 60) {
-				r.broadcast(INFO_COLOR + Integer.toString(rTime / 60) + " " +
-						getMessage("minutes", INFO_COLOR, false) + " " +
-						getMessage("left", INFO_COLOR, false));
+				r.broadcast(getMessage("left", INFO_COLOR, false,
+						getMessage("minutes", INFO_COLOR, false, Integer.toString(rTime / 60))));
 			}
-			else if (rTime % 10 == 0 && rTime > 10 && rTime < 60) {
-				r.broadcast(INFO_COLOR + Integer.toString(rTime) + " " +
-						getMessage("seconds", INFO_COLOR, false) + " " +
-						getMessage("left", INFO_COLOR, false));
-			}
-			else if (rTime < 10 && rTime > 0) {
-				r.broadcast(INFO_COLOR + Integer.toString(rTime) + " " +
-						getMessage("seconds", INFO_COLOR, false) + " " +
-						getMessage("left", INFO_COLOR, false));
+			else if ((rTime % 10 == 0 && rTime > 10 && rTime < 60) || (rTime < 10 && rTime > 0)) {
+				r.broadcast(getMessage("left", INFO_COLOR, false,
+						getMessage("seconds", INFO_COLOR, false, Integer.toString(rTime))));
 			}
 			//TODO: this loop is probably an unnecessary artifact but I'm leaving it for now in case removing it causes
 			// odd side-effects
@@ -410,12 +403,12 @@ public class MGListener implements Listener {
 		KarmaManager.allocateKarma(e.getRound());
 
 		if (!e.getRound().hasMetadata("t-victory") || e.getRound().getMetadata("t-victory") == Boolean.FALSE) {
-			Bukkit.broadcastMessage(getMessage("innocent-win", INNOCENT_COLOR, ARENA_COLOR +
-					e.getRound().getDisplayName()) + "!");
+			Bukkit.broadcastMessage(getMessage("innocent-win", INNOCENT_COLOR,
+					ARENA_COLOR + e.getRound().getDisplayName()));
 		}
 		else {
-			Bukkit.broadcastMessage(getMessage("traitor-win", TRAITOR_COLOR, ARENA_COLOR +
-					e.getRound().getDisplayName()) + "!");
+			Bukkit.broadcastMessage(getMessage("traitor-win", TRAITOR_COLOR,
+					ARENA_COLOR + e.getRound().getDisplayName()));
 		}
 		for (Entity ent : Bukkit.getWorld(e.getRound().getWorld()).getEntities()) {
 			if (ent.getType() == EntityType.ARROW) {
@@ -457,7 +450,7 @@ public class MGListener implements Listener {
 		ItemMeta idMeta = id.getItemMeta();
 		idMeta.setDisplayName(getMessage("id", ChatColor.RESET, false));
 		List<String> idLore = new ArrayList<String>();
-		idLore.add(getMessage("body-of", ChatColor.RESET, false));
+		idLore.add(getMessage("body-of", ChatColor.RESET, false, e.getPlayer().getName()));
 		idLore.add(e.getPlayer().getName());
 		idMeta.setLore(idLore);
 		id.setItemMeta(idMeta);
