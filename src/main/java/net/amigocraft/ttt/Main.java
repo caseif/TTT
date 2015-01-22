@@ -143,7 +143,7 @@ public class Main extends JavaPlugin {
 				else {
 					cm.setDefaultExitLocation(new Location(
 							w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z")
-					);
+					));
 				}
 			}
 		}

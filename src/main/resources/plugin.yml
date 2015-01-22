@@ -70,11 +70,9 @@ permissions:
     children:
       ttt.admin.*: true
       ttt.arena.*: true
-      ttt.setexit: true
-      ttt.help: true
       ttt.lobby.*: true
 
-  ttt.admin.*:
+  ttt.admin:
     description: Allows for full use of administrative commands.
     default: op
     children:
@@ -84,7 +82,12 @@ permissions:
       ttt.admin.slay: true
       ttt.admin.kick: true
       ttt.admin.ban: true
-
+      ttt.setexit: true
+      ttt.help: true
+  ttt.admin.*:
+    description: Allows for full use of administrative commands.
+    children:
+      ttt.admin.*: true
   ttt.admin.prepare:
     description: Allows player to force rounds to enter preparation stage.
     default: op
@@ -107,7 +110,7 @@ permissions:
     description: Allows player to ban and unban players from joining TTT rounds.
     default: op
 
-  ttt.arena.*:
+  ttt.arena:
     description: Grants all permissions beginning with ttt.arena.
     default: op
     children:
@@ -117,6 +120,10 @@ permissions:
       ttt.arena.removespawn: true
       ttt.arena.join: true
       ttt.arena.leave: true
+  ttt.arena.*:
+    description: Grants all permissions beginning with ttt.arena.
+    children:
+      ttt.arena.*: true
   ttt.arena.import:
     description: Allows player to import worlds into the plugin.
     default: op
@@ -144,13 +151,17 @@ permissions:
     description: Allows use of /ttt help.
     default: true
 
-  ttt.lobby.*:
+  ttt.lobby:
     description: Allows for full usage and manipulation of lobby signs.
     default: op
     children:
       ttt.lobby.create: true
       ttt.lobby.destroy: true
       ttt.lobby.use: true
+  ttt.lobby.*:
+    description: Allows for full usage and manipulation of lobby signs.
+    children:
+      ttt.lobby: true
   ttt.lobby.create:
     description: Allows creation of lobby signs.
     default: op
