@@ -52,7 +52,7 @@ public class SetExitCommand extends SubcommandHandler {
 					File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
 					if (!spawnFile.exists()) {
 						if (Config.VERBOSE_LOGGING) {
-							Main.mg.log(getMessage("no-spawn-yml", null, false), LogLevel.INFO);
+							Main.mg.log(getMessage("creating-file", null, false, "spawn.yml"), LogLevel.INFO);
 						}
 						spawnFile.createNewFile();
 					}

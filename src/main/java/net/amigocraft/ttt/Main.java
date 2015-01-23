@@ -48,9 +48,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class Main extends JavaPlugin {
@@ -77,6 +75,40 @@ public class Main extends JavaPlugin {
 	public static List<UUID> alpha = new ArrayList<UUID>();
 	public static List<UUID> testers = new ArrayList<UUID>();
 	public static List<UUID> translators = new ArrayList<UUID>();
+
+	public static void main(String[] args) {
+		try {
+			InputStream en = Main.class.getResourceAsStream("/locales/enUS.properties");
+			InputStream de = Main.class.getResourceAsStream("/locales/deDE.properties");
+			BufferedReader enR = new BufferedReader(new InputStreamReader(en));
+			BufferedReader deR = new BufferedReader(new InputStreamReader(de));
+			String line;
+			Map<String, String> deMap = new HashMap<String, String>();
+			while ((line = deR.readLine()) != null) {
+				if (!line.startsWith("#")) {
+					deMap.put(line.split("=")[0], line.split("=")[1]);
+				}
+			}
+			StringBuilder sb = new StringBuilder();
+			while ((line = enR.readLine()) != null) {
+				if (!line.contains("=")) {
+					sb.append(line).append('\n');
+				}
+				else {
+					sb.append(line.split("=")[0]).append('=').append(deMap.get(line.split("=")[0])).append('\n');
+				}
+			}
+			File output = new File("D:/Libraries/Desktop/deDE.properties");
+			output.delete();
+			output.createNewFile();
+			FileWriter writer = new FileWriter(output);
+			writer.write(sb.toString());
+			writer.flush();
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
 	@Override
 	public void onEnable() {

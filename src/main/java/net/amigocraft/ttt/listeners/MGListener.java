@@ -265,9 +265,6 @@ public class MGListener implements Listener {
 								}
 							}
 						}
-						else {
-							pl.sendMessage(getMessage("alone", TRAITOR_COLOR, false));
-						}
 						pl.getInventory().addItem(crowbar, gun, ammo);
 						pl.setHealth(20);
 						pl.setFoodLevel(20);
