@@ -255,7 +255,8 @@ public class MGListener implements Listener {
 					MGPlayer player = Main.mg.getMGPlayer(s);
 					if (pl != null && player != null) {
 						player.setTeam("Traitor");
-						pl.sendMessage(getMessage("you-are-traitor", TRAITOR_COLOR, false));
+						pl.sendMessage(getMessage(traitors.size() > 1 ? "you-are-traitor" : "you-are-traitor-alone",
+								TRAITOR_COLOR, false));
 						if (traitors.size() > 1) {
 							pl.sendMessage(getMessage("allies", TRAITOR_COLOR, false));
 							for (String tr : traitors) {
