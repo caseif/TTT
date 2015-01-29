@@ -76,6 +76,40 @@ public class Main extends JavaPlugin {
 	public static List<UUID> testers = new ArrayList<UUID>();
 	public static List<UUID> translators = new ArrayList<UUID>();
 
+	public static void main(String[] args) {
+		try {
+			InputStream en = Main.class.getResourceAsStream("/locales/enUS.properties");
+			InputStream de = Main.class.getResourceAsStream("/locales/deDE.properties");
+			BufferedReader enR = new BufferedReader(new InputStreamReader(en));
+			BufferedReader deR = new BufferedReader(new InputStreamReader(de));
+			List<String> v = new ArrayList<String>();
+			String line;
+			while ((line = deR.readLine()) != null) {
+				if (line.contains("=")) {
+					v.add(line.split("=")[1]);
+				}
+			}
+			File f = new File("D:/Libraries/Desktop/deDE.properties");
+			FileWriter w = new FileWriter(f);
+			int i = 0;
+			while ((line = enR.readLine()) != null) {
+				if (line.contains("=")) {
+					w.append(line.split("=")[0]).append('=').append(v.get(i));
+					i += 1;
+				}
+				else {
+					w.append(line);
+				}
+				w.append('\n');
+			}
+			w.flush();
+
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
 	@Override
 	public void onEnable() {
 		log = this.getLogger();
@@ -94,7 +128,7 @@ public class Main extends JavaPlugin {
 		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !compatibleMethod ||
 				!Minigame.isMGLibCompatible(MIN_MGLIB_VERSION)) {
 			MGLIB = false;
-			Main.log.info(ANSI_RED + getMessage("mglib-required", null, MIN_MGLIB_VERSION) + ANSI_WHITE);
+			Main.log.info(ANSI_RED + getMessage("error.plugin.mglib", null, MIN_MGLIB_VERSION) + ANSI_WHITE);
 			getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
 			getCommand("ttt").setExecutor(new SpecialCommandManager());
 			return;
@@ -136,7 +170,7 @@ public class Main extends JavaPlugin {
 					w = Bukkit.createWorld(new WorldCreator(spawnYaml.getString("world")));
 				}
 				if (w == null) {
-					mg.log(locale.getMessage("error-setting-exit"), LogLevel.WARNING);
+					mg.log(locale.getMessage("error.plugin.set-exit"), LogLevel.WARNING);
 				}
 				else {
 					cm.setDefaultExitLocation(new Location(
@@ -147,7 +181,7 @@ public class Main extends JavaPlugin {
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
-			mg.log(locale.getMessage("error-loading-exit"), LogLevel.WARNING);
+			mg.log(locale.getMessage("error.plugin.load-exit"), LogLevel.WARNING);
 		}
 
 		// register events, commands, and the plugin variable
@@ -158,13 +192,13 @@ public class Main extends JavaPlugin {
 		// copy pre-0.5 folder
 		File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
 		if (old.exists() && !getDataFolder().exists()) {
-			mg.log(locale.getMessage("folder-rename"), LogLevel.INFO);
+			mg.log(locale.getMessage("info.plugin.compatibility.rename"), LogLevel.INFO);
 			try {
 				old.renameTo(getDataFolder());
 			}
 			catch (Exception ex) {
 				ex.printStackTrace();
-				mg.log(locale.getMessage("folder-rename-error"), LogLevel.WARNING);
+				mg.log(locale.getMessage("error.plugin.folder-rename"), LogLevel.WARNING);
 			}
 		}
 
@@ -179,7 +213,7 @@ public class Main extends JavaPlugin {
 			}
 			catch (Exception ex) {
 				ex.printStackTrace();
-				mg.log(locale.getMessage("config-copy-fail"), LogLevel.INFO);
+				mg.log(locale.getMessage("error.plugin.copy-config"), LogLevel.INFO);
 			}
 			config.delete();
 			saveDefaultConfig();
@@ -210,7 +244,7 @@ public class Main extends JavaPlugin {
 			}
 			catch (IOException e) {
 				if (Config.VERBOSE_LOGGING) {
-					mg.log(locale.getMessage("metrics-fail"), LogLevel.INFO);
+					mg.log(locale.getMessage("error.plugin.mcstats"), LogLevel.INFO);
 				}
 			}
 		}
@@ -256,7 +290,7 @@ public class Main extends JavaPlugin {
 		translators.add(UUID.fromString("e4714759-8a41-468d-8f93-b796c0f17aaa")); // victormac737
 
 		if (Config.VERBOSE_LOGGING) {
-			mg.log(this + " " + locale.getMessage("enabled"), LogLevel.INFO);
+			mg.log(this + " " + locale.getMessage("info.plugin.enable"), LogLevel.INFO);
 		}
 	}
 
@@ -267,7 +301,7 @@ public class Main extends JavaPlugin {
 			KarmaManager.playerKarma = null;
 			ScoreManager.uninitialize();
 			if (Config.VERBOSE_LOGGING) {
-				mg.log(this + " " + locale.getMessage("disabled"), LogLevel.INFO);
+				mg.log(this + " " + locale.getMessage("info.plugin.disable"), LogLevel.INFO);
 			}
 		}
 		plugin = null;
@@ -278,14 +312,14 @@ public class Main extends JavaPlugin {
 		File f = new File(Main.plugin.getDataFolder(), s);
 		if (!f.exists()) {
 			if (Config.VERBOSE_LOGGING) {
-				mg.log(locale.getMessage("creating-file").replace("%", s), LogLevel.INFO);
+				mg.log(locale.getMessage("info/plugin.compatibility.creating-file").replace("%", s), LogLevel.INFO);
 			}
 			try {
 				f.createNewFile();
 			}
 			catch (Exception ex) {
 				ex.printStackTrace();
-				mg.log(locale.getMessage("write-fail").replace("%", s), LogLevel.INFO);
+				mg.log(locale.getMessage("error.plugin.file-write").replace("%", s), LogLevel.INFO);
 			}
 		}
 	}

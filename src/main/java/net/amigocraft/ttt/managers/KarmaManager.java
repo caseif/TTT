@@ -153,16 +153,16 @@ public class KarmaManager {
 			if (Config.KARMA_BAN) {
 				MiscUtil.ban(p.getUniqueId(), Config.KARMA_BAN_TIME);
 				if (Config.KARMA_BAN_TIME < 0) {
-					p.sendMessage(getMessage("karma-permaban", INFO_COLOR, Config.KARMA_KICK + ""));
+					p.sendMessage(getMessage("info.personal.ban.perm.karma", INFO_COLOR, Config.KARMA_KICK + ""));
 				}
 				else {
-					p.sendMessage(getMessage("karma-ban", INFO_COLOR,
+					p.sendMessage(getMessage("info.personal.ban.temp.karma", INFO_COLOR,
 							Integer.toString(Config.KARMA_BAN_TIME),
 							Config.KARMA_KICK + ""));
 				}
 			}
 			else {
-				p.sendMessage(getMessage("karma-kick", INFO_COLOR, Integer.toString(Config.KARMA_KICK)));
+				p.sendMessage(getMessage("info.personal.kick.karma", INFO_COLOR, Integer.toString(Config.KARMA_KICK)));
 			}
 		}
 	}

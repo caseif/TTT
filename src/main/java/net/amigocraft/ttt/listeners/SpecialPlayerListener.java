@@ -35,7 +35,7 @@ public class SpecialPlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		if (e.getPlayer().hasPermission("ttt.build.warn")) {
-			e.getPlayer().sendMessage(getMessage("mglib-required", ERROR_COLOR));
+			e.getPlayer().sendMessage(getMessage("error.plugin.mglib", ERROR_COLOR));
 		}
 	}
 

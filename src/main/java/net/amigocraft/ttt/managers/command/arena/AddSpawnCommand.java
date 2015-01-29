@@ -57,7 +57,7 @@ public class AddSpawnCommand extends SubcommandHandler {
 					z = ((Player) sender).getLocation().getBlockZ();
 				}
 				else {
-					sender.sendMessage(getMessage("must-be-ingame", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
 					return;
 				}
 			}
@@ -68,12 +68,12 @@ public class AddSpawnCommand extends SubcommandHandler {
 					z = Integer.parseInt(args[4]);
 				}
 				else {
-					sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
 					return;
 				}
 			}
 			else {
-				sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
+				sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
 				return;
 			}
 			try {
@@ -85,14 +85,14 @@ public class AddSpawnCommand extends SubcommandHandler {
 				}
 			}
 			catch (InvalidLocationException ex) {
-				sender.sendMessage(getMessage("same-world", ERROR_COLOR));
+				sender.sendMessage(getMessage("error.arena.invalid-location", ERROR_COLOR));
 			}
 			catch (NoSuchArenaException ex) {
-				sender.sendMessage(getMessage("arena-invalid", ERROR_COLOR));
+				sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
 			}
 		}
 		else {
-			sender.sendMessage(getMessage("no-permission", ERROR_COLOR));
+			sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
 		}
 	}
 }

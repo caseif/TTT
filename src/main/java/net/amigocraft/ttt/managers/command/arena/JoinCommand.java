@@ -57,29 +57,29 @@ public class JoinCommand extends SubcommandHandler {
 						JoinResult result = r.addPlayer(sender.getName());
 					}
 					catch (NoSuchArenaException ex) {
-						sender.sendMessage(getMessage("arena-invalid", ERROR_COLOR));
+						sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
 					}
 					catch (PlayerOfflineException ex) { // this should never be able to happen
 						ex.printStackTrace();
 					}
 					catch (PlayerPresentException ex) {
-						sender.sendMessage(getMessage("already-entered", ERROR_COLOR));
+						sender.sendMessage(getMessage("error.round.inside", ERROR_COLOR));
 					}
 					catch (RoundFullException ex) {
-						sender.sendMessage(getMessage("round-full", ERROR_COLOR));
+						sender.sendMessage(getMessage("error.round.full", ERROR_COLOR));
 					}
 				}
 				else {
-					sender.sendMessage(getMessage("invalid-args-1", ERROR_COLOR));
-					sender.sendMessage(getMessage("usage-join", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+					sender.sendMessage(getMessage("info.command.usage.join", ERROR_COLOR));
 				}
 			}
 			else {
-				sender.sendMessage(getMessage("no-permission-join", ERROR_COLOR));
+				sender.sendMessage(getMessage("error.perms.arena.join", ERROR_COLOR));
 			}
 		}
 		else {
-			sender.sendMessage(getMessage("must-be-ingame", ERROR_COLOR));
+			sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
 		}
 	}
 }

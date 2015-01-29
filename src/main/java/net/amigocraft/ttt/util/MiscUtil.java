@@ -61,7 +61,7 @@ public class MiscUtil {
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
-			Main.mg.log(getMessage("ban-fail", null, false, player.toString()), LogLevel.WARNING);
+			Main.mg.log(getMessage("error.plugin.ban", null, false, player.toString()), LogLevel.WARNING);
 		}
 	}
 

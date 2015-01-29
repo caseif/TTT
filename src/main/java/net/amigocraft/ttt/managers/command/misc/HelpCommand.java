@@ -40,59 +40,63 @@ public class HelpCommand extends SubcommandHandler {
 	public void handle() {
 		if (args.length > 1 && args[1].equalsIgnoreCase("lobby")) {
 			if (sender.hasPermission("ttt.lobby.create")) {
-				sender.sendMessage(getMessage("lobby-help", SPECIAL_COLOR));
+				sender.sendMessage(getMessage("info.help.lobby", SPECIAL_COLOR));
 				sender.sendMessage("");
-				sender.sendMessage(getMessage("first", INFO_COLOR) + " " + getMessage("line", INFO_COLOR) + " " +
+				sender.sendMessage(getMessage("info.help.lobby.line.1", INFO_COLOR) + " " +
+						getMessage("info.help.lobby.line.label", INFO_COLOR) + " " +
 						DESCRIPTION_COLOR + "[TTT]");
-				sender.sendMessage(getMessage("second", INFO_COLOR) + " " + getMessage("line", INFO_COLOR) + " " +
-						getMessage("type", DESCRIPTION_COLOR));
-				sender.sendMessage(getMessage("third", INFO_COLOR) + " " + getMessage("line", INFO_COLOR) + " " +
-						getMessage("round", DESCRIPTION_COLOR));
-				sender.sendMessage(getMessage("fourth", INFO_COLOR) + " " + getMessage("line", INFO_COLOR) + " " +
-						getMessage("number", DESCRIPTION_COLOR));
+				sender.sendMessage(getMessage("info.help.lobby.line.2", INFO_COLOR) + " " +
+						getMessage("info.help.lobby.line.label", INFO_COLOR) + " " +
+						getMessage("info.help.lobby.line.2.content", DESCRIPTION_COLOR));
+				sender.sendMessage(getMessage("info.help.lobby.line.3", INFO_COLOR) + " " +
+						getMessage("info.help.lobby.line.label", INFO_COLOR) + " " +
+						getMessage("info.help.lobby.line.3.content", DESCRIPTION_COLOR));
+				sender.sendMessage(getMessage("info.help.lobby.line.4", INFO_COLOR) + " " +
+						getMessage("info.help.lobby.line.label", INFO_COLOR) + " " +
+						getMessage("info.help.lobby.line.4.content", DESCRIPTION_COLOR));
 			}
 			else {
-				sender.sendMessage(Main.locale.getMessage("no-permission"));
+				sender.sendMessage(Main.locale.getMessage("error.perms.generic"));
 			}
 		}
 		else if (sender.hasPermission("ttt.help")) {
-			sender.sendMessage(getMessage("commands", SPECIAL_COLOR));
+			sender.sendMessage(getMessage("info.help.available-cmds", SPECIAL_COLOR));
 			sender.sendMessage("");
 			if (sender.hasPermission("ttt.arena.join")) {
 				sender.sendMessage(INFO_COLOR + "/ttt join, j " +
-						getMessage("join-help", DESCRIPTION_COLOR));
+						getMessage("info.help.arena.join", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.arena.quit")) {
 				sender.sendMessage(INFO_COLOR + "/ttt quit, q " +
-						getMessage("quit-help", DESCRIPTION_COLOR));
+						getMessage("info.help.arena.leave", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.arena.import")) {
 				sender.sendMessage(INFO_COLOR + "/ttt import, i " +
-						getMessage("import-help", DESCRIPTION_COLOR));
+						getMessage("info.help.arena.import", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.arena.create")) {
 				sender.sendMessage(INFO_COLOR + "/ttt carena, ca " +
-						getMessage("createarena-help", DESCRIPTION_COLOR));
+						getMessage("info.help.arena.create", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.arena.addspawn")) {
 				sender.sendMessage(INFO_COLOR + "/ttt addspawn, ad " +
-						getMessage("addspawn-help", DESCRIPTION_COLOR));
+						getMessage("info.help.arena.spawn.add", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.arena.removespawn")) {
 				sender.sendMessage(INFO_COLOR + "/ttt removespawn, rs " +
-						getMessage("removespawn-help", DESCRIPTION_COLOR));
+						getMessage("info.help.arena.spawn.remove", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.setspawn")) {
 				sender.sendMessage(INFO_COLOR + "/ttt setexit, se " +
-						getMessage("spawn-help", DESCRIPTION_COLOR));
+						getMessage("info.help.set-exit", DESCRIPTION_COLOR));
 			}
 			if (sender.hasPermission("ttt.help")) {
 				sender.sendMessage(INFO_COLOR + "/ttt help, ? " +
-						getMessage("help-help", DESCRIPTION_COLOR));
+						getMessage("info.help.help", DESCRIPTION_COLOR));
 			}
 		}
 		else {
-			sender.sendMessage(getMessage("no-permission", ERROR_COLOR));
+			sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
 		}
 	}
 }

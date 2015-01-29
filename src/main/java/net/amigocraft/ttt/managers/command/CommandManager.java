@@ -73,7 +73,7 @@ public class CommandManager implements CommandExecutor {
 				else if (subCmd.equalsIgnoreCase("end")) {
 					new EndCommand(sender, args);
 				}
-				else if (subCmd.equalsIgnoreCase("kick")) {
+				else if (subCmd.equalsIgnoreCase("info.personal.kick")) {
 					new KickCommand(sender, args);
 				}
 				// misc. commands
@@ -85,8 +85,8 @@ public class CommandManager implements CommandExecutor {
 					new HelpCommand(sender, args).handle();
 				}
 				else {
-					sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
-					sender.sendMessage(getMessage("usage-1", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+					sender.sendMessage(getMessage("info.command.usage.generic", ERROR_COLOR));
 				}
 			}
 			else {

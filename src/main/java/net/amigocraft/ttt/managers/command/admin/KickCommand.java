@@ -48,20 +48,20 @@ public class KickCommand extends SubcommandHandler {
 			if (mp != null) {
 				try {
 					mp.removeFromRound();
-					mp.getBukkitPlayer().sendMessage(getMessage("kick", INFO_COLOR));
-					sender.sendMessage(getMessage("player-kicked", INFO_COLOR, mp.getBukkitPlayer().getName()));
+					mp.getBukkitPlayer().sendMessage(getMessage("info.personal.kick", INFO_COLOR));
+					sender.sendMessage(getMessage("info.global.round.event.kick", INFO_COLOR, mp.getBukkitPlayer().getName()));
 				}
 				catch (NoSuchPlayerException ex) {
-					sender.sendMessage(getMessage("player-not-in-round", ERROR_COLOR)); // shouldn't ever happen
+					sender.sendMessage(getMessage("error.round.no-such-player", ERROR_COLOR)); // shouldn't ever happen
 				}
 				catch (PlayerOfflineException ex) {
-					sender.sendMessage(getMessage("player-offline", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.round.player-offline", ERROR_COLOR));
 				}
 			}
 			else
-				sender.sendMessage(getMessage("player-not-in-round", ERROR_COLOR));
+				sender.sendMessage(getMessage("error.round.no-such-player", ERROR_COLOR));
 		}
 		else
-			sender.sendMessage(getMessage("invalid-args-1", ERROR_COLOR));
+			sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
 	}
 }

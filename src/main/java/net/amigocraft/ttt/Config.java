@@ -96,8 +96,8 @@ public final class Config {
 		TBONUS = getInt("tbonus");
 		KARMA_ROUND_TO_ONE = getBoolean("karma-round-to-one");
 		KARMA_STRICT = getBoolean("karma-strict");
-		KARMA_KICK = getInt("karma-kick");
-		KARMA_BAN = getBoolean("karma-ban");
+		KARMA_KICK = getInt("info.personal.kick.karma");
+		KARMA_BAN = getBoolean("info.personal.ban.temp.karma");
 		KARMA_BAN_TIME = getInt("karma-ban-time");
 		DAMAGE_REDUCTION = getBoolean("damage-reduction");
 		KARMA_DEBUG = getBoolean("karma-debug");

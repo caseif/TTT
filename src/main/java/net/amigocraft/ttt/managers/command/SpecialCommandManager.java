@@ -37,10 +37,10 @@ public class SpecialCommandManager implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (label.equalsIgnoreCase("ttt")) {
 			if (sender.hasPermission("ttt.build.warn")) {
-				sender.sendMessage(getMessage("mglib-required", ERROR_COLOR, MIN_MGLIB_VERSION));
+				sender.sendMessage(getMessage("error.plugin.mglib", ERROR_COLOR, MIN_MGLIB_VERSION));
 			}
 			else {
-				sender.sendMessage(getMessage("is-disabled", ERROR_COLOR));
+				sender.sendMessage(getMessage("error.plugin.disabled", ERROR_COLOR));
 			}
 			return true;
 		}

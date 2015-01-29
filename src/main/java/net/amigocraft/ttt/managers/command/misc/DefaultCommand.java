@@ -39,8 +39,8 @@ public class DefaultCommand extends SubcommandHandler {
 
 	@Override
 	public void handle() {
-		sender.sendMessage(getMessage("plugin-info", SPECIAL_COLOR,
+		sender.sendMessage(getMessage("info.plugin.info", SPECIAL_COLOR,
 				Main.plugin.getDescription().getVersion(), "Maxim Roncacé"));
-		sender.sendMessage(getMessage("help-command", INFO_COLOR));
+		sender.sendMessage(getMessage("info.command.usage.help", INFO_COLOR));
 	}
 }

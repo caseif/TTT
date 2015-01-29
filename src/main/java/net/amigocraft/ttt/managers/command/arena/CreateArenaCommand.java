@@ -58,7 +58,7 @@ public class CreateArenaCommand extends SubcommandHandler {
 					z = ((Player) sender).getLocation().getBlockZ();
 				}
 				else {
-					sender.sendMessage(getMessage("must-be-ingame", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
 					return;
 				}
 			}
@@ -70,23 +70,23 @@ public class CreateArenaCommand extends SubcommandHandler {
 					w = args[5];
 				}
 				else {
-					sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
 					return;
 				}
 			}
 			else {
-				sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
+				sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
 				return;
 			}
 			try {
 				Main.mg.createArena(args[1], new Location(Bukkit.createWorld(new WorldCreator(w)), x, y, z));
 			}
 			catch (ArenaExistsException ex) {
-				sender.sendMessage("already-imported");
+				sender.sendMessage("error.arena.already-exists");
 			}
 		}
 		else {
-			sender.sendMessage(getMessage("no-permission", ERROR_COLOR));
+			sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
 		}
 	}
 }

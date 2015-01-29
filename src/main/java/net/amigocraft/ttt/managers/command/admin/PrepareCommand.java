@@ -48,14 +48,14 @@ public class PrepareCommand extends SubcommandHandler {
 				if (args.length > 2 && NumUtil.isInt(args[2]))
 					r.setPreparationTime(Integer.parseInt(args[2]));
 				r.setStage(Stage.PREPARING);
-				r.setTime(0); // this is automatic in MGLib 0.3.1 but I'd rather not bump the required version for something so simple
 				// resetting the players is handled by MGListener
-				sender.sendMessage(getMessage("set-preparing", INFO_COLOR, ARENA_COLOR + r.getArena()));
+				sender.sendMessage(getMessage("info.personal.arena.set-stage.preparing.success",
+						INFO_COLOR, ARENA_COLOR + r.getArena()));
 			}
 			else
-				sender.sendMessage(getMessage("no-such-round", ERROR_COLOR, ARENA_COLOR + arena));
+				sender.sendMessage(getMessage("error.round.dne", ERROR_COLOR, ARENA_COLOR + arena));
 		}
 		else
-			sender.sendMessage(getMessage("invalid-args-1", ERROR_COLOR));
+			sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
 	}
 }

@@ -52,7 +52,7 @@ public class SetExitCommand extends SubcommandHandler {
 					File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
 					if (!spawnFile.exists()) {
 						if (Config.VERBOSE_LOGGING) {
-							Main.mg.log(getMessage("creating-file", null, false, "spawn.yml"), LogLevel.INFO);
+							Main.mg.log(getMessage("info/plugin.compatibility.creating-file", null, false, "spawn.yml"), LogLevel.INFO);
 						}
 						spawnFile.createNewFile();
 					}
@@ -67,19 +67,19 @@ public class SetExitCommand extends SubcommandHandler {
 					Main.mg.getConfigManager().setDefaultExitLocation(
 							new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5)
 					);
-					sender.sendMessage(getMessage("set-exit", INFO_COLOR));
+					sender.sendMessage(getMessage("info.personal.set-exit.success", INFO_COLOR));
 				}
 				catch (Exception ex) {
 					ex.printStackTrace();
-					sender.sendMessage(getMessage("error-setting-exit", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.plugin.set-exit", ERROR_COLOR));
 				}
 			}
 			else {
-				sender.sendMessage(getMessage("must-be-ingame", ERROR_COLOR));
+				sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
 			}
 		}
 		else {
-			sender.sendMessage(getMessage("no-permission", ERROR_COLOR));
+			sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
 		}
 	}
 }

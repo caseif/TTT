@@ -54,7 +54,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 					z = ((Player) sender).getLocation().getBlockZ();
 				}
 				else {
-					sender.sendMessage(getMessage("must-be-ingame", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
 					return;
 				}
 			}
@@ -63,7 +63,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 					index = Integer.parseInt(args[2]);
 				}
 				else {
-					sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
 					return;
 				}
 			}
@@ -74,12 +74,12 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 					z = Integer.parseInt(args[4]);
 				}
 				else {
-					sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
 					return;
 				}
 			}
 			else {
-				sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
+				sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
 				return;
 			}
 			if (index != Integer.MAX_VALUE) {
@@ -90,11 +90,11 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 						MGUtil.saveArenaYaml("TTT", yaml);
 					}
 					else {
-						sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
+						sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
 					}
 				}
 				else {
-					sender.sendMessage(getMessage("arena-invalid", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
 				}
 			}
 			else {
@@ -108,15 +108,15 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 							return;
 						}
 					}
-					sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
 				}
 				else {
-					sender.sendMessage(getMessage("arena-invalid", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
 				}
 			}
 		}
 		else {
-			sender.sendMessage(getMessage("no-permission", ERROR_COLOR));
+			sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
 		}
 	}
 }

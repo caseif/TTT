@@ -77,7 +77,7 @@ public class ScoreManager {
 
 		iTeamIA = innocent.registerNewTeam("ia");
 		iTeamIM = innocent.registerNewTeam("im");
-		iTeamID = innocent.registerNewTeam("id");
+		iTeamID = innocent.registerNewTeam("item.id.name");
 		iTeamTA = innocent.registerNewTeam("ta");
 		iTeamTM = innocent.registerNewTeam("tm");
 		iTeamTD = innocent.registerNewTeam("td");
@@ -86,7 +86,7 @@ public class ScoreManager {
 		iTeamDD = innocent.registerNewTeam("dd");
 		tTeamIA = traitor.registerNewTeam("ia");
 		tTeamIM = traitor.registerNewTeam("im");
-		tTeamID = traitor.registerNewTeam("id");
+		tTeamID = traitor.registerNewTeam("item.id.name");
 		tTeamTA = traitor.registerNewTeam("ta");
 		tTeamTM = traitor.registerNewTeam("tm");
 		tTeamTD = traitor.registerNewTeam("td");
@@ -160,7 +160,7 @@ public class ScoreManager {
 					.removePlayer(Bukkit.getOfflinePlayer(player.getName()));
 		}
 
-		if (player.hasMetadata("detective")) {
+		if (player.hasMetadata("fragment.detective")) {
 			if (!player.isSpectating()) {
 				iTeamDA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
 				tTeamDA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));

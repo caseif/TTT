@@ -50,29 +50,29 @@ public class LeaveCommand extends SubcommandHandler {
 						if (mp.getRound() != null) {
 							String roundName = mp.getRound().getDisplayName();
 							mp.removeFromRound();
-							sender.sendMessage(getMessage("success-leave", INFO_COLOR, roundName));
+							sender.sendMessage(getMessage("info.personal.arena.leave.success", INFO_COLOR, roundName));
 						}
 						else {
 							throw new NoSuchPlayerException();
 						}
 					}
 					catch (NoSuchPlayerException ex) {
-						sender.sendMessage(getMessage("not-in-round", ERROR_COLOR));
+						sender.sendMessage(getMessage("error.round.outside", ERROR_COLOR));
 					}
 					catch (PlayerOfflineException ex) {
 						ex.printStackTrace();
 					}
 				}
 				else {
-					sender.sendMessage(getMessage("not-in-round", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.round.outside", ERROR_COLOR));
 				}
 			}
 			else {
-				sender.sendMessage(getMessage("no-permission-quit", ERROR_COLOR));
+				sender.sendMessage(getMessage("error.perms.arena.leave", ERROR_COLOR));
 			}
 		}
 		else {
-			sender.sendMessage(getMessage("must-be-ingame", ERROR_COLOR));
+			sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
 		}
 	}
 }

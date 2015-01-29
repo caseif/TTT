@@ -60,32 +60,32 @@ public class ImportCommand extends SubcommandHandler {
 						if (w != null) {
 							try {
 								Main.mg.createArena(worldName, w.getSpawnLocation());
-								sender.sendMessage(getMessage("import-success", INFO_COLOR));
+								sender.sendMessage(getMessage("info.personal.arena.import.success", INFO_COLOR));
 							}
 							catch (ArenaExistsException e) {
 								//TODO: replace this message with something more accurate
-								sender.sendMessage(getMessage("already-imported", ERROR_COLOR));
+								sender.sendMessage(getMessage("error.arena.already-exists", ERROR_COLOR));
 							}
 						}
 						else {
-							sender.sendMessage(getMessage("cannot-load-world", ERROR_COLOR));
+							sender.sendMessage(getMessage("error.plugin.world-load", ERROR_COLOR));
 						}
 					}
 					else {
-						sender.sendMessage(getMessage("cannot-load-world", ERROR_COLOR));
+						sender.sendMessage(getMessage("error.plugin.world-load", ERROR_COLOR));
 					}
 				}
 				else {
-					sender.sendMessage(getMessage("folder-error", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.plugin.folder-create", ERROR_COLOR));
 				}
 			}
 			else {
-				sender.sendMessage(getMessage("invalid-args-1", ERROR_COLOR));
-				sender.sendMessage(getMessage("usage-import", ERROR_COLOR));
+				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+				sender.sendMessage(getMessage("info.command.usage.import", ERROR_COLOR));
 			}
 		}
 		else {
-			sender.sendMessage(getMessage("no-permission-import", ERROR_COLOR));
+			sender.sendMessage(getMessage("error.perms.arena.import", ERROR_COLOR));
 		}
 	}
 }

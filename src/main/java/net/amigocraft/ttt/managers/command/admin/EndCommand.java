@@ -51,16 +51,16 @@ public class EndCommand extends SubcommandHandler {
 					else if (args[2].equalsIgnoreCase("i"))
 						r.setMetadata("t-victory", false);
 					else {
-						sender.sendMessage(getMessage("invalid-args-2", ERROR_COLOR));
+						sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
 						return;
 					}
 				}
 				r.end();
 			}
 			else
-				sender.sendMessage(getMessage("no-active-round", ERROR_COLOR, ARENA_COLOR + r.getArena()));
+				sender.sendMessage(getMessage("error.arena.no-round", ERROR_COLOR, ARENA_COLOR + r.getArena()));
 		}
 		else
-			sender.sendMessage(getMessage("invalid-args-1", ERROR_COLOR));
+			sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
 	}
 }
