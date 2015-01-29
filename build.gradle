@@ -36,7 +36,7 @@ ext {
 repositories {
 	mavenCentral()
 	maven { url 'http://hub.spigotmc.org/nexus/content/groups/public/' }
-	maven { url 'http://repo.amigocraft.net/content/groups/public/' }
+	maven { url 'http://repo.caseif.net/content/groups/public/' }
 	maven { url 'http://repo.gravitydevelopment.net' }
 }
 
