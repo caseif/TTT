@@ -23,20 +23,21 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.ttt.Config;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
+
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-
-import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
-import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
 
 public class SetExitCommand extends SubcommandHandler {
 
@@ -58,12 +59,12 @@ public class SetExitCommand extends SubcommandHandler {
 					}
 					YamlConfiguration spawnYaml = new YamlConfiguration();
 					spawnYaml.load(spawnFile);
-					spawnYaml.set("world", ((Player) sender).getLocation().getWorld().getName());
-					spawnYaml.set("x", ((Player) sender).getLocation().getBlockX() + 0.5);
-					spawnYaml.set("y", ((Player) sender).getLocation().getBlockY());
-					spawnYaml.set("z", ((Player) sender).getLocation().getBlockZ() + 0.5);
+					spawnYaml.set("world", ((Player)sender).getLocation().getWorld().getName());
+					spawnYaml.set("x", ((Player)sender).getLocation().getBlockX() + 0.5);
+					spawnYaml.set("y", ((Player)sender).getLocation().getBlockY());
+					spawnYaml.set("z", ((Player)sender).getLocation().getBlockZ() + 0.5);
 					spawnYaml.save(spawnFile);
-					Location l = ((Player) sender).getLocation();
+					Location l = ((Player)sender).getLocation();
 					Main.mg.getConfigManager().setDefaultExitLocation(
 							new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5)
 					);

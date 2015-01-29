@@ -23,18 +23,19 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import net.amigocraft.mglib.exception.InvalidLocationException;
 import net.amigocraft.mglib.exception.NoSuchArenaException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.NumUtil;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
 
 public class AddSpawnCommand extends SubcommandHandler {
 
@@ -51,10 +52,10 @@ public class AddSpawnCommand extends SubcommandHandler {
 			int z;
 			if (args.length == 2) { // use sender's location
 				if (sender instanceof Player) {
-					w = ((Player) sender).getWorld();
-					x = ((Player) sender).getLocation().getBlockX();
-					y = ((Player) sender).getLocation().getBlockY();
-					z = ((Player) sender).getLocation().getBlockZ();
+					w = ((Player)sender).getWorld();
+					x = ((Player)sender).getLocation().getBlockX();
+					y = ((Player)sender).getLocation().getBlockY();
+					z = ((Player)sender).getLocation().getBlockZ();
 				}
 				else {
 					sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));

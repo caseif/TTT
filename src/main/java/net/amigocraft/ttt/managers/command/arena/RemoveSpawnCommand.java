@@ -23,16 +23,17 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import net.amigocraft.mglib.MGUtil;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.NumUtil;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-
-import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
 
 public class RemoveSpawnCommand extends SubcommandHandler {
 
@@ -49,9 +50,9 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 			int index = Integer.MAX_VALUE;
 			if (args.length == 2) { // use sender's location
 				if (sender instanceof Player) {
-					x = ((Player) sender).getLocation().getBlockX();
-					y = ((Player) sender).getLocation().getBlockY();
-					z = ((Player) sender).getLocation().getBlockZ();
+					x = ((Player)sender).getLocation().getBlockX();
+					y = ((Player)sender).getLocation().getBlockY();
+					z = ((Player)sender).getLocation().getBlockZ();
 				}
 				else {
 					sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));

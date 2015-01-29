@@ -23,16 +23,22 @@
  */
 package net.amigocraft.ttt.managers;
 
+import static net.amigocraft.ttt.Config.*;
+
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.ttt.Config;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.util.MiscUtil;
+
 import org.bukkit.Bukkit;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
-
-import static net.amigocraft.ttt.Config.*;
 
 public class ScoreManager {
 
@@ -139,6 +145,15 @@ public class ScoreManager {
 
 	}
 
+	public static void uninitialize() {
+		for (ScoreManager sm : sbManagers.values()) {
+			sm.iObj.unregister();
+			sm.tObj.unregister();
+		}
+		sbManagers = null;
+		manager = null;
+	}
+
 	@SuppressWarnings("deprecation")
 	public void update(MGPlayer player) {
 
@@ -212,17 +227,8 @@ public class ScoreManager {
 			score1 = iObj.getScore(Bukkit.getOfflinePlayer(player.getName()));
 			score2 = tObj.getScore(Bukkit.getOfflinePlayer(player.getName()));
 		}
-		score1.setScore((Integer) player.getMetadata("displayKarma"));
-		score2.setScore((Integer) player.getMetadata("displayKarma"));
-	}
-
-	public static void uninitialize() {
-		for (ScoreManager sm : sbManagers.values()) {
-			sm.iObj.unregister();
-			sm.tObj.unregister();
-		}
-		sbManagers = null;
-		manager = null;
+		score1.setScore((Integer)player.getMetadata("displayKarma"));
+		score2.setScore((Integer)player.getMetadata("displayKarma"));
 	}
 
 }

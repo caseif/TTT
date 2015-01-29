@@ -26,6 +26,7 @@ package net.amigocraft.ttt.util;
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.ttt.Main;
+
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 

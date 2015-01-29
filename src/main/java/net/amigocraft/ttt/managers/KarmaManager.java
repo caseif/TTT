@@ -23,6 +23,9 @@
  */
 package net.amigocraft.ttt.managers;
 
+import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Minigame;
 import net.amigocraft.mglib.api.Round;
@@ -31,14 +34,12 @@ import net.amigocraft.mglib.exception.PlayerOfflineException;
 import net.amigocraft.ttt.Config;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.util.MiscUtil;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.HashMap;
-
-import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
 
 public class KarmaManager {
 
@@ -99,10 +100,10 @@ public class KarmaManager {
 				int karmaHeal = Config.KARMA_CLEAN_BONUS;
 				if (getKarma(mp) > 1000) {
 					if ((Config.MAX_KARMA - 1000) > 0) {
-						karmaHeal = (int) Math.round(
+						karmaHeal = (int)Math.round(
 								Config.KARMA_CLEAN_BONUS * Math.pow(
 										.5, (getKarma(mp) - 1000.0) /
-												((double) (Config.MAX_KARMA - 1000) *
+												((double)(Config.MAX_KARMA - 1000) *
 														Config.KARMA_CLEAN_HALF)
 								)
 						);
@@ -117,12 +118,12 @@ public class KarmaManager {
 		if (damager != null && victim != null) {
 			// team damage
 			if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor")) {
-				int penalty = (int) (getKarma(victim) * (damage * Config.DAMAGE_PENALTY));
+				int penalty = (int)(getKarma(victim) * (damage * Config.DAMAGE_PENALTY));
 				subtractKarma(damager, penalty);
 			}
 			// innocent damaging traitor
 			else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")) {
-				int reward = (int) (Config.MAX_KARMA * damage * Config.T_DAMAGE_REWARD);
+				int reward = (int)(Config.MAX_KARMA * damage * Config.T_DAMAGE_REWARD);
 				addKarma(damager, reward);
 			}
 		}
@@ -168,11 +169,11 @@ public class KarmaManager {
 	}
 
 	public static int getKarma(MGPlayer mp) {
-		return (Integer) mp.getMetadata("karma");
+		return (Integer)mp.getMetadata("karma");
 	}
 
 	public static void addKarma(MGPlayer mp, int amount) {
-		int karma = (Integer) mp.getMetadata("karma");
+		int karma = (Integer)mp.getMetadata("karma");
 		if (amount == 0 && Config.KARMA_ROUND_TO_ONE) {
 			amount = 1;
 		}
@@ -190,7 +191,7 @@ public class KarmaManager {
 	}
 
 	public static void subtractKarma(MGPlayer mp, int amount) {
-		int karma = (Integer) mp.getMetadata("karma");
+		int karma = (Integer)mp.getMetadata("karma");
 		if (amount == 0 && Config.KARMA_ROUND_TO_ONE) {
 			amount = 1;
 		}

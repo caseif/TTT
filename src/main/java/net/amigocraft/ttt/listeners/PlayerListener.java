@@ -23,6 +23,9 @@
  */
 package net.amigocraft.ttt.listeners;
 
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import net.amigocraft.mglib.api.Location3D;
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Stage;
@@ -32,11 +35,16 @@ import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
 import net.amigocraft.ttt.util.InventoryUtil;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -47,11 +55,13 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
-
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
 
 public class PlayerListener implements Listener {
 
@@ -73,7 +83,7 @@ public class PlayerListener implements Listener {
 						e.setCancelled(true);
 						for (Body b : Main.bodies) {
 							if (b.getLocation().equals(Location3D.valueOf(e.getClickedBlock().getLocation()))) {
-								Inventory chestInv = ((Chest) e.getClickedBlock().getState()).getInventory();
+								Inventory chestInv = ((Chest)e.getClickedBlock().getState()).getInventory();
 								Inventory inv = Main.plugin.getServer().createInventory(chestInv.getHolder(),
 										chestInv.getSize());
 								inv.setContents(chestInv.getContents());
@@ -106,19 +116,19 @@ public class PlayerListener implements Listener {
 								if (b.getTeam().equals("Innocent")) {
 									Main.mg.getRound(b.getArena()).broadcast(
 											getMessage("info.global.round.event.body-find", INNOCENT_COLOR, false,
-													e.getPlayer().getName(),b.getPlayer()) + " " +
-											getMessage("info.global.round.event.body-find.innocent", INNOCENT_COLOR, false));
+													e.getPlayer().getName(), b.getPlayer()) + " " +
+													getMessage("info.global.round.event.body-find.innocent", INNOCENT_COLOR, false));
 								}
 								else if (b.getTeam().equals("Traitor")) {
 									Main.mg.getRound(b.getArena()).broadcast(
 											getMessage("info.global.round.event.body-find", TRAITOR_COLOR, false,
-													e.getPlayer().getName(),b.getPlayer()) + " " +
+													e.getPlayer().getName(), b.getPlayer()) + " " +
 													getMessage("info.global.round.event.body-find.traitor", TRAITOR_COLOR, false));
 								}
 								else {
 									Main.mg.getRound(b.getArena()).broadcast(
 											getMessage("info.global.round.event.body-find", DETECTIVE_COLOR, false,
-													e.getPlayer().getName(),b.getPlayer()) + " " +
+													e.getPlayer().getName(), b.getPlayer()) + " " +
 													getMessage("info.global.round.event.body-find.detective", DETECTIVE_COLOR, false));
 								}
 								Main.foundBodies.add(Main.bodies.get(index));
@@ -140,7 +150,7 @@ public class PlayerListener implements Listener {
 										) {
 									e.setCancelled(true);
 									Player killer = Main.plugin.getServer().getPlayer(
-											(String) Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer())
+											(String)Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer())
 													.getMetadata("killer")
 									);
 									if (killer != null) {
@@ -200,7 +210,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent e) {
 		if (e.getEntityType() == EntityType.PLAYER) {
-			MGPlayer victim = Main.mg.getMGPlayer(((Player) e.getEntity()).getName());
+			MGPlayer victim = Main.mg.getMGPlayer(((Player)e.getEntity()).getName());
 			if (victim != null && victim.getRound().getStage() != Stage.PLAYING) {
 				if (e.getCause() == DamageCause.VOID) {
 					victim.spawnIn();
@@ -210,13 +220,13 @@ public class PlayerListener implements Listener {
 				}
 			}
 			if (e instanceof EntityDamageByEntityEvent) {
-				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent) e;
+				EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent)e;
 				if (ed.getDamager().getType() == EntityType.PLAYER ||
 						(ed.getDamager() instanceof Projectile &&
-								((Projectile) ed.getDamager()).getShooter() instanceof Player)) {
+								((Projectile)ed.getDamager()).getShooter() instanceof Player)) {
 					Player damager = ed.getDamager().getType() == EntityType.PLAYER ?
-							(Player) ed.getDamager() :
-							(Player) ((Projectile) ed.getDamager()).getShooter();
+							(Player)ed.getDamager() :
+							(Player)((Projectile)ed.getDamager()).getShooter();
 					if (Main.mg.isPlayer(damager.getName())) {
 						MGPlayer mgDamager = Main.mg.getMGPlayer(damager.getName());
 						if (mgDamager.getRound().getStage() != Stage.PLAYING) {
@@ -237,7 +247,7 @@ public class PlayerListener implements Listener {
 								}
 							}
 						}
-						e.setDamage((int) (e.getDamage() * (Double) mgDamager.getMetadata("damageRed")));
+						e.setDamage((int)(e.getDamage() * (Double)mgDamager.getMetadata("damageRed")));
 						KarmaManager.handleDamageKarma(mgDamager, victim, e.getDamage());
 					}
 				}
@@ -277,7 +287,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onHealthRegenerate(EntityRegainHealthEvent e) {
 		if (e.getEntity() instanceof Player) {
-			Player p = (Player) e.getEntity();
+			Player p = (Player)e.getEntity();
 			if (Main.mg.isPlayer(p.getName())) {
 				e.setCancelled(true);
 			}
@@ -306,17 +316,17 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInventoryClick(InventoryClickEvent e) {
 		for (HumanEntity he : e.getViewers()) {
-			Player p = (Player) he;
+			Player p = (Player)he;
 			if (Main.mg.isPlayer(p.getName())) {
 				if (e.getInventory().getType() == InventoryType.CHEST) {
 					Block block;
 					Block block2 = null;
 					if (e.getInventory().getHolder() instanceof Chest) {
-						block = ((Chest) e.getInventory().getHolder()).getBlock();
+						block = ((Chest)e.getInventory().getHolder()).getBlock();
 					}
 					else if (e.getInventory().getHolder() instanceof DoubleChest) {
-						block = ((Chest) ((DoubleChest) e.getInventory().getHolder()).getLeftSide()).getBlock();
-						block2 = ((Chest) ((DoubleChest) e.getInventory().getHolder()).getRightSide()).getBlock();
+						block = ((Chest)((DoubleChest)e.getInventory().getHolder()).getLeftSide()).getBlock();
+						block2 = ((Chest)((DoubleChest)e.getInventory().getHolder()).getRightSide()).getBlock();
 					}
 					else {
 						return;

@@ -23,15 +23,16 @@
  */
 package net.amigocraft.ttt.managers.command.admin;
 
+import static net.amigocraft.ttt.util.Constants.ARENA_COLOR;
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.api.Stage;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
-import org.bukkit.command.CommandSender;
 
-import static net.amigocraft.ttt.util.Constants.ARENA_COLOR;
-import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+import org.bukkit.command.CommandSender;
 
 public class EndCommand extends SubcommandHandler {
 

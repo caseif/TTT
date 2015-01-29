@@ -23,13 +23,13 @@
  */
 package net.amigocraft.ttt.managers.command;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-
 import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
 import static net.amigocraft.ttt.util.Constants.MIN_MGLIB_VERSION;
 import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
 public class SpecialCommandManager implements CommandExecutor {
 

@@ -23,8 +23,8 @@
  */
 package net.amigocraft.ttt;
 
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.*;
+import static net.amigocraft.ttt.util.Constants.MIN_MGLIB_VERSION;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
 
 import net.amigocraft.mglib.api.ConfigManager;
 import net.amigocraft.mglib.api.Locale;
@@ -39,6 +39,7 @@ import net.amigocraft.ttt.managers.ScoreManager;
 import net.amigocraft.ttt.managers.command.CommandManager;
 import net.amigocraft.ttt.managers.command.SpecialCommandManager;
 import net.amigocraft.ttt.util.FileUtil;
+
 import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -47,16 +48,21 @@ import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class Main extends JavaPlugin {
 
-	public static boolean MGLIB = true;
-
 	public static final String ANSI_RED = "\u001B[31m";
 	public static final String ANSI_WHITE = "\u001B[37m";
+	public static boolean MGLIB = true;
 	public static Minigame mg;
 
 	public static Logger log;
@@ -76,37 +82,55 @@ public class Main extends JavaPlugin {
 	public static List<UUID> testers = new ArrayList<UUID>();
 	public static List<UUID> translators = new ArrayList<UUID>();
 
-	public static void main(String[] args) {
-		try {
-			InputStream en = Main.class.getResourceAsStream("/locales/enUS.properties");
-			InputStream de = Main.class.getResourceAsStream("/locales/deDE.properties");
-			BufferedReader enR = new BufferedReader(new InputStreamReader(en));
-			BufferedReader deR = new BufferedReader(new InputStreamReader(de));
-			List<String> v = new ArrayList<String>();
-			String line;
-			while ((line = deR.readLine()) != null) {
-				if (line.contains("=")) {
-					v.add(line.split("=")[1]);
-				}
+	public static void createFile(String s) {
+		File f = new File(Main.plugin.getDataFolder(), s);
+		if (!f.exists()) {
+			if (Config.VERBOSE_LOGGING) {
+				mg.log(locale.getMessage("info/plugin.compatibility.creating-file").replace("%", s), LogLevel.INFO);
 			}
-			File f = new File("D:/Libraries/Desktop/deDE.properties");
-			FileWriter w = new FileWriter(f);
-			int i = 0;
-			while ((line = enR.readLine()) != null) {
-				if (line.contains("=")) {
-					w.append(line.split("=")[0]).append('=').append(v.get(i));
-					i += 1;
-				}
-				else {
-					w.append(line);
-				}
-				w.append('\n');
+			try {
+				f.createNewFile();
 			}
-			w.flush();
-
+			catch (Exception ex) {
+				ex.printStackTrace();
+				mg.log(locale.getMessage("error.plugin.file-write").replace("%", s), LogLevel.INFO);
+			}
 		}
-		catch (Exception ex) {
-			ex.printStackTrace();
+	}
+
+	public static void createLocale(String s) {
+		File exLocale = new File(Main.plugin.getDataFolder() + File.separator + "locales", s);
+		if (!exLocale.exists()) {
+			InputStream is = null;
+			OutputStream os = null;
+			try {
+				File dir = new File(Main.plugin.getDataFolder(), "locales");
+				dir.mkdir();
+				exLocale.createNewFile();
+				is = Main.class.getClassLoader().getResourceAsStream("locales/" + s);
+				os = new FileOutputStream(exLocale);
+				byte[] buffer = new byte[1024];
+				int len;
+				while ((len = is.read(buffer)) != -1) {
+					os.write(buffer, 0, len);
+				}
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			finally {
+				try {
+					if (is != null) {
+						is.close();
+					}
+					if (os != null) {
+						os.close();
+					}
+				}
+				catch (Exception exc) {
+					exc.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -306,57 +330,5 @@ public class Main extends JavaPlugin {
 		}
 		plugin = null;
 		lang = null;
-	}
-
-	public static void createFile(String s) {
-		File f = new File(Main.plugin.getDataFolder(), s);
-		if (!f.exists()) {
-			if (Config.VERBOSE_LOGGING) {
-				mg.log(locale.getMessage("info/plugin.compatibility.creating-file").replace("%", s), LogLevel.INFO);
-			}
-			try {
-				f.createNewFile();
-			}
-			catch (Exception ex) {
-				ex.printStackTrace();
-				mg.log(locale.getMessage("error.plugin.file-write").replace("%", s), LogLevel.INFO);
-			}
-		}
-	}
-
-	public static void createLocale(String s) {
-		File exLocale = new File(Main.plugin.getDataFolder() + File.separator + "locales", s);
-		if (!exLocale.exists()) {
-			InputStream is = null;
-			OutputStream os = null;
-			try {
-				File dir = new File(Main.plugin.getDataFolder(), "locales");
-				dir.mkdir();
-				exLocale.createNewFile();
-				is = Main.class.getClassLoader().getResourceAsStream("locales/" + s);
-				os = new FileOutputStream(exLocale);
-				byte[] buffer = new byte[1024];
-				int len;
-				while ((len = is.read(buffer)) != -1) {
-					os.write(buffer, 0, len);
-				}
-			}
-			catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			finally {
-				try {
-					if (is != null) {
-						is.close();
-					}
-					if (os != null) {
-						os.close();
-					}
-				}
-				catch (Exception exc) {
-					exc.printStackTrace();
-				}
-			}
-		}
 	}
 }

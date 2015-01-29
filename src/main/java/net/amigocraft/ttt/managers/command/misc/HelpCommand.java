@@ -23,12 +23,13 @@
  */
 package net.amigocraft.ttt.managers.command.misc;
 
-import net.amigocraft.ttt.Main;
-import net.amigocraft.ttt.managers.command.SubcommandHandler;
-import org.bukkit.command.CommandSender;
-
 import static net.amigocraft.ttt.util.Constants.*;
 import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
+import net.amigocraft.ttt.Main;
+import net.amigocraft.ttt.managers.command.SubcommandHandler;
+
+import org.bukkit.command.CommandSender;
 
 public class HelpCommand extends SubcommandHandler {
 

@@ -23,19 +23,26 @@
  */
 package net.amigocraft.ttt.managers.command;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import net.amigocraft.ttt.managers.command.admin.EndCommand;
 import net.amigocraft.ttt.managers.command.admin.KickCommand;
 import net.amigocraft.ttt.managers.command.admin.PrepareCommand;
 import net.amigocraft.ttt.managers.command.admin.StartCommand;
-import net.amigocraft.ttt.managers.command.arena.*;
+import net.amigocraft.ttt.managers.command.arena.AddSpawnCommand;
+import net.amigocraft.ttt.managers.command.arena.CreateArenaCommand;
+import net.amigocraft.ttt.managers.command.arena.ImportCommand;
+import net.amigocraft.ttt.managers.command.arena.JoinCommand;
+import net.amigocraft.ttt.managers.command.arena.LeaveCommand;
+import net.amigocraft.ttt.managers.command.arena.RemoveSpawnCommand;
+import net.amigocraft.ttt.managers.command.arena.SetExitCommand;
 import net.amigocraft.ttt.managers.command.misc.DefaultCommand;
 import net.amigocraft.ttt.managers.command.misc.HelpCommand;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
-import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
 
 public class CommandManager implements CommandExecutor {
 

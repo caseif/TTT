@@ -23,20 +23,21 @@
  */
 package net.amigocraft.ttt.managers.command.arena;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import net.amigocraft.mglib.exception.ArenaExistsException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.FileUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
-
-import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
-import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
 
 public class ImportCommand extends SubcommandHandler {
 

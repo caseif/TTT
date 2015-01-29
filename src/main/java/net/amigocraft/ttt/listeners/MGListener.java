@@ -23,7 +23,14 @@
  */
 package net.amigocraft.ttt.listeners;
 
-import net.amigocraft.mglib.api.*;
+import static net.amigocraft.ttt.util.Constants.*;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
+import net.amigocraft.mglib.api.Location3D;
+import net.amigocraft.mglib.api.LogLevel;
+import net.amigocraft.mglib.api.MGPlayer;
+import net.amigocraft.mglib.api.Round;
+import net.amigocraft.mglib.api.Stage;
 import net.amigocraft.mglib.event.player.MGPlayerDeathEvent;
 import net.amigocraft.mglib.event.player.PlayerJoinMinigameRoundEvent;
 import net.amigocraft.mglib.event.player.PlayerLeaveMinigameRoundEvent;
@@ -36,6 +43,7 @@ import net.amigocraft.ttt.Config;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.KarmaManager;
 import net.amigocraft.ttt.managers.ScoreManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -53,10 +61,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
-import java.util.*;
-
-import static net.amigocraft.ttt.util.Constants.*;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 public class MGListener implements Listener {
 
@@ -193,7 +202,7 @@ public class MGListener implements Listener {
 			else if (e.getRound().getRemainingTime() == 0) {
 				int players = e.getRound().getPlayers().size();
 				int traitorCount = 0;
-				int limit = (int) (players * Config.TRAITOR_RATIO);
+				int limit = (int)(players * Config.TRAITOR_RATIO);
 				if (limit == 0) {
 					limit = 1;
 				}
@@ -214,7 +223,7 @@ public class MGListener implements Listener {
 						traitorCount += 1;
 					}
 				}
-				int dLimit = (int) (players * Config.DETECTIVE_RATIO);
+				int dLimit = (int)(players * Config.DETECTIVE_RATIO);
 				if (players >= Config.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0) {
 					dLimit += 1;
 				}
@@ -303,11 +312,11 @@ public class MGListener implements Listener {
 					if (Config.DAMAGE_REDUCTION) {
 						KarmaManager.calculateDamageReduction(mp);
 						String percentage = getMessage("fragment.full", INFO_COLOR, false);
-						if ((Double) mp.getMetadata("damageRed") < 1) {
-							percentage = Integer.toString((int) ((Double) mp.getMetadata("damageRed") * 100)) + "%";
+						if ((Double)mp.getMetadata("damageRed") < 1) {
+							percentage = Integer.toString((int)((Double)mp.getMetadata("damageRed") * 100)) + "%";
 						}
 						mp.getBukkitPlayer().sendMessage(getMessage("info.personal.status.karma-damage", INFO_COLOR,
-								Integer.toString((Integer) mp.getMetadata("karma")), percentage));
+								Integer.toString((Integer)mp.getMetadata("karma")), percentage));
 					}
 				}
 			}
@@ -335,8 +344,8 @@ public class MGListener implements Listener {
 				if (p.hasMetadata("fragment.detective") && p.getRound().getTime() % Config.SCANNER_CHARGE_TIME == 0) {
 					Player tracker = Main.plugin.getServer().getPlayer(p.getName());
 					if (p.hasMetadata("tracking")) {
-						Player killer = Main.plugin.getServer().getPlayer((String) p.getMetadata("tracking"));
-						if (killer != null && Main.mg.isPlayer((String) p.getMetadata("tracking"))) {
+						Player killer = Main.plugin.getServer().getPlayer((String)p.getMetadata("tracking"));
+						if (killer != null && Main.mg.isPlayer((String)p.getMetadata("tracking"))) {
 							tracker.setCompassTarget(killer.getLocation());
 						}
 						else {
@@ -434,9 +443,9 @@ public class MGListener implements Listener {
 		}
 		if (e.getKiller() != null && e.getKiller() instanceof Player) {
 			// set killer's karma
-			MGPlayer killer = Main.mg.getMGPlayer(((Player) (e.getKiller())).getName());
+			MGPlayer killer = Main.mg.getMGPlayer(((Player)(e.getKiller())).getName());
 			KarmaManager.handleKillKarma(killer, e.getPlayer());
-			e.getPlayer().setMetadata("killer", ((Player) e.getKiller()).getName());
+			e.getPlayer().setMetadata("killer", ((Player)e.getKiller()).getName());
 		}
 		Block block = e.getPlayer().getBukkitPlayer().getLocation().getBlock();
 		Main.mg.getRollbackManager().logBlockChange(block, e.getPlayer().getArena());
@@ -450,7 +459,7 @@ public class MGListener implements Listener {
 		}
 		//TODO: Add check for doors and such
 		block.setType(trapped ? Material.TRAPPED_CHEST : Material.CHEST);
-		Chest chest = (Chest) block.getState();
+		Chest chest = (Chest)block.getState();
 		// player identifier
 		ItemStack id = new ItemStack(Material.PAPER, 1);
 		ItemMeta idMeta = id.getItemMeta();
@@ -464,21 +473,21 @@ public class MGListener implements Listener {
 		ItemStack ti = new ItemStack(Material.WOOL, 1);
 		ItemMeta tiMeta = ti.getItemMeta();
 		if (e.getPlayer().hasMetadata("Detective")) {
-			ti.setDurability((short) 11);
+			ti.setDurability((short)11);
 			tiMeta.setDisplayName(getMessage("fragment.detective", DETECTIVE_COLOR, false));
 			List<String> lore = new ArrayList<String>();
 			lore.add(Main.locale.getMessage("item.id.detective"));
 			tiMeta.setLore(lore);
 		}
 		else if (e.getPlayer().getTeam() == null || e.getPlayer().getTeam().equals("Innocent")) {
-			ti.setDurability((short) 5);
+			ti.setDurability((short)5);
 			tiMeta.setDisplayName(getMessage("fragment.innocent", INNOCENT_COLOR, false));
 			List<String> tiLore = new ArrayList<String>();
 			tiLore.add(getMessage("item.id.innocent", ChatColor.RESET, false));
 			tiMeta.setLore(tiLore);
 		}
 		else {
-			ti.setDurability((short) 14);
+			ti.setDurability((short)14);
 			tiMeta.setDisplayName(getMessage("fragment.traitor", TRAITOR_COLOR, false));
 			List<String> lore = new ArrayList<String>();
 			lore.add(getMessage("item.id.traitor", ChatColor.RESET, false));

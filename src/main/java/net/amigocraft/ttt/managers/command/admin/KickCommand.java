@@ -23,16 +23,17 @@
  */
 package net.amigocraft.ttt.managers.command.admin;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.exception.NoSuchPlayerException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
 import net.amigocraft.ttt.Main;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
-import org.bukkit.command.CommandSender;
 
-import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
-import static net.amigocraft.ttt.util.Constants.INFO_COLOR;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+import org.bukkit.command.CommandSender;
 
 public class KickCommand extends SubcommandHandler {
 

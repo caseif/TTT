@@ -23,12 +23,12 @@
  */
 package net.amigocraft.ttt.listeners;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-
-import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
 
 public class SpecialPlayerListener implements Listener {
 

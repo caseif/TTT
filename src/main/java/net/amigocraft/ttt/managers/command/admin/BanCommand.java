@@ -23,17 +23,18 @@
  */
 package net.amigocraft.ttt.managers.command.admin;
 
+import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
+import static net.amigocraft.ttt.util.MiscUtil.getMessage;
+
 import net.amigocraft.mglib.UUIDFetcher;
 import net.amigocraft.ttt.managers.command.SubcommandHandler;
 import net.amigocraft.ttt.util.MiscUtil;
 import net.amigocraft.ttt.util.NumUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.util.UUID;
-
-import static net.amigocraft.ttt.util.Constants.ERROR_COLOR;
-import static net.amigocraft.ttt.util.MiscUtil.getMessage;
 
 public class BanCommand extends SubcommandHandler {
 
