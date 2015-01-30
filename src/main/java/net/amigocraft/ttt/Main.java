@@ -82,58 +82,6 @@ public class Main extends JavaPlugin {
 	public static List<UUID> testers = new ArrayList<UUID>();
 	public static List<UUID> translators = new ArrayList<UUID>();
 
-	public static void createFile(String s) {
-		File f = new File(Main.plugin.getDataFolder(), s);
-		if (!f.exists()) {
-			if (Config.VERBOSE_LOGGING) {
-				mg.log(locale.getMessage("info/plugin.compatibility.creating-file").replace("%", s), LogLevel.INFO);
-			}
-			try {
-				f.createNewFile();
-			}
-			catch (Exception ex) {
-				ex.printStackTrace();
-				mg.log(locale.getMessage("error.plugin.file-write").replace("%", s), LogLevel.INFO);
-			}
-		}
-	}
-
-	public static void createLocale(String s) {
-		File exLocale = new File(Main.plugin.getDataFolder() + File.separator + "locales", s);
-		if (!exLocale.exists()) {
-			InputStream is = null;
-			OutputStream os = null;
-			try {
-				File dir = new File(Main.plugin.getDataFolder(), "locales");
-				dir.mkdir();
-				exLocale.createNewFile();
-				is = Main.class.getClassLoader().getResourceAsStream("locales/" + s);
-				os = new FileOutputStream(exLocale);
-				byte[] buffer = new byte[1024];
-				int len;
-				while ((len = is.read(buffer)) != -1) {
-					os.write(buffer, 0, len);
-				}
-			}
-			catch (Exception ex) {
-				ex.printStackTrace();
-			}
-			finally {
-				try {
-					if (is != null) {
-						is.close();
-					}
-					if (os != null) {
-						os.close();
-					}
-				}
-				catch (Exception exc) {
-					exc.printStackTrace();
-				}
-			}
-		}
-	}
-
 	@Override
 	public void onEnable() {
 		log = this.getLogger();
@@ -161,8 +109,6 @@ public class Main extends JavaPlugin {
 		// register plugin with MGLib
 		mg = Minigame.registerPlugin(this);
 
-		locale = mg.getLocale();
-
 		ConfigManager cm = mg.getConfigManager();
 		cm.setBlockPlaceAllowed(false);
 		cm.setBlockBreakAllowed(false);
@@ -183,6 +129,9 @@ public class Main extends JavaPlugin {
 		cm.setOverrideDeathEvent(true);
 		cm.setMobSpawningAllowed(false);
 		cm.setEntityTargetingEnabled(false);
+		cm.setDefaultLocale(Config.LOCALE);
+
+		locale = mg.getLocale();
 
 		try {
 			File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
@@ -328,7 +277,59 @@ public class Main extends JavaPlugin {
 				mg.log(this + " " + locale.getMessage("info.plugin.disable"), LogLevel.INFO);
 			}
 		}
+		locale = null;
 		plugin = null;
-		lang = null;
+	}
+
+	public static void createFile(String s) {
+		File f = new File(Main.plugin.getDataFolder(), s);
+		if (!f.exists()) {
+			if (Config.VERBOSE_LOGGING) {
+				mg.log(locale.getMessage("info.plugin.compatibility.creating-file", s), LogLevel.INFO);
+			}
+			try {
+				f.createNewFile();
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+				mg.log(locale.getMessage("error.plugin.file-write", s), LogLevel.INFO);
+			}
+		}
+	}
+
+	public static void createLocale(String s) {
+		File exLocale = new File(Main.plugin.getDataFolder() + File.separator + "locales", s);
+		if (!exLocale.exists()) {
+			InputStream is = null;
+			OutputStream os = null;
+			try {
+				File dir = new File(Main.plugin.getDataFolder(), "locales");
+				dir.mkdir();
+				exLocale.createNewFile();
+				is = Main.class.getClassLoader().getResourceAsStream("locales/" + s);
+				os = new FileOutputStream(exLocale);
+				byte[] buffer = new byte[1024];
+				int len;
+				while ((len = is.read(buffer)) != -1) {
+					os.write(buffer, 0, len);
+				}
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			finally {
+				try {
+					if (is != null) {
+						is.close();
+					}
+					if (os != null) {
+						os.close();
+					}
+				}
+				catch (Exception exc) {
+					exc.printStackTrace();
+				}
+			}
+		}
 	}
 }

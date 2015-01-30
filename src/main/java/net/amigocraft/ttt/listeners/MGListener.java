@@ -179,7 +179,7 @@ public class MGListener implements Listener {
 		e.getPlayer().getBukkitPlayer().setDisplayName(e.getPlayer().getBukkitPlayer().getName());
 		KarmaManager.saveKarma(e.getPlayer());
 		(e.getPlayer()).setMetadata("displayKarma", e.getPlayer().getMetadata("karma"));
-		if (!e.getRound().hasEnded()) {
+		if (e.getRound().getStage() != Stage.RESETTING) {
 			e.getRound().broadcast(getMessage("info.global.arena.event.leave", INFO_COLOR,
 					e.getPlayer().getName(), e.getPlayer().getRound().getDisplayName()));
 		}
@@ -443,9 +443,9 @@ public class MGListener implements Listener {
 		}
 		if (e.getKiller() != null && e.getKiller() instanceof Player) {
 			// set killer's karma
-			MGPlayer killer = Main.mg.getMGPlayer(((Player)(e.getKiller())).getName());
+			MGPlayer killer = Main.mg.getMGPlayer((e.getKiller()).getName());
 			KarmaManager.handleKillKarma(killer, e.getPlayer());
-			e.getPlayer().setMetadata("killer", ((Player)e.getKiller()).getName());
+			e.getPlayer().setMetadata("killer", e.getKiller().getName());
 		}
 		Block block = e.getPlayer().getBukkitPlayer().getLocation().getBlock();
 		Main.mg.getRollbackManager().logBlockChange(block, e.getPlayer().getArena());

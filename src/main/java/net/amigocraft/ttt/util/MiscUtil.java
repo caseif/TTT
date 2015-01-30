@@ -67,11 +67,7 @@ public class MiscUtil {
 	}
 
 	public static String getMessage(String key, ChatColor color, boolean prefix, String... replacements) {
-		String s = Main.locale.getMessage(key);
-		for (int i = 1; i <= replacements.length; i++) {
-			s.replaceFirst("%" + i, replacements[i - 1] + color);
-		}
-		return (color != null ? color : "") + (prefix ? "[TTT] " : "") + s;
+		return (color != null ? color : "") + (prefix ? "[TTT] " : "") + Main.locale.getMessage(key, replacements);
 	}
 
 	public static String getMessage(String key, ChatColor color, String... replacements) {

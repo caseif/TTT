@@ -55,7 +55,7 @@ public class JoinCommand extends SubcommandHandler {
 						if (r == null) {
 							r = Main.mg.createRound(args[1]);
 						}
-						JoinResult result = r.addPlayer(sender.getName());
+						r.addPlayer(sender.getName());
 					}
 					catch (NoSuchArenaException ex) {
 						sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
