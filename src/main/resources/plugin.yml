@@ -1,6 +1,6 @@
 name: TTT
 version: 0.7.0-SNAPSHOT
-main: Main
+main: net.caseif.ttt.Main
 author: Maxim Roncacé
 website: http://dev.bukkit.org/bukkit-plugins/ttt
 description: A Bukkit minigame based off the Garry's Mod gamemode Trouble In Terrorist Town.
@@ -87,7 +87,7 @@ permissions:
   ttt.admin.*:
     description: Allows for full use of administrative commands.
     children:
-      ttt.admin.*: true
+      ttt.admin: true
   ttt.admin.prepare:
     description: Allows player to force rounds to enter preparation stage.
     default: op
@@ -123,7 +123,7 @@ permissions:
   ttt.arena.*:
     description: Grants all permissions beginning with ttt.arena.
     children:
-      ttt.arena.*: true
+      ttt.arena: true
   ttt.arena.import:
     description: Allows player to import worlds into the plugin.
     default: op
