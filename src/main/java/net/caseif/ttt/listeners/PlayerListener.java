@@ -214,7 +214,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent e) {
 		if (e.getEntityType() == EntityType.PLAYER) {
-			MGPlayer victim = Main.mg.getMGPlayer((e.getEntity()).getName());
+			MGPlayer victim = Main.mg.getMGPlayer(((Player)e.getEntity()).getName());
 			if (victim != null && victim.getRound().getStage() != Stage.PLAYING) {
 				if (e.getCause() == DamageCause.VOID) {
 					victim.spawnIn();

@@ -74,4 +74,8 @@ public class MiscUtil {
 		return getMessage(key, color, true, replacements);
 	}
 
+	public static String fromNullableString(String nullable) {
+		return nullable == null ? "" : nullable;
+	}
+
 }

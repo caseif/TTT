@@ -149,25 +149,25 @@ public class MGListener implements Listener {
 		@SuppressWarnings("static-access")
 		UUID uuid = Main.mg.getOnlineUUIDs().get(e.getPlayer().getName());
 		if (Main.creator.contains(uuid)) {
-			addition = ", " + getMessage("fragment.special.creator", TRAITOR_COLOR) + "," + INFO_COLOR;
+			addition = ", " + getMessage("fragment.special.creator", TRAITOR_COLOR, false) + "," + INFO_COLOR;
 		}
 		if (Main.alpha.contains(uuid) && Main.translators.contains(uuid)) {
 			addition += ", " +
-					getMessage("fragment.special.tester.alpha", TRAITOR_COLOR) + ", " +
-					getMessage("fragment.special.translator", TRAITOR_COLOR) + "," + INFO_COLOR;
+					getMessage("fragment.special.tester.alpha", TRAITOR_COLOR, false) + ", " +
+					Main.locale.getMessage("fragment.special.translator") + "," + INFO_COLOR;
 		}
 		else if (Main.testers.contains(uuid) && Main.translators.contains(uuid)) {
-			addition += ", " + getMessage("fragment.special.tester", TRAITOR_COLOR) + ", " +
+			addition += ", " + getMessage("fragment.special.tester", TRAITOR_COLOR, false) + ", " +
 					Main.locale.getMessage("fragment.special.translator") + "," + INFO_COLOR;
 		}
 		else if (Main.alpha.contains(uuid)) {
-			addition += ", " + getMessage("fragment.special.tester.alpha", TRAITOR_COLOR) + "," + INFO_COLOR;
+			addition += ", " + getMessage("fragment.special.tester.alpha", TRAITOR_COLOR, false) + "," + INFO_COLOR;
 		}
 		else if (Main.testers.contains(uuid)) {
-			addition += ", " + getMessage("fragment.special.tester", TRAITOR_COLOR) + "," + INFO_COLOR;
+			addition += ", " + getMessage("fragment.special.tester", TRAITOR_COLOR, false) + "," + INFO_COLOR;
 		}
 		else if (Main.translators.contains(uuid)) {
-			addition += ", " + getMessage("fragment.special.translator", TRAITOR_COLOR) + "," + INFO_COLOR;
+			addition += ", " + getMessage("fragment.special.translator", TRAITOR_COLOR, false) + "," + INFO_COLOR;
 		}
 		Bukkit.broadcastMessage(getMessage("info.global.arena.event.join", INFO_COLOR,
 				e.getPlayer().getName() + addition, ARENA_COLOR + e.getRound().getDisplayName()));
@@ -186,7 +186,7 @@ public class MGListener implements Listener {
 		(e.getPlayer()).setMetadata("displayKarma", e.getPlayer().getMetadata("karma"));
 		if (e.getRound().getStage() != Stage.RESETTING) {
 			e.getRound().broadcast(getMessage("info.global.arena.event.leave", INFO_COLOR,
-					e.getPlayer().getName(), e.getPlayer().getRound().getDisplayName()));
+					e.getPlayer().getName(), ARENA_COLOR + e.getPlayer().getRound().getDisplayName()));
 		}
 		e.getPlayer().getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
 	}
@@ -202,7 +202,8 @@ public class MGListener implements Listener {
 			if (((e.getRound().getRemainingTime() % 10) == 0 ||
 					e.getRound().getRemainingTime() < 10) && e.getRound().getRemainingTime() > 0) {
 				e.getRound().broadcast(getMessage("info.global.round.status.starting.time", INFO_COLOR,
-						getMessage("fragment.seconds", INFO_COLOR, Integer.toString(e.getRound().getRemainingTime()))));
+						getMessage("fragment.seconds", INFO_COLOR, false,
+								Integer.toString(e.getRound().getRemainingTime()))));
 			}
 			else if (e.getRound().getRemainingTime() == 0) {
 				int players = e.getRound().getPlayers().size();
@@ -440,7 +441,7 @@ public class MGListener implements Listener {
 
 	@EventHandler
 	public void onMGPlayerDeath(MGPlayerDeathEvent e) {
-		e.getPlayer().setPrefix("§7");
+		e.getPlayer().setPrefix(Config.SB_MIA_PREFIX);
 		e.getPlayer().getBukkitPlayer().setHealth(e.getPlayer().getBukkitPlayer().getMaxHealth());
 		e.getPlayer().setSpectating(true);
 		if (ScoreManager.sbManagers.containsKey(e.getPlayer().getArena())) {

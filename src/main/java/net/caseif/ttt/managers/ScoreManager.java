@@ -23,6 +23,8 @@
  */
 package net.caseif.ttt.managers;
 
+import static net.caseif.ttt.util.MiscUtil.fromNullableString;
+
 import net.caseif.ttt.Config;
 import net.caseif.ttt.Main;
 import net.caseif.ttt.util.MiscUtil;
@@ -98,29 +100,65 @@ public class ScoreManager {
 		tTeamDM = traitor.registerNewTeam("dm");
 		tTeamDD = traitor.registerNewTeam("dd");
 
-		iTeamIA.setPrefix(Config.SB_I_INNOCENT_PREFIX + Config.SB_ALIVE_PREFIX);
-		iTeamIM.setPrefix(Config.SB_I_INNOCENT_PREFIX + Config.SB_MIA_PREFIX);
-		iTeamID.setPrefix(Config.SB_I_INNOCENT_PREFIX + Config.SB_DEAD_PREFIX);
+		iTeamIA.setPrefix(
+				fromNullableString(Config.SB_I_INNOCENT_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+		);
+		iTeamIM.setPrefix(
+				fromNullableString(Config.SB_I_INNOCENT_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+		);
+		iTeamID.setPrefix(
+				fromNullableString(Config.SB_I_INNOCENT_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+		);
 
-		iTeamTA.setPrefix(Config.SB_I_TRAITOR_PREFIX + Config.SB_ALIVE_PREFIX);
-		iTeamTM.setPrefix(Config.SB_I_TRAITOR_PREFIX + Config.SB_MIA_PREFIX);
-		iTeamTD.setPrefix(Config.SB_I_TRAITOR_PREFIX + Config.SB_DEAD_PREFIX);
+		iTeamTA.setPrefix(
+				fromNullableString(Config.SB_I_TRAITOR_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+		);
+		iTeamTM.setPrefix(
+				fromNullableString(Config.SB_I_TRAITOR_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+		);
+		iTeamTD.setPrefix(
+				fromNullableString(Config.SB_I_TRAITOR_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+		);
 
-		iTeamDA.setPrefix(Config.SB_I_DETECTIVE_PREFIX + Config.SB_ALIVE_PREFIX);
-		iTeamDM.setPrefix(Config.SB_I_DETECTIVE_PREFIX + Config.SB_MIA_PREFIX);
-		iTeamDD.setPrefix(Config.SB_I_DETECTIVE_PREFIX + Config.SB_DEAD_PREFIX);
+		iTeamDA.setPrefix(
+				fromNullableString(Config.SB_I_DETECTIVE_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+		);
+		iTeamDM.setPrefix(
+				fromNullableString(Config.SB_I_DETECTIVE_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+		);
+		iTeamDD.setPrefix(
+				fromNullableString(Config.SB_I_DETECTIVE_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+		);
 
-		tTeamIA.setPrefix(Config.SB_T_INNOCENT_PREFIX + Config.SB_ALIVE_PREFIX);
-		tTeamIM.setPrefix(Config.SB_T_INNOCENT_PREFIX + Config.SB_MIA_PREFIX);
-		tTeamID.setPrefix(Config.SB_T_INNOCENT_PREFIX + Config.SB_DEAD_PREFIX);
+		tTeamIA.setPrefix(
+				fromNullableString(Config.SB_T_INNOCENT_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+		);
+		tTeamIM.setPrefix(
+				fromNullableString(Config.SB_T_INNOCENT_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+		);
+		tTeamID.setPrefix(
+				fromNullableString(Config.SB_T_INNOCENT_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+		);
 
-		tTeamTA.setPrefix(Config.SB_T_TRAITOR_PREFIX + Config.SB_ALIVE_PREFIX);
-		tTeamTM.setPrefix(Config.SB_T_TRAITOR_PREFIX + Config.SB_MIA_PREFIX);
-		tTeamTD.setPrefix(Config.SB_T_TRAITOR_PREFIX + Config.SB_DEAD_PREFIX);
+		tTeamTA.setPrefix(
+				fromNullableString(Config.SB_T_TRAITOR_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+		);
+		tTeamTM.setPrefix(
+				fromNullableString(Config.SB_T_TRAITOR_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+		);
+		tTeamTD.setPrefix(
+				fromNullableString(Config.SB_T_TRAITOR_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+		);
 
-		tTeamDA.setPrefix(Config.SB_T_DETECTIVE_PREFIX + Config.SB_ALIVE_PREFIX);
-		tTeamDM.setPrefix(Config.SB_T_DETECTIVE_PREFIX + Config.SB_MIA_PREFIX);
-		tTeamDD.setPrefix(Config.SB_T_DETECTIVE_PREFIX + Config.SB_DEAD_PREFIX);
+		tTeamDA.setPrefix(
+				fromNullableString(Config.SB_T_DETECTIVE_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+		);
+		tTeamDM.setPrefix(
+				fromNullableString(Config.SB_T_DETECTIVE_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+		);
+		tTeamDD.setPrefix(
+				fromNullableString(Config.SB_T_DETECTIVE_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+		);
 
 		for (MGPlayer m : Main.mg.getRound(arenaName).getPlayerList()) {
 			if (m.getBukkitPlayer() != null) {

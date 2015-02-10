@@ -23,6 +23,7 @@
  */
 package net.caseif.ttt.managers.command.arena;
 
+import static net.caseif.ttt.util.Constants.ARENA_COLOR;
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
 import static net.caseif.ttt.util.MiscUtil.getMessage;
@@ -52,7 +53,8 @@ public class LeaveCommand extends SubcommandHandler {
 						if (mp.getRound() != null) {
 							String roundName = mp.getRound().getDisplayName();
 							mp.removeFromRound();
-							sender.sendMessage(getMessage("info.personal.arena.leave.success", INFO_COLOR, roundName));
+							sender.sendMessage(getMessage("info.personal.arena.leave.success", INFO_COLOR,
+									ARENA_COLOR + roundName));
 						}
 						else {
 							throw new NoSuchPlayerException();

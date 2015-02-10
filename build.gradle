@@ -21,7 +21,14 @@ ext.projectName = 'ttt'
 ext.description = 'A Bukkit minigame based off the Garry\'s Mod gamemode Trouble In Terrorist Town.'
 ext.inceptionYear = '2013'
 ext.packaging = 'jar'
-ext.versionSuffix = version.contains('SNAPSHOT') && System.getenv("BUILD_NUMBER") ? '-jnks' + System.getenv("BUILD_NUMBER") : ''
+ext.versionSuffix = version.contains('SNAPSHOT') ? (
+		(
+				System.getenv('GIT_COMMIT') ? ('-git(' +
+						(System.getenv('GIT_BRANCH').contains('/') ? System.getenv('GIT_BRANCH').split('/')[1] : System.getenv('GIT_BRANCH')) + '-' +
+						System.getenv('GIT_COMMIT').substring(0, 7) + ')') : ''
+		) +
+				(System.getenv('BUILD_NUMBER') ? '-jnks' + System.getenv('BUILD_NUMBER') : '')
+) : ''
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
