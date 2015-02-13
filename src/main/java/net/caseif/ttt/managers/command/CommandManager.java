@@ -71,16 +71,16 @@ public class CommandManager implements CommandExecutor {
 				}
 				// administrative commands
 				else if (subCmd.equalsIgnoreCase("prepare")) {
-					new PrepareCommand(sender, args);
+					new PrepareCommand(sender, args).handle();
 				}
 				else if (subCmd.equalsIgnoreCase("start")) {
-					new StartCommand(sender, args);
+					new StartCommand(sender, args).handle();
 				}
 				else if (subCmd.equalsIgnoreCase("end")) {
-					new EndCommand(sender, args);
+					new EndCommand(sender, args).handle();
 				}
 				else if (subCmd.equalsIgnoreCase("info.personal.kick")) {
-					new KickCommand(sender, args);
+					new KickCommand(sender, args).handle();
 				}
 				// misc. commands
 				else if (subCmd.equalsIgnoreCase("setexit") || subCmd.equalsIgnoreCase("se") ||

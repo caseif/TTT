@@ -18,6 +18,9 @@ commands:
     carena:
       description: Creates a new arena for use with TTT at the sender's or a specified location.
       usage: /ttt carena [arena name] {[x] [y] [z] [world]}
+    rarena:
+      description: Removes the given arena from TTT's registry.
+      usage: /ttt rarena [arena name]
     addspawn:
       description: Adds the sender's or a specified location as a spawn to a specified arena.
       usage: /ttt addspawn [arena name] {[x] [y] [z]}
@@ -130,6 +133,9 @@ permissions:
   ttt.arena.create:
     description: Allows player to create arenas for use with the plugin.
     default: op
+  ttt.arena.remove:
+      description: Allows player to remove arenas from the plugin's registry.
+      default: op
   ttt.arena.addspawn:
     description: Allows player to add spawns to an arena.
     default: op

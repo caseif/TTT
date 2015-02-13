@@ -34,73 +34,105 @@ import net.caseif.ttt.managers.command.SubcommandHandler;
 
 import org.bukkit.command.CommandSender;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class HelpCommand extends SubcommandHandler {
+
+	public static final LinkedHashMap<String, String[]> commands = new LinkedHashMap<String, String[]>();
+
+	static {
+		registerCommand("join", Main.locale.getMessage("info.help.arena.join"), "ttt.arena.join");
+		registerCommand("leave", Main.locale.getMessage("info.help.arena.leave"), "ttt.arena.leave");
+		registerCommand("carena", Main.locale.getMessage("info.help.arena.create"), "ttt.arena.create");
+		registerCommand("rarena", Main.locale.getMessage("info.help.arena.remove"), "ttt.arena.remove");
+		registerCommand("import", Main.locale.getMessage("info.help.arena.import"), "ttt.arena.import");
+		registerCommand("addspawn", Main.locale.getMessage("info.help.arena.addspawn"), "ttt.arena.addspawn");
+		registerCommand("removespawn", Main.locale.getMessage("info.help.arena.removespawn"), "ttt.arena.removespawn");
+
+		registerCommand("prepare", Main.locale.getMessage("info.help.admin.prepare"), "ttt.admin.prepare");
+		registerCommand("start", Main.locale.getMessage("info.help.admin.start"), "ttt.admin.start");
+		registerCommand("end", Main.locale.getMessage("info.help.admin.end"), "ttt.admin.end");
+		registerCommand("kick", Main.locale.getMessage("info.help.admin.kick"), "ttt.admin.kick");
+		registerCommand("ban", Main.locale.getMessage("info.help.admin.ban"), "ttt.admin.ban");
+		registerCommand("slay", Main.locale.getMessage("info.help.admin.slay"), "ttt.admin.slay");
+		registerCommand("respawn", Main.locale.getMessage("info.help.admin.respawn"), "ttt.admin.respawn");
+
+		registerCommand("setexit", Main.locale.getMessage("info.help.setexit"), "ttt.setexit");
+		registerCommand("help", Main.locale.getMessage("info.help.help"), "ttt.help");
+	}
 
 	public HelpCommand(CommandSender sender, String[] args) {
 		super(sender, args);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void handle() {
-		if (args.length > 1 && args[1].equalsIgnoreCase("lobby")) {
-			if (sender.hasPermission("ttt.lobby.create")) {
-				sender.sendMessage(getMessage("info.help.lobby", SPECIAL_COLOR));
-				sender.sendMessage("");
-				sender.sendMessage(getMessage("info.help.lobby.line.1", INFO_COLOR) + " " +
-						getMessage("info.help.lobby.line.label", INFO_COLOR) + " " +
-						DESCRIPTION_COLOR + "[TTT]");
-				sender.sendMessage(getMessage("info.help.lobby.line.2", INFO_COLOR) + " " +
-						getMessage("info.help.lobby.line.label", INFO_COLOR) + " " +
-						getMessage("info.help.lobby.line.2.content", DESCRIPTION_COLOR));
-				sender.sendMessage(getMessage("info.help.lobby.line.3", INFO_COLOR) + " " +
-						getMessage("info.help.lobby.line.label", INFO_COLOR) + " " +
-						getMessage("info.help.lobby.line.3.content", DESCRIPTION_COLOR));
-				sender.sendMessage(getMessage("info.help.lobby.line.4", INFO_COLOR) + " " +
-						getMessage("info.help.lobby.line.label", INFO_COLOR) + " " +
-						getMessage("info.help.lobby.line.4.content", DESCRIPTION_COLOR));
+		if (sender.hasPermission("ttt.help")) {
+			if (args.length > 1) {
+				if (args[1].equalsIgnoreCase("lobby")) {
+					if (sender.hasPermission("ttt.lobby.create")) {
+						sender.sendMessage(getMessage("info.help.lobby", SPECIAL_COLOR, false));
+						sender.sendMessage("");
+						sender.sendMessage(getMessage("info.help.lobby.line.1", INFO_COLOR, false) + " " +
+								getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " " +
+								DESCRIPTION_COLOR + "[TTT]");
+						sender.sendMessage(getMessage("info.help.lobby.line.2", INFO_COLOR, false) + " " +
+								getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " " +
+								getMessage("info.help.lobby.line.2.content", DESCRIPTION_COLOR, false));
+						sender.sendMessage(getMessage("info.help.lobby.line.3", INFO_COLOR, false) + " " +
+								getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " " +
+								getMessage("info.help.lobby.line.3.content", DESCRIPTION_COLOR, false));
+						sender.sendMessage(getMessage("info.help.lobby.line.4", INFO_COLOR, false) + " " +
+								getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " " +
+								getMessage("info.help.lobby.line.4.content", DESCRIPTION_COLOR, false));
+					}
+					else {
+						sender.sendMessage(Main.locale.getMessage("error.perms.generic"));
+					}
+				}
+				else {
+					String cmd = args[1];
+					String[] info = commands.get(cmd);
+					if (info != null) {
+						if (sender.hasPermission(info[1])) {
+							sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " " +
+									DESCRIPTION_COLOR + info[0]);
+							sender.sendMessage(INFO_COLOR + "    " + Main.locale.getMessage("fragment.usage") + " " +
+									DESCRIPTION_COLOR + ((Map<String, Object>)Main.plugin.getDescription().getCommands()
+									.get("ttt").get(cmd)).get("usage"));
+						}
+						else {
+							sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
+						}
+					}
+					else {
+						sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+					}
+				}
 			}
 			else {
-				sender.sendMessage(Main.locale.getMessage("error.perms.generic"));
-			}
-		}
-		else if (sender.hasPermission("ttt.help")) {
-			sender.sendMessage(getMessage("info.help.available-cmds", SPECIAL_COLOR));
-			sender.sendMessage("");
-			if (sender.hasPermission("ttt.arena.join")) {
-				sender.sendMessage(INFO_COLOR + "/ttt join, j " +
-						getMessage("info.help.arena.join", DESCRIPTION_COLOR));
-			}
-			if (sender.hasPermission("ttt.arena.quit")) {
-				sender.sendMessage(INFO_COLOR + "/ttt quit, q " +
-						getMessage("info.help.arena.leave", DESCRIPTION_COLOR));
-			}
-			if (sender.hasPermission("ttt.arena.import")) {
-				sender.sendMessage(INFO_COLOR + "/ttt import, i " +
-						getMessage("info.help.arena.import", DESCRIPTION_COLOR));
-			}
-			if (sender.hasPermission("ttt.arena.create")) {
-				sender.sendMessage(INFO_COLOR + "/ttt carena, ca " +
-						getMessage("info.help.arena.create", DESCRIPTION_COLOR));
-			}
-			if (sender.hasPermission("ttt.arena.addspawn")) {
-				sender.sendMessage(INFO_COLOR + "/ttt addspawn, ad " +
-						getMessage("info.help.arena.spawn.add", DESCRIPTION_COLOR));
-			}
-			if (sender.hasPermission("ttt.arena.removespawn")) {
-				sender.sendMessage(INFO_COLOR + "/ttt removespawn, rs " +
-						getMessage("info.help.arena.spawn.remove", DESCRIPTION_COLOR));
-			}
-			if (sender.hasPermission("ttt.setspawn")) {
-				sender.sendMessage(INFO_COLOR + "/ttt setexit, se " +
-						getMessage("info.help.set-exit", DESCRIPTION_COLOR));
-			}
-			if (sender.hasPermission("ttt.help")) {
-				sender.sendMessage(INFO_COLOR + "/ttt help, ? " +
-						getMessage("info.help.help", DESCRIPTION_COLOR));
+				sender.sendMessage(getMessage("info.help.available-cmds", SPECIAL_COLOR));
+				sender.sendMessage("");
+				for (String cmd : commands.keySet()) {
+					String[] info = commands.get(cmd);
+					if (sender.hasPermission(info[1])) {
+						sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " " +
+								DESCRIPTION_COLOR + info[0]);
+						sender.sendMessage(INFO_COLOR + "    " + Main.locale.getMessage("fragment.usage") + " " +
+								DESCRIPTION_COLOR + ((Map<String, Object>)Main.plugin.getDescription().getCommands()
+								.get("ttt").get(cmd)).get("usage"));
+					}
+				}
 			}
 		}
 		else {
 			sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
 		}
+	}
+
+	private static void registerCommand(String cmd, String description, String permission) {
+		commands.put(cmd, new String[]{description, permission});
 	}
 }

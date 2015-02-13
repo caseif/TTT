@@ -262,7 +262,7 @@ public class Main extends JavaPlugin {
 		translators.add(UUID.fromString("e4714759-8a41-468d-8f93-b796c0f17aaa")); // victormac737
 
 		if (Config.VERBOSE_LOGGING) {
-			mg.log(this + " " + locale.getMessage("info.plugin.enable"), LogLevel.INFO);
+			mg.log(locale.getMessage("info.plugin.enable", this.toString()), LogLevel.INFO);
 		}
 	}
 
@@ -273,7 +273,7 @@ public class Main extends JavaPlugin {
 			KarmaManager.playerKarma = null;
 			ScoreManager.uninitialize();
 			if (Config.VERBOSE_LOGGING) {
-				mg.log(this + " " + locale.getMessage("info.plugin.disable"), LogLevel.INFO);
+				mg.log(locale.getMessage("info.plugin.disable", this.toString()), LogLevel.INFO);
 			}
 		}
 		locale = null;
