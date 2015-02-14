@@ -153,7 +153,11 @@ public class Main extends JavaPlugin {
 					w = Bukkit.createWorld(new WorldCreator(spawnYaml.getString("world")));
 				}
 				if (w == null) {
-					mg.log(locale.getMessage("error.plugin.set-exit"), LogLevel.WARNING);
+					Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+						public void run() {
+							mg.log(locale.getMessage("error.plugin.set-exit"), LogLevel.WARNING);
+						}
+					}, 2L);
 				}
 				else {
 					cm.setDefaultExitLocation(new Location(
@@ -164,7 +168,11 @@ public class Main extends JavaPlugin {
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
-			mg.log(locale.getMessage("error.plugin.load-exit"), LogLevel.WARNING);
+			Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+				public void run() {
+					mg.log(locale.getMessage("error.plugin.load-exit"), LogLevel.WARNING);
+				}
+			}, 2L);
 		}
 
 		// register events, commands, and the plugin variable
@@ -173,16 +181,20 @@ public class Main extends JavaPlugin {
 		getCommand("ttt").setExecutor(new CommandManager());
 
 		// copy pre-0.5 folder
-		File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
+		final File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
 		if (old.exists() && !getDataFolder().exists()) {
-			mg.log(locale.getMessage("info.plugin.compatibility.rename"), LogLevel.INFO);
-			try {
-				old.renameTo(getDataFolder());
-			}
-			catch (Exception ex) {
-				ex.printStackTrace();
-				mg.log(locale.getMessage("error.plugin.folder-rename"), LogLevel.WARNING);
-			}
+			Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+				public void run() {
+					mg.log(locale.getMessage("info.plugin.compatibility.rename"), LogLevel.INFO);
+					try {
+						old.renameTo(getDataFolder());
+					}
+					catch (Exception ex) {
+						ex.printStackTrace();
+						mg.log(locale.getMessage("error.plugin.folder-rename"), LogLevel.WARNING);
+					}
+				}
+			}, 2L);
 		}
 
 		// check if config should be overwritten
@@ -224,7 +236,11 @@ public class Main extends JavaPlugin {
 			}
 			catch (IOException e) {
 				if (Config.VERBOSE_LOGGING) {
-					mg.log(locale.getMessage("error.plugin.mcstats"), LogLevel.INFO);
+					Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+						public void run() {
+							mg.log(locale.getMessage("error.plugin.mcstats"), LogLevel.INFO);
+						}
+					}, 2L);
 				}
 			}
 		}
@@ -270,7 +286,11 @@ public class Main extends JavaPlugin {
 		translators.add(UUID.fromString("e4714759-8a41-468d-8f93-b796c0f17aaa")); // victormac737
 
 		if (Config.VERBOSE_LOGGING) {
-			mg.log(locale.getMessage("info.plugin.enable", this.toString()), LogLevel.INFO);
+			Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+				public void run() {
+					mg.log(locale.getMessage("info.plugin.enable", Main.plugin.toString()), LogLevel.INFO);
+				}
+			}, 2L);
 		}
 	}
 
@@ -365,10 +385,10 @@ public class Main extends JavaPlugin {
 					}
 					if (!equal) {
 						String writeValue = yml.getString(key.trim());
-                        if (NumUtil.isDouble(writeValue)) {
-	                        writeValue = BigDecimal.valueOf(Double.parseDouble(writeValue))
-			                        .stripTrailingZeros().toPlainString();
-                        }
+						if (NumUtil.isDouble(writeValue)) {
+							writeValue = BigDecimal.valueOf(Double.parseDouble(writeValue))
+									.stripTrailingZeros().toPlainString();
+						}
 						sb.append(key).append(": ").append(writeValue).append(NEWLINE_CHAR);
 						continue;
 					}
