@@ -43,12 +43,6 @@ commands:
     end:
       description: Forces a round to end.
       usage: /ttt end [arena name] {victor (t/i)}
-    slay:
-      description: Slays a player for a set number of rounds.
-      usage: /ttt slay [player name] {number of rounds} {include current}
-    respawn:
-      description: Respawns a player back into their TTT round.
-      usage: /ttt respawn [player name]
     kick:
       description: Kicks a player from their given TTT round.
       usage: /ttt kick [player name]
@@ -99,12 +93,6 @@ permissions:
     default: op
   ttt.admin.end:
     description: Allows player to force rounds to end.
-    default: op
-  ttt.admin.slay:
-    description: Allows player to slay players in TTT rounds.
-    default: op
-  ttt.admin.respawn:
-    description: Allows player to respawn players into their TTT round.
     default: op
   ttt.admin.kick:
     description: Allows player to kick players from their current TTT round.
