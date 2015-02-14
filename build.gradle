@@ -33,18 +33,20 @@ ext.versionSuffix = version.contains('SNAPSHOT') ? (
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
-ext {
-	bukkit = 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
-	mglib = 'net.amigocraft.mglib:mglib:0.3.1-SNAPSHOT'
-	updater = 'net.gravitydevelopment.updater:updater:2.3'
-}
-
 // Project repositories
 repositories {
 	mavenCentral()
 	maven { url 'http://hub.spigotmc.org/nexus/content/groups/public/' }
 	maven { url 'http://repo.caseif.net/content/groups/public/' }
 	maven { url 'http://repo.gravitydevelopment.net' }
+	maven { url 'http://repo.mcstats.org/content/repositories/public' }
+}
+
+ext {
+	bukkit = 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
+	mglib = 'net.amigocraft.mglib:mglib:0.3.1-SNAPSHOT'
+	updater = 'net.gravitydevelopment.updater:updater:2.3'
+	metrics = 'org.mcstats.bukkit:metrics:R7'
 }
 
 // Project dependencies
@@ -52,6 +54,7 @@ dependencies {
 	compile bukkit
 	compile mglib
 	compile updater
+	compile metrics
 }
 
 // Read source files using UTF-8
@@ -70,6 +73,7 @@ jar {
 shadowJar {
 	dependencies {
 		include dependency(updater)
+        include dependency(metrics)
 	}
 	classifier = ''
 }
