@@ -38,12 +38,12 @@ import org.bukkit.entity.Player;
 public class RemoveSpawnCommand extends SubcommandHandler {
 
 	public RemoveSpawnCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, "ttt.arena.removespawn");
 	}
 
 	@Override
 	public void handle() {
-		if (sender.hasPermission("ttt.arena.removespawn")) {
+		if (assertPermission()) {
 			int x = 0;
 			int y = 0;
 			int z = 0;
@@ -65,6 +65,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 				}
 				else {
 					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+					sendUsage();
 					return;
 				}
 			}
@@ -76,11 +77,13 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 				}
 				else {
 					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+					sendUsage();
 					return;
 				}
 			}
 			else {
 				sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+				sendUsage();
 				return;
 			}
 			if (index != Integer.MAX_VALUE) {
@@ -92,6 +95,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 					}
 					else {
 						sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+						sendUsage();
 					}
 				}
 				else {
@@ -110,14 +114,12 @@ public class RemoveSpawnCommand extends SubcommandHandler {
 						}
 					}
 					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+					sendUsage();
 				}
 				else {
 					sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
 				}
 			}
-		}
-		else {
-			sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
 		}
 	}
 }

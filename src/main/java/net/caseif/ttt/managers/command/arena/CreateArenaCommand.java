@@ -41,12 +41,12 @@ import org.bukkit.entity.Player;
 public class CreateArenaCommand extends SubcommandHandler {
 
 	public CreateArenaCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, "ttt.arena.create");
 	}
 
 	@Override
 	public void handle() {
-		if (sender.hasPermission("ttt.arena.create")) {
+		if (assertPermission()) {
 			String w;
 			int x;
 			int y;
@@ -72,11 +72,13 @@ public class CreateArenaCommand extends SubcommandHandler {
 				}
 				else {
 					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+					sendUsage();
 					return;
 				}
 			}
 			else {
 				sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+				sendUsage();
 				return;
 			}
 			try {
@@ -85,9 +87,6 @@ public class CreateArenaCommand extends SubcommandHandler {
 			catch (ArenaExistsException ex) {
 				sender.sendMessage("error.arena.already-exists");
 			}
-		}
-		else {
-			sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
 		}
 	}
 }

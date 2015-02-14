@@ -42,12 +42,12 @@ import org.bukkit.entity.Player;
 public class SetExitCommand extends SubcommandHandler {
 
 	public SetExitCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, "ttt.setexit");
 	}
 
 	@Override
 	public void handle() {
-		if (sender.hasPermission("ttt.setexit")) {
+		if (assertPermission()) {
 			if (sender instanceof Player) {
 				try {
 					File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
@@ -78,9 +78,6 @@ public class SetExitCommand extends SubcommandHandler {
 			else {
 				sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
 			}
-		}
-		else {
-			sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
 		}
 	}
 }

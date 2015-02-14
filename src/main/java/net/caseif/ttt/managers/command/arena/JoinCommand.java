@@ -34,23 +34,23 @@ import net.amigocraft.mglib.exception.NoSuchArenaException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
 import net.amigocraft.mglib.exception.PlayerPresentException;
 import net.amigocraft.mglib.exception.RoundFullException;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class JoinCommand extends SubcommandHandler {
 
 	public JoinCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, "ttt.arena.join");
 	}
 
 	@Override
 	public void handle() {
 		if (sender instanceof Player) {
-			if (sender.hasPermission("ttt.arena.join")) {
+			if (assertPermission()) {
 				if (args.length > 1) {
-					Round r;
 					try {
-						r = Main.mg.getRound(args[1]);
+						Round r = Main.mg.getRound(args[1]);
 						if (r == null) {
 							r = Main.mg.createRound(args[1]);
 						}
@@ -71,11 +71,8 @@ public class JoinCommand extends SubcommandHandler {
 				}
 				else {
 					sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
-					sender.sendMessage(getMessage("info.command.usage.join", ERROR_COLOR));
+					sendUsage();
 				}
-			}
-			else {
-				sender.sendMessage(getMessage("error.perms.arena.join", ERROR_COLOR));
 			}
 		}
 		else {

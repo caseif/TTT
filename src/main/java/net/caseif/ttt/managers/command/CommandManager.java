@@ -23,8 +23,11 @@
  */
 package net.caseif.ttt.managers.command;
 
+import net.caseif.ttt.Main;
+import net.caseif.ttt.managers.command.admin.BanCommand;
 import net.caseif.ttt.managers.command.admin.EndCommand;
 import net.caseif.ttt.managers.command.admin.KickCommand;
+import net.caseif.ttt.managers.command.admin.PardonCommand;
 import net.caseif.ttt.managers.command.admin.PrepareCommand;
 import net.caseif.ttt.managers.command.admin.StartCommand;
 import net.caseif.ttt.managers.command.arena.AddSpawnCommand;
@@ -42,6 +45,8 @@ import net.caseif.ttt.util.MiscUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import java.util.Map;
 
 public class CommandManager implements CommandExecutor {
 
@@ -79,8 +84,14 @@ public class CommandManager implements CommandExecutor {
 				else if (subCmd.equalsIgnoreCase("end")) {
 					new EndCommand(sender, args).handle();
 				}
-				else if (subCmd.equalsIgnoreCase("info.personal.kick")) {
+				else if (subCmd.equalsIgnoreCase("kick")) {
 					new KickCommand(sender, args).handle();
+				}
+				else if (subCmd.equalsIgnoreCase("ban")) {
+					new BanCommand(sender, args).handle();
+				}
+				else if (subCmd.equalsIgnoreCase("pardon")) {
+					new PardonCommand(sender, args).handle();
 				}
 				// misc. commands
 				else if (subCmd.equalsIgnoreCase("setexit") || subCmd.equalsIgnoreCase("se") ||
@@ -92,7 +103,6 @@ public class CommandManager implements CommandExecutor {
 				}
 				else {
 					sender.sendMessage(MiscUtil.getMessage("error.command.invalid-args", Constants.ERROR_COLOR));
-					sender.sendMessage(MiscUtil.getMessage("info.command.usage.generic", Constants.ERROR_COLOR));
 				}
 			}
 			else {
@@ -101,6 +111,20 @@ public class CommandManager implements CommandExecutor {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Retrieves the usage for the given subcommand from the plugin.yml file.
+	 * @return the usage for the given subcommand, or null if not specified
+	 * @since 0.3.1
+	 */
+	public static String getUsage(String subcommand) {
+		Object map = Main.plugin.getDescription().getCommands()
+				.get("ttt").get(subcommand);
+		if (map instanceof Map<?, ?>) {
+			return ((Map<?, ?>)map).get("usage").toString();
+		}
+		return null;
 	}
 
 }

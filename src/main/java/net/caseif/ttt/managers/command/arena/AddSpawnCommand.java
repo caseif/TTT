@@ -40,12 +40,12 @@ import org.bukkit.entity.Player;
 public class AddSpawnCommand extends SubcommandHandler {
 
 	public AddSpawnCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, "ttt.arena.addspawn");
 	}
 
 	@Override
 	public void handle() {
-		if (sender.hasPermission("ttt.arena.addspawn")) {
+		if (assertPermission()) {
 			World w = null;
 			int x;
 			int y;
@@ -70,11 +70,13 @@ public class AddSpawnCommand extends SubcommandHandler {
 				}
 				else {
 					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+					sendUsage();
 					return;
 				}
 			}
 			else {
 				sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+				sendUsage();
 				return;
 			}
 			try {
@@ -91,9 +93,6 @@ public class AddSpawnCommand extends SubcommandHandler {
 			catch (NoSuchArenaException ex) {
 				sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
 			}
-		}
-		else {
-			sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
 		}
 	}
 }

@@ -24,6 +24,7 @@
 package net.caseif.ttt.managers.command.admin;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
+import static net.caseif.ttt.util.Constants.INFO_COLOR;
 import static net.caseif.ttt.util.MiscUtil.getMessage;
 
 import net.caseif.ttt.managers.command.SubcommandHandler;
@@ -39,13 +40,13 @@ import org.bukkit.command.CommandSender;
 public class BanCommand extends SubcommandHandler {
 
 	public BanCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, "ttt.admin.ban");
 	}
 
 	@Override
 	public void handle() {
-		if (args.length > 1) {
-			if (sender.hasPermission("ttt.admin.ban")) {
+		if (assertPermission()) {
+			if (args.length > 1) {
 				String name = args[1];
 				int time = -1;
 				if (args.length > 2) {
@@ -59,21 +60,39 @@ public class BanCommand extends SubcommandHandler {
 				}
 				try {
 					UUID uuid = UUIDFetcher.getUUIDOf(name);
-					if (uuid == null)
-						throw new Exception();
-					MiscUtil.ban(uuid, time);
-					Bukkit.getPlayer(uuid).sendMessage(
-							time == -1 ?
-									getMessage("info.personal.ban.perm", ERROR_COLOR) :
-									getMessage("info.personal.ban.temp", ERROR_COLOR, time + "")
-					);
+					if (uuid == null) {
+						sender.sendMessage(getMessage("error.plugin.uuid", ERROR_COLOR));
+						return;
+					}
+					if (MiscUtil.ban(uuid, time)) {
+						Bukkit.getPlayer(name).sendMessage(
+								time == -1 ?
+										getMessage("info.personal.ban.perm", ERROR_COLOR) :
+										getMessage("info.personal.ban.temp", ERROR_COLOR,
+												time + getMessage("fragment.minutes", ERROR_COLOR, false))
+						);
+						sender.sendMessage(
+								time == -1 ?
+										getMessage("info.personal.ban.other.perm", INFO_COLOR, name) :
+										getMessage("info.personal.ban.other.temp", INFO_COLOR, name,
+												time + getMessage("fragment.minutes", INFO_COLOR, false))
+						);
+					}
+					else {
+						sender.sendMessage(getMessage("error.plugin.ban", ERROR_COLOR));
+					}
 				}
 				catch (Exception ex) {
-					sender.sendMessage(getMessage("error.plugin.uuid", ERROR_COLOR));
+					sender.sendMessage(getMessage("error.plugin.generic", ERROR_COLOR));
+					ex.printStackTrace();
 				}
 			}
+			else {
+				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+				sendUsage();
+			}
 		}
-		else
-			sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
 	}
+
+
 }

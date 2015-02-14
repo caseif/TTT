@@ -23,10 +23,13 @@
  */
 package net.caseif.ttt.managers.command.admin;
 
+import static net.caseif.ttt.util.Constants.ARENA_COLOR;
+import static net.caseif.ttt.util.Constants.ERROR_COLOR;
+import static net.caseif.ttt.util.Constants.INFO_COLOR;
+import static net.caseif.ttt.util.MiscUtil.getMessage;
+
 import net.caseif.ttt.Main;
 import net.caseif.ttt.managers.command.SubcommandHandler;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.NumUtil;
 
 import net.amigocraft.mglib.api.Round;
@@ -36,27 +39,35 @@ import org.bukkit.command.CommandSender;
 public class StartCommand extends SubcommandHandler {
 
 	public StartCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, "ttt.admin.start");
 	}
 
 	@Override
 	public void handle() {
-		if (args.length > 1) {
-			String arena = args[1];
-			Round r = Main.mg.getRound(arena);
-			if (r != null) {
-				if (args.length > 2 && NumUtil.isInt(args[2]))
-					r.setPlayingTime(Integer.parseInt(args[2]));
-				r.setStage(Stage.PREPARING); // force player reset
-				// this is a weird way of doing things but it should only stay preparing for less than 1 tick
-				r.setTime(r.getPreparationTime() + 1);
-				sender.sendMessage(MiscUtil.getMessage("info.personal.arena.set-stage.playing.success",
-						Constants.INFO_COLOR, Constants.ARENA_COLOR + r.getArena()));
+		if (assertPermission()) {
+			if (args.length > 1) {
+				String arena = args[1];
+				Round r = Main.mg.getRound(arena);
+				if (r != null) {
+					if (r.getPlayerCount() > 1) {
+						if (args.length > 2 && NumUtil.isInt(args[2]))
+							r.setPlayingTime(Integer.parseInt(args[2]));
+						r.setStage(Stage.PREPARING);
+						r.start();
+						sender.sendMessage(getMessage("info.personal.arena.set-stage.playing.success",
+								INFO_COLOR, ARENA_COLOR + r.getArena()));
+					}
+					else {
+						sender.sendMessage(getMessage("error.arena.too-few-players", ERROR_COLOR));
+					}
+				}
+				else
+					sender.sendMessage(getMessage("error.round.dne", ERROR_COLOR, ARENA_COLOR + arena));
 			}
-			else
-				sender.sendMessage(MiscUtil.getMessage("error.round.dne", Constants.ERROR_COLOR, Constants.ARENA_COLOR + arena));
+			else {
+				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+				sendUsage();
+			}
 		}
-		else
-			sender.sendMessage(MiscUtil.getMessage("error.command.too-few-args", Constants.ERROR_COLOR));
 	}
 }

@@ -21,53 +21,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.managers.command;
+package net.caseif.ttt.managers.command.admin;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
+import static net.caseif.ttt.util.Constants.INFO_COLOR;
 import static net.caseif.ttt.util.MiscUtil.getMessage;
 
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.managers.command.SubcommandHandler;
 import net.caseif.ttt.util.MiscUtil;
+
+import java.util.UUID;
+
+import net.amigocraft.mglib.UUIDFetcher;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-public abstract class SubcommandHandler {
+public class PardonCommand extends SubcommandHandler {
 
-	protected CommandSender sender;
-	protected String[] args;
-	protected String perm;
-
-	public SubcommandHandler(CommandSender sender, String[] args, String perm) {
-		this.sender = sender;
-		this.args = args;
-		this.perm = perm;
+	public PardonCommand(CommandSender sender, String[] args) {
+		super(sender, args, "ttt.admin.ban");
 	}
 
-	public abstract void handle();
-
-	/**
-	 * Asserts that the sender has permission to use a subcommand. Sends an
-	 * error message if not.
-	 * @return whether the sender has permission to use a subcommand
-	 * @since 0.3.1
-	 */
-	public boolean assertPermission() {
-		if (perm != null && !sender.hasPermission(perm)) {
-			sender.sendMessage(MiscUtil.getMessage("error.perms.generic", Constants.ERROR_COLOR));
-			return false;
+	@Override
+	public void handle() {
+		if (assertPermission()) {
+			if (args.length > 1) {
+				String name = args[1];
+				try {
+					UUID uuid = UUIDFetcher.getUUIDOf(name);
+					if (uuid == null) {
+						sender.sendMessage(getMessage("error.plugin.uuid", ERROR_COLOR));
+						return;
+					}
+					if (MiscUtil.pardon(uuid)) {
+						Bukkit.getPlayer(name).sendMessage(getMessage("info.personal.pardon", ERROR_COLOR));
+						sender.sendMessage(getMessage("info.personal.pardon.other", INFO_COLOR, name));
+					}
+					else {
+						sender.sendMessage(getMessage("error.plugin.pardon", ERROR_COLOR));
+					}
+				}
+				catch (Exception ex) {
+					sender.sendMessage(getMessage("error.plugin.generic", ERROR_COLOR));
+					ex.printStackTrace();
+				}
+			}
+			else {
+				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+				sendUsage();
+			}
 		}
-		return true;
 	}
 
-	/**
-	 * Retrieves the usage for this subcommand from the plugin.yml file.
-	 * @return the usage for this subcommand, or null if not specified
-	 * @since 0.3.1
-	 */
-	public String getUsage() {
-		return CommandManager.getUsage(args[0]);
-	}
 
-	public void sendUsage() {
-		sender.sendMessage(getMessage("fragment.usage", ERROR_COLOR) + ": " + getUsage());
-	}
 }

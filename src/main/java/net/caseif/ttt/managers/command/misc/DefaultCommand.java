@@ -35,7 +35,7 @@ import org.bukkit.command.CommandSender;
 public class DefaultCommand extends SubcommandHandler {
 
 	public DefaultCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, null);
 	}
 
 	@Override

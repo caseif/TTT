@@ -39,6 +39,7 @@ import net.caseif.ttt.managers.ScoreManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -47,6 +48,7 @@ import java.util.UUID;
 import net.amigocraft.mglib.api.Location3D;
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
+import net.amigocraft.mglib.api.Minigame;
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.api.Stage;
 import net.amigocraft.mglib.event.player.MGPlayerDeathEvent;
@@ -55,7 +57,10 @@ import net.amigocraft.mglib.event.player.PlayerLeaveMinigameRoundEvent;
 import net.amigocraft.mglib.event.round.MinigameRoundEndEvent;
 import net.amigocraft.mglib.event.round.MinigameRoundPrepareEvent;
 import net.amigocraft.mglib.event.round.MinigameRoundStageChangeEvent;
+import net.amigocraft.mglib.event.round.MinigameRoundStartEvent;
 import net.amigocraft.mglib.event.round.MinigameRoundTickEvent;
+
+import net.caseif.ttt.util.MiscUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -74,31 +79,24 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class MGListener implements Listener {
 
-	@EventHandler
-	public void onMinigameRoundPrepareEvent(MinigameRoundPrepareEvent e) {
-		e.getRound().broadcast(getMessage("info.global.round.event.starting", INFO_COLOR));
-		if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
-			ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
-			for (MGPlayer mp : e.getRound().getPlayerList()) {
-				ScoreManager.sbManagers.get(e.getRound().getArena()).update(mp);
-			}
-		}
-	}
-
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerJoinMinigameRound(PlayerJoinMinigameRoundEvent e) {
 		File f = new File(Main.plugin.getDataFolder(), "bans.yml");
 		YamlConfiguration y = new YamlConfiguration();
 		try {
+			UUID uuid = Minigame.getOnlineUUIDs().get(e.getPlayer().getName());
+			if (uuid == null) {
+				// this bit is so it won't break when I'm testing, but offline servers will still get screwed up
+				List<String> testAccounts = Arrays.asList("testing123", "testing456", "testing789");
+				if (testAccounts.contains(e.getPlayer().getName().toLowerCase())) {
+					uuid = e.getPlayer().getBukkitPlayer().getUniqueId();
+				}
+			}
 			y.load(f);
-			if (y.isSet(e.getPlayer().getName())) {
-				int unbanTime = y.getInt(e.getPlayer().getName());
-				if (unbanTime <= System.currentTimeMillis() / 1000) {
-					y.set(e.getPlayer().getName(), null);
-					y.save(f);
-					if (Config.VERBOSE_LOGGING) {
-						Main.mg.log(e.getPlayer().getName() + "'s ban has been lifted", LogLevel.INFO);
-					}
+			if (y.isSet(uuid.toString())) {
+				long unbanTime = y.getLong(uuid.toString());
+				if (unbanTime != -1 && unbanTime <= System.currentTimeMillis() / 1000) {
+					MiscUtil.pardon(uuid);
 				}
 				else {
 					String m;
@@ -108,12 +106,14 @@ public class MGListener implements Listener {
 					else {
 						Calendar cal = Calendar.getInstance();
 						cal.setTimeInMillis(unbanTime * 1000);
-						String year = Integer.toString(cal.get(Calendar.YEAR) + 1);
+						String year = Integer.toString(cal.get(Calendar.YEAR));
 						String month = Integer.toString(cal.get(Calendar.MONTH) + 1);
 						String day = Integer.toString(cal.get(Calendar.DAY_OF_MONTH));
 						String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
 						String min = Integer.toString(cal.get(Calendar.MINUTE));
 						String sec = Integer.toString(cal.get(Calendar.SECOND));
+						min = min.length() == 1 ? "0" + min : min;
+						sec = sec.length() == 1 ? "0" + sec : sec;
 						m = getMessage(
 								"info.personal.ban.temp.until",
 								ERROR_COLOR,
@@ -121,7 +121,7 @@ public class MGListener implements Listener {
 						);
 					}
 					e.getPlayer().getBukkitPlayer().sendMessage(m);
-					e.getPlayer().removeFromRound();
+					e.setCancelled(true);
 					return;
 				}
 			}
@@ -191,140 +191,223 @@ public class MGListener implements Listener {
 		e.getPlayer().getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
 	}
 
+	@EventHandler
+	public void onMGPlayerDeath(MGPlayerDeathEvent e) {
+		e.getPlayer().setPrefix(Config.SB_MIA_PREFIX);
+		e.getPlayer().getBukkitPlayer().setHealth(e.getPlayer().getBukkitPlayer().getMaxHealth());
+		e.getPlayer().setSpectating(true);
+		if (ScoreManager.sbManagers.containsKey(e.getPlayer().getArena())) {
+			ScoreManager.sbManagers.get(e.getPlayer().getArena()).update(e.getPlayer());
+		}
+		if (e.getKiller() != null && e.getKiller() instanceof Player) {
+			// set killer's karma
+			MGPlayer killer = Main.mg.getMGPlayer((e.getKiller()).getName());
+			KarmaManager.handleKillKarma(killer, e.getPlayer());
+			e.getPlayer().setMetadata("killer", e.getKiller().getName());
+		}
+		Block block = e.getPlayer().getBukkitPlayer().getLocation().getBlock();
+		Main.mg.getRollbackManager().logBlockChange(block, e.getPlayer().getArena());
+		BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
+		boolean trapped = false;
+		for (BlockFace bf : faces) {
+			if (block.getRelative(bf).getType() == Material.CHEST) {
+				trapped = true;
+				break;
+			}
+		}
+		//TODO: Add check for doors and such
+		block.setType(trapped ? Material.TRAPPED_CHEST : Material.CHEST);
+		Chest chest = (Chest)block.getState();
+		// player identifier
+		ItemStack id = new ItemStack(Material.PAPER, 1);
+		ItemMeta idMeta = id.getItemMeta();
+		idMeta.setDisplayName(getMessage("item.id.name", ChatColor.RESET, false));
+		List<String> idLore = new ArrayList<String>();
+		idLore.add(getMessage("corpse.of", ChatColor.RESET, false, e.getPlayer().getName()));
+		idLore.add(e.getPlayer().getName());
+		idMeta.setLore(idLore);
+		id.setItemMeta(idMeta);
+		// role identifier
+		ItemStack ti = new ItemStack(Material.WOOL, 1);
+		ItemMeta tiMeta = ti.getItemMeta();
+		if (e.getPlayer().hasMetadata("Detective")) {
+			ti.setDurability((short)11);
+			tiMeta.setDisplayName(getMessage("fragment.detective", DETECTIVE_COLOR, false));
+			List<String> lore = new ArrayList<String>();
+			lore.add(Main.locale.getMessage("item.id.detective"));
+			tiMeta.setLore(lore);
+		}
+		else if (e.getPlayer().getTeam() == null || e.getPlayer().getTeam().equals("Innocent")) {
+			ti.setDurability((short)5);
+			tiMeta.setDisplayName(getMessage("fragment.innocent", INNOCENT_COLOR, false));
+			List<String> tiLore = new ArrayList<String>();
+			tiLore.add(getMessage("item.id.innocent", ChatColor.RESET, false));
+			tiMeta.setLore(tiLore);
+		}
+		else {
+			ti.setDurability((short)14);
+			tiMeta.setDisplayName(getMessage("fragment.traitor", TRAITOR_COLOR, false));
+			List<String> lore = new ArrayList<String>();
+			lore.add(getMessage("item.id.traitor", ChatColor.RESET, false));
+			tiMeta.setLore(lore);
+		}
+		ti.setItemMeta(tiMeta);
+		chest.getInventory().addItem(id, ti);
+		Main.bodies.add(
+				new Body(
+						e.getPlayer().getName(),
+						e.getPlayer().getArena(),
+						e.getPlayer().hasMetadata("Detective") ? "Detective" : e.getPlayer().getTeam(),
+						Location3D.valueOf(block.getLocation()),
+						System.currentTimeMillis()
+				)
+		);
+	}
+
+	@EventHandler
+	public void onMinigameRoundPrepare(MinigameRoundPrepareEvent e) {
+		e.getRound().broadcast(getMessage("info.global.round.event.starting", INFO_COLOR));
+		if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
+			ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
+			for (MGPlayer mp : e.getRound().getPlayerList()) {
+				ScoreManager.sbManagers.get(e.getRound().getArena()).update(mp);
+			}
+		}
+	}
+
+	@SuppressWarnings({"deprecation"})
+	@EventHandler
+	public void onRoundStart(MinigameRoundStartEvent e) {
+		int players = e.getRound().getPlayers().size();
+		int traitorCount = 0;
+		int limit = (int)(players * Config.TRAITOR_RATIO);
+		if (limit == 0) {
+			limit = 1;
+		}
+		List<String> innocents = new ArrayList<String>();
+		List<String> traitors = new ArrayList<String>();
+		List<String> detectives = new ArrayList<String>();
+		for (MGPlayer p : e.getRound().getPlayerList()) {
+			innocents.add(p.getName());
+			p.getBukkitPlayer().sendMessage(getMessage("info.global.round.event.started", INFO_COLOR));
+		}
+		while (traitorCount < limit) {
+			Random randomGenerator = new Random();
+			int index = randomGenerator.nextInt(players);
+			String traitor = innocents.get(index);
+			if (innocents.contains(traitor)) {
+				innocents.remove(traitor);
+				traitors.add(traitor);
+				traitorCount += 1;
+			}
+		}
+		int dLimit = (int)(players * Config.DETECTIVE_RATIO);
+		if (players >= Config.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0) {
+			dLimit += 1;
+		}
+		int detectiveNum = 0;
+		while (detectiveNum < dLimit) {
+			Random randomGenerator = new Random();
+			int index = randomGenerator.nextInt(innocents.size());
+			String detective = innocents.get(index);
+			innocents.remove(detective);
+			detectives.add(detective);
+			detectiveNum += 1;
+		}
+		ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
+		ItemMeta cbMeta = crowbar.getItemMeta();
+		cbMeta.setDisplayName(getMessage("item.crowbar.name", INFO_COLOR, false));
+		crowbar.setItemMeta(cbMeta);
+		ItemStack gun = new ItemStack(Material.ANVIL, 1);
+		ItemMeta gunMeta = crowbar.getItemMeta();
+		gunMeta.setDisplayName(getMessage("item.gun.name", INFO_COLOR, false));
+		gun.setItemMeta(gunMeta);
+		ItemStack ammo = new ItemStack(Material.ARROW, Config.INITIAL_AMMO);
+		ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
+		ItemMeta dnaMeta = dnaScanner.getItemMeta();
+		dnaMeta.setDisplayName(getMessage("item.dna-scanner.name", DETECTIVE_COLOR, false));
+		dnaScanner.setItemMeta(dnaMeta);
+		for (String s : innocents) {
+			Player pl = Main.plugin.getServer().getPlayer(s);
+			MGPlayer player = Main.mg.getMGPlayer(s);
+			if (pl != null && player != null) {
+				player.setTeam("Innocent");
+				pl.sendMessage(getMessage("info.personal.status.role.innocent", INNOCENT_COLOR, false));
+				pl.getInventory().addItem(crowbar, gun, ammo);
+				pl.setHealth(20);
+				pl.setFoodLevel(20);
+				if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
+					pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
+					ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
+				}
+			}
+		}
+		for (String s : traitors) {
+			Player pl = Main.plugin.getServer().getPlayer(s);
+			MGPlayer player = Main.mg.getMGPlayer(s);
+			if (pl != null && player != null) {
+				player.setTeam("Traitor");
+				pl.sendMessage(getMessage(traitors.size() > 1 ?
+								"info.personal.status.role.traitor" :
+								"info.personal.status.role.traitor.alone",
+						TRAITOR_COLOR, false));
+				if (traitors.size() > 1) {
+					pl.sendMessage(getMessage("info.personal.status.role.traitor.allies",
+							TRAITOR_COLOR, false));
+					for (String tr : traitors) {
+						if (!tr.equals(s)) {
+							pl.sendMessage(TRAITOR_COLOR + "- " + tr);
+						}
+					}
+				}
+				pl.getInventory().addItem(crowbar, gun, ammo);
+				pl.setHealth(20);
+				pl.setFoodLevel(20);
+				if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
+					pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).traitor);
+					ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
+				}
+			}
+		}
+		for (String s : detectives) {
+			Player pl = Main.plugin.getServer().getPlayer(s);
+			MGPlayer player = Main.mg.getMGPlayer(s);
+			if (pl != null && player != null) {
+				player.setTeam("Innocent");
+				player.setMetadata("fragment.detective", true);
+				pl.sendMessage(getMessage("info.personal.status.role.detective", DETECTIVE_COLOR, false));
+				pl.getInventory().addItem(crowbar, gun, ammo, dnaScanner);
+				pl.setHealth(20);
+				pl.setFoodLevel(20);
+				if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
+					pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
+					ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
+				}
+			}
+		}
+
+		for (MGPlayer mp : e.getRound().getPlayerList()) {
+			if (Config.DAMAGE_REDUCTION) {
+				KarmaManager.calculateDamageReduction(mp);
+				String percentage = getMessage("fragment.full", INFO_COLOR, false);
+				if ((Double)mp.getMetadata("damageRed") < 1) {
+					percentage = Integer.toString((int)((Double)mp.getMetadata("damageRed") * 100)) + "%";
+				}
+				mp.getBukkitPlayer().sendMessage(getMessage("info.personal.status.karma-damage", INFO_COLOR,
+						Integer.toString((Integer)mp.getMetadata("karma")), percentage));
+			}
+		}
+	}
+
 	@SuppressWarnings({"deprecation"})
 	@EventHandler
 	public void onRoundTick(MinigameRoundTickEvent e) {
-
-		// manage scoreboards
-		//ScoreManager.sbManagers.get(e.getRound().getArena()).manage();
-
 		if (e.getRound().getStage() == Stage.PREPARING) {
 			if (((e.getRound().getRemainingTime() % 10) == 0 ||
 					e.getRound().getRemainingTime() < 10) && e.getRound().getRemainingTime() > 0) {
 				e.getRound().broadcast(getMessage("info.global.round.status.starting.time", INFO_COLOR,
 						getMessage("fragment.seconds", INFO_COLOR, false,
 								Integer.toString(e.getRound().getRemainingTime()))));
-			}
-			else if (e.getRound().getRemainingTime() == 0) {
-				int players = e.getRound().getPlayers().size();
-				int traitorCount = 0;
-				int limit = (int)(players * Config.TRAITOR_RATIO);
-				if (limit == 0) {
-					limit = 1;
-				}
-				List<String> innocents = new ArrayList<String>();
-				List<String> traitors = new ArrayList<String>();
-				List<String> detectives = new ArrayList<String>();
-				for (MGPlayer p : e.getRound().getPlayerList()) {
-					innocents.add(p.getName());
-					p.getBukkitPlayer().sendMessage(getMessage("info.global.round.event.started", INFO_COLOR));
-				}
-				while (traitorCount < limit) {
-					Random randomGenerator = new Random();
-					int index = randomGenerator.nextInt(players);
-					String traitor = innocents.get(index);
-					if (innocents.contains(traitor)) {
-						innocents.remove(traitor);
-						traitors.add(traitor);
-						traitorCount += 1;
-					}
-				}
-				int dLimit = (int)(players * Config.DETECTIVE_RATIO);
-				if (players >= Config.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0) {
-					dLimit += 1;
-				}
-				int detectiveNum = 0;
-				while (detectiveNum < dLimit) {
-					Random randomGenerator = new Random();
-					int index = randomGenerator.nextInt(innocents.size());
-					String detective = innocents.get(index);
-					innocents.remove(detective);
-					detectives.add(detective);
-					detectiveNum += 1;
-				}
-				ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
-				ItemMeta cbMeta = crowbar.getItemMeta();
-				cbMeta.setDisplayName(getMessage("item.crowbar.name", INFO_COLOR, false));
-				crowbar.setItemMeta(cbMeta);
-				ItemStack gun = new ItemStack(Material.ANVIL, 1);
-				ItemMeta gunMeta = crowbar.getItemMeta();
-				gunMeta.setDisplayName(getMessage("item.gun.name", INFO_COLOR, false));
-				gun.setItemMeta(gunMeta);
-				ItemStack ammo = new ItemStack(Material.ARROW, Config.INITIAL_AMMO);
-				ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
-				ItemMeta dnaMeta = dnaScanner.getItemMeta();
-				dnaMeta.setDisplayName(getMessage("item.dna-scanner.name", DETECTIVE_COLOR, false));
-				dnaScanner.setItemMeta(dnaMeta);
-				for (String s : innocents) {
-					Player pl = Main.plugin.getServer().getPlayer(s);
-					MGPlayer player = Main.mg.getMGPlayer(s);
-					if (pl != null && player != null) {
-						player.setTeam("Innocent");
-						pl.sendMessage(getMessage("info.personal.status.role.innocent", INNOCENT_COLOR, false));
-						pl.getInventory().addItem(crowbar, gun, ammo);
-						pl.setHealth(20);
-						pl.setFoodLevel(20);
-						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
-							pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
-							ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
-						}
-					}
-				}
-				for (String s : traitors) {
-					Player pl = Main.plugin.getServer().getPlayer(s);
-					MGPlayer player = Main.mg.getMGPlayer(s);
-					if (pl != null && player != null) {
-						player.setTeam("Traitor");
-						pl.sendMessage(getMessage(traitors.size() > 1 ?
-										"info.personal.status.role.traitor" :
-										"info.personal.status.role.traitor.alone",
-								TRAITOR_COLOR, false));
-						if (traitors.size() > 1) {
-							pl.sendMessage(getMessage("info.personal.status.role.traitor.allies",
-									TRAITOR_COLOR, false));
-							for (String tr : traitors) {
-								if (!tr.equals(s)) {
-									pl.sendMessage(TRAITOR_COLOR + "- " + tr);
-								}
-							}
-						}
-						pl.getInventory().addItem(crowbar, gun, ammo);
-						pl.setHealth(20);
-						pl.setFoodLevel(20);
-						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
-							pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).traitor);
-							ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
-						}
-					}
-				}
-				for (String s : detectives) {
-					Player pl = Main.plugin.getServer().getPlayer(s);
-					MGPlayer player = Main.mg.getMGPlayer(s);
-					if (pl != null && player != null) {
-						player.setTeam("Innocent");
-						player.setMetadata("fragment.detective", true);
-						pl.sendMessage(getMessage("info.personal.status.role.detective", DETECTIVE_COLOR, false));
-						pl.getInventory().addItem(crowbar, gun, ammo, dnaScanner);
-						pl.setHealth(20);
-						pl.setFoodLevel(20);
-						if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
-							pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
-							ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
-						}
-					}
-				}
-
-				for (MGPlayer mp : e.getRound().getPlayerList()) {
-					if (Config.DAMAGE_REDUCTION) {
-						KarmaManager.calculateDamageReduction(mp);
-						String percentage = getMessage("fragment.full", INFO_COLOR, false);
-						if ((Double)mp.getMetadata("damageRed") < 1) {
-							percentage = Integer.toString((int)((Double)mp.getMetadata("damageRed") * 100)) + "%";
-						}
-						mp.getBukkitPlayer().sendMessage(getMessage("info.personal.status.karma-damage", INFO_COLOR,
-								Integer.toString((Integer)mp.getMetadata("karma")), percentage));
-					}
-				}
 			}
 		}
 		else if (e.getRound().getStage() == Stage.PLAYING) {
@@ -437,79 +520,6 @@ public class MGListener implements Listener {
 			}
 		}
 		ScoreManager.sbManagers.remove(e.getRound().getArena());
-	}
-
-	@EventHandler
-	public void onMGPlayerDeath(MGPlayerDeathEvent e) {
-		e.getPlayer().setPrefix(Config.SB_MIA_PREFIX);
-		e.getPlayer().getBukkitPlayer().setHealth(e.getPlayer().getBukkitPlayer().getMaxHealth());
-		e.getPlayer().setSpectating(true);
-		if (ScoreManager.sbManagers.containsKey(e.getPlayer().getArena())) {
-			ScoreManager.sbManagers.get(e.getPlayer().getArena()).update(e.getPlayer());
-		}
-		if (e.getKiller() != null && e.getKiller() instanceof Player) {
-			// set killer's karma
-			MGPlayer killer = Main.mg.getMGPlayer((e.getKiller()).getName());
-			KarmaManager.handleKillKarma(killer, e.getPlayer());
-			e.getPlayer().setMetadata("killer", e.getKiller().getName());
-		}
-		Block block = e.getPlayer().getBukkitPlayer().getLocation().getBlock();
-		Main.mg.getRollbackManager().logBlockChange(block, e.getPlayer().getArena());
-		BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
-		boolean trapped = false;
-		for (BlockFace bf : faces) {
-			if (block.getRelative(bf).getType() == Material.CHEST) {
-				trapped = true;
-				break;
-			}
-		}
-		//TODO: Add check for doors and such
-		block.setType(trapped ? Material.TRAPPED_CHEST : Material.CHEST);
-		Chest chest = (Chest)block.getState();
-		// player identifier
-		ItemStack id = new ItemStack(Material.PAPER, 1);
-		ItemMeta idMeta = id.getItemMeta();
-		idMeta.setDisplayName(getMessage("item.id.name", ChatColor.RESET, false));
-		List<String> idLore = new ArrayList<String>();
-		idLore.add(getMessage("corpse.of", ChatColor.RESET, false, e.getPlayer().getName()));
-		idLore.add(e.getPlayer().getName());
-		idMeta.setLore(idLore);
-		id.setItemMeta(idMeta);
-		// role identifier
-		ItemStack ti = new ItemStack(Material.WOOL, 1);
-		ItemMeta tiMeta = ti.getItemMeta();
-		if (e.getPlayer().hasMetadata("Detective")) {
-			ti.setDurability((short)11);
-			tiMeta.setDisplayName(getMessage("fragment.detective", DETECTIVE_COLOR, false));
-			List<String> lore = new ArrayList<String>();
-			lore.add(Main.locale.getMessage("item.id.detective"));
-			tiMeta.setLore(lore);
-		}
-		else if (e.getPlayer().getTeam() == null || e.getPlayer().getTeam().equals("Innocent")) {
-			ti.setDurability((short)5);
-			tiMeta.setDisplayName(getMessage("fragment.innocent", INNOCENT_COLOR, false));
-			List<String> tiLore = new ArrayList<String>();
-			tiLore.add(getMessage("item.id.innocent", ChatColor.RESET, false));
-			tiMeta.setLore(tiLore);
-		}
-		else {
-			ti.setDurability((short)14);
-			tiMeta.setDisplayName(getMessage("fragment.traitor", TRAITOR_COLOR, false));
-			List<String> lore = new ArrayList<String>();
-			lore.add(getMessage("item.id.traitor", ChatColor.RESET, false));
-			tiMeta.setLore(lore);
-		}
-		ti.setItemMeta(tiMeta);
-		chest.getInventory().addItem(id, ti);
-		Main.bodies.add(
-				new Body(
-						e.getPlayer().getName(),
-						e.getPlayer().getArena(),
-						e.getPlayer().hasMetadata("Detective") ? "Detective" : e.getPlayer().getTeam(),
-						Location3D.valueOf(block.getLocation()),
-						System.currentTimeMillis()
-				)
-		);
 	}
 
 	@EventHandler

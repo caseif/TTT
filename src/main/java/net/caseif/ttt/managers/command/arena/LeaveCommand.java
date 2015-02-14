@@ -40,13 +40,13 @@ import org.bukkit.entity.Player;
 public class LeaveCommand extends SubcommandHandler {
 
 	public LeaveCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, "ttt.arena.leave");
 	}
 
 	@Override
 	public void handle() {
 		if (sender instanceof Player) {
-			if (sender.hasPermission("ttt.arena.leave")) {
+			if (assertPermission()) {
 				if (Main.mg.isPlayer(sender.getName())) {
 					MGPlayer mp = Main.mg.getMGPlayer(sender.getName());
 					try {
@@ -69,10 +69,8 @@ public class LeaveCommand extends SubcommandHandler {
 				}
 				else {
 					sender.sendMessage(getMessage("error.round.outside", ERROR_COLOR));
+					sendUsage();
 				}
-			}
-			else {
-				sender.sendMessage(getMessage("error.perms.arena.leave", ERROR_COLOR));
 			}
 		}
 		else {

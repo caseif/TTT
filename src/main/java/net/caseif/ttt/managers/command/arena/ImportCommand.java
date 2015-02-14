@@ -42,12 +42,12 @@ import org.bukkit.command.CommandSender;
 public class ImportCommand extends SubcommandHandler {
 
 	public ImportCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, "ttt.arena.import");
 	}
 
 	@Override
 	public void handle() {
-		if (sender.hasPermission("ttt.arena.import")) {
+		if (assertPermission()) {
 			if (args.length > 1) {
 				String worldName = "";
 				for (File f : Bukkit.getWorldContainer().listFiles()) {
@@ -82,11 +82,8 @@ public class ImportCommand extends SubcommandHandler {
 			}
 			else {
 				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
-				sender.sendMessage(getMessage("info.command.usage.import", ERROR_COLOR));
+				sendUsage();
 			}
-		}
-		else {
-			sender.sendMessage(getMessage("error.perms.arena.import", ERROR_COLOR));
 		}
 	}
 }

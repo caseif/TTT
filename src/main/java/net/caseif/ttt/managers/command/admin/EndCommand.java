@@ -37,31 +37,35 @@ import org.bukkit.command.CommandSender;
 public class EndCommand extends SubcommandHandler {
 
 	public EndCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, "ttt.admin.end");
 	}
 
 	@Override
 	public void handle() {
-		if (args.length > 1) {
-			String arena = args[1];
-			Round r = Main.mg.getRound(arena);
-			if (r.getStage() == Stage.PREPARING || r.getStage() == Stage.PLAYING) {
-				if (args.length > 2) {
-					if (args[2].equalsIgnoreCase("t"))
-						r.setMetadata("t-victory", true);
-					else if (args[2].equalsIgnoreCase("i"))
-						r.setMetadata("t-victory", false);
-					else {
-						sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-						return;
+		if (assertPermission()) {
+			if (args.length > 1) {
+				String arena = args[1];
+				Round r = Main.mg.getRound(arena);
+				if (r.getStage() == Stage.PREPARING || r.getStage() == Stage.PLAYING) {
+					if (args.length > 2) {
+						if (args[2].equalsIgnoreCase("t"))
+							r.setMetadata("t-victory", true);
+						else if (args[2].equalsIgnoreCase("i"))
+							r.setMetadata("t-victory", false);
+						else {
+							sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+							return;
+						}
 					}
+					r.end();
 				}
-				r.end();
+				else
+					sender.sendMessage(getMessage("error.arena.no-round", ERROR_COLOR, ARENA_COLOR + r.getArena()));
 			}
-			else
-				sender.sendMessage(getMessage("error.arena.no-round", ERROR_COLOR, ARENA_COLOR + r.getArena()));
+			else {
+				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+				sendUsage();
+			}
 		}
-		else
-			sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
 	}
 }

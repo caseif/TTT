@@ -55,6 +55,7 @@ public class HelpCommand extends SubcommandHandler {
 		registerCommand("end", Main.locale.getMessage("info.help.admin.end"), "ttt.admin.end");
 		registerCommand("kick", Main.locale.getMessage("info.help.admin.kick"), "ttt.admin.kick");
 		registerCommand("ban", Main.locale.getMessage("info.help.admin.ban"), "ttt.admin.ban");
+		registerCommand("padon", Main.locale.getMessage("info.help.admin.padon"), "ttt.admin.padon");
 		registerCommand("slay", Main.locale.getMessage("info.help.admin.slay"), "ttt.admin.slay");
 		registerCommand("respawn", Main.locale.getMessage("info.help.admin.respawn"), "ttt.admin.respawn");
 
@@ -63,13 +64,13 @@ public class HelpCommand extends SubcommandHandler {
 	}
 
 	public HelpCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+		super(sender, args, "ttt.help");
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public void handle() {
-		if (sender.hasPermission("ttt.help")) {
+		if (assertPermission()) {
 			if (args.length > 1) {
 				if (args[1].equalsIgnoreCase("lobby")) {
 					if (sender.hasPermission("ttt.lobby.create")) {
@@ -121,14 +122,10 @@ public class HelpCommand extends SubcommandHandler {
 						sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " " +
 								DESCRIPTION_COLOR + info[0]);
 						sender.sendMessage(INFO_COLOR + "    " + Main.locale.getMessage("fragment.usage") + " " +
-								DESCRIPTION_COLOR + ((Map<String, Object>)Main.plugin.getDescription().getCommands()
-								.get("ttt").get(cmd)).get("usage"));
+								DESCRIPTION_COLOR + getUsage());
 					}
 				}
 			}
-		}
-		else {
-			sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
 		}
 	}
 
