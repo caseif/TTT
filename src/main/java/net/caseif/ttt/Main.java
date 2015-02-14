@@ -35,25 +35,35 @@ import net.caseif.ttt.managers.command.CommandManager;
 import net.caseif.ttt.managers.command.SpecialCommandManager;
 import net.caseif.ttt.util.FileUtil;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import net.amigocraft.mglib.MGUtil;
 import net.amigocraft.mglib.api.ConfigManager;
 import net.amigocraft.mglib.api.Locale;
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.Minigame;
+
+import net.caseif.ttt.util.NumUtil;
 import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -178,17 +188,14 @@ public class Main extends JavaPlugin {
 		if (!new File(getDataFolder(), "config.yml").exists()) {
 			saveDefaultConfig();
 		}
-		else if (!Config.IGNORE_CONFIG_VERSION && !Config.CONFIG_VERSION.equals(this.getDescription().getVersion())) {
-			File config = new File(this.getDataFolder(), "config.yml");
+		else {
 			try {
-				FileUtil.copyFile(config, new File(this.getDataFolder(), "config.old.yml"));
+				addNewConfigKeys();
 			}
 			catch (Exception ex) {
 				ex.printStackTrace();
-				mg.log(locale.getMessage("error.plugin.copy-config"), LogLevel.INFO);
+				MGUtil.log("Failed to write new config keys!", null, LogLevel.SEVERE);
 			}
-			config.delete();
-			saveDefaultConfig();
 		}
 
 		createFile("karma.yml");
@@ -330,5 +337,47 @@ public class Main extends JavaPlugin {
 				}
 			}
 		}
+	}
+
+	public static void addNewConfigKeys() throws InvalidConfigurationException, IOException {
+		BufferedReader is = new BufferedReader(new InputStreamReader(Main.class.getResourceAsStream("/config.yml")));
+		File configYml = new File(Main.plugin.getDataFolder(), "config.yml");
+		YamlConfiguration yml = new YamlConfiguration();
+		yml.load(configYml);
+		StringBuilder sb = new StringBuilder();
+		final char NEWLINE_CHAR = '\n';
+		String line;
+		while ((line = is.readLine()) != null) {
+			if (!line.startsWith("#")) {
+				if (line.contains(":")) {
+					//TODO: this method doesn't support nested keys, but it doesn't need to atm anyway
+					String key = line.split(":")[0];
+					String value = line.substring(key.length() + 1, line.length()).trim();
+					String newValue = yml.contains(key.trim()) ? yml.getString(key.trim()) : value;
+					boolean equal = false;
+					try {
+						equal = NumberFormat.getInstance().parse(value)
+								.equals(NumberFormat.getInstance().parse(newValue));
+					}
+					catch (ParseException ex) {
+						equal = value.equals(newValue);
+					}
+					if (!equal) {
+						String writeValue = yml.getString(key.trim());
+                        if (NumUtil.isDouble(writeValue)) {
+	                        writeValue = BigDecimal.valueOf(Double.parseDouble(writeValue))
+			                        .stripTrailingZeros().toPlainString();
+                        }
+						sb.append(key).append(": ").append(writeValue).append(NEWLINE_CHAR);
+						continue;
+					}
+				}
+			}
+			sb.append(line).append(NEWLINE_CHAR);
+		}
+		FileUtil.copyFile(configYml, new File(configYml.getParentFile(), "config.yml.old"));
+		FileWriter w = new FileWriter(configYml);
+		w.append(sb.toString());
+		w.flush();
 	}
 }

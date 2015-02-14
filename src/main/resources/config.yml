@@ -198,6 +198,3 @@ unstable-build-warning: true
 
 # When true, the value of config-version will be ignored and the config will not be overwritten between versions.
 ignore-config-version: false
-
-#Please don't touch this unless you want your current configuration overwritten.
-config-version: 0.7.0-SNAPSHOT
