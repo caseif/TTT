@@ -23,6 +23,21 @@
  */
 package net.caseif.ttt;
 
+import net.caseif.ttt.util.FileUtil;
+import net.caseif.ttt.util.NumUtil;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.ParseException;
+
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 public final class Config {
 
 	public static final double DETECTIVE_RATIO;
@@ -55,8 +70,6 @@ public final class Config {
 	public static final boolean ENABLE_AUTO_UPDATE;
 	public static final boolean ENABLE_METRICS;
 	public static final String LOCALE;
-	public static final String CONFIG_VERSION;
-	public static final boolean IGNORE_CONFIG_VERSION;
 	public static final int MINIMUM_PLAYERS;
 	public static final int TIME_LIMIT;
 	public static final int SETUP_TIME;
@@ -105,8 +118,6 @@ public final class Config {
 		ENABLE_AUTO_UPDATE = getBoolean("enable-auto-update");
 		ENABLE_METRICS = getBoolean("enable-metrics");
 		LOCALE = getString("locale");
-		CONFIG_VERSION = getString("config-version");
-		IGNORE_CONFIG_VERSION = getBoolean("ignore-config-version");
 		SB_ALIVE_PREFIX = getString("sb-alive-prefix");
 		SB_MIA_PREFIX = getString("sb-mia-prefix");
 		SB_DEAD_PREFIX = getString("sb-dead-prefix");
@@ -119,19 +130,68 @@ public final class Config {
 		SB_USE_SIDEBAR = getBoolean("sb-use-sidebar");
 	}
 
-	public static String getString(String a) {
-		return Main.plugin.getConfig().getString(a);
+	public static String getString(String key) {
+		String value = Main.plugin.getConfig().getString(key);
+		if (value != null) {
+			if (value.contains("Â§")) { // fix encoding mistakes on Windoofs
+				value = value.replace("Â§", "§");
+			}
+			return value;
+		}
+		return "";
 	}
 
-	public static boolean getBoolean(String a) {
-		return Main.plugin.getConfig().getBoolean(a);
+	public static boolean getBoolean(String key) {
+		return Main.plugin.getConfig().getBoolean(key);
 	}
 
-	public static int getInt(String a) {
-		return Main.plugin.getConfig().getInt(a);
+	public static int getInt(String key) {
+		return Main.plugin.getConfig().getInt(key);
 	}
 
-	public static double getDouble(String a) {
-		return Main.plugin.getConfig().getDouble(a);
+	public static double getDouble(String key) {
+		return Main.plugin.getConfig().getDouble(key);
+	}
+
+	public static void addMissingKeys() throws InvalidConfigurationException, IOException {
+		BufferedReader is = new BufferedReader(new InputStreamReader(Main.class.getResourceAsStream("/config.yml")));
+		File configYml = new File(Main.plugin.getDataFolder(), "config.yml");
+		YamlConfiguration yml = new YamlConfiguration();
+		yml.load(configYml);
+		StringBuilder sb = new StringBuilder();
+		final char NEWLINE_CHAR = '\n';
+		String line;
+		while ((line = is.readLine()) != null) {
+			if (!line.startsWith("#")) {
+				if (line.contains(":")) {
+					//TODO: this method doesn't support nested keys, but it doesn't need to atm anyway
+					String key = line.split(":")[0];
+					String value = line.substring(key.length() + 1, line.length()).trim();
+					String newValue = yml.contains(key.trim()) ? yml.getString(key.trim()) : value;
+					boolean equal = false;
+					try {
+						equal = NumberFormat.getInstance().parse(value)
+								.equals(NumberFormat.getInstance().parse(newValue));
+					}
+					catch (ParseException ex) {
+						equal = value.equals(newValue);
+					}
+					if (!equal) {
+						String writeValue = yml.getString(key.trim());
+						if (NumUtil.isDouble(writeValue)) {
+							writeValue = BigDecimal.valueOf(Double.parseDouble(writeValue))
+									.stripTrailingZeros().toPlainString();
+						}
+						sb.append(key).append(": ").append(writeValue).append(NEWLINE_CHAR);
+						continue;
+					}
+				}
+			}
+			sb.append(line).append(NEWLINE_CHAR);
+		}
+		FileUtil.copyFile(configYml, new File(configYml.getParentFile(), "config.yml.old"));
+		FileWriter w = new FileWriter(configYml);
+		w.append(sb.toString());
+		w.flush();
 	}
 }

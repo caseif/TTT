@@ -526,12 +526,12 @@ public class MGListener implements Listener {
 	public void onStageChange(MinigameRoundStageChangeEvent e) {
 		if ((e.getStageBefore() == Stage.PREPARING || e.getStageBefore() == Stage.PLAYING) &&
 				(e.getStageAfter() == Stage.PREPARING)) {
+			ScoreManager sm = ScoreManager.sbManagers.get(e.getRound().getArena());
+			sm.iObj.unregister();
+			sm.tObj.unregister();
+			ScoreManager.sbManagers.remove(e.getRound().getArena());
 			for (MGPlayer mp : e.getRound().getPlayerList()) {
 				mp.getBukkitPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-				ScoreManager sm = ScoreManager.sbManagers.get(e.getRound().getArena());
-				sm.iObj.unregister();
-				sm.tObj.unregister();
-				ScoreManager.sbManagers.remove(e.getRound().getArena());
 				mp.setTeam(null);
 			}
 		}

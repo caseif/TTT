@@ -88,7 +88,13 @@ public class MiscUtil {
 			y.set(player.toString(), null);
 			y.save(f);
 			if (Config.VERBOSE_LOGGING) {
-				Main.mg.log(Bukkit.getPlayer(player).getName() + "'s ban has been lifted", LogLevel.INFO);
+				Player p = Bukkit.getPlayer(player);
+				if (p != null) {
+					Main.mg.log(p.getName() + "'s ban has been lifted", LogLevel.INFO);
+				}
+				else {
+					Main.mg.log(player.toString() + "'s ban has been lifted", LogLevel.INFO);
+				}
 			}
 			return true;
 		}

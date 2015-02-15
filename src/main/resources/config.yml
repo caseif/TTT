@@ -143,7 +143,7 @@ sb-i-innocent-prefix:
 sb-i-traitor-prefix:
 
 # The prefix for detectives as seen by innocents.
-sb-i-detective-prefix: §1
+sb-i-detective-prefix: §9
 
 # The prefix for innocents as seen by traitors.
 sb-t-innocent-prefix:
