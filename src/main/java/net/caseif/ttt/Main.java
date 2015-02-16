@@ -39,9 +39,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 import net.amigocraft.mglib.MGUtil;
@@ -50,6 +48,7 @@ import net.amigocraft.mglib.api.Locale;
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.Minigame;
 
+import net.caseif.ttt.util.ContributorsReader;
 import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -242,43 +241,32 @@ public class Main extends JavaPlugin {
 		maxKarma = Config.MAX_KARMA;
 
 		// add special players to list
-		//TODO: probably move these to a text file or something, but I don't feel like dealing with breakage right now
-		creator.add(UUID.fromString("8ea8a3c0-ab53-4d80-8449-fa5368798dfc")); // caseif
+        ContributorsReader reader = new ContributorsReader(getClassLoader().getResourceAsStream("/contributors.txt"));
+        Map<String, Set<String>> contributors = reader.read();
 
-		alpha.add(UUID.fromString("93a94c4a-0ad1-49c5-be92-d6fb416f938a")); // HardcoreBukkit
-		alpha.add(UUID.fromString("1fdac8d1-6c37-4afd-8a16-aba6bec4b101")); // jmm1999
-		alpha.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
-		alpha.add(UUID.fromString("e6f80dfe-d8ec-490f-9267-75797a213577")); // jpf6368
-		alpha.add(UUID.fromString("7d5ba8ca-4a7c-41ff-9a27-4f74d006b086")); // momhipie
-		alpha.add(UUID.fromString("8c63bf21-ab7a-431b-aa45-c9e661e6e812")); // shiny3
-		alpha.add(UUID.fromString("57cb8d8f-0e74-4eeb-8188-52adbed3e216")); // xJHA929x
-		alpha.add(UUID.fromString("7fa299a6-1525-404c-a5f6-bf116cc2ceff")); // _Chadwick_
+        if (contributors.containsKey("creator")) {
+            for (String uuid : contributors.get("creator")) {
+                creator.add(UUID.fromString(uuid));
+            }
+        }
 
-		testers.add(UUID.fromString("eb5080a7-3e31-4fa6-81df-32f0caf7f911")); // alec1898
-		testers.add(UUID.fromString("1b7fa3f3-3ac6-408b-990c-60cd37450208")); // Alexandercitt
-		testers.add(UUID.fromString("18d0e7d7-f331-43e1-aded-6204fed565c1")); // Callmegusgus
-		testers.add(UUID.fromString("93ed0f85-c30d-4204-9908-1b3557c9b611")); // Captn_Carles
-		testers.add(UUID.fromString("fb237522-8b5b-45d0-8b17-ebfd80d493ca")); // gratimax
-		testers.add(UUID.fromString("3923ded0-5a0b-4dad-ba83-4d870cb3e328")); // malgm
-		testers.add(UUID.fromString("e63cec43-38f5-41d0-b7f3-8593ae0c862f")); // Minecrell
-		testers.add(UUID.fromString("809cbc32-5d27-47ef-82ff-3f1ae8d6c3f8")); // MoustachedMudkip
-		testers.add(UUID.fromString("63bcf544-1793-42c1-a9f9-dcfd34f72536")); // pdidy1
-		testers.add(UUID.fromString("6f93a373-3765-4316-af73-199ca1ea14cf")); // redraskal
-		testers.add(UUID.fromString("987c31ca-2939-4d37-aa0d-eb9f44c979cc")); // rob_black
-		testers.add(UUID.fromString("3e2b55fe-5e77-4ecf-8053-9ac9f5b118a3")); // RokkeyCX
-		testers.add(UUID.fromString("9ffc9678-2c59-4fb5-9025-bf424e32a5f7")); // SuicideSilence_
-		testers.add(UUID.fromString("e7ddb2e9-c8ca-47dd-81ea-0dad36d61572")); // talkingmelon
-		testers.add(UUID.fromString("29fa58ce-1ff0-4d43-a4de-e3dd16e7fbb5")); // Weblack
+        if (contributors.containsKey("alpha")) {
+            for (String uuid : contributors.get("alpha")) {
+                alpha.add(UUID.fromString(uuid));
+            }
+        }
 
-		translators.add(UUID.fromString("dc713cb2-d96d-490e-8f6b-758f2da08935")); // gasacz
-		translators.add(UUID.fromString("8baab7be-4942-4742-854b-0687d783b985")); // guigo007
-		translators.add(UUID.fromString("ece5d120-402a-4a32-b78a-fdfaf5adab33")); // JeyWake
-		translators.add(UUID.fromString("a83f8496-fa91-41e4-84e0-578a742704f7")); // jon674
-		translators.add(UUID.fromString("dcd6037d-a68d-4593-a857-7853406ec11e")); // Nikkolo_DTU
-		translators.add(UUID.fromString("abdaf9ad-3034-43a2-b22e-ba81fb949708")); // Rocoty
-		translators.add(UUID.fromString("3e2b55fe-5e77-4ecf-8053-9ac9f5b118a3")); // RokkeyCX
-		translators.add(UUID.fromString("9ffc9678-2c59-4fb5-9025-bf424e32a5f7")); // SuicideSilence_
-		translators.add(UUID.fromString("e4714759-8a41-468d-8f93-b796c0f17aaa")); // victormac737
+        if (contributors.containsKey("tester")) {
+            for (String uuid : contributors.get("tester")) {
+                testers.add(UUID.fromString(uuid));
+            }
+        }
+
+        if (contributors.containsKey("translator")) {
+            for (String uuid : contributors.get("translator")) {
+                translators.add(UUID.fromString(uuid));
+            }
+        }
 	}
 
 	@Override
