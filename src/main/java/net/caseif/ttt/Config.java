@@ -83,6 +83,7 @@ public final class Config {
 	public static final String SB_T_TRAITOR_PREFIX;
 	public static final String SB_T_DETECTIVE_PREFIX;
 	public static final boolean SB_USE_SIDEBAR;
+	public static final boolean SEND_TITLES;
 
 	static {
 		TIME_LIMIT = getInt("time-limit");
@@ -128,6 +129,7 @@ public final class Config {
 		SB_T_TRAITOR_PREFIX = getString("sb-t-traitor-prefix");
 		SB_T_DETECTIVE_PREFIX = getString("sb-t-detective-prefix");
 		SB_USE_SIDEBAR = getBoolean("sb-use-sidebar");
+		SEND_TITLES = getBoolean("send-titles");
 	}
 
 	public static String getString(String key) {

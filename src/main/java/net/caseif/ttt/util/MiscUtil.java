@@ -23,19 +23,24 @@
  */
 package net.caseif.ttt.util;
 
+import static net.caseif.ttt.util.Constants.DETECTIVE_COLOR;
+import static net.caseif.ttt.util.Constants.INNOCENT_COLOR;
+import static net.caseif.ttt.util.Constants.TRAITOR_COLOR;
+
 import net.caseif.ttt.Config;
 import net.caseif.ttt.Main;
 
-import java.io.File;
-import java.util.UUID;
-
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.MGPlayer;
-
+import net.amigocraft.mglib.api.Round;
+import net.caseif.crosstitles.TitleUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.util.UUID;
 
 public class MiscUtil {
 
@@ -123,6 +128,37 @@ public class MiscUtil {
 
 	public static String fromNullableString(String nullable) {
 		return nullable == null ? "" : nullable;
+	}
+
+	public static void sendStatusTitle(Player player, String role) {
+		if (Config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
+			if (player == null) {
+				throw new IllegalArgumentException("Player cannot be null!");
+			}
+			role = role.toLowerCase();
+			String title = Main.locale.getMessage("info.personal.status.role." + role + ".title");
+			ChatColor color;
+			if (role.equals("innocent"))
+				color = INNOCENT_COLOR;
+			else if (role.equals("detective"))
+				color = DETECTIVE_COLOR;
+			else
+				color = TRAITOR_COLOR;
+			TitleUtil.sendTitle(player, title, color);
+		}
+	}
+
+	public static void sendVictoryTitle(Round round, boolean traitorVictory) {
+		if (Config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
+			if (round == null) {
+				throw new IllegalArgumentException("Round cannot be null!");
+			}
+			String msg = Main.locale.getMessage("info.global.round.event.end." + (traitorVictory ? "traitor" : "innocent") + ".min");
+			ChatColor color = traitorVictory ? TRAITOR_COLOR : INNOCENT_COLOR;
+			for (MGPlayer mp : round.getPlayerList()) {
+				TitleUtil.sendTitle(mp.getBukkitPlayer(), msg, color);
+			}
+		}
 	}
 
 }

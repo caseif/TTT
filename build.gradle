@@ -45,6 +45,7 @@ repositories {
 ext {
 	bukkit = 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
 	mglib = 'net.amigocraft.mglib:mglib:0.3.1-SNAPSHOT'
+    crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.0-SNAPSHOT'
 	updater = 'net.gravitydevelopment.updater:updater:2.3'
 	metrics = 'org.mcstats.bukkit:metrics:R7'
 }
@@ -53,6 +54,7 @@ ext {
 dependencies {
 	compile bukkit
 	compile mglib
+    compile crosstitles
 	compile updater
 	compile metrics
 }
@@ -72,6 +74,7 @@ jar {
 
 shadowJar {
 	dependencies {
+        include dependency(crosstitles)
 		include dependency(updater)
         include dependency(metrics)
 	}

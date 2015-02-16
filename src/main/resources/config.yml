@@ -31,6 +31,10 @@ minimum-players-for-detective: 5
 # (Vanilla TTT uses 25 as default, but also displays the exact location rather than just the direction.)
 scanner-charge-time: 10
 
+# Should TTT send fancy titles to players on round start and end?
+# This will not do anything on Minecraft versions prior to 1.8.
+send-titles: true
+
 ###################
 # Weapon Settings #
 ###################
@@ -185,9 +189,6 @@ enable-auto-update: true
 # Allow me to collect anonymous usage information? (Pretty please? :3)
 enable-metrics: true
 
-# Should the plugin check the stability of the current version? (highly recommended)
-enable-version-check: true
-
 # Should the plugin print a warning when the current build status can't be determined?
 # (Set this to false if you plan on modifying the plugin.yml file.)
 unknown-build-warning: true
@@ -195,6 +196,3 @@ unknown-build-warning: true
 # Should the plugin print a warning if the current build is marked as unstable?
 # (We highly recommend you set this as true.)
 unstable-build-warning: true
-
-# When true, the value of config-version will be ignored and the config will not be overwritten between versions.
-ignore-config-version: false

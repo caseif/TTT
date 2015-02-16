@@ -333,6 +333,7 @@ public class MGListener implements Listener {
 			if (pl != null && player != null) {
 				player.setTeam("Innocent");
 				pl.sendMessage(getMessage("info.personal.status.role.innocent", INNOCENT_COLOR, false));
+				MiscUtil.sendStatusTitle(pl, "innocent");
 				pl.getInventory().addItem(crowbar, gun, ammo);
 				pl.setHealth(20);
 				pl.setFoodLevel(20);
@@ -351,6 +352,7 @@ public class MGListener implements Listener {
 								"info.personal.status.role.traitor" :
 								"info.personal.status.role.traitor.alone",
 						TRAITOR_COLOR, false));
+				MiscUtil.sendStatusTitle(pl, "traitor");
 				if (traitors.size() > 1) {
 					pl.sendMessage(getMessage("info.personal.status.role.traitor.allies",
 							TRAITOR_COLOR, false));
@@ -376,6 +378,7 @@ public class MGListener implements Listener {
 				player.setTeam("Innocent");
 				player.setMetadata("fragment.detective", true);
 				pl.sendMessage(getMessage("info.personal.status.role.detective", DETECTIVE_COLOR, false));
+				MiscUtil.sendStatusTitle(pl, "detective");
 				pl.getInventory().addItem(crowbar, gun, ammo, dnaScanner);
 				pl.setHealth(20);
 				pl.setFoodLevel(20);
@@ -509,10 +512,12 @@ public class MGListener implements Listener {
 		if (!e.getRound().hasMetadata("t-victory") || e.getRound().getMetadata("t-victory") == Boolean.FALSE) {
 			Bukkit.broadcastMessage(getMessage("info.global.round.event.end.innocent", INNOCENT_COLOR,
 					ARENA_COLOR + e.getRound().getDisplayName()));
+			MiscUtil.sendVictoryTitle(e.getRound(), false);
 		}
 		else {
 			Bukkit.broadcastMessage(getMessage("info.global.round.event.end.traitor", TRAITOR_COLOR,
 					ARENA_COLOR + e.getRound().getDisplayName()));
+			MiscUtil.sendVictoryTitle(e.getRound(), true);
 		}
 		for (Entity ent : Bukkit.getWorld(e.getRound().getWorld()).getEntities()) {
 			if (ent.getType() == EntityType.ARROW) {

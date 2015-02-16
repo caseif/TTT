@@ -53,6 +53,8 @@ import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.Minigame;
 
 import net.caseif.ttt.util.ContributorsReader;
+
+import net.caseif.crosstitles.TitleUtil;
 import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -271,6 +273,14 @@ public class Main extends JavaPlugin {
                 translators.add(UUID.fromString(uuid));
             }
         }
+
+		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+			public void run() {
+				if (Config.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
+					Main.mg.log(Main.locale.getMessage("error.plugin.title-support"), LogLevel.WARNING);
+				}
+			}
+		}, 2L);
 	}
 
 	@Override
