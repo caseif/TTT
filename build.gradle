@@ -83,6 +83,7 @@ license {
 	header file('LICENSE')
 	excludes([
 			'**/*.properties',
+            '**/*.txt',
 			'**/*.yml',
 			'**/Metrics.java',
 			'**/LICENSE'

@@ -245,7 +245,7 @@ public class Main extends JavaPlugin {
 		maxKarma = Config.MAX_KARMA;
 
 		// add special players to list
-        ContributorsReader reader = new ContributorsReader(getClassLoader().getResourceAsStream("/contributors.txt"));
+        ContributorsReader reader = new ContributorsReader(Main.class.getResourceAsStream("/contributors.txt"));
         Map<String, Set<String>> contributors = reader.read();
 
         if (contributors.containsKey("creator")) {
