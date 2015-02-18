@@ -247,32 +247,32 @@ public class Main extends JavaPlugin {
 		maxKarma = Config.MAX_KARMA;
 
 		// add special players to list
-        ContributorsReader reader = new ContributorsReader(Main.class.getResourceAsStream("/contributors.txt"));
-        Map<String, Set<String>> contributors = reader.read();
+		ContributorsReader reader = new ContributorsReader(Main.class.getResourceAsStream("/contributors.txt"));
+		Map<String, Set<String>> contributors = reader.read();
 
-        if (contributors.containsKey("creator")) {
-            for (String uuid : contributors.get("creator")) {
-                creator.add(UUID.fromString(uuid));
-            }
-        }
+		if (contributors.containsKey("creator")) {
+			for (String uuid : contributors.get("creator")) {
+				creator.add(UUID.fromString(uuid));
+			}
+		}
 
-        if (contributors.containsKey("alpha")) {
-            for (String uuid : contributors.get("alpha")) {
-                alpha.add(UUID.fromString(uuid));
-            }
-        }
+		if (contributors.containsKey("alpha")) {
+			for (String uuid : contributors.get("alpha")) {
+				alpha.add(UUID.fromString(uuid));
+			}
+		}
 
-        if (contributors.containsKey("tester")) {
-            for (String uuid : contributors.get("tester")) {
-                testers.add(UUID.fromString(uuid));
-            }
-        }
+		if (contributors.containsKey("tester")) {
+			for (String uuid : contributors.get("tester")) {
+				testers.add(UUID.fromString(uuid));
+			}
+		}
 
-        if (contributors.containsKey("translator")) {
-            for (String uuid : contributors.get("translator")) {
-                translators.add(UUID.fromString(uuid));
-            }
-        }
+		if (contributors.containsKey("translator")) {
+			for (String uuid : contributors.get("translator")) {
+				translators.add(UUID.fromString(uuid));
+			}
+		}
 
 		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
 			public void run() {
