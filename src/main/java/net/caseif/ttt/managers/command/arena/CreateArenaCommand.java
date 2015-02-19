@@ -24,6 +24,7 @@
 package net.caseif.ttt.managers.command.arena;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
+import static net.caseif.ttt.util.Constants.INFO_COLOR;
 import static net.caseif.ttt.util.MiscUtil.getMessage;
 
 import net.caseif.ttt.Main;
@@ -83,9 +84,10 @@ public class CreateArenaCommand extends SubcommandHandler {
 			}
 			try {
 				Main.mg.createArena(args[1], new Location(Bukkit.createWorld(new WorldCreator(w)), x, y, z));
+				sender.sendMessage(getMessage("info.personal.arena.create.success", INFO_COLOR, args[1]));
 			}
 			catch (ArenaExistsException ex) {
-				sender.sendMessage("error.arena.already-exists");
+				sender.sendMessage(getMessage("error.arena.already-exists", ERROR_COLOR));
 			}
 		}
 	}
