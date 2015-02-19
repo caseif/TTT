@@ -314,11 +314,11 @@ public class MGListener implements Listener {
 			detectives.add(detective);
 			detectiveNum += 1;
 		}
-		ItemStack crowbar = new ItemStack(Material.IRON_SWORD, 1);
+		ItemStack crowbar = new ItemStack(Config.CROWBAR_ITEM, 1);
 		ItemMeta cbMeta = crowbar.getItemMeta();
 		cbMeta.setDisplayName(getMessage("item.crowbar.name", INFO_COLOR, false));
 		crowbar.setItemMeta(cbMeta);
-		ItemStack gun = new ItemStack(Material.ANVIL, 1);
+		ItemStack gun = new ItemStack(Config.GUN_ITEM, 1);
 		ItemMeta gunMeta = crowbar.getItemMeta();
 		gunMeta.setDisplayName(getMessage("item.gun.name", INFO_COLOR, false));
 		gun.setItemMeta(gunMeta);

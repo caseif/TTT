@@ -24,6 +24,7 @@
 package net.caseif.ttt;
 
 import net.caseif.ttt.util.FileUtil;
+import net.caseif.ttt.util.MaterialConverter;
 import net.caseif.ttt.util.NumUtil;
 
 import java.io.BufferedReader;
@@ -35,6 +36,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -84,6 +86,8 @@ public final class Config {
 	public static final String SB_T_DETECTIVE_PREFIX;
 	public static final boolean SB_USE_SIDEBAR;
 	public static final boolean SEND_TITLES;
+	public static final Material CROWBAR_ITEM;
+	public static final Material GUN_ITEM;
 
 	static {
 		TIME_LIMIT = getInt("time-limit");
@@ -130,6 +134,8 @@ public final class Config {
 		SB_T_DETECTIVE_PREFIX = getString("sb-t-detective-prefix");
 		SB_USE_SIDEBAR = getBoolean("sb-use-sidebar");
 		SEND_TITLES = getBoolean("send-titles");
+		CROWBAR_ITEM = getMaterial("crowbar-item", Material.IRON_SWORD);
+		GUN_ITEM = getMaterial("gun-item", Material.IRON_BARDING);
 	}
 
 	public static String getString(String key) {
@@ -153,6 +159,15 @@ public final class Config {
 
 	public static double getDouble(String key) {
 		return Main.plugin.getConfig().getDouble(key);
+	}
+
+	public static Material getMaterial(String key) {
+		return getMaterial(key, null);
+	}
+
+	public static Material getMaterial(String key, Material fallback) {
+		Material m = MaterialConverter.fromNotchName(Main.plugin.getConfig().getString(key));
+		return m != null ? m : fallback;
 	}
 
 	public static void addMissingKeys() throws InvalidConfigurationException, IOException {
