@@ -27,6 +27,7 @@ import static net.caseif.ttt.util.Constants.DESCRIPTION_COLOR;
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
 import static net.caseif.ttt.util.Constants.SPECIAL_COLOR;
+import static net.caseif.ttt.util.Constants.USAGE_COLOR;
 import static net.caseif.ttt.util.MiscUtil.getMessage;
 
 import net.caseif.ttt.Main;
@@ -101,7 +102,7 @@ public class HelpCommand extends SubcommandHandler {
 							sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " " +
 									DESCRIPTION_COLOR + info[0]);
 							sender.sendMessage(INFO_COLOR + "    " + Main.locale.getMessage("fragment.usage") + " " +
-									DESCRIPTION_COLOR + ((Map<String, Object>)Main.plugin.getDescription().getCommands()
+									USAGE_COLOR + ((Map<String, Object>)Main.plugin.getDescription().getCommands()
 									.get("ttt").get(cmd)).get("usage"));
 						}
 						else {
@@ -122,7 +123,7 @@ public class HelpCommand extends SubcommandHandler {
 						sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " " +
 								DESCRIPTION_COLOR + info[0]);
 						sender.sendMessage(INFO_COLOR + "    " + Main.locale.getMessage("fragment.usage") + " " +
-								DESCRIPTION_COLOR + getUsage());
+								USAGE_COLOR + getUsage());
 					}
 				}
 			}
