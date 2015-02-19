@@ -56,8 +56,8 @@ public class HelpCommand extends SubcommandHandler {
 		registerCommand("kick", Main.locale.getMessage("info.help.admin.kick"), "ttt.admin.kick");
 		registerCommand("ban", Main.locale.getMessage("info.help.admin.ban"), "ttt.admin.ban");
 		registerCommand("pardon", Main.locale.getMessage("info.help.admin.pardon"), "ttt.admin.pardon");
-		registerCommand("slay", Main.locale.getMessage("info.help.admin.slay"), "ttt.admin.slay");
-		registerCommand("respawn", Main.locale.getMessage("info.help.admin.respawn"), "ttt.admin.respawn");
+		//registerCommand("slay", Main.locale.getMessage("info.help.admin.slay"), "ttt.admin.slay");
+		//registerCommand("respawn", Main.locale.getMessage("info.help.admin.respawn"), "ttt.admin.respawn");
 
 		registerCommand("setexit", Main.locale.getMessage("info.help.setexit"), "ttt.setexit");
 		registerCommand("help", Main.locale.getMessage("info.help.help"), "ttt.help");

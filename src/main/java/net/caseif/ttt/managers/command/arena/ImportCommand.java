@@ -49,13 +49,13 @@ public class ImportCommand extends SubcommandHandler {
 	public void handle() {
 		if (assertPermission()) {
 			if (args.length > 1) {
-				String worldName = "";
+				String worldName = null;
 				for (File f : Bukkit.getWorldContainer().listFiles()) {
 					if (f.getName().equalsIgnoreCase(args[1])) {
 						worldName = f.getName();
 					}
 				}
-				if (!worldName.equals("")) {
+				if (worldName != null) {
 					if (FileUtil.isWorld(args[1])) {
 						World w = Bukkit.createWorld(new WorldCreator(worldName));
 						if (w != null) {
@@ -67,18 +67,11 @@ public class ImportCommand extends SubcommandHandler {
 								//TODO: replace this message with something more accurate
 								sender.sendMessage(getMessage("error.arena.already-exists", ERROR_COLOR));
 							}
-						}
-						else {
-							sender.sendMessage(getMessage("error.plugin.world-load", ERROR_COLOR));
+							return;
 						}
 					}
-					else {
-						sender.sendMessage(getMessage("error.plugin.world-load", ERROR_COLOR));
-					}
 				}
-				else {
-					sender.sendMessage(getMessage("error.plugin.folder-create", ERROR_COLOR));
-				}
+				sender.sendMessage(getMessage("error.plugin.world-load", ERROR_COLOR));
 			}
 			else {
 				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));

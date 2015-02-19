@@ -76,7 +76,6 @@ permissions:
       ttt.admin.prepare: true
       ttt.admin.start: true
       ttt.admin.end: true
-      ttt.admin.slay: true
       ttt.admin.kick: true
       ttt.admin.ban: true
       ttt.setexit: true
