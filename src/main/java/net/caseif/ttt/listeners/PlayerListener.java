@@ -59,7 +59,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -294,25 +293,6 @@ public class PlayerListener implements Listener {
 			Player p = (Player)e.getEntity();
 			if (Main.mg.isPlayer(p.getName())) {
 				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerChat(AsyncPlayerChatEvent e) {
-		if (Main.mg.isPlayer(e.getPlayer().getName())) {
-			MGPlayer mp = Main.mg.getMGPlayer(e.getPlayer().getName());
-			if (mp.hasMetadata("Detective")) {
-				final Player player = e.getPlayer();
-				e.getPlayer().setDisplayName(DETECTIVE_COLOR + "[Detective] " + DETECTIVE_COLOR +
-						e.getPlayer().getDisplayName());
-				Main.plugin.getServer().getScheduler().runTask(Main.plugin, new Runnable() {
-					public void run() {
-						String name = player.getDisplayName();
-						name = name.replace(DETECTIVE_COLOR + "[Detective] " + DETECTIVE_COLOR, "");
-						player.setDisplayName(name);
-					}
-				});
 			}
 		}
 	}

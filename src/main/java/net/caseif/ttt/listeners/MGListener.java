@@ -275,7 +275,7 @@ public class MGListener implements Listener {
 		}
 	}
 
-	@SuppressWarnings({"deprecation"})
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onRoundStart(MinigameRoundStartEvent e) {
 		int players = e.getRound().getPlayers().size();
