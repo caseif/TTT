@@ -23,7 +23,7 @@
  */
 package net.caseif.ttt.managers.command;
 
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
+import static net.caseif.ttt.util.Constants.INFO_COLOR;
 import static net.caseif.ttt.util.MiscUtil.getMessage;
 
 import net.caseif.ttt.util.Constants;
@@ -68,6 +68,6 @@ public abstract class SubcommandHandler {
 	}
 
 	public void sendUsage() {
-		sender.sendMessage(getMessage("fragment.usage", ERROR_COLOR) + ": " + getUsage());
+		sender.sendMessage(getMessage("fragment.usage", INFO_COLOR) + ": " + getUsage());
 	}
 }

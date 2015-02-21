@@ -31,12 +31,12 @@ import static net.caseif.ttt.util.Constants.USAGE_COLOR;
 import static net.caseif.ttt.util.MiscUtil.getMessage;
 
 import net.caseif.ttt.Main;
+import net.caseif.ttt.managers.command.CommandManager;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 
 import org.bukkit.command.CommandSender;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class HelpCommand extends SubcommandHandler {
 
@@ -102,8 +102,7 @@ public class HelpCommand extends SubcommandHandler {
 							sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " " +
 									DESCRIPTION_COLOR + info[0]);
 							sender.sendMessage(INFO_COLOR + "    " + Main.locale.getMessage("fragment.usage") + " " +
-									USAGE_COLOR + ((Map<String, Object>)Main.plugin.getDescription().getCommands()
-									.get("ttt").get(cmd)).get("usage"));
+									USAGE_COLOR + CommandManager.getUsage(cmd));
 						}
 						else {
 							sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
@@ -123,7 +122,7 @@ public class HelpCommand extends SubcommandHandler {
 						sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " " +
 								DESCRIPTION_COLOR + info[0]);
 						sender.sendMessage(INFO_COLOR + "    " + Main.locale.getMessage("fragment.usage") + " " +
-								USAGE_COLOR + getUsage());
+								USAGE_COLOR + CommandManager.getUsage(cmd));
 					}
 				}
 			}
