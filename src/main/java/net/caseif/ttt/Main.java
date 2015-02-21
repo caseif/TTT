@@ -83,7 +83,7 @@ public class Main extends JavaPlugin {
 
 	public static int maxKarma = 1000;
 
-	public static List<UUID> creator = new ArrayList<UUID>();
+	public static List<UUID> devs = new ArrayList<UUID>();
 	public static List<UUID> alpha = new ArrayList<UUID>();
 	public static List<UUID> testers = new ArrayList<UUID>();
 	public static List<UUID> translators = new ArrayList<UUID>();
@@ -250,9 +250,9 @@ public class Main extends JavaPlugin {
 		ContributorsReader reader = new ContributorsReader(Main.class.getResourceAsStream("/contributors.txt"));
 		Map<String, Set<String>> contributors = reader.read();
 
-		if (contributors.containsKey("creator")) {
-			for (String uuid : contributors.get("creator")) {
-				creator.add(UUID.fromString(uuid));
+		if (contributors.containsKey("dev")) {
+			for (String uuid : contributors.get("dev")) {
+				devs.add(UUID.fromString(uuid));
 			}
 		}
 

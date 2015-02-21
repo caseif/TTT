@@ -148,8 +148,8 @@ public class MGListener implements Listener {
 		String addition = "";
 		@SuppressWarnings("static-access")
 		UUID uuid = Main.mg.getOnlineUUIDs().get(e.getPlayer().getName());
-		if (Main.creator.contains(uuid)) {
-			addition = ", " + getMessage("fragment.special.creator", TRAITOR_COLOR, false) + "," + INFO_COLOR;
+		if (Main.devs.contains(uuid)) {
+			addition = ", " + getMessage("fragment.special.dev", TRAITOR_COLOR, false) + "," + INFO_COLOR;
 		}
 		if (Main.alpha.contains(uuid) && Main.translators.contains(uuid)) {
 			addition += ", " +
