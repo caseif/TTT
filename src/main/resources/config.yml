@@ -35,6 +35,15 @@ scanner-charge-time: 10
 # This will not do anything on Minecraft versions prior to 1.8.
 send-titles: true
 
+# If true, status titles (e.g. "You are a traitor!") will be sent as subtitles. If false, normal titles will be sent.
+# Setting this to true may cause the title to be obstructed by the chat box.
+small-status-titles: false
+
+# If true, victory titles (e.g. "The traitors won!") will be sent as subtitles. If false, normal titles will be sent.
+# Setting this to false may cause the title to not fit on the screen for certain locales (such as deDE).
+# Setting this to true may cause the title to be obstructed by the chat box.
+small-victory-titles: true
+
 # The item to use as a crowbar. This should be a Minecraft ID corresponding to an item type.
 # Full lists of IDs in the game can be found here: http://minecraft.gamepedia.com/Data_values/Block_IDs
 # and here: http://minecraft.gamepedia.com/Data_values/Item_IDs

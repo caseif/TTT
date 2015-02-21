@@ -80,7 +80,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class MGListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
-	public void onPlayerJoinMinigameRound(PlayerJoinMinigameRoundEvent e) {
+	public void onPlayerJoinRound(PlayerJoinMinigameRoundEvent e) {
 		File f = new File(Main.plugin.getDataFolder(), "bans.yml");
 		YamlConfiguration y = new YamlConfiguration();
 		try {
@@ -177,7 +177,7 @@ public class MGListener implements Listener {
 	}
 
 	@EventHandler
-	public void onPlayerLeaveMinigameRoundEvent(PlayerLeaveMinigameRoundEvent e) {
+	public void onPlayerLeaveRound(PlayerLeaveMinigameRoundEvent e) {
 		e.getPlayer().getBukkitPlayer().setScoreboard(
 				Main.plugin.getServer().getScoreboardManager().getNewScoreboard()
 		);
@@ -265,7 +265,7 @@ public class MGListener implements Listener {
 	}
 
 	@EventHandler
-	public void onMinigameRoundPrepare(MinigameRoundPrepareEvent e) {
+	public void onRoundPrepare(MinigameRoundPrepareEvent e) {
 		e.getRound().broadcast(getMessage("info.global.round.event.starting", INFO_COLOR));
 		if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
 			ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
@@ -486,7 +486,7 @@ public class MGListener implements Listener {
 	}
 
 	@EventHandler
-	public void onMinigameRoundEnd(MinigameRoundEndEvent e) {
+	public void onRoundEnd(MinigameRoundEndEvent e) {
 		List<Body> removeBodies = new ArrayList<Body>();
 		List<Body> removeFoundBodies = new ArrayList<Body>();
 		for (Body b : Main.bodies) {

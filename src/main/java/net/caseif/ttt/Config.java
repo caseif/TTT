@@ -86,6 +86,8 @@ public final class Config {
 	public static final String SB_T_DETECTIVE_PREFIX;
 	public static final boolean SB_USE_SIDEBAR;
 	public static final boolean SEND_TITLES;
+	public static final boolean SMALL_STATUS_TITLES;
+	public static final boolean SMALL_VICTORY_TITLES;
 	public static final Material CROWBAR_ITEM;
 	public static final Material GUN_ITEM;
 
@@ -134,6 +136,8 @@ public final class Config {
 		SB_T_DETECTIVE_PREFIX = getString("sb-t-detective-prefix");
 		SB_USE_SIDEBAR = getBoolean("sb-use-sidebar");
 		SEND_TITLES = getBoolean("send-titles");
+		SMALL_STATUS_TITLES = getBoolean("small-status-titles");
+		SMALL_VICTORY_TITLES = getBoolean("small-victory-titles");
 		CROWBAR_ITEM = getMaterial("crowbar-item", Material.IRON_SWORD);
 		GUN_ITEM = getMaterial("gun-item", Material.IRON_BARDING);
 	}

@@ -144,7 +144,12 @@ public class MiscUtil {
 				color = DETECTIVE_COLOR;
 			else
 				color = TRAITOR_COLOR;
-			TitleUtil.sendTitle(player, title, color);
+			if (Config.SMALL_STATUS_TITLES) {
+				TitleUtil.sendTitle(player, "", ChatColor.RESET, title, color);
+			}
+			else {
+				TitleUtil.sendTitle(player, title, color);
+			}
 		}
 	}
 
@@ -156,7 +161,12 @@ public class MiscUtil {
 			String msg = Main.locale.getMessage("info.global.round.event.end." + (traitorVictory ? "traitor" : "innocent") + ".min");
 			ChatColor color = traitorVictory ? TRAITOR_COLOR : INNOCENT_COLOR;
 			for (MGPlayer mp : round.getPlayerList()) {
-				TitleUtil.sendTitle(mp.getBukkitPlayer(), msg, color);
+				if (Config.SMALL_VICTORY_TITLES) {
+					TitleUtil.sendTitle(mp.getBukkitPlayer(), "", ChatColor.RESET, msg, color);
+				}
+				else {
+					TitleUtil.sendTitle(mp.getBukkitPlayer(), msg, color);
+				}
 			}
 		}
 	}

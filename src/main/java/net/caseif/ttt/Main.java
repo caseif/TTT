@@ -33,6 +33,7 @@ import net.caseif.ttt.managers.KarmaManager;
 import net.caseif.ttt.managers.ScoreManager;
 import net.caseif.ttt.managers.command.CommandManager;
 import net.caseif.ttt.managers.command.SpecialCommandManager;
+import net.caseif.ttt.util.ContributorsReader;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,9 +52,6 @@ import net.amigocraft.mglib.api.ConfigManager;
 import net.amigocraft.mglib.api.Locale;
 import net.amigocraft.mglib.api.LogLevel;
 import net.amigocraft.mglib.api.Minigame;
-
-import net.caseif.ttt.util.ContributorsReader;
-
 import net.caseif.crosstitles.TitleUtil;
 import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;

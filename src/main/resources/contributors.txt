@@ -29,6 +29,7 @@ tester e7ddb2e9-c8ca-47dd-81ea-0dad36d61572 # talkingmelon
 tester 29fa58ce-1ff0-4d43-a4de-e3dd16e7fbb5 # Weblack
 
 # TRANSLATORS
+translator 7b8821fd-5fa5-413a-9d8a-0e884472b83b # ElectricBump (esES)
 translator dc713cb2-d96d-490e-8f6b-758f2da08935 # gasacz (plPL)
 translator 8baab7be-4942-4742-854b-0687d783b985 # guigo007 (ptBR)
 translator ece5d120-402a-4a32-b78a-fdfaf5adab33 # JeyWake (frFR)
