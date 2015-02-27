@@ -199,8 +199,7 @@ sb-use-sidebar: false
 # Should potentially unnecessary information be logged?
 verbose-logging: true
 
-# What language would you like to use? (If language is undefined, this will default to enUS.)
-locale: enUS
+# (TTT's locale is now defined in plugins/MGLib/config.yml)
 
 # Should the plugin update itself? (recommended)
 enable-auto-update: true
