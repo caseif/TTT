@@ -55,7 +55,7 @@ commands:
     # general commands
     setexit:
       description: Sets the location to teleport players to upon round end.
-      usage: /ttt setexit
+      usage: /ttt setexit {true/false}
     help:
       description: Displays available commands to the sender.
       usage: /ttt help

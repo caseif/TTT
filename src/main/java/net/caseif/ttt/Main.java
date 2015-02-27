@@ -154,9 +154,17 @@ public class Main extends JavaPlugin {
 					}, 2L);
 				}
 				else {
-					cm.setDefaultExitLocation(new Location(
-							w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z")
-					));
+					if (spawnYaml.isSet("pitch") && spawnYaml.isSet("yaw")) {
+						cm.setDefaultExitLocation(new Location(
+								w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z"),
+								(float)spawnYaml.getDouble("yaw"), (float)spawnYaml.getDouble("pitch")
+						));
+					}
+					else {
+						cm.setDefaultExitLocation(new Location(
+								w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z")
+						));
+					}
 				}
 			}
 		}
