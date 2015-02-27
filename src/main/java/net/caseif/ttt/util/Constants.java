@@ -41,6 +41,6 @@ public class Constants {
 	public static final ChatColor TRAITOR_COLOR = ChatColor.DARK_RED;
 	public static final ChatColor USAGE_COLOR = ChatColor.GOLD;
 
-	public static final String MIN_MGLIB_VERSION = "0.3.1";
+	public static final String MIN_MGLIB_VERSION = "0.4.0";
 
 }

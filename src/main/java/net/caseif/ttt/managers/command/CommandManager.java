@@ -120,7 +120,6 @@ public class CommandManager implements CommandExecutor {
 	/**
 	 * Retrieves the usage for the given subcommand from the plugin.yml file.
 	 * @return the usage for the given subcommand, or null if not specified
-	 * @since 0.3.1
 	 */
 	public static String getUsage(String subcommand) {
 		Object map = Main.plugin.getDescription().getCommands()

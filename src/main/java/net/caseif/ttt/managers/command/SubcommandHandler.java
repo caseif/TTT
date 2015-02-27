@@ -48,7 +48,6 @@ public abstract class SubcommandHandler {
 	 * Asserts that the sender has permission to use a subcommand. Sends an
 	 * error message if not.
 	 * @return whether the sender has permission to use a subcommand
-	 * @since 0.3.1
 	 */
 	public boolean assertPermission() {
 		if (perm != null && !sender.hasPermission(perm)) {
@@ -61,7 +60,6 @@ public abstract class SubcommandHandler {
 	/**
 	 * Retrieves the usage for this subcommand from the plugin.yml file.
 	 * @return the usage for this subcommand, or null if not specified
-	 * @since 0.3.1
 	 */
 	public String getUsage() {
 		return CommandManager.getUsage(args[0]);
