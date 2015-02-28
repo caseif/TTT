@@ -44,7 +44,7 @@ repositories {
 
 ext {
 	bukkit = 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
-	mglib = 'net.amigocraft.mglib:mglib:0.4.0-SNAPSHOT'
+	mglib = 'net.amigocraft.mglib:mglib:0.4.0'
     crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.0'
 	updater = 'net.gravitydevelopment.updater:updater:2.3'
 	metrics = 'org.mcstats.bukkit:metrics:R7'
