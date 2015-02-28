@@ -62,6 +62,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
+/**
+ * Minecraft port of Trouble In Terrorist Town.
+ *
+ * @author Maxim Roncacé
+ * @version 0.7.0
+ */
 public class Main extends JavaPlugin {
 
 	public static final String ANSI_RED = "\u001B[31m";
