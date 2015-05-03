@@ -66,12 +66,12 @@ public class MiscUtil {
 	public static boolean ban(UUID player, int minutes) {
 		File f = new File(Main.plugin.getDataFolder(), "bans.yml");
 		YamlConfiguration y = new YamlConfiguration();
+		Player p = Bukkit.getPlayer(player);
 		try {
 			y.load(f);
 			long unbanTime = minutes < 0 ? -1 : System.currentTimeMillis() / 1000L + (minutes * 60);
 			y.set(player.toString(), unbanTime);
 			y.save(f);
-			Player p = Bukkit.getPlayer(player);
 			if (p != null) {
 				MGPlayer m = Main.mg.getMGPlayer(p.getName());
 				m.removeFromRound();
@@ -80,7 +80,7 @@ public class MiscUtil {
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
-			Main.mg.log(getMessage("error.plugin.ban", null, false, player.toString()), LogLevel.WARNING);
+			Main.mg.log(getMessage("error.plugin.ban", null, false, p != null ? p.getName() : player.toString()), LogLevel.WARNING);
 		}
 		return false;
 	}
@@ -88,24 +88,19 @@ public class MiscUtil {
 	public static boolean pardon(UUID player) {
 		File f = new File(Main.plugin.getDataFolder(), "bans.yml");
 		YamlConfiguration y = new YamlConfiguration();
+		Player p = Bukkit.getPlayer(player);
 		try {
 			y.load(f);
 			y.set(player.toString(), null);
 			y.save(f);
 			if (Config.VERBOSE_LOGGING) {
-				Player p = Bukkit.getPlayer(player);
-				if (p != null) {
-					Main.mg.log(p.getName() + "'s ban has been lifted", LogLevel.INFO);
-				}
-				else {
-					Main.mg.log(player.toString() + "'s ban has been lifted", LogLevel.INFO);
-				}
+				Main.mg.log(p != null ? p.getName() : player.toString() + "'s ban has been lifted", LogLevel.INFO);
 			}
 			return true;
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
-			Main.mg.log(getMessage("error.plugin.pardon", null, false, player.toString()), LogLevel.WARNING);
+			Main.mg.log(getMessage("error.plugin.pardon", null, false, p != null ? p.getName() : player.toString()), LogLevel.WARNING);
 		}
 		return false;
 	}

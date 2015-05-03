@@ -54,7 +54,7 @@ public class PardonCommand extends SubcommandHandler {
 						return;
 					}
 					if (MiscUtil.pardon(uuid)) {
-						Bukkit.getPlayer(name).sendMessage(getMessage("info.personal.pardon", ERROR_COLOR));
+						Bukkit.getPlayer(name).sendMessage(getMessage("info.personal.pardon", INFO_COLOR));
 						sender.sendMessage(getMessage("info.personal.pardon.other", INFO_COLOR, name));
 					}
 					else {
