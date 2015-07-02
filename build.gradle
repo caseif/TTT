@@ -14,7 +14,7 @@ defaultTasks 'clean', 'licenseFormat', 'build', 'shadowJar'
 
 // Project information
 group = 'net.amigocraft.ttt'
-version = '0.7.1'
+version = '0.7.2'
 
 // Extended project information
 ext.projectName = 'ttt'
@@ -45,7 +45,7 @@ repositories {
 ext {
 	bukkit = 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
 	mglib = 'net.amigocraft.mglib:mglib:0.4.0'
-    crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.0'
+    crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.1'
 	updater = 'net.gravitydevelopment.updater:updater:2.3'
 	metrics = 'org.mcstats.bukkit:metrics:R7'
 }
