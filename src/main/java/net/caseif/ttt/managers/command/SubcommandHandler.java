@@ -28,6 +28,7 @@ import static net.caseif.ttt.util.MiscUtil.getMessage;
 
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.MiscUtil;
+
 import org.bukkit.command.CommandSender;
 
 public abstract class SubcommandHandler {
@@ -45,8 +46,8 @@ public abstract class SubcommandHandler {
     public abstract void handle();
 
     /**
-     * Asserts that the sender has permission to use a subcommand. Sends an
-     * error message if not.
+     * Asserts that the sender has permission to use a subcommand. Sends an error message if not.
+     *
      * @return whether the sender has permission to use a subcommand
      */
     public boolean assertPermission() {
@@ -59,6 +60,7 @@ public abstract class SubcommandHandler {
 
     /**
      * Retrieves the usage for this subcommand from the plugin.yml file.
+     *
      * @return the usage for this subcommand, or null if not specified
      */
     public String getUsage() {

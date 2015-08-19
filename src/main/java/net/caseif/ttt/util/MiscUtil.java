@@ -45,8 +45,7 @@ import java.util.UUID;
 public class MiscUtil {
 
     /**
-     * Determines whether a given {@link MGPlayer player} is marked as a
-     * Traitor.
+     * Determines whether a given {@link MGPlayer player} is marked as a Traitor.
      *
      * @param player the player to check
      * @return whether the player is a traitor
@@ -56,8 +55,7 @@ public class MiscUtil {
     }
 
     /**
-     * Bans the player by the specified UUID from using TTT for a set amount of
-     * time.
+     * Bans the player by the specified UUID from using TTT for a set amount of time.
      *
      * @param player  the UUID of the player to ban
      * @param minutes the length of time to ban the player for.
@@ -77,10 +75,10 @@ public class MiscUtil {
                 m.removeFromRound();
             }
             return true;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
-            Main.mg.log(getMessage("error.plugin.ban", null, false, p != null ? p.getName() : player.toString()), LogLevel.WARNING);
+            Main.mg.log(getMessage("error.plugin.ban", null, false, p != null ? p.getName() : player.toString()),
+                    LogLevel.WARNING);
         }
         return false;
     }
@@ -97,10 +95,10 @@ public class MiscUtil {
                 Main.mg.log(p != null ? p.getName() : player.toString() + "'s ban has been lifted", LogLevel.INFO);
             }
             return true;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
-            Main.mg.log(getMessage("error.plugin.pardon", null, false, p != null ? p.getName() : player.toString()), LogLevel.WARNING);
+            Main.mg.log(getMessage("error.plugin.pardon", null, false, p != null ? p.getName() : player.toString()),
+                    LogLevel.WARNING);
         }
         return false;
     }
@@ -108,8 +106,8 @@ public class MiscUtil {
     public static String getMessage(String key, ChatColor color, boolean prefix, String... replacements) {
         if (color != null) {
             for (int i = 0; i < replacements.length; i++) {
-                if (!replacements[i].equals(ChatColor.stripColor(replacements[i])) &&
-                        !replacements[i].endsWith(color.toString())) {
+                if (!replacements[i].equals(ChatColor.stripColor(replacements[i]))
+                        && !replacements[i].endsWith(color.toString())) {
                     replacements[i] = replacements[i] + color.toString();
                 }
             }
@@ -133,16 +131,16 @@ public class MiscUtil {
             role = role.toLowerCase();
             String title = Main.locale.getMessage("info.personal.status.role." + role + ".title");
             ChatColor color;
-            if (role.equals("innocent"))
+            if (role.equals("innocent")) {
                 color = INNOCENT_COLOR;
-            else if (role.equals("detective"))
+            } else if (role.equals("detective")) {
                 color = DETECTIVE_COLOR;
-            else
+            } else {
                 color = TRAITOR_COLOR;
+            }
             if (Config.SMALL_STATUS_TITLES) {
                 TitleUtil.sendTitle(player, "", ChatColor.RESET, title, color);
-            }
-            else {
+            } else {
                 TitleUtil.sendTitle(player, title, color);
             }
         }
@@ -153,13 +151,13 @@ public class MiscUtil {
             if (round == null) {
                 throw new IllegalArgumentException("Round cannot be null!");
             }
-            String msg = Main.locale.getMessage("info.global.round.event.end." + (traitorVictory ? "traitor" : "innocent") + ".min");
+            String msg = Main.locale.getMessage("info.global.round.event.end."
+                    + (traitorVictory ? "traitor" : "innocent") + ".min");
             ChatColor color = traitorVictory ? TRAITOR_COLOR : INNOCENT_COLOR;
             for (MGPlayer mp : round.getPlayerList()) {
                 if (Config.SMALL_VICTORY_TITLES) {
                     TitleUtil.sendTitle(mp.getBukkitPlayer(), "", ChatColor.RESET, msg, color);
-                }
-                else {
+                } else {
                     TitleUtil.sendTitle(mp.getBukkitPlayer(), msg, color);
                 }
             }

@@ -31,13 +31,13 @@ import net.caseif.ttt.Config;
 import net.caseif.ttt.Main;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 
-import java.io.File;
-
 import net.amigocraft.mglib.api.LogLevel;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import java.io.File;
 
 public class SetExitCommand extends SubcommandHandler {
 
@@ -53,30 +53,29 @@ public class SetExitCommand extends SubcommandHandler {
                     File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
                     if (!spawnFile.exists()) {
                         if (Config.VERBOSE_LOGGING) {
-                            Main.mg.log(getMessage("info.plugin.compatibility.creating-file", null, false, "spawn.yml"), LogLevel.INFO);
+                            Main.mg.log(getMessage("info.plugin.compatibility.creating-file", null, false, "spawn.yml"),
+                                    LogLevel.INFO);
                         }
                         spawnFile.createNewFile();
                     }
                     boolean keepOrientation = false;
                     if (args.length > 1) {
-                        if (args[1].equalsIgnoreCase("true") ||
-                                args[1].equalsIgnoreCase("yes") ||
-                                args[1].equalsIgnoreCase("1")) {
+                        if (args[1].equalsIgnoreCase("true")
+                                || args[1].equalsIgnoreCase("yes")
+                                || args[1].equalsIgnoreCase("1")) {
                             keepOrientation = true;
-                        }
-                        else if (args[1].equalsIgnoreCase("false") ||
-                                args[1].equalsIgnoreCase("no") ||
-                                args[1].equalsIgnoreCase("0")) {
+                        } else if (args[1].equalsIgnoreCase("false")
+                                || args[1].equalsIgnoreCase("no")
+                                || args[1].equalsIgnoreCase("0")) {
                             keepOrientation = false;
-                        }
-                        else {
+                        } else {
                             sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
                             return;
                         }
                     }
                     YamlConfiguration spawnYaml = new YamlConfiguration();
                     spawnYaml.load(spawnFile);
-                    Location l = ((Player)sender).getLocation();
+                    Location l = ((Player) sender).getLocation();
                     spawnYaml.set("world", l.getWorld().getName());
                     spawnYaml.set("x", l.getBlockX() + 0.5);
                     spawnYaml.set("y", l.getBlockY());
@@ -89,20 +88,17 @@ public class SetExitCommand extends SubcommandHandler {
                                 new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5,
                                         l.getYaw(), l.getPitch())
                         );
-                    }
-                    else {
+                    } else {
                         Main.mg.getConfigManager().setDefaultExitLocation(
                                 new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5)
                         );
                     }
                     sender.sendMessage(getMessage("info.personal.set-exit.success", INFO_COLOR));
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                     sender.sendMessage(getMessage("error.plugin.set-exit", ERROR_COLOR));
                 }
-            }
-            else {
+            } else {
                 sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
             }
         }

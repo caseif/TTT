@@ -50,38 +50,32 @@ public class RemoveSpawnCommand extends SubcommandHandler {
             int index = Integer.MAX_VALUE;
             if (args.length == 2) { // use sender's location
                 if (sender instanceof Player) {
-                    x = ((Player)sender).getLocation().getBlockX();
-                    y = ((Player)sender).getLocation().getBlockY();
-                    z = ((Player)sender).getLocation().getBlockZ();
-                }
-                else {
+                    x = ((Player) sender).getLocation().getBlockX();
+                    y = ((Player) sender).getLocation().getBlockY();
+                    z = ((Player) sender).getLocation().getBlockZ();
+                } else {
                     sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
                     return;
                 }
-            }
-            else if (args.length == 3) {
+            } else if (args.length == 3) {
                 if (NumUtil.isInt(args[2])) {
                     index = Integer.parseInt(args[2]);
-                }
-                else {
+                } else {
                     sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
                     sendUsage();
                     return;
                 }
-            }
-            else if (args.length == 5) { // use 3 provided coords
+            } else if (args.length == 5) { // use 3 provided coords
                 if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])) {
                     x = Integer.parseInt(args[2]);
                     y = Integer.parseInt(args[3]);
                     z = Integer.parseInt(args[4]);
-                }
-                else {
+                } else {
                     sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
                     sendUsage();
                     return;
                 }
-            }
-            else {
+            } else {
                 sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
                 sendUsage();
                 return;
@@ -92,17 +86,14 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                     if (yaml.isSet(args[1] + ".spawns." + index)) {
                         yaml.set(args[1] + ".spawns." + index, null);
                         MGUtil.saveArenaYaml("TTT", yaml);
-                    }
-                    else {
+                    } else {
                         sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
                         sendUsage();
                     }
-                }
-                else {
+                } else {
                     sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
                 }
-            }
-            else {
+            } else {
                 YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
                 if (yaml.isSet(args[1] + ".spawns")) {
                     ConfigurationSection cs = yaml.getConfigurationSection(args[1] + ".spawns");
@@ -115,8 +106,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                     }
                     sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
                     sendUsage();
-                }
-                else {
+                } else {
                     sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
                 }
             }

@@ -27,14 +27,12 @@ import com.google.common.collect.BiMap;
 import org.bukkit.Material;
 
 /**
- * Utility class for converting between Minecraft names and Bukkit materials.
- * Stolen/repurposed from Pore.
+ * Utility class for converting between Minecraft names and Bukkit materials. Stolen/repurposed from Pore.
  */
 public final class MaterialConverter {
 
-    private static final BiMapBuilder<Material, String> builder = BiMapBuilder.builder();
-
     public static final BiMap<Material, String> ITEM_TYPE_CONVERTER;
+    private static final BiMapBuilder<Material, String> builder = BiMapBuilder.builder();
 
     static {
         addMaterial("STONE", "STONE");
@@ -389,7 +387,8 @@ public final class MaterialConverter {
         try {
             Material m = Material.valueOf(bukkitName);
             builder.put(m, notchName);
-        } catch (IllegalArgumentException swallow){}
+        } catch (IllegalArgumentException swallow) {
+        }
     }
 
 }

@@ -30,11 +30,11 @@ import static net.caseif.ttt.util.MiscUtil.getMessage;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 import net.caseif.ttt.util.MiscUtil;
 
-import java.util.UUID;
-
 import net.amigocraft.mglib.UUIDFetcher;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+
+import java.util.UUID;
 
 public class PardonCommand extends SubcommandHandler {
 
@@ -56,17 +56,14 @@ public class PardonCommand extends SubcommandHandler {
                     if (MiscUtil.pardon(uuid)) {
                         Bukkit.getPlayer(name).sendMessage(getMessage("info.personal.pardon", INFO_COLOR));
                         sender.sendMessage(getMessage("info.personal.pardon.other", INFO_COLOR, name));
-                    }
-                    else {
+                    } else {
                         sender.sendMessage(getMessage("error.plugin.pardon", ERROR_COLOR));
                     }
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     sender.sendMessage(getMessage("error.plugin.generic", ERROR_COLOR));
                     ex.printStackTrace();
                 }
-            }
-            else {
+            } else {
                 sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
                 sendUsage();
             }

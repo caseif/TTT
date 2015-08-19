@@ -36,8 +36,7 @@ public class InventoryUtil {
                 if (is.getType() == Material.ARROW) {
                     if (is.getAmount() == 1) {
                         inv.setItem(i, null);
-                    }
-                    else if (is.getAmount() > 1) {
+                    } else if (is.getAmount() > 1) {
                         is.setAmount(is.getAmount() - 1);
                     }
                     break;

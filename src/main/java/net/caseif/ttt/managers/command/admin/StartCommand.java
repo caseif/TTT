@@ -50,21 +50,20 @@ public class StartCommand extends SubcommandHandler {
                 Round r = Main.mg.getRound(arena);
                 if (r != null) {
                     if (r.getPlayerCount() > 1) {
-                        if (args.length > 2 && NumUtil.isInt(args[2]))
+                        if (args.length > 2 && NumUtil.isInt(args[2])) {
                             r.setPlayingTime(Integer.parseInt(args[2]));
+                        }
                         r.setStage(Stage.PREPARING);
                         r.start();
                         sender.sendMessage(getMessage("info.personal.arena.set-stage.playing.success",
                                 INFO_COLOR, ARENA_COLOR + r.getArena()));
-                    }
-                    else {
+                    } else {
                         sender.sendMessage(getMessage("error.arena.too-few-players", ERROR_COLOR));
                     }
-                }
-                else
+                } else {
                     sender.sendMessage(getMessage("error.round.dne", ERROR_COLOR, ARENA_COLOR + arena));
-            }
-            else {
+                }
+            } else {
                 sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
                 sendUsage();
             }

@@ -28,6 +28,7 @@ import com.google.common.collect.HashBiMap;
 
 /**
  * Utility class for building BiMaps via chained method calls.
+ *
  * @param <K> The key type
  * @param <V> The value type
  */
@@ -39,6 +40,10 @@ public final class BiMapBuilder<K, V> {
         backing = HashBiMap.create();
     }
 
+    public static <K, V> BiMapBuilder<K, V> builder() {
+        return new BiMapBuilder<K, V>();
+    }
+
     @SuppressWarnings("unchecked")
     public BiMapBuilder put(K key, V value) {
         backing.put(key, value);
@@ -47,10 +52,6 @@ public final class BiMapBuilder<K, V> {
 
     public BiMap<K, V> build() {
         return backing;
-    }
-
-    public static <K, V> BiMapBuilder<K, V> builder() {
-        return new BiMapBuilder<K, V>();
     }
 
 }

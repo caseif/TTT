@@ -55,25 +55,20 @@ public class LeaveCommand extends SubcommandHandler {
                             mp.removeFromRound();
                             sender.sendMessage(getMessage("info.personal.arena.leave.success", INFO_COLOR,
                                     ARENA_COLOR + roundName));
-                        }
-                        else {
+                        } else {
                             throw new NoSuchPlayerException();
                         }
-                    }
-                    catch (NoSuchPlayerException ex) {
+                    } catch (NoSuchPlayerException ex) {
                         sender.sendMessage(getMessage("error.round.outside", ERROR_COLOR));
-                    }
-                    catch (PlayerOfflineException ex) {
+                    } catch (PlayerOfflineException ex) {
                         ex.printStackTrace();
                     }
-                }
-                else {
+                } else {
                     sender.sendMessage(getMessage("error.round.outside", ERROR_COLOR));
                     sendUsage();
                 }
             }
-        }
-        else {
+        } else {
             sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
         }
     }

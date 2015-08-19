@@ -28,21 +28,20 @@ import net.caseif.ttt.Main;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.MiscUtil;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
 import net.amigocraft.mglib.api.MGPlayer;
 import net.amigocraft.mglib.api.Minigame;
 import net.amigocraft.mglib.api.Round;
 import net.amigocraft.mglib.exception.NoSuchPlayerException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class KarmaManager {
 
@@ -67,16 +66,14 @@ public class KarmaManager {
                     List<String> testAccounts = Arrays.asList("testing123", "testing456", "testing789");
                     if (testAccounts.contains(player.getName().toLowerCase())) {
                         uuid = Bukkit.getPlayer(player.getName()).getUniqueId();
-                    }
-                    else {
+                    } else {
                         Main.log.severe(Main.locale.getMessage("error.plugin.offline-mode"));
                     }
                 }
                 karmaYaml.set(uuid.toString(), getKarma(player));
                 karmaYaml.save(karmaFile);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -90,8 +87,7 @@ public class KarmaManager {
                 List<String> testAccounts = Arrays.asList("testing123", "testing456", "testing789");
                 if (testAccounts.contains(pName.toLowerCase())) {
                     uuid = Bukkit.getPlayer(pName).getUniqueId();
-                }
-                else {
+                } else {
                     Main.log.severe(Main.locale.getMessage("error.plugin.offline-mode"));
                 }
             }
@@ -103,16 +99,13 @@ public class KarmaManager {
             if (karmaYaml.isSet(uuid.toString())) {
                 if (karmaYaml.getInt(uuid.toString()) > Config.MAX_KARMA) {
                     playerKarma.put(pName, Config.MAX_KARMA);
-                }
-                else {
+                } else {
                     playerKarma.put(pName, karmaYaml.getInt(uuid.toString()));
                 }
-            }
-            else {
+            } else {
                 playerKarma.put(pName, Config.DEFAULT_KARMA);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -124,11 +117,9 @@ public class KarmaManager {
                 int karmaHeal = Config.KARMA_CLEAN_BONUS;
                 if (getKarma(mp) > 1000) {
                     if ((Config.MAX_KARMA - 1000) > 0) {
-                        karmaHeal = (int)Math.round(
-                                Config.KARMA_CLEAN_BONUS * Math.pow(
-                                        .5, (getKarma(mp) - 1000.0) /
-                                                ((double)(Config.MAX_KARMA - 1000) *
-                                                        Config.KARMA_CLEAN_HALF)
+                        karmaHeal = (int) Math.round(
+                                Config.KARMA_CLEAN_BONUS * Math.pow(.5, (getKarma(mp) - 1000.0)
+                                                / ((double) (Config.MAX_KARMA - 1000) * Config.KARMA_CLEAN_HALF)
                                 )
                         );
                     }
@@ -142,12 +133,11 @@ public class KarmaManager {
         if (damager != null && victim != null) {
             // team damage
             if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor")) {
-                int penalty = (int)(getKarma(victim) * (damage * Config.DAMAGE_PENALTY));
+                int penalty = (int) (getKarma(victim) * (damage * Config.DAMAGE_PENALTY));
                 subtractKarma(damager, penalty);
-            }
-            // innocent damaging traitor
-            else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")) {
-                int reward = (int)(Config.MAX_KARMA * damage * Config.T_DAMAGE_REWARD);
+            } else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")) {
+                // innocent damaging traitor
+                int reward = (int) (Config.MAX_KARMA * damage * Config.T_DAMAGE_REWARD);
                 addKarma(damager, reward);
             }
         }
@@ -156,8 +146,7 @@ public class KarmaManager {
     public static void handleKillKarma(MGPlayer killer, MGPlayer victim) {
         if (MiscUtil.isTraitor(killer) == MiscUtil.isTraitor(killer)) {
             handleDamageKarma(killer, victim, Config.KILL_PENALTY);
-        }
-        else if (!MiscUtil.isTraitor(killer)) {
+        } else if (!MiscUtil.isTraitor(killer)) {
             int reward = Config.TBONUS * Config.T_DAMAGE_REWARD * getKarma(victim);
             addKarma(killer, reward);
         }
@@ -168,68 +157,62 @@ public class KarmaManager {
         if (p != null) {
             try {
                 player.removeFromRound();
-            }
-            catch (NoSuchPlayerException ex) {
-                ex.printStackTrace();
-            }
-            catch (PlayerOfflineException ex) { // neither can be thrown
+            } catch (NoSuchPlayerException | PlayerOfflineException ex) {
                 ex.printStackTrace();
             }
             if (Config.KARMA_BAN) {
                 MiscUtil.ban(p.getUniqueId(), Config.KARMA_BAN_TIME);
                 if (Config.KARMA_BAN_TIME < 0) {
-                    p.sendMessage(MiscUtil.getMessage("info.personal.ban.perm.karma", Constants.INFO_COLOR, Config.KARMA_KICK + ""));
-                }
-                else {
+                    p.sendMessage(MiscUtil.getMessage("info.personal.ban.perm.karma", Constants.INFO_COLOR,
+                            Config.KARMA_KICK + ""));
+                } else {
                     p.sendMessage(MiscUtil.getMessage("info.personal.ban.temp.karma", Constants.INFO_COLOR,
                             Integer.toString(Config.KARMA_BAN_TIME),
                             Config.KARMA_KICK + ""));
                 }
-            }
-            else {
-                p.sendMessage(MiscUtil.getMessage("info.personal.kick.karma", Constants.INFO_COLOR, Integer.toString(Config.KARMA_KICK)));
+            } else {
+                p.sendMessage(MiscUtil.getMessage("info.personal.kick.karma", Constants.INFO_COLOR,
+                        Integer.toString(Config.KARMA_KICK)));
             }
         }
     }
 
     public static int getKarma(MGPlayer mp) {
-        return (Integer)mp.getMetadata("karma");
+        return (Integer) mp.getMetadata("karma");
     }
 
     public static void addKarma(MGPlayer mp, int amount) {
-        int karma = (Integer)mp.getMetadata("karma");
+        int karma = (Integer) mp.getMetadata("karma");
         if (amount == 0 && Config.KARMA_ROUND_TO_ONE) {
             amount = 1;
         }
         if (karma + amount < Main.maxKarma) {
             karma += amount;
-        }
-        else if (karma < Main.maxKarma) {
+        } else if (karma < Main.maxKarma) {
             karma = Main.maxKarma;
         }
         mp.setMetadata("karma", karma);
         if (Config.KARMA_DEBUG) {
-            Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": +" + amount + ". " +
-                    "New value: " + mp.getMetadata("karma"));
+            Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": +" + amount + ". "
+                    + "New value: " + mp.getMetadata("karma"));
         }
     }
 
     public static void subtractKarma(MGPlayer mp, int amount) {
-        int karma = (Integer)mp.getMetadata("karma");
+        int karma = (Integer) mp.getMetadata("karma");
         if (amount == 0 && Config.KARMA_ROUND_TO_ONE) {
             amount = 1;
         }
         if (karma - amount < Config.KARMA_KICK) {
             KarmaManager.handleKick(mp);
-        }
-        else {
+        } else {
             karma -= amount;
             mp.setMetadata("hasTeamKilled", true);
         }
         mp.setMetadata("karma", karma);
         if (Config.KARMA_DEBUG) {
-            Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": -" + amount + ". " +
-                    "New value: " + mp.getMetadata("karma"));
+            Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": -" + amount + ". "
+                    + "New value: " + mp.getMetadata("karma"));
         }
     }
 

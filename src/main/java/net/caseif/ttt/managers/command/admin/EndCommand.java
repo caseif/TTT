@@ -48,21 +48,20 @@ public class EndCommand extends SubcommandHandler {
                 Round r = Main.mg.getRound(arena);
                 if (r.getStage() == Stage.PREPARING || r.getStage() == Stage.PLAYING) {
                     if (args.length > 2) {
-                        if (args[2].equalsIgnoreCase("t"))
+                        if (args[2].equalsIgnoreCase("t")) {
                             r.setMetadata("t-victory", true);
-                        else if (args[2].equalsIgnoreCase("i"))
+                        } else if (args[2].equalsIgnoreCase("i")) {
                             r.setMetadata("t-victory", false);
-                        else {
+                        } else {
                             sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
                             return;
                         }
                     }
                     r.end();
-                }
-                else
+                } else {
                     sender.sendMessage(getMessage("error.arena.no-round", ERROR_COLOR, ARENA_COLOR + r.getArena()));
-            }
-            else {
+                }
+            } else {
                 sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
                 sendUsage();
             }

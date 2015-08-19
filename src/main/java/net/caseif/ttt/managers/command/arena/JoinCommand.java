@@ -34,7 +34,6 @@ import net.amigocraft.mglib.exception.NoSuchArenaException;
 import net.amigocraft.mglib.exception.PlayerOfflineException;
 import net.amigocraft.mglib.exception.PlayerPresentException;
 import net.amigocraft.mglib.exception.RoundFullException;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -55,27 +54,21 @@ public class JoinCommand extends SubcommandHandler {
                             r = Main.mg.createRound(args[1]);
                         }
                         r.addPlayer(sender.getName());
-                    }
-                    catch (NoSuchArenaException ex) {
+                    } catch (NoSuchArenaException ex) {
                         sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
-                    }
-                    catch (PlayerOfflineException ex) { // this should never be able to happen
+                    } catch (PlayerOfflineException ex) { // this should never be able to happen
                         ex.printStackTrace();
-                    }
-                    catch (PlayerPresentException ex) {
+                    } catch (PlayerPresentException ex) {
                         sender.sendMessage(getMessage("error.round.inside", ERROR_COLOR));
-                    }
-                    catch (RoundFullException ex) {
+                    } catch (RoundFullException ex) {
                         sender.sendMessage(getMessage("error.round.full", ERROR_COLOR));
                     }
-                }
-                else {
+                } else {
                     sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
                     sendUsage();
                 }
             }
-        }
-        else {
+        } else {
             sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
         }
     }

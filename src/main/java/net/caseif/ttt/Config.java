@@ -27,6 +27,10 @@ import net.caseif.ttt.util.FileUtil;
 import net.caseif.ttt.util.MaterialConverter;
 import net.caseif.ttt.util.NumUtil;
 
+import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -35,10 +39,6 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public final class Config {
 
@@ -180,7 +180,7 @@ public final class Config {
         YamlConfiguration yml = new YamlConfiguration();
         yml.load(configYml);
         StringBuilder sb = new StringBuilder();
-        final char NEWLINE_CHAR = '\n';
+        final char newlineChar = '\n';
         String line;
         while ((line = is.readLine()) != null) {
             if (!line.startsWith("#")) {
@@ -193,8 +193,7 @@ public final class Config {
                     try {
                         equal = NumberFormat.getInstance().parse(value)
                                 .equals(NumberFormat.getInstance().parse(newValue));
-                    }
-                    catch (ParseException ex) {
+                    } catch (ParseException ex) {
                         equal = value.equals(newValue);
                     }
                     if (!equal) {
@@ -203,12 +202,12 @@ public final class Config {
                             writeValue = BigDecimal.valueOf(Double.parseDouble(writeValue))
                                     .stripTrailingZeros().toPlainString();
                         }
-                        sb.append(key).append(": ").append(writeValue).append(NEWLINE_CHAR);
+                        sb.append(key).append(": ").append(writeValue).append(newlineChar);
                         continue;
                     }
                 }
             }
-            sb.append(line).append(NEWLINE_CHAR);
+            sb.append(line).append(newlineChar);
         }
         FileUtil.copyFile(configYml, new File(configYml.getParentFile(), "config.yml.old"));
         FileWriter w = new FileWriter(configYml);

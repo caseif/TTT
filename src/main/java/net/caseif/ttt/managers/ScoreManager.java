@@ -29,8 +29,6 @@ import net.caseif.ttt.Config;
 import net.caseif.ttt.Main;
 import net.caseif.ttt.util.MiscUtil;
 
-import java.util.HashMap;
-
 import net.amigocraft.mglib.api.MGPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -40,6 +38,8 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
+import java.util.HashMap;
+
 public class ScoreManager {
 
     public static final boolean ENTRY_SUPPORT;
@@ -47,25 +47,26 @@ public class ScoreManager {
     public static HashMap<String, ScoreManager> sbManagers = new HashMap<String, ScoreManager>();
 
     public static ScoreboardManager manager = Bukkit.getScoreboardManager();
-    public Scoreboard innocent;
-    public Scoreboard traitor;
-    public Objective iObj;
-    public Objective tObj;
-    public String arenaName;
-    public Team
-            iTeamIA, iTeamIM, iTeamID, iTeamTA, iTeamTM, iTeamTD, iTeamDA, iTeamDM, iTeamDD,
-            tTeamIA, tTeamIM, tTeamID, tTeamTA, tTeamTM, tTeamTD, tTeamDA, tTeamDM, tTeamDD;
 
     static {
         boolean support = false;
         try {
             Scoreboard.class.getMethod("getEntries");
             support = true;
-        }
-        catch (NoSuchMethodException swallow) {
+        } catch (NoSuchMethodException ignored) {
         }
         ENTRY_SUPPORT = support;
     }
+
+    public Scoreboard innocent;
+    public Scoreboard traitor;
+    public Objective iObj;
+    public Objective tObj;
+    public String arenaName;
+    //TODO: fucking clean this next declaration up
+    public Team
+            iTeamIA, iTeamIM, iTeamID, iTeamTA, iTeamTM, iTeamTD, iTeamDA, iTeamDM, iTeamDD,
+            tTeamIA, tTeamIM, tTeamID, tTeamTA, tTeamTM, tTeamTD, tTeamDA, tTeamDM, tTeamDD;
 
     @SuppressWarnings("deprecation")
     public ScoreManager(String arenaName) {
@@ -167,12 +168,10 @@ public class ScoreManager {
                 if (m.getTeam() != null) {
                     if (!MiscUtil.isTraitor(m)) {
                         m.getBukkitPlayer().setScoreboard(innocent);
-                    }
-                    else {
+                    } else {
                         m.getBukkitPlayer().setScoreboard(traitor);
                     }
-                }
-                else {
+                } else {
                     m.getBukkitPlayer().setScoreboard(innocent);
                 }
 
@@ -196,8 +195,7 @@ public class ScoreManager {
         if (ENTRY_SUPPORT) {
             innocent.resetScores(player.getName());
             traitor.resetScores(player.getName());
-        }
-        else {
+        } else {
             innocent.resetScores(player.getName());
             traitor.resetScores(player.getName());
         }
@@ -215,40 +213,32 @@ public class ScoreManager {
             if (!player.isSpectating()) {
                 iTeamDA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
                 tTeamDA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-            }
-            else if (!player.hasMetadata("bodyFound")) {
+            } else if (!player.hasMetadata("bodyFound")) {
                 iTeamDM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
                 tTeamDM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-            }
-            else {
+            } else {
                 iTeamDD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
                 tTeamDD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
             }
-        }
-        else if (player.getTeam() == null || player.getTeam().equals("Innocent")) {
+        } else if (player.getTeam() == null || player.getTeam().equals("Innocent")) {
             if (!player.isSpectating()) {
                 iTeamIA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
                 tTeamIA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-            }
-            else if (!player.hasMetadata("bodyFound")) {
+            } else if (!player.hasMetadata("bodyFound")) {
                 iTeamIM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
                 tTeamIM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-            }
-            else {
+            } else {
                 iTeamID.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
                 tTeamID.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
             }
-        }
-        else if (player.getTeam().equals("Traitor")) {
+        } else if (player.getTeam().equals("Traitor")) {
             if (!player.isSpectating()) {
                 iTeamTA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
                 tTeamTA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-            }
-            else if (!player.hasMetadata("bodyFound")) {
+            } else if (!player.hasMetadata("bodyFound")) {
                 iTeamTM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
                 tTeamTM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-            }
-            else {
+            } else {
                 iTeamTD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
                 tTeamTD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
             }
@@ -258,13 +248,12 @@ public class ScoreManager {
         if (ENTRY_SUPPORT) {
             score1 = iObj.getScore(player.getName());
             score2 = tObj.getScore(player.getName());
-        }
-        else {
+        } else {
             score1 = iObj.getScore(Bukkit.getOfflinePlayer(player.getName()));
             score2 = tObj.getScore(Bukkit.getOfflinePlayer(player.getName()));
         }
-        score1.setScore((Integer)player.getMetadata("displayKarma"));
-        score2.setScore((Integer)player.getMetadata("displayKarma"));
+        score1.setScore((Integer) player.getMetadata("displayKarma"));
+        score2.setScore((Integer) player.getMetadata("displayKarma"));
     }
 
 }

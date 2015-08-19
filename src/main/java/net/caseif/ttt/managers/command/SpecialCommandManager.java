@@ -38,8 +38,7 @@ public class SpecialCommandManager implements CommandExecutor {
         if (label.equalsIgnoreCase("ttt")) {
             if (sender.hasPermission("ttt.build.warn")) {
                 sender.sendMessage(getMessage("error.plugin.mglib", ERROR_COLOR, MIN_MGLIB_VERSION));
-            }
-            else {
+            } else {
                 sender.sendMessage(getMessage("error.plugin.disabled", ERROR_COLOR));
             }
             return true;

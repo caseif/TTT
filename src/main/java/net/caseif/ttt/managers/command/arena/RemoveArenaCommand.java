@@ -47,8 +47,7 @@ public class RemoveArenaCommand extends SubcommandHandler {
                 try {
                     Main.mg.deleteArena(name);
                     sender.sendMessage(getMessage("info.personal.arena.remove.success", INFO_COLOR, name));
-                }
-                catch (NoSuchArenaException ex) {
+                } catch (NoSuchArenaException ex) {
                     sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
                 }
             }

@@ -3,12 +3,11 @@ plugins {
     id 'java'
     id 'eclipse'
     id 'idea'
+    id 'checkstyle'
 
     id 'com.github.hierynomus.license' version '0.11.0'
     id 'com.github.johnrengelman.shadow' version '1.2.0'
 }
-
-apply plugin: 'checkstyle'
 
 defaultTasks 'clean', 'licenseFormat', 'build', 'shadowJar'
 
@@ -23,12 +22,12 @@ ext.inceptionYear = '2013'
 ext.packaging = 'jar'
 ext.versionSuffix = version.contains('SNAPSHOT') ? (
         (
-        System.getenv('GIT_COMMIT') ? ('-git('
-                + System.getenv('GIT_BRANCH')
-                .substring(System.getenv('GIT_BRANCH').split('/')[0].length() + 1) + '-'
-                + System.getenv('GIT_COMMIT').substring(0, 7) + ')') : ''
+                System.getenv('GIT_COMMIT') ? ('-git('
+                        + System.getenv('GIT_BRANCH')
+                        .substring(System.getenv('GIT_BRANCH').split('/')[0].length() + 1) + '-'
+                        + System.getenv('GIT_COMMIT').substring(0, 7) + ')') : ''
         )
-        + (System.getenv('BUILD_NUMBER') ? '-jnks' + System.getenv('BUILD_NUMBER') : '')
+                + (System.getenv('BUILD_NUMBER') ? '-jnks' + System.getenv('BUILD_NUMBER') : '')
 ) : ''
 
 sourceCompatibility = 1.7
@@ -37,10 +36,26 @@ targetCompatibility = 1.7
 // Project repositories
 repositories {
     mavenCentral()
-    maven { url 'http://hub.spigotmc.org/nexus/content/groups/public/' }
-    maven { url 'http://repo.caseif.net/content/groups/public/' }
-    maven { url 'http://repo.gravitydevelopment.net' }
-    maven { url 'http://repo.mcstats.org/content/repositories/public' }
+    maven {
+        name = 'spigot'
+        url 'http://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        name = 'caseif'
+        url 'http://repo.caseif.net/content/groups/public/'
+    }
+    maven {
+        name = 'gravity'
+        url 'http://repo.gravitydevelopment.net'
+    }
+    maven {
+        name = 'mcstats'
+        url 'http://repo.mcstats.org/content/repositories/public'
+    }
+    maven {
+        name = 'sponge'
+        url = 'http://repo.spongepowered.org/maven'
+    }
 }
 
 ext {
@@ -58,6 +73,8 @@ dependencies {
     compile crosstitles
     compile updater
     compile metrics
+
+    checkstyle 'org.spongepowered:checkstyle:6.1.1-sponge1'
 }
 
 // Read source files using UTF-8
@@ -66,7 +83,7 @@ tasks.withType(JavaCompile) {
 }
 
 processResources {
-    filter { String line -> line.replace('SNAPSHOT', 'SNAPSHOT' + versionSuffix) }
+    filter {String line -> line.replace('SNAPSHOT', 'SNAPSHOT' + versionSuffix)}
 }
 
 jar {
@@ -103,10 +120,12 @@ license {
 // check code style
 checkstyle {
     configProperties = [
-            "name": project.name,
-            "year": project.inceptionYear
+            'name': project.name,
+            'year': project.inceptionYear,
+            'basedir': project.projectDir,
+            'severity': 'warning'
     ]
-    configFile = file("etc/checkstyle.xml")
+    configFile = file('etc/checkstyle.xml')
 }
 
 tasks.withType(Checkstyle) {

@@ -35,18 +35,6 @@ import net.caseif.ttt.managers.command.CommandManager;
 import net.caseif.ttt.managers.command.SpecialCommandManager;
 import net.caseif.ttt.util.ContributorsReader;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Logger;
-
 import net.amigocraft.mglib.MGUtil;
 import net.amigocraft.mglib.api.ConfigManager;
 import net.amigocraft.mglib.api.Locale;
@@ -61,6 +49,18 @@ import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Minecraft port of Trouble In Terrorist Town.
@@ -82,15 +82,63 @@ public class Main extends JavaPlugin {
     public static String lang;
 
     //TODO: associate bodies with rounds
-    public static List<Body> bodies = new ArrayList<Body>();
-    public static List<Body> foundBodies = new ArrayList<Body>();
+    public static List<Body> bodies = new ArrayList<>();
+    public static List<Body> foundBodies = new ArrayList<>();
 
     public static int maxKarma = 1000;
 
-    public static List<UUID> devs = new ArrayList<UUID>();
-    public static List<UUID> alpha = new ArrayList<UUID>();
-    public static List<UUID> testers = new ArrayList<UUID>();
-    public static List<UUID> translators = new ArrayList<UUID>();
+    public static List<UUID> devs = new ArrayList<>();
+    public static List<UUID> alpha = new ArrayList<>();
+    public static List<UUID> testers = new ArrayList<>();
+    public static List<UUID> translators = new ArrayList<>();
+
+    public static void createFile(String s) {
+        File f = new File(Main.plugin.getDataFolder(), s);
+        if (!f.exists()) {
+            if (Config.VERBOSE_LOGGING) {
+                mg.log(locale.getMessage("info.plugin.compatibility.creating-file", s), LogLevel.INFO);
+            }
+            try {
+                f.createNewFile();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                mg.log(locale.getMessage("error.plugin.file-write", s), LogLevel.INFO);
+            }
+        }
+    }
+
+    public static void createLocale(String s) {
+        File exLocale = new File(Main.plugin.getDataFolder() + File.separator + "locales", s);
+        if (!exLocale.exists()) {
+            InputStream is = null;
+            OutputStream os = null;
+            try {
+                File dir = new File(Main.plugin.getDataFolder(), "locales");
+                dir.mkdir();
+                exLocale.createNewFile();
+                is = Main.class.getClassLoader().getResourceAsStream("locales/" + s);
+                os = new FileOutputStream(exLocale);
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, len);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+                    if (is != null) {
+                        is.close();
+                    }
+                    if (os != null) {
+                        os.close();
+                    }
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                }
+            }
+        }
+    }
 
     @Override
     public void onEnable() {
@@ -103,12 +151,11 @@ public class Main extends JavaPlugin {
             try {
                 Minigame.class.getMethod("isMGLibCompatible", String.class);
                 compatibleMethod = true;
-            }
-            catch (NoSuchMethodException swallow) {
+            } catch (NoSuchMethodException ignored) {
             }
         }
-        if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !compatibleMethod ||
-                !Minigame.isMGLibCompatible(MIN_MGLIB_VERSION)) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !compatibleMethod
+                || !Minigame.isMGLibCompatible(MIN_MGLIB_VERSION)) {
             MGLIB = false;
             Main.log.info(ANSI_RED + getMessage("error.plugin.mglib", null, MIN_MGLIB_VERSION) + ANSI_WHITE);
             getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
@@ -158,23 +205,20 @@ public class Main extends JavaPlugin {
                             mg.log(locale.getMessage("error.plugin.set-exit"), LogLevel.WARNING);
                         }
                     }, 2L);
-                }
-                else {
+                } else {
                     if (spawnYaml.isSet("pitch") && spawnYaml.isSet("yaw")) {
                         cm.setDefaultExitLocation(new Location(
                                 w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z"),
-                                (float)spawnYaml.getDouble("yaw"), (float)spawnYaml.getDouble("pitch")
+                                (float) spawnYaml.getDouble("yaw"), (float) spawnYaml.getDouble("pitch")
                         ));
-                    }
-                    else {
+                    } else {
                         cm.setDefaultExitLocation(new Location(
                                 w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z")
                         ));
                     }
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             Bukkit.getScheduler().runTaskLater(this, new Runnable() {
                 public void run() {
@@ -196,8 +240,7 @@ public class Main extends JavaPlugin {
                     mg.log(locale.getMessage("info.plugin.compatibility.rename"), LogLevel.INFO);
                     try {
                         old.renameTo(getDataFolder());
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                         mg.log(locale.getMessage("error.plugin.folder-rename"), LogLevel.WARNING);
                     }
@@ -208,12 +251,10 @@ public class Main extends JavaPlugin {
         // check if config should be overwritten
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveDefaultConfig();
-        }
-        else {
+        } else {
             try {
                 Config.addMissingKeys();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
                 MGUtil.log("Failed to write new config keys!", null, LogLevel.SEVERE);
             }
@@ -241,8 +282,7 @@ public class Main extends JavaPlugin {
                 });
                 metrics.addGraph(graph);
                 metrics.start();
-            }
-            catch (IOException e) {
+            } catch (IOException ex) {
                 if (Config.VERBOSE_LOGGING) {
                     Bukkit.getScheduler().runTaskLater(this, new Runnable() {
                         public void run() {
@@ -307,57 +347,5 @@ public class Main extends JavaPlugin {
         }
         locale = null;
         plugin = null;
-    }
-
-    public static void createFile(String s) {
-        File f = new File(Main.plugin.getDataFolder(), s);
-        if (!f.exists()) {
-            if (Config.VERBOSE_LOGGING) {
-                mg.log(locale.getMessage("info.plugin.compatibility.creating-file", s), LogLevel.INFO);
-            }
-            try {
-                f.createNewFile();
-            }
-            catch (Exception ex) {
-                ex.printStackTrace();
-                mg.log(locale.getMessage("error.plugin.file-write", s), LogLevel.INFO);
-            }
-        }
-    }
-
-    public static void createLocale(String s) {
-        File exLocale = new File(Main.plugin.getDataFolder() + File.separator + "locales", s);
-        if (!exLocale.exists()) {
-            InputStream is = null;
-            OutputStream os = null;
-            try {
-                File dir = new File(Main.plugin.getDataFolder(), "locales");
-                dir.mkdir();
-                exLocale.createNewFile();
-                is = Main.class.getClassLoader().getResourceAsStream("locales/" + s);
-                os = new FileOutputStream(exLocale);
-                byte[] buffer = new byte[1024];
-                int len;
-                while ((len = is.read(buffer)) != -1) {
-                    os.write(buffer, 0, len);
-                }
-            }
-            catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            finally {
-                try {
-                    if (is != null) {
-                        is.close();
-                    }
-                    if (os != null) {
-                        os.close();
-                    }
-                }
-                catch (Exception exc) {
-                    exc.printStackTrace();
-                }
-            }
-        }
     }
 }

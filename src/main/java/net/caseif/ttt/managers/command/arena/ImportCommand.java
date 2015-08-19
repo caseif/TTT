@@ -31,13 +31,13 @@ import net.caseif.ttt.Main;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 import net.caseif.ttt.util.FileUtil;
 
-import java.io.File;
-
 import net.amigocraft.mglib.exception.ArenaExistsException;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
+
+import java.io.File;
 
 public class ImportCommand extends SubcommandHandler {
 
@@ -62,8 +62,7 @@ public class ImportCommand extends SubcommandHandler {
                             try {
                                 Main.mg.createArena(worldName, w.getSpawnLocation());
                                 sender.sendMessage(getMessage("info.personal.arena.import.success", INFO_COLOR));
-                            }
-                            catch (ArenaExistsException e) {
+                            } catch (ArenaExistsException e) {
                                 //TODO: replace this message with something more accurate
                                 sender.sendMessage(getMessage("error.arena.already-exists", ERROR_COLOR));
                             }
@@ -72,8 +71,7 @@ public class ImportCommand extends SubcommandHandler {
                     }
                 }
                 sender.sendMessage(getMessage("error.plugin.world-load", ERROR_COLOR));
-            }
-            else {
+            } else {
                 sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
                 sendUsage();
             }

@@ -51,6 +51,20 @@ import java.util.Map;
 
 public class CommandManager implements CommandExecutor {
 
+    /**
+     * Retrieves the usage for the given subcommand from the plugin.yml file.
+     *
+     * @return the usage for the given subcommand, or null if not specified
+     */
+    public static String getUsage(String subcommand) {
+        Object map = Main.plugin.getDescription().getCommands()
+                .get("ttt").get(subcommand);
+        if (map instanceof Map) {
+            return ((Map) map).get("usage").toString();
+        }
+        return null;
+    }
+
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (label.equalsIgnoreCase("ttt")) {
             if (args.length > 0) {
@@ -58,76 +72,47 @@ public class CommandManager implements CommandExecutor {
                 // arena commands
                 if (subCmd.equalsIgnoreCase("import") || subCmd.equalsIgnoreCase("i")) {
                     new ImportCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("join") || subCmd.equalsIgnoreCase("j")) {
+                } else if (subCmd.equalsIgnoreCase("join") || subCmd.equalsIgnoreCase("j")) {
                     new JoinCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("leave") || subCmd.equalsIgnoreCase("l") ||
-                        subCmd.equalsIgnoreCase("quit") || subCmd.equalsIgnoreCase("q")) {
+                } else if (subCmd.equalsIgnoreCase("leave") || subCmd.equalsIgnoreCase("l")
+                        || subCmd.equalsIgnoreCase("quit") || subCmd.equalsIgnoreCase("q")) {
                     new LeaveCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("carena") || subCmd.equalsIgnoreCase("ca")) {
+                } else if (subCmd.equalsIgnoreCase("carena") || subCmd.equalsIgnoreCase("ca")) {
                     new CreateArenaCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("rarena") || subCmd.equalsIgnoreCase("ra")) {
+                } else if (subCmd.equalsIgnoreCase("rarena") || subCmd.equalsIgnoreCase("ra")) {
                     new RemoveArenaCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("addspawn") || subCmd.equalsIgnoreCase("as")) {
+                } else if (subCmd.equalsIgnoreCase("addspawn") || subCmd.equalsIgnoreCase("as")) {
                     new AddSpawnCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("removespawn") || subCmd.equalsIgnoreCase("rs")) {
+                } else if (subCmd.equalsIgnoreCase("removespawn") || subCmd.equalsIgnoreCase("rs")) {
                     new RemoveSpawnCommand(sender, args).handle();
-                }
-                // administrative commands
-                else if (subCmd.equalsIgnoreCase("prepare")) {
+                    // administrative commands
+                } else if (subCmd.equalsIgnoreCase("prepare")) {
                     new PrepareCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("start")) {
+                } else if (subCmd.equalsIgnoreCase("start")) {
                     new StartCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("end")) {
+                } else if (subCmd.equalsIgnoreCase("end")) {
                     new EndCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("kick")) {
+                } else if (subCmd.equalsIgnoreCase("kick")) {
                     new KickCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("ban")) {
+                } else if (subCmd.equalsIgnoreCase("ban")) {
                     new BanCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("pardon")) {
+                } else if (subCmd.equalsIgnoreCase("pardon")) {
                     new PardonCommand(sender, args).handle();
-                }
-                // misc. commands
-                else if (subCmd.equalsIgnoreCase("setexit") || subCmd.equalsIgnoreCase("se") ||
-                        subCmd.equalsIgnoreCase("setspawn") || subCmd.equalsIgnoreCase("ss")) {
+                    // misc. commands
+                } else if (subCmd.equalsIgnoreCase("setexit") || subCmd.equalsIgnoreCase("se")
+                        || subCmd.equalsIgnoreCase("setspawn") || subCmd.equalsIgnoreCase("ss")) {
                     new SetExitCommand(sender, args).handle();
-                }
-                else if (subCmd.equalsIgnoreCase("help") || subCmd.equalsIgnoreCase("?")) {
+                } else if (subCmd.equalsIgnoreCase("help") || subCmd.equalsIgnoreCase("?")) {
                     new HelpCommand(sender, args).handle();
-                }
-                else {
+                } else {
                     sender.sendMessage(MiscUtil.getMessage("error.command.invalid-args", Constants.ERROR_COLOR));
                 }
-            }
-            else {
+            } else {
                 new DefaultCommand(sender, args).handle();
             }
             return true;
         }
         return false;
-    }
-
-    /**
-     * Retrieves the usage for the given subcommand from the plugin.yml file.
-     * @return the usage for the given subcommand, or null if not specified
-     */
-    public static String getUsage(String subcommand) {
-        Object map = Main.plugin.getDescription().getCommands()
-                .get("ttt").get(subcommand);
-        if (map instanceof Map<?, ?>) {
-            return ((Map<?, ?>)map).get("usage").toString();
-        }
-        return null;
     }
 
 }

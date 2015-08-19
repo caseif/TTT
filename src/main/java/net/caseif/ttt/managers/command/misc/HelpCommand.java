@@ -68,6 +68,10 @@ public class HelpCommand extends SubcommandHandler {
         super(sender, args, "ttt.help");
     }
 
+    private static void registerCommand(String cmd, String description, String permission) {
+        commands.put(cmd, new String[]{description, permission});
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public void handle() {
@@ -77,59 +81,50 @@ public class HelpCommand extends SubcommandHandler {
                     if (sender.hasPermission("ttt.lobby.create")) {
                         sender.sendMessage(getMessage("info.help.lobby", SPECIAL_COLOR, false));
                         sender.sendMessage("");
-                        sender.sendMessage(getMessage("info.help.lobby.line.1", INFO_COLOR, false) + " " +
-                                getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " " +
-                                DESCRIPTION_COLOR + "[TTT]");
-                        sender.sendMessage(getMessage("info.help.lobby.line.2", INFO_COLOR, false) + " " +
-                                getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " " +
-                                getMessage("info.help.lobby.line.2.content", DESCRIPTION_COLOR, false));
-                        sender.sendMessage(getMessage("info.help.lobby.line.3", INFO_COLOR, false) + " " +
-                                getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " " +
-                                getMessage("info.help.lobby.line.3.content", DESCRIPTION_COLOR, false));
-                        sender.sendMessage(getMessage("info.help.lobby.line.4", INFO_COLOR, false) + " " +
-                                getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " " +
-                                getMessage("info.help.lobby.line.4.content", DESCRIPTION_COLOR, false));
-                    }
-                    else {
+                        sender.sendMessage(getMessage("info.help.lobby.line.1", INFO_COLOR, false) + " "
+                                + getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " "
+                                + DESCRIPTION_COLOR + "[TTT]");
+                        sender.sendMessage(getMessage("info.help.lobby.line.2", INFO_COLOR, false) + " "
+                                + getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " "
+                                + getMessage("info.help.lobby.line.2.content", DESCRIPTION_COLOR, false));
+                        sender.sendMessage(getMessage("info.help.lobby.line.3", INFO_COLOR, false) + " "
+                                + getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " "
+                                + getMessage("info.help.lobby.line.3.content", DESCRIPTION_COLOR, false));
+                        sender.sendMessage(getMessage("info.help.lobby.line.4", INFO_COLOR, false) + " "
+                                + getMessage("info.help.lobby.line.label", INFO_COLOR, false) + " "
+                                + getMessage("info.help.lobby.line.4.content", DESCRIPTION_COLOR, false));
+                    } else {
                         sender.sendMessage(Main.locale.getMessage("error.perms.generic"));
                     }
-                }
-                else {
+                } else {
                     String cmd = args[1];
                     String[] info = commands.get(cmd);
                     if (info != null) {
                         if (sender.hasPermission(info[1])) {
-                            sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " " +
-                                    DESCRIPTION_COLOR + info[0]);
-                            sender.sendMessage(INFO_COLOR + "    " + Main.locale.getMessage("fragment.usage") + " " +
-                                    USAGE_COLOR + CommandManager.getUsage(cmd));
-                        }
-                        else {
+                            sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " "
+                                    + DESCRIPTION_COLOR + info[0]);
+                            sender.sendMessage(INFO_COLOR + "    " + Main.locale.getMessage("fragment.usage") + " "
+                                    + USAGE_COLOR + CommandManager.getUsage(cmd));
+                        } else {
                             sender.sendMessage(getMessage("error.perms.generic", ERROR_COLOR));
                         }
-                    }
-                    else {
+                    } else {
                         sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
                     }
                 }
-            }
-            else {
+            } else {
                 sender.sendMessage(getMessage("info.help.available-cmds", SPECIAL_COLOR));
                 sender.sendMessage("");
                 for (String cmd : commands.keySet()) {
                     String[] info = commands.get(cmd);
                     if (sender.hasPermission(info[1])) {
-                        sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " " +
-                                DESCRIPTION_COLOR + info[0]);
-                        sender.sendMessage(INFO_COLOR + "    " + Main.locale.getMessage("fragment.usage") + " " +
-                                USAGE_COLOR + CommandManager.getUsage(cmd));
+                        sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " "
+                                + DESCRIPTION_COLOR + info[0]);
+                        sender.sendMessage(INFO_COLOR + "    " + Main.locale.getMessage("fragment.usage") + " "
+                                + USAGE_COLOR + CommandManager.getUsage(cmd));
                     }
                 }
             }
         }
-    }
-
-    private static void registerCommand(String cmd, String description, String permission) {
-        commands.put(cmd, new String[]{description, permission});
     }
 }

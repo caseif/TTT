@@ -29,8 +29,7 @@ public class NumUtil {
         try {
             Integer.parseInt(s);
             return true;
-        }
-        catch (NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             return false;
         }
     }
@@ -39,8 +38,7 @@ public class NumUtil {
         try {
             Double.parseDouble(s);
             return true;
-        }
-        catch (NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             return false;
         }
     }
