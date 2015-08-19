@@ -38,40 +38,40 @@ import org.bukkit.command.CommandSender;
 
 public class PardonCommand extends SubcommandHandler {
 
-	public PardonCommand(CommandSender sender, String[] args) {
-		super(sender, args, "ttt.admin.ban");
-	}
+    public PardonCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.admin.ban");
+    }
 
-	@Override
-	public void handle() {
-		if (assertPermission()) {
-			if (args.length > 1) {
-				String name = args[1];
-				try {
-					UUID uuid = UUIDFetcher.getUUIDOf(name);
-					if (uuid == null) {
-						sender.sendMessage(getMessage("error.plugin.uuid", ERROR_COLOR));
-						return;
-					}
-					if (MiscUtil.pardon(uuid)) {
-						Bukkit.getPlayer(name).sendMessage(getMessage("info.personal.pardon", INFO_COLOR));
-						sender.sendMessage(getMessage("info.personal.pardon.other", INFO_COLOR, name));
-					}
-					else {
-						sender.sendMessage(getMessage("error.plugin.pardon", ERROR_COLOR));
-					}
-				}
-				catch (Exception ex) {
-					sender.sendMessage(getMessage("error.plugin.generic", ERROR_COLOR));
-					ex.printStackTrace();
-				}
-			}
-			else {
-				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
-				sendUsage();
-			}
-		}
-	}
+    @Override
+    public void handle() {
+        if (assertPermission()) {
+            if (args.length > 1) {
+                String name = args[1];
+                try {
+                    UUID uuid = UUIDFetcher.getUUIDOf(name);
+                    if (uuid == null) {
+                        sender.sendMessage(getMessage("error.plugin.uuid", ERROR_COLOR));
+                        return;
+                    }
+                    if (MiscUtil.pardon(uuid)) {
+                        Bukkit.getPlayer(name).sendMessage(getMessage("info.personal.pardon", INFO_COLOR));
+                        sender.sendMessage(getMessage("info.personal.pardon.other", INFO_COLOR, name));
+                    }
+                    else {
+                        sender.sendMessage(getMessage("error.plugin.pardon", ERROR_COLOR));
+                    }
+                }
+                catch (Exception ex) {
+                    sender.sendMessage(getMessage("error.plugin.generic", ERROR_COLOR));
+                    ex.printStackTrace();
+                }
+            }
+            else {
+                sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                sendUsage();
+            }
+        }
+    }
 
 
 }

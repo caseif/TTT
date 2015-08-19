@@ -40,43 +40,43 @@ import org.bukkit.entity.Player;
 
 public class JoinCommand extends SubcommandHandler {
 
-	public JoinCommand(CommandSender sender, String[] args) {
-		super(sender, args, "ttt.arena.join");
-	}
+    public JoinCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.arena.join");
+    }
 
-	@Override
-	public void handle() {
-		if (sender instanceof Player) {
-			if (assertPermission()) {
-				if (args.length > 1) {
-					try {
-						Round r = Main.mg.getRound(args[1]);
-						if (r == null) {
-							r = Main.mg.createRound(args[1]);
-						}
-						r.addPlayer(sender.getName());
-					}
-					catch (NoSuchArenaException ex) {
-						sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
-					}
-					catch (PlayerOfflineException ex) { // this should never be able to happen
-						ex.printStackTrace();
-					}
-					catch (PlayerPresentException ex) {
-						sender.sendMessage(getMessage("error.round.inside", ERROR_COLOR));
-					}
-					catch (RoundFullException ex) {
-						sender.sendMessage(getMessage("error.round.full", ERROR_COLOR));
-					}
-				}
-				else {
-					sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
-					sendUsage();
-				}
-			}
-		}
-		else {
-			sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
-		}
-	}
+    @Override
+    public void handle() {
+        if (sender instanceof Player) {
+            if (assertPermission()) {
+                if (args.length > 1) {
+                    try {
+                        Round r = Main.mg.getRound(args[1]);
+                        if (r == null) {
+                            r = Main.mg.createRound(args[1]);
+                        }
+                        r.addPlayer(sender.getName());
+                    }
+                    catch (NoSuchArenaException ex) {
+                        sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
+                    }
+                    catch (PlayerOfflineException ex) { // this should never be able to happen
+                        ex.printStackTrace();
+                    }
+                    catch (PlayerPresentException ex) {
+                        sender.sendMessage(getMessage("error.round.inside", ERROR_COLOR));
+                    }
+                    catch (RoundFullException ex) {
+                        sender.sendMessage(getMessage("error.round.full", ERROR_COLOR));
+                    }
+                }
+                else {
+                    sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                    sendUsage();
+                }
+            }
+        }
+        else {
+            sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
+        }
+    }
 }

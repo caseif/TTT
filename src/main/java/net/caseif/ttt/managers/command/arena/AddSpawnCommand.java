@@ -39,60 +39,60 @@ import org.bukkit.entity.Player;
 
 public class AddSpawnCommand extends SubcommandHandler {
 
-	public AddSpawnCommand(CommandSender sender, String[] args) {
-		super(sender, args, "ttt.arena.addspawn");
-	}
+    public AddSpawnCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.arena.addspawn");
+    }
 
-	@Override
-	public void handle() {
-		if (assertPermission()) {
-			World w = null;
-			int x;
-			int y;
-			int z;
-			if (args.length == 2) { // use sender's location
-				if (sender instanceof Player) {
-					w = ((Player)sender).getWorld();
-					x = ((Player)sender).getLocation().getBlockX();
-					y = ((Player)sender).getLocation().getBlockY();
-					z = ((Player)sender).getLocation().getBlockZ();
-				}
-				else {
-					sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
-					return;
-				}
-			}
-			else if (args.length == 5) { // use 3 provided coords
-				if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])) {
-					x = Integer.parseInt(args[2]);
-					y = Integer.parseInt(args[3]);
-					z = Integer.parseInt(args[4]);
-				}
-				else {
-					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-					sendUsage();
-					return;
-				}
-			}
-			else {
-				sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-				sendUsage();
-				return;
-			}
-			try {
-				if (w == null) {
-					Main.mg.getArenaFactory(args[1]).addSpawn(x, y, z);
-				}
-				else {
-					Main.mg.getArenaFactory(args[1]).addSpawn(new Location(w, x, y, z));
-				}
-			}
-			catch (InvalidLocationException ex) {
-				sender.sendMessage(getMessage("error.arena.invalid-location", ERROR_COLOR));
-			}
-			catch (NoSuchArenaException ex) {
-				sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
-			}
-		}
-	}
+    @Override
+    public void handle() {
+        if (assertPermission()) {
+            World w = null;
+            int x;
+            int y;
+            int z;
+            if (args.length == 2) { // use sender's location
+                if (sender instanceof Player) {
+                    w = ((Player)sender).getWorld();
+                    x = ((Player)sender).getLocation().getBlockX();
+                    y = ((Player)sender).getLocation().getBlockY();
+                    z = ((Player)sender).getLocation().getBlockZ();
+                }
+                else {
+                    sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
+                    return;
+                }
+            }
+            else if (args.length == 5) { // use 3 provided coords
+                if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])) {
+                    x = Integer.parseInt(args[2]);
+                    y = Integer.parseInt(args[3]);
+                    z = Integer.parseInt(args[4]);
+                }
+                else {
+                    sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                    sendUsage();
+                    return;
+                }
+            }
+            else {
+                sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                sendUsage();
+                return;
+            }
+            try {
+                if (w == null) {
+                    Main.mg.getArenaFactory(args[1]).addSpawn(x, y, z);
+                }
+                else {
+                    Main.mg.getArenaFactory(args[1]).addSpawn(new Location(w, x, y, z));
+                }
+            }
+            catch (InvalidLocationException ex) {
+                sender.sendMessage(getMessage("error.arena.invalid-location", ERROR_COLOR));
+            }
+            catch (NoSuchArenaException ex) {
+                sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
+            }
+        }
+    }
 }

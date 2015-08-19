@@ -35,43 +35,43 @@ import org.bukkit.Bukkit;
 
 public class FileUtil {
 
-	// world checking method from Multiverse
-	public static boolean isWorld(String worldName) {
-		File folder = new File(Bukkit.getWorldContainer(), worldName);
-		if (folder.exists()) {
-			File[] files = folder.listFiles(new FilenameFilter() {
-				@Override
-				public boolean accept(File file, String name) {
-					return name.equalsIgnoreCase("level.dat");
-				}
-			});
-			if (files != null && files.length > 0) {
-				return true;
-			}
-		}
-		return false;
-	}
+    // world checking method from Multiverse
+    public static boolean isWorld(String worldName) {
+        File folder = new File(Bukkit.getWorldContainer(), worldName);
+        if (folder.exists()) {
+            File[] files = folder.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File file, String name) {
+                    return name.equalsIgnoreCase("level.dat");
+                }
+            });
+            if (files != null && files.length > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public static void copyFile(File sourceLocation, File targetLocation) throws IOException {
-		if (sourceLocation.isDirectory()) {
-			if (!targetLocation.exists()) {
-				targetLocation.mkdir();
-			}
-			String[] children = sourceLocation.list();
-			for (String aChildren : children) {
-				copyFile(new File(sourceLocation, aChildren), new File(targetLocation, aChildren));
-			}
-		}
-		else {
-			InputStream in = new FileInputStream(sourceLocation);
-			OutputStream out = new FileOutputStream(targetLocation);
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
-		}
-	}
+    public static void copyFile(File sourceLocation, File targetLocation) throws IOException {
+        if (sourceLocation.isDirectory()) {
+            if (!targetLocation.exists()) {
+                targetLocation.mkdir();
+            }
+            String[] children = sourceLocation.list();
+            for (String aChildren : children) {
+                copyFile(new File(sourceLocation, aChildren), new File(targetLocation, aChildren));
+            }
+        }
+        else {
+            InputStream in = new FileInputStream(sourceLocation);
+            OutputStream out = new FileOutputStream(targetLocation);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        }
+    }
 }

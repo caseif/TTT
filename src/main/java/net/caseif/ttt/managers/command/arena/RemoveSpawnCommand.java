@@ -37,89 +37,89 @@ import org.bukkit.entity.Player;
 
 public class RemoveSpawnCommand extends SubcommandHandler {
 
-	public RemoveSpawnCommand(CommandSender sender, String[] args) {
-		super(sender, args, "ttt.arena.removespawn");
-	}
+    public RemoveSpawnCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.arena.removespawn");
+    }
 
-	@Override
-	public void handle() {
-		if (assertPermission()) {
-			int x = 0;
-			int y = 0;
-			int z = 0;
-			int index = Integer.MAX_VALUE;
-			if (args.length == 2) { // use sender's location
-				if (sender instanceof Player) {
-					x = ((Player)sender).getLocation().getBlockX();
-					y = ((Player)sender).getLocation().getBlockY();
-					z = ((Player)sender).getLocation().getBlockZ();
-				}
-				else {
-					sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
-					return;
-				}
-			}
-			else if (args.length == 3) {
-				if (NumUtil.isInt(args[2])) {
-					index = Integer.parseInt(args[2]);
-				}
-				else {
-					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-					sendUsage();
-					return;
-				}
-			}
-			else if (args.length == 5) { // use 3 provided coords
-				if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])) {
-					x = Integer.parseInt(args[2]);
-					y = Integer.parseInt(args[3]);
-					z = Integer.parseInt(args[4]);
-				}
-				else {
-					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-					sendUsage();
-					return;
-				}
-			}
-			else {
-				sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-				sendUsage();
-				return;
-			}
-			if (index != Integer.MAX_VALUE) {
-				YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
-				if (yaml.isSet(args[1] + ".spawns")) {
-					if (yaml.isSet(args[1] + ".spawns." + index)) {
-						yaml.set(args[1] + ".spawns." + index, null);
-						MGUtil.saveArenaYaml("TTT", yaml);
-					}
-					else {
-						sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-						sendUsage();
-					}
-				}
-				else {
-					sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
-				}
-			}
-			else {
-				YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
-				if (yaml.isSet(args[1] + ".spawns")) {
-					ConfigurationSection cs = yaml.getConfigurationSection(args[1] + ".spawns");
-					for (String k : cs.getKeys(false)) {
-						if (cs.getInt(k + ".x") == x && cs.getInt(k + ".y") == y && cs.getInt(k + ".z") == z) {
-							cs.set(k, null);
-							MGUtil.saveArenaYaml("TTT", yaml);
-							return;
-						}
-					}
-					sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-					sendUsage();
-				}
-				else {
-					sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
-				}
-			}
-		}
-	}
+    @Override
+    public void handle() {
+        if (assertPermission()) {
+            int x = 0;
+            int y = 0;
+            int z = 0;
+            int index = Integer.MAX_VALUE;
+            if (args.length == 2) { // use sender's location
+                if (sender instanceof Player) {
+                    x = ((Player)sender).getLocation().getBlockX();
+                    y = ((Player)sender).getLocation().getBlockY();
+                    z = ((Player)sender).getLocation().getBlockZ();
+                }
+                else {
+                    sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
+                    return;
+                }
+            }
+            else if (args.length == 3) {
+                if (NumUtil.isInt(args[2])) {
+                    index = Integer.parseInt(args[2]);
+                }
+                else {
+                    sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                    sendUsage();
+                    return;
+                }
+            }
+            else if (args.length == 5) { // use 3 provided coords
+                if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])) {
+                    x = Integer.parseInt(args[2]);
+                    y = Integer.parseInt(args[3]);
+                    z = Integer.parseInt(args[4]);
+                }
+                else {
+                    sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                    sendUsage();
+                    return;
+                }
+            }
+            else {
+                sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                sendUsage();
+                return;
+            }
+            if (index != Integer.MAX_VALUE) {
+                YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
+                if (yaml.isSet(args[1] + ".spawns")) {
+                    if (yaml.isSet(args[1] + ".spawns." + index)) {
+                        yaml.set(args[1] + ".spawns." + index, null);
+                        MGUtil.saveArenaYaml("TTT", yaml);
+                    }
+                    else {
+                        sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                        sendUsage();
+                    }
+                }
+                else {
+                    sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
+                }
+            }
+            else {
+                YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
+                if (yaml.isSet(args[1] + ".spawns")) {
+                    ConfigurationSection cs = yaml.getConfigurationSection(args[1] + ".spawns");
+                    for (String k : cs.getKeys(false)) {
+                        if (cs.getInt(k + ".x") == x && cs.getInt(k + ".y") == y && cs.getInt(k + ".z") == z) {
+                            cs.set(k, null);
+                            MGUtil.saveArenaYaml("TTT", yaml);
+                            return;
+                        }
+                    }
+                    sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                    sendUsage();
+                }
+                else {
+                    sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
+                }
+            }
+        }
+    }
 }

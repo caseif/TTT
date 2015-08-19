@@ -33,24 +33,24 @@ import com.google.common.collect.HashBiMap;
  */
 public final class BiMapBuilder<K, V> {
 
-	private BiMap<K, V> backing;
+    private BiMap<K, V> backing;
 
-	private BiMapBuilder() {
-		backing = HashBiMap.create();
-	}
+    private BiMapBuilder() {
+        backing = HashBiMap.create();
+    }
 
-	@SuppressWarnings("unchecked")
-	public BiMapBuilder put(K key, V value) {
-		backing.put(key, value);
-		return this;
-	}
+    @SuppressWarnings("unchecked")
+    public BiMapBuilder put(K key, V value) {
+        backing.put(key, value);
+        return this;
+    }
 
-	public BiMap<K, V> build() {
-		return backing;
-	}
+    public BiMap<K, V> build() {
+        return backing;
+    }
 
-	public static <K, V> BiMapBuilder<K, V> builder() {
-		return new BiMapBuilder<K, V>();
-	}
+    public static <K, V> BiMapBuilder<K, V> builder() {
+        return new BiMapBuilder<K, V>();
+    }
 
 }

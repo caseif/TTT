@@ -1,11 +1,11 @@
 // Apply Gradle plugins
 plugins {
-	id 'java'
-	id 'eclipse'
-	id 'idea'
+    id 'java'
+    id 'eclipse'
+    id 'idea'
 
-	id 'com.github.hierynomus.license' version '0.11.0'
-	id 'com.github.johnrengelman.shadow' version '1.2.0'
+    id 'com.github.hierynomus.license' version '0.11.0'
+    id 'com.github.johnrengelman.shadow' version '1.2.0'
 }
 
 apply plugin: 'checkstyle'
@@ -22,13 +22,13 @@ ext.description = 'A Bukkit minigame based off the Garry\'s Mod gamemode Trouble
 ext.inceptionYear = '2013'
 ext.packaging = 'jar'
 ext.versionSuffix = version.contains('SNAPSHOT') ? (
-		(
-		System.getenv('GIT_COMMIT') ? ('-git('
-				+ System.getenv('GIT_BRANCH')
-				.substring(System.getenv('GIT_BRANCH').split('/')[0].length() + 1) + '-'
-				+ System.getenv('GIT_COMMIT').substring(0, 7) + ')') : ''
-		)
-		+ (System.getenv('BUILD_NUMBER') ? '-jnks' + System.getenv('BUILD_NUMBER') : '')
+        (
+        System.getenv('GIT_COMMIT') ? ('-git('
+                + System.getenv('GIT_BRANCH')
+                .substring(System.getenv('GIT_BRANCH').split('/')[0].length() + 1) + '-'
+                + System.getenv('GIT_COMMIT').substring(0, 7) + ')') : ''
+        )
+        + (System.getenv('BUILD_NUMBER') ? '-jnks' + System.getenv('BUILD_NUMBER') : '')
 ) : ''
 
 sourceCompatibility = 1.7
@@ -36,84 +36,84 @@ targetCompatibility = 1.7
 
 // Project repositories
 repositories {
-	mavenCentral()
-	maven { url 'http://hub.spigotmc.org/nexus/content/groups/public/' }
-	maven { url 'http://repo.caseif.net/content/groups/public/' }
-	maven { url 'http://repo.gravitydevelopment.net' }
-	maven { url 'http://repo.mcstats.org/content/repositories/public' }
+    mavenCentral()
+    maven { url 'http://hub.spigotmc.org/nexus/content/groups/public/' }
+    maven { url 'http://repo.caseif.net/content/groups/public/' }
+    maven { url 'http://repo.gravitydevelopment.net' }
+    maven { url 'http://repo.mcstats.org/content/repositories/public' }
 }
 
 ext {
-	bukkit = 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
-	mglib = 'net.amigocraft.mglib:mglib:0.4.0'
+    bukkit = 'org.bukkit:bukkit:1.8-R0.1-SNAPSHOT'
+    mglib = 'net.amigocraft.mglib:mglib:0.4.0'
     crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.1'
-	updater = 'net.gravitydevelopment.updater:updater:2.3'
-	metrics = 'org.mcstats.bukkit:metrics:R7'
+    updater = 'net.gravitydevelopment.updater:updater:2.3'
+    metrics = 'org.mcstats.bukkit:metrics:R7'
 }
 
 // Project dependencies
 dependencies {
-	compile bukkit
-	compile mglib
+    compile bukkit
+    compile mglib
     compile crosstitles
-	compile updater
-	compile metrics
+    compile updater
+    compile metrics
 }
 
 // Read source files using UTF-8
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
 
 processResources {
-	filter { String line -> line.replace('SNAPSHOT', 'SNAPSHOT' + versionSuffix) }
+    filter { String line -> line.replace('SNAPSHOT', 'SNAPSHOT' + versionSuffix) }
 }
 
 jar {
-	classifier = 'base'
+    classifier = 'base'
 }
 
 shadowJar {
-	dependencies {
+    dependencies {
         include dependency(crosstitles)
-		include dependency(updater)
+        include dependency(updater)
         include dependency(metrics)
-	}
-	classifier = ''
+    }
+    classifier = ''
 }
 
 // License header formatting
 license {
-	header file('LICENSE')
-	excludes([
-			'**/*.properties',
+    header file('LICENSE')
+    excludes([
+            '**/*.properties',
             '**/*.txt',
-			'**/*.yml',
-			'**/Metrics.java',
-			'**/LICENSE'
-	])
-	sourceSets = project.sourceSets
-	ignoreFailures false
-	strictCheck true
-	mapping {
-		java = 'SLASHSTAR_STYLE'
-	}
+            '**/*.yml',
+            '**/Metrics.java',
+            '**/LICENSE'
+    ])
+    sourceSets = project.sourceSets
+    ignoreFailures false
+    strictCheck true
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+    }
 }
 
 // check code style
 checkstyle {
-	configProperties = [
-			"name": project.name,
-			"year": project.inceptionYear
-	]
-	configFile = file("etc/checkstyle.xml")
+    configProperties = [
+            "name": project.name,
+            "year": project.inceptionYear
+    ]
+    configFile = file("etc/checkstyle.xml")
 }
 
 tasks.withType(Checkstyle) {
-	exclude '**/*.properties'
-	exclude '**/*.yml'
+    exclude '**/*.properties'
+    exclude '**/*.yml'
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.6'
+    gradleVersion = '2.6'
 }

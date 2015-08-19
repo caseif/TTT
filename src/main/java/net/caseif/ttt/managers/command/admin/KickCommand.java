@@ -37,36 +37,36 @@ import org.bukkit.command.CommandSender;
 
 public class KickCommand extends SubcommandHandler {
 
-	public KickCommand(CommandSender sender, String[] args) {
-		super(sender, args, "ttt.admin.kick");
-	}
+    public KickCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.admin.kick");
+    }
 
-	@Override
-	public void handle() {
-		if (assertPermission()) {
-			if (args.length > 1) {
-				String name = args[1];
-				MGPlayer mp = Main.mg.getMGPlayer(name);
-				if (mp != null) {
-					try {
-						mp.removeFromRound();
-						mp.getBukkitPlayer().sendMessage(getMessage("info.personal.kick", ERROR_COLOR));
-						sender.sendMessage(getMessage("info.global.round.event.kick", INFO_COLOR, mp.getBukkitPlayer().getName()));
-					}
-					catch (NoSuchPlayerException ex) {
-						sender.sendMessage(getMessage("error.round.no-such-player", ERROR_COLOR)); // shouldn't ever happen
-					}
-					catch (PlayerOfflineException ex) {
-						sender.sendMessage(getMessage("error.round.player-offline", ERROR_COLOR));
-					}
-				}
-				else
-					sender.sendMessage(getMessage("error.round.no-such-player", ERROR_COLOR));
-			}
-			else {
-				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
-				sendUsage();
-			}
-		}
-	}
+    @Override
+    public void handle() {
+        if (assertPermission()) {
+            if (args.length > 1) {
+                String name = args[1];
+                MGPlayer mp = Main.mg.getMGPlayer(name);
+                if (mp != null) {
+                    try {
+                        mp.removeFromRound();
+                        mp.getBukkitPlayer().sendMessage(getMessage("info.personal.kick", ERROR_COLOR));
+                        sender.sendMessage(getMessage("info.global.round.event.kick", INFO_COLOR, mp.getBukkitPlayer().getName()));
+                    }
+                    catch (NoSuchPlayerException ex) {
+                        sender.sendMessage(getMessage("error.round.no-such-player", ERROR_COLOR)); // shouldn't ever happen
+                    }
+                    catch (PlayerOfflineException ex) {
+                        sender.sendMessage(getMessage("error.round.player-offline", ERROR_COLOR));
+                    }
+                }
+                else
+                    sender.sendMessage(getMessage("error.round.no-such-player", ERROR_COLOR));
+            }
+            else {
+                sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                sendUsage();
+            }
+        }
+    }
 }

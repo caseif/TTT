@@ -41,42 +41,42 @@ import org.bukkit.command.CommandSender;
 
 public class ImportCommand extends SubcommandHandler {
 
-	public ImportCommand(CommandSender sender, String[] args) {
-		super(sender, args, "ttt.arena.import");
-	}
+    public ImportCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.arena.import");
+    }
 
-	@Override
-	public void handle() {
-		if (assertPermission()) {
-			if (args.length > 1) {
-				String worldName = null;
-				for (File f : Bukkit.getWorldContainer().listFiles()) {
-					if (f.getName().equalsIgnoreCase(args[1])) {
-						worldName = f.getName();
-					}
-				}
-				if (worldName != null) {
-					if (FileUtil.isWorld(args[1])) {
-						World w = Bukkit.createWorld(new WorldCreator(worldName));
-						if (w != null) {
-							try {
-								Main.mg.createArena(worldName, w.getSpawnLocation());
-								sender.sendMessage(getMessage("info.personal.arena.import.success", INFO_COLOR));
-							}
-							catch (ArenaExistsException e) {
-								//TODO: replace this message with something more accurate
-								sender.sendMessage(getMessage("error.arena.already-exists", ERROR_COLOR));
-							}
-							return;
-						}
-					}
-				}
-				sender.sendMessage(getMessage("error.plugin.world-load", ERROR_COLOR));
-			}
-			else {
-				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
-				sendUsage();
-			}
-		}
-	}
+    @Override
+    public void handle() {
+        if (assertPermission()) {
+            if (args.length > 1) {
+                String worldName = null;
+                for (File f : Bukkit.getWorldContainer().listFiles()) {
+                    if (f.getName().equalsIgnoreCase(args[1])) {
+                        worldName = f.getName();
+                    }
+                }
+                if (worldName != null) {
+                    if (FileUtil.isWorld(args[1])) {
+                        World w = Bukkit.createWorld(new WorldCreator(worldName));
+                        if (w != null) {
+                            try {
+                                Main.mg.createArena(worldName, w.getSpawnLocation());
+                                sender.sendMessage(getMessage("info.personal.arena.import.success", INFO_COLOR));
+                            }
+                            catch (ArenaExistsException e) {
+                                //TODO: replace this message with something more accurate
+                                sender.sendMessage(getMessage("error.arena.already-exists", ERROR_COLOR));
+                            }
+                            return;
+                        }
+                    }
+                }
+                sender.sendMessage(getMessage("error.plugin.world-load", ERROR_COLOR));
+            }
+            else {
+                sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                sendUsage();
+            }
+        }
+    }
 }

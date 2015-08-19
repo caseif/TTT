@@ -46,201 +46,201 @@ import org.bukkit.entity.Player;
 
 public class KarmaManager {
 
-	public static HashMap<String, Integer> playerKarma = new HashMap<String, Integer>();
+    public static HashMap<String, Integer> playerKarma = new HashMap<String, Integer>();
 
-	public static void saveKarma(Round round) {
-		for (MGPlayer mp : round.getPlayerList()) {
-			KarmaManager.saveKarma(mp);
-		}
-	}
+    public static void saveKarma(Round round) {
+        for (MGPlayer mp : round.getPlayerList()) {
+            KarmaManager.saveKarma(mp);
+        }
+    }
 
-	public static void saveKarma(MGPlayer player) {
-		playerKarma.put(player.getName(), getKarma(player));
-		File karmaFile = new File(Main.plugin.getDataFolder(), "karma.yml");
-		try {
-			if (karmaFile.exists()) {
-				YamlConfiguration karmaYaml = new YamlConfiguration();
-				karmaYaml.load(karmaFile);
-				UUID uuid = Minigame.getOnlineUUIDs().get(player.getName());
-				if (uuid == null) {
-					// this bit is so it won't break when I'm testing, but offline servers will still get screwed up
-					List<String> testAccounts = Arrays.asList("testing123", "testing456", "testing789");
-					if (testAccounts.contains(player.getName().toLowerCase())) {
-						uuid = Bukkit.getPlayer(player.getName()).getUniqueId();
-					}
-					else {
-						Main.log.severe(Main.locale.getMessage("error.plugin.offline-mode"));
-					}
-				}
-				karmaYaml.set(uuid.toString(), getKarma(player));
-				karmaYaml.save(karmaFile);
-			}
-		}
-		catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+    public static void saveKarma(MGPlayer player) {
+        playerKarma.put(player.getName(), getKarma(player));
+        File karmaFile = new File(Main.plugin.getDataFolder(), "karma.yml");
+        try {
+            if (karmaFile.exists()) {
+                YamlConfiguration karmaYaml = new YamlConfiguration();
+                karmaYaml.load(karmaFile);
+                UUID uuid = Minigame.getOnlineUUIDs().get(player.getName());
+                if (uuid == null) {
+                    // this bit is so it won't break when I'm testing, but offline servers will still get screwed up
+                    List<String> testAccounts = Arrays.asList("testing123", "testing456", "testing789");
+                    if (testAccounts.contains(player.getName().toLowerCase())) {
+                        uuid = Bukkit.getPlayer(player.getName()).getUniqueId();
+                    }
+                    else {
+                        Main.log.severe(Main.locale.getMessage("error.plugin.offline-mode"));
+                    }
+                }
+                karmaYaml.set(uuid.toString(), getKarma(player));
+                karmaYaml.save(karmaFile);
+            }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-	public static void loadKarma(String pName) {
-		File karmaFile = new File(Main.plugin.getDataFolder(), "karma.yml");
-		try {
-			UUID uuid = Minigame.getOnlineUUIDs().get(pName);
-			if (uuid == null) {
-				// this bit is so it won't break when I'm testing, but offline servers will still get screwed up
-				List<String> testAccounts = Arrays.asList("testing123", "testing456", "testing789");
-				if (testAccounts.contains(pName.toLowerCase())) {
-					uuid = Bukkit.getPlayer(pName).getUniqueId();
-				}
-				else {
-					Main.log.severe(Main.locale.getMessage("error.plugin.offline-mode"));
-				}
-			}
-			if (!karmaFile.exists()) {
-				Main.createFile("karma.yml");
-			}
-			YamlConfiguration karmaYaml = new YamlConfiguration();
-			karmaYaml.load(karmaFile);
-			if (karmaYaml.isSet(uuid.toString())) {
-				if (karmaYaml.getInt(uuid.toString()) > Config.MAX_KARMA) {
-					playerKarma.put(pName, Config.MAX_KARMA);
-				}
-				else {
-					playerKarma.put(pName, karmaYaml.getInt(uuid.toString()));
-				}
-			}
-			else {
-				playerKarma.put(pName, Config.DEFAULT_KARMA);
-			}
-		}
-		catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+    public static void loadKarma(String pName) {
+        File karmaFile = new File(Main.plugin.getDataFolder(), "karma.yml");
+        try {
+            UUID uuid = Minigame.getOnlineUUIDs().get(pName);
+            if (uuid == null) {
+                // this bit is so it won't break when I'm testing, but offline servers will still get screwed up
+                List<String> testAccounts = Arrays.asList("testing123", "testing456", "testing789");
+                if (testAccounts.contains(pName.toLowerCase())) {
+                    uuid = Bukkit.getPlayer(pName).getUniqueId();
+                }
+                else {
+                    Main.log.severe(Main.locale.getMessage("error.plugin.offline-mode"));
+                }
+            }
+            if (!karmaFile.exists()) {
+                Main.createFile("karma.yml");
+            }
+            YamlConfiguration karmaYaml = new YamlConfiguration();
+            karmaYaml.load(karmaFile);
+            if (karmaYaml.isSet(uuid.toString())) {
+                if (karmaYaml.getInt(uuid.toString()) > Config.MAX_KARMA) {
+                    playerKarma.put(pName, Config.MAX_KARMA);
+                }
+                else {
+                    playerKarma.put(pName, karmaYaml.getInt(uuid.toString()));
+                }
+            }
+            else {
+                playerKarma.put(pName, Config.DEFAULT_KARMA);
+            }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-	public static void allocateKarma(Round round) {
-		for (MGPlayer mp : round.getPlayerList()) {
-			addKarma(mp, Config.KARMA_HEAL);
-			if (!mp.hasMetadata("hasTeamKilled")) {
-				int karmaHeal = Config.KARMA_CLEAN_BONUS;
-				if (getKarma(mp) > 1000) {
-					if ((Config.MAX_KARMA - 1000) > 0) {
-						karmaHeal = (int)Math.round(
-								Config.KARMA_CLEAN_BONUS * Math.pow(
-										.5, (getKarma(mp) - 1000.0) /
-												((double)(Config.MAX_KARMA - 1000) *
-														Config.KARMA_CLEAN_HALF)
-								)
-						);
-					}
-				}
-				addKarma(mp, karmaHeal);
-			}
-		}
-	}
+    public static void allocateKarma(Round round) {
+        for (MGPlayer mp : round.getPlayerList()) {
+            addKarma(mp, Config.KARMA_HEAL);
+            if (!mp.hasMetadata("hasTeamKilled")) {
+                int karmaHeal = Config.KARMA_CLEAN_BONUS;
+                if (getKarma(mp) > 1000) {
+                    if ((Config.MAX_KARMA - 1000) > 0) {
+                        karmaHeal = (int)Math.round(
+                                Config.KARMA_CLEAN_BONUS * Math.pow(
+                                        .5, (getKarma(mp) - 1000.0) /
+                                                ((double)(Config.MAX_KARMA - 1000) *
+                                                        Config.KARMA_CLEAN_HALF)
+                                )
+                        );
+                    }
+                }
+                addKarma(mp, karmaHeal);
+            }
+        }
+    }
 
-	public static void handleDamageKarma(MGPlayer damager, MGPlayer victim, double damage) {
-		if (damager != null && victim != null) {
-			// team damage
-			if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor")) {
-				int penalty = (int)(getKarma(victim) * (damage * Config.DAMAGE_PENALTY));
-				subtractKarma(damager, penalty);
-			}
-			// innocent damaging traitor
-			else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")) {
-				int reward = (int)(Config.MAX_KARMA * damage * Config.T_DAMAGE_REWARD);
-				addKarma(damager, reward);
-			}
-		}
-	}
+    public static void handleDamageKarma(MGPlayer damager, MGPlayer victim, double damage) {
+        if (damager != null && victim != null) {
+            // team damage
+            if (damager.getTeam().equals("Traitor") == victim.getTeam().equals("Traitor")) {
+                int penalty = (int)(getKarma(victim) * (damage * Config.DAMAGE_PENALTY));
+                subtractKarma(damager, penalty);
+            }
+            // innocent damaging traitor
+            else if (!damager.getTeam().equals("Traitor") && victim.getTeam().equals("Traitor")) {
+                int reward = (int)(Config.MAX_KARMA * damage * Config.T_DAMAGE_REWARD);
+                addKarma(damager, reward);
+            }
+        }
+    }
 
-	public static void handleKillKarma(MGPlayer killer, MGPlayer victim) {
-		if (MiscUtil.isTraitor(killer) == MiscUtil.isTraitor(killer)) {
-			handleDamageKarma(killer, victim, Config.KILL_PENALTY);
-		}
-		else if (!MiscUtil.isTraitor(killer)) {
-			int reward = Config.TBONUS * Config.T_DAMAGE_REWARD * getKarma(victim);
-			addKarma(killer, reward);
-		}
-	}
+    public static void handleKillKarma(MGPlayer killer, MGPlayer victim) {
+        if (MiscUtil.isTraitor(killer) == MiscUtil.isTraitor(killer)) {
+            handleDamageKarma(killer, victim, Config.KILL_PENALTY);
+        }
+        else if (!MiscUtil.isTraitor(killer)) {
+            int reward = Config.TBONUS * Config.T_DAMAGE_REWARD * getKarma(victim);
+            addKarma(killer, reward);
+        }
+    }
 
-	public static void handleKick(MGPlayer player) {
-		@SuppressWarnings("deprecation") Player p = Main.plugin.getServer().getPlayer(player.getName());
-		if (p != null) {
-			try {
-				player.removeFromRound();
-			}
-			catch (NoSuchPlayerException ex) {
-				ex.printStackTrace();
-			}
-			catch (PlayerOfflineException ex) { // neither can be thrown
-				ex.printStackTrace();
-			}
-			if (Config.KARMA_BAN) {
-				MiscUtil.ban(p.getUniqueId(), Config.KARMA_BAN_TIME);
-				if (Config.KARMA_BAN_TIME < 0) {
-					p.sendMessage(MiscUtil.getMessage("info.personal.ban.perm.karma", Constants.INFO_COLOR, Config.KARMA_KICK + ""));
-				}
-				else {
-					p.sendMessage(MiscUtil.getMessage("info.personal.ban.temp.karma", Constants.INFO_COLOR,
-							Integer.toString(Config.KARMA_BAN_TIME),
-							Config.KARMA_KICK + ""));
-				}
-			}
-			else {
-				p.sendMessage(MiscUtil.getMessage("info.personal.kick.karma", Constants.INFO_COLOR, Integer.toString(Config.KARMA_KICK)));
-			}
-		}
-	}
+    public static void handleKick(MGPlayer player) {
+        @SuppressWarnings("deprecation") Player p = Main.plugin.getServer().getPlayer(player.getName());
+        if (p != null) {
+            try {
+                player.removeFromRound();
+            }
+            catch (NoSuchPlayerException ex) {
+                ex.printStackTrace();
+            }
+            catch (PlayerOfflineException ex) { // neither can be thrown
+                ex.printStackTrace();
+            }
+            if (Config.KARMA_BAN) {
+                MiscUtil.ban(p.getUniqueId(), Config.KARMA_BAN_TIME);
+                if (Config.KARMA_BAN_TIME < 0) {
+                    p.sendMessage(MiscUtil.getMessage("info.personal.ban.perm.karma", Constants.INFO_COLOR, Config.KARMA_KICK + ""));
+                }
+                else {
+                    p.sendMessage(MiscUtil.getMessage("info.personal.ban.temp.karma", Constants.INFO_COLOR,
+                            Integer.toString(Config.KARMA_BAN_TIME),
+                            Config.KARMA_KICK + ""));
+                }
+            }
+            else {
+                p.sendMessage(MiscUtil.getMessage("info.personal.kick.karma", Constants.INFO_COLOR, Integer.toString(Config.KARMA_KICK)));
+            }
+        }
+    }
 
-	public static int getKarma(MGPlayer mp) {
-		return (Integer)mp.getMetadata("karma");
-	}
+    public static int getKarma(MGPlayer mp) {
+        return (Integer)mp.getMetadata("karma");
+    }
 
-	public static void addKarma(MGPlayer mp, int amount) {
-		int karma = (Integer)mp.getMetadata("karma");
-		if (amount == 0 && Config.KARMA_ROUND_TO_ONE) {
-			amount = 1;
-		}
-		if (karma + amount < Main.maxKarma) {
-			karma += amount;
-		}
-		else if (karma < Main.maxKarma) {
-			karma = Main.maxKarma;
-		}
-		mp.setMetadata("karma", karma);
-		if (Config.KARMA_DEBUG) {
-			Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": +" + amount + ". " +
-					"New value: " + mp.getMetadata("karma"));
-		}
-	}
+    public static void addKarma(MGPlayer mp, int amount) {
+        int karma = (Integer)mp.getMetadata("karma");
+        if (amount == 0 && Config.KARMA_ROUND_TO_ONE) {
+            amount = 1;
+        }
+        if (karma + amount < Main.maxKarma) {
+            karma += amount;
+        }
+        else if (karma < Main.maxKarma) {
+            karma = Main.maxKarma;
+        }
+        mp.setMetadata("karma", karma);
+        if (Config.KARMA_DEBUG) {
+            Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": +" + amount + ". " +
+                    "New value: " + mp.getMetadata("karma"));
+        }
+    }
 
-	public static void subtractKarma(MGPlayer mp, int amount) {
-		int karma = (Integer)mp.getMetadata("karma");
-		if (amount == 0 && Config.KARMA_ROUND_TO_ONE) {
-			amount = 1;
-		}
-		if (karma - amount < Config.KARMA_KICK) {
-			KarmaManager.handleKick(mp);
-		}
-		else {
-			karma -= amount;
-			mp.setMetadata("hasTeamKilled", true);
-		}
-		mp.setMetadata("karma", karma);
-		if (Config.KARMA_DEBUG) {
-			Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": -" + amount + ". " +
-					"New value: " + mp.getMetadata("karma"));
-		}
-	}
+    public static void subtractKarma(MGPlayer mp, int amount) {
+        int karma = (Integer)mp.getMetadata("karma");
+        if (amount == 0 && Config.KARMA_ROUND_TO_ONE) {
+            amount = 1;
+        }
+        if (karma - amount < Config.KARMA_KICK) {
+            KarmaManager.handleKick(mp);
+        }
+        else {
+            karma -= amount;
+            mp.setMetadata("hasTeamKilled", true);
+        }
+        mp.setMetadata("karma", karma);
+        if (Config.KARMA_DEBUG) {
+            Main.kLog.info("[TTT Karma Debug] " + mp.getName() + ": -" + amount + ". " +
+                    "New value: " + mp.getMetadata("karma"));
+        }
+    }
 
-	public static void calculateDamageReduction(MGPlayer player) {
-		int baseKarma = getKarma(player) - 1000;
-		double damageRed =
-				Config.KARMA_STRICT ? -2e-6 * Math.pow(baseKarma, 2) + 7e-4 * baseKarma + 1 :
-						-2.5e-6 * Math.pow(baseKarma, 2) + 1;
-		if (damageRed <= 0) {
-			damageRed = 0.01;
-		}
-		player.setMetadata("damageRed", damageRed);
-	}
+    public static void calculateDamageReduction(MGPlayer player) {
+        int baseKarma = getKarma(player) - 1000;
+        double damageRed =
+                Config.KARMA_STRICT ? -2e-6 * Math.pow(baseKarma, 2) + 7e-4 * baseKarma + 1 :
+                        -2.5e-6 * Math.pow(baseKarma, 2) + 1;
+        if (damageRed <= 0) {
+            damageRed = 0.01;
+        }
+        player.setMetadata("damageRed", damageRed);
+    }
 }

@@ -33,18 +33,18 @@ import org.bukkit.command.CommandSender;
 
 public class SpecialCommandManager implements CommandExecutor {
 
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (label.equalsIgnoreCase("ttt")) {
-			if (sender.hasPermission("ttt.build.warn")) {
-				sender.sendMessage(getMessage("error.plugin.mglib", ERROR_COLOR, MIN_MGLIB_VERSION));
-			}
-			else {
-				sender.sendMessage(getMessage("error.plugin.disabled", ERROR_COLOR));
-			}
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (label.equalsIgnoreCase("ttt")) {
+            if (sender.hasPermission("ttt.build.warn")) {
+                sender.sendMessage(getMessage("error.plugin.mglib", ERROR_COLOR, MIN_MGLIB_VERSION));
+            }
+            else {
+                sender.sendMessage(getMessage("error.plugin.disabled", ERROR_COLOR));
+            }
+            return true;
+        }
+        return false;
+    }
 
 }

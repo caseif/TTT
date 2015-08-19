@@ -35,23 +35,23 @@ import org.bukkit.command.CommandSender;
 
 public class RemoveArenaCommand extends SubcommandHandler {
 
-	public RemoveArenaCommand(CommandSender sender, String[] args) {
-		super(sender, args, "ttt.arena.remove");
-	}
+    public RemoveArenaCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.arena.remove");
+    }
 
-	@Override
-	public void handle() {
-		if (assertPermission()) {
-			if (args.length > 1) {
-				String name = args[1];
-				try {
-					Main.mg.deleteArena(name);
-					sender.sendMessage(getMessage("info.personal.arena.remove.success", INFO_COLOR, name));
-				}
-				catch (NoSuchArenaException ex) {
-					sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
-				}
-			}
-		}
-	}
+    @Override
+    public void handle() {
+        if (assertPermission()) {
+            if (args.length > 1) {
+                String name = args[1];
+                try {
+                    Main.mg.deleteArena(name);
+                    sender.sendMessage(getMessage("info.personal.arena.remove.success", INFO_COLOR, name));
+                }
+                catch (NoSuchArenaException ex) {
+                    sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
+                }
+            }
+        }
+    }
 }

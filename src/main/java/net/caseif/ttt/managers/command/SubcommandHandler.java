@@ -32,40 +32,40 @@ import org.bukkit.command.CommandSender;
 
 public abstract class SubcommandHandler {
 
-	protected CommandSender sender;
-	protected String[] args;
-	protected String perm;
+    protected CommandSender sender;
+    protected String[] args;
+    protected String perm;
 
-	public SubcommandHandler(CommandSender sender, String[] args, String perm) {
-		this.sender = sender;
-		this.args = args;
-		this.perm = perm;
-	}
+    public SubcommandHandler(CommandSender sender, String[] args, String perm) {
+        this.sender = sender;
+        this.args = args;
+        this.perm = perm;
+    }
 
-	public abstract void handle();
+    public abstract void handle();
 
-	/**
-	 * Asserts that the sender has permission to use a subcommand. Sends an
-	 * error message if not.
-	 * @return whether the sender has permission to use a subcommand
-	 */
-	public boolean assertPermission() {
-		if (perm != null && !sender.hasPermission(perm)) {
-			sender.sendMessage(MiscUtil.getMessage("error.perms.generic", Constants.ERROR_COLOR));
-			return false;
-		}
-		return true;
-	}
+    /**
+     * Asserts that the sender has permission to use a subcommand. Sends an
+     * error message if not.
+     * @return whether the sender has permission to use a subcommand
+     */
+    public boolean assertPermission() {
+        if (perm != null && !sender.hasPermission(perm)) {
+            sender.sendMessage(MiscUtil.getMessage("error.perms.generic", Constants.ERROR_COLOR));
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * Retrieves the usage for this subcommand from the plugin.yml file.
-	 * @return the usage for this subcommand, or null if not specified
-	 */
-	public String getUsage() {
-		return CommandManager.getUsage(args[0]);
-	}
+    /**
+     * Retrieves the usage for this subcommand from the plugin.yml file.
+     * @return the usage for this subcommand, or null if not specified
+     */
+    public String getUsage() {
+        return CommandManager.getUsage(args[0]);
+    }
 
-	public void sendUsage() {
-		sender.sendMessage(getMessage("fragment.usage", INFO_COLOR) + ": " + getUsage());
-	}
+    public void sendUsage() {
+        sender.sendMessage(getMessage("fragment.usage", INFO_COLOR) + ": " + getUsage());
+    }
 }

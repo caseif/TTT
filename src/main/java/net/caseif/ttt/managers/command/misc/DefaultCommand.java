@@ -34,14 +34,14 @@ import org.bukkit.command.CommandSender;
 
 public class DefaultCommand extends SubcommandHandler {
 
-	public DefaultCommand(CommandSender sender, String[] args) {
-		super(sender, args, null);
-	}
+    public DefaultCommand(CommandSender sender, String[] args) {
+        super(sender, args, null);
+    }
 
-	@Override
-	public void handle() {
-		sender.sendMessage(getMessage("info.plugin.info", SPECIAL_COLOR,
-				Main.plugin.getDescription().getVersion(), "Maxim Roncacé"));
-		sender.sendMessage(getMessage("info.command.usage.help", INFO_COLOR));
-	}
+    @Override
+    public void handle() {
+        sender.sendMessage(getMessage("info.plugin.info", SPECIAL_COLOR,
+                Main.plugin.getDescription().getVersion(), "Maxim Roncacé"));
+        sender.sendMessage(getMessage("info.command.usage.help", INFO_COLOR));
+    }
 }

@@ -39,42 +39,42 @@ import org.bukkit.entity.Player;
 
 public class LeaveCommand extends SubcommandHandler {
 
-	public LeaveCommand(CommandSender sender, String[] args) {
-		super(sender, args, "ttt.arena.leave");
-	}
+    public LeaveCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.arena.leave");
+    }
 
-	@Override
-	public void handle() {
-		if (sender instanceof Player) {
-			if (assertPermission()) {
-				if (Main.mg.isPlayer(sender.getName())) {
-					MGPlayer mp = Main.mg.getMGPlayer(sender.getName());
-					try {
-						if (mp.getRound() != null) {
-							String roundName = mp.getRound().getDisplayName();
-							mp.removeFromRound();
-							sender.sendMessage(getMessage("info.personal.arena.leave.success", INFO_COLOR,
-									ARENA_COLOR + roundName));
-						}
-						else {
-							throw new NoSuchPlayerException();
-						}
-					}
-					catch (NoSuchPlayerException ex) {
-						sender.sendMessage(getMessage("error.round.outside", ERROR_COLOR));
-					}
-					catch (PlayerOfflineException ex) {
-						ex.printStackTrace();
-					}
-				}
-				else {
-					sender.sendMessage(getMessage("error.round.outside", ERROR_COLOR));
-					sendUsage();
-				}
-			}
-		}
-		else {
-			sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
-		}
-	}
+    @Override
+    public void handle() {
+        if (sender instanceof Player) {
+            if (assertPermission()) {
+                if (Main.mg.isPlayer(sender.getName())) {
+                    MGPlayer mp = Main.mg.getMGPlayer(sender.getName());
+                    try {
+                        if (mp.getRound() != null) {
+                            String roundName = mp.getRound().getDisplayName();
+                            mp.removeFromRound();
+                            sender.sendMessage(getMessage("info.personal.arena.leave.success", INFO_COLOR,
+                                    ARENA_COLOR + roundName));
+                        }
+                        else {
+                            throw new NoSuchPlayerException();
+                        }
+                    }
+                    catch (NoSuchPlayerException ex) {
+                        sender.sendMessage(getMessage("error.round.outside", ERROR_COLOR));
+                    }
+                    catch (PlayerOfflineException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                else {
+                    sender.sendMessage(getMessage("error.round.outside", ERROR_COLOR));
+                    sendUsage();
+                }
+            }
+        }
+        else {
+            sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
+        }
+    }
 }

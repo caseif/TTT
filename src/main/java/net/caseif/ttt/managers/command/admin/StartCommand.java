@@ -38,36 +38,36 @@ import org.bukkit.command.CommandSender;
 
 public class StartCommand extends SubcommandHandler {
 
-	public StartCommand(CommandSender sender, String[] args) {
-		super(sender, args, "ttt.admin.start");
-	}
+    public StartCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.admin.start");
+    }
 
-	@Override
-	public void handle() {
-		if (assertPermission()) {
-			if (args.length > 1) {
-				String arena = args[1];
-				Round r = Main.mg.getRound(arena);
-				if (r != null) {
-					if (r.getPlayerCount() > 1) {
-						if (args.length > 2 && NumUtil.isInt(args[2]))
-							r.setPlayingTime(Integer.parseInt(args[2]));
-						r.setStage(Stage.PREPARING);
-						r.start();
-						sender.sendMessage(getMessage("info.personal.arena.set-stage.playing.success",
-								INFO_COLOR, ARENA_COLOR + r.getArena()));
-					}
-					else {
-						sender.sendMessage(getMessage("error.arena.too-few-players", ERROR_COLOR));
-					}
-				}
-				else
-					sender.sendMessage(getMessage("error.round.dne", ERROR_COLOR, ARENA_COLOR + arena));
-			}
-			else {
-				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
-				sendUsage();
-			}
-		}
-	}
+    @Override
+    public void handle() {
+        if (assertPermission()) {
+            if (args.length > 1) {
+                String arena = args[1];
+                Round r = Main.mg.getRound(arena);
+                if (r != null) {
+                    if (r.getPlayerCount() > 1) {
+                        if (args.length > 2 && NumUtil.isInt(args[2]))
+                            r.setPlayingTime(Integer.parseInt(args[2]));
+                        r.setStage(Stage.PREPARING);
+                        r.start();
+                        sender.sendMessage(getMessage("info.personal.arena.set-stage.playing.success",
+                                INFO_COLOR, ARENA_COLOR + r.getArena()));
+                    }
+                    else {
+                        sender.sendMessage(getMessage("error.arena.too-few-players", ERROR_COLOR));
+                    }
+                }
+                else
+                    sender.sendMessage(getMessage("error.round.dne", ERROR_COLOR, ARENA_COLOR + arena));
+            }
+            else {
+                sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                sendUsage();
+            }
+        }
+    }
 }

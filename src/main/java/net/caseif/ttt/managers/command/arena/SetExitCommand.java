@@ -41,70 +41,70 @@ import org.bukkit.entity.Player;
 
 public class SetExitCommand extends SubcommandHandler {
 
-	public SetExitCommand(CommandSender sender, String[] args) {
-		super(sender, args, "ttt.setexit");
-	}
+    public SetExitCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.setexit");
+    }
 
-	@Override
-	public void handle() {
-		if (assertPermission()) {
-			if (sender instanceof Player) {
-				try {
-					File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
-					if (!spawnFile.exists()) {
-						if (Config.VERBOSE_LOGGING) {
-							Main.mg.log(getMessage("info.plugin.compatibility.creating-file", null, false, "spawn.yml"), LogLevel.INFO);
-						}
-						spawnFile.createNewFile();
-					}
-					boolean keepOrientation = false;
-					if (args.length > 1) {
-						if (args[1].equalsIgnoreCase("true") ||
-								args[1].equalsIgnoreCase("yes") ||
-								args[1].equalsIgnoreCase("1")) {
-							keepOrientation = true;
-						}
-						else if (args[1].equalsIgnoreCase("false") ||
-								args[1].equalsIgnoreCase("no") ||
-								args[1].equalsIgnoreCase("0")) {
-							keepOrientation = false;
-						}
-						else {
-							sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-							return;
-						}
-					}
-					YamlConfiguration spawnYaml = new YamlConfiguration();
-					spawnYaml.load(spawnFile);
-					Location l = ((Player)sender).getLocation();
-					spawnYaml.set("world", l.getWorld().getName());
-					spawnYaml.set("x", l.getBlockX() + 0.5);
-					spawnYaml.set("y", l.getBlockY());
-					spawnYaml.set("z", l.getBlockZ() + 0.5);
-					spawnYaml.set("pitch", keepOrientation ? l.getPitch() : null);
-					spawnYaml.set("yaw", keepOrientation ? l.getYaw() : null);
-					spawnYaml.save(spawnFile);
-					if (keepOrientation) {
-						Main.mg.getConfigManager().setDefaultExitLocation(
-								new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5,
-										l.getYaw(), l.getPitch())
-						);
-					}
-					else {
-						Main.mg.getConfigManager().setDefaultExitLocation(
-								new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5)
-						);
-					}
-					sender.sendMessage(getMessage("info.personal.set-exit.success", INFO_COLOR));
-				}
-				catch (Exception ex) {
-					ex.printStackTrace();
-					sender.sendMessage(getMessage("error.plugin.set-exit", ERROR_COLOR));
-				}
-			}
-			else {
-				sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
-			}
-		}
-	}
+    @Override
+    public void handle() {
+        if (assertPermission()) {
+            if (sender instanceof Player) {
+                try {
+                    File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
+                    if (!spawnFile.exists()) {
+                        if (Config.VERBOSE_LOGGING) {
+                            Main.mg.log(getMessage("info.plugin.compatibility.creating-file", null, false, "spawn.yml"), LogLevel.INFO);
+                        }
+                        spawnFile.createNewFile();
+                    }
+                    boolean keepOrientation = false;
+                    if (args.length > 1) {
+                        if (args[1].equalsIgnoreCase("true") ||
+                                args[1].equalsIgnoreCase("yes") ||
+                                args[1].equalsIgnoreCase("1")) {
+                            keepOrientation = true;
+                        }
+                        else if (args[1].equalsIgnoreCase("false") ||
+                                args[1].equalsIgnoreCase("no") ||
+                                args[1].equalsIgnoreCase("0")) {
+                            keepOrientation = false;
+                        }
+                        else {
+                            sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                            return;
+                        }
+                    }
+                    YamlConfiguration spawnYaml = new YamlConfiguration();
+                    spawnYaml.load(spawnFile);
+                    Location l = ((Player)sender).getLocation();
+                    spawnYaml.set("world", l.getWorld().getName());
+                    spawnYaml.set("x", l.getBlockX() + 0.5);
+                    spawnYaml.set("y", l.getBlockY());
+                    spawnYaml.set("z", l.getBlockZ() + 0.5);
+                    spawnYaml.set("pitch", keepOrientation ? l.getPitch() : null);
+                    spawnYaml.set("yaw", keepOrientation ? l.getYaw() : null);
+                    spawnYaml.save(spawnFile);
+                    if (keepOrientation) {
+                        Main.mg.getConfigManager().setDefaultExitLocation(
+                                new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5,
+                                        l.getYaw(), l.getPitch())
+                        );
+                    }
+                    else {
+                        Main.mg.getConfigManager().setDefaultExitLocation(
+                                new Location(l.getWorld(), l.getBlockX() + 0.5, l.getBlockY(), l.getBlockZ() + 0.5)
+                        );
+                    }
+                    sender.sendMessage(getMessage("info.personal.set-exit.success", INFO_COLOR));
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                    sender.sendMessage(getMessage("error.plugin.set-exit", ERROR_COLOR));
+                }
+            }
+            else {
+                sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
+            }
+        }
+    }
 }

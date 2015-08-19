@@ -32,11 +32,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class SpecialPlayerListener implements Listener {
 
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent e) {
-		if (e.getPlayer().hasPermission("ttt.build.warn")) {
-			e.getPlayer().sendMessage(getMessage("error.plugin.mglib", ERROR_COLOR));
-		}
-	}
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        if (e.getPlayer().hasPermission("ttt.build.warn")) {
+            e.getPlayer().sendMessage(getMessage("error.plugin.mglib", ERROR_COLOR));
+        }
+    }
 
 }

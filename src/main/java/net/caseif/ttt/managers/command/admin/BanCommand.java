@@ -39,60 +39,60 @@ import org.bukkit.command.CommandSender;
 
 public class BanCommand extends SubcommandHandler {
 
-	public BanCommand(CommandSender sender, String[] args) {
-		super(sender, args, "ttt.admin.ban");
-	}
+    public BanCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.admin.ban");
+    }
 
-	@Override
-	public void handle() {
-		if (assertPermission()) {
-			if (args.length > 1) {
-				String name = args[1];
-				int time = -1;
-				if (args.length > 2) {
-					if (NumUtil.isInt(args[2])) {
-						time = Integer.parseInt(args[2]);
-					}
-					else {
-						sender.sendMessage(getMessage("error.admin.ban.invalid-time", ERROR_COLOR));
-						return;
-					}
-				}
-				try {
-					UUID uuid = UUIDFetcher.getUUIDOf(name);
-					if (uuid == null) {
-						sender.sendMessage(getMessage("error.plugin.uuid", ERROR_COLOR));
-						return;
-					}
-					if (MiscUtil.ban(uuid, time)) {
-						Bukkit.getPlayer(name).sendMessage(
-								time == -1 ?
-										getMessage("info.personal.ban.perm", ERROR_COLOR) :
-										getMessage("info.personal.ban.temp", ERROR_COLOR,
-												time + getMessage("fragment.minutes", ERROR_COLOR, false))
-						);
-						sender.sendMessage(
-								time == -1 ?
-										getMessage("info.personal.ban.other.perm", INFO_COLOR, name) :
-										getMessage("info.personal.ban.other.temp", INFO_COLOR, name,
-												time + getMessage("fragment.minutes", INFO_COLOR, false))
-						);
-					}
-					else {
-						sender.sendMessage(getMessage("error.plugin.ban", ERROR_COLOR));
-					}
-				}
-				catch (Exception ex) {
-					sender.sendMessage(getMessage("error.plugin.generic", ERROR_COLOR));
-					ex.printStackTrace();
-				}
-			}
-			else {
-				sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
-				sendUsage();
-			}
-		}
-	}
+    @Override
+    public void handle() {
+        if (assertPermission()) {
+            if (args.length > 1) {
+                String name = args[1];
+                int time = -1;
+                if (args.length > 2) {
+                    if (NumUtil.isInt(args[2])) {
+                        time = Integer.parseInt(args[2]);
+                    }
+                    else {
+                        sender.sendMessage(getMessage("error.admin.ban.invalid-time", ERROR_COLOR));
+                        return;
+                    }
+                }
+                try {
+                    UUID uuid = UUIDFetcher.getUUIDOf(name);
+                    if (uuid == null) {
+                        sender.sendMessage(getMessage("error.plugin.uuid", ERROR_COLOR));
+                        return;
+                    }
+                    if (MiscUtil.ban(uuid, time)) {
+                        Bukkit.getPlayer(name).sendMessage(
+                                time == -1 ?
+                                        getMessage("info.personal.ban.perm", ERROR_COLOR) :
+                                        getMessage("info.personal.ban.temp", ERROR_COLOR,
+                                                time + getMessage("fragment.minutes", ERROR_COLOR, false))
+                        );
+                        sender.sendMessage(
+                                time == -1 ?
+                                        getMessage("info.personal.ban.other.perm", INFO_COLOR, name) :
+                                        getMessage("info.personal.ban.other.temp", INFO_COLOR, name,
+                                                time + getMessage("fragment.minutes", INFO_COLOR, false))
+                        );
+                    }
+                    else {
+                        sender.sendMessage(getMessage("error.plugin.ban", ERROR_COLOR));
+                    }
+                }
+                catch (Exception ex) {
+                    sender.sendMessage(getMessage("error.plugin.generic", ERROR_COLOR));
+                    ex.printStackTrace();
+                }
+            }
+            else {
+                sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                sendUsage();
+            }
+        }
+    }
 
 
 }
