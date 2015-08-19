@@ -13,8 +13,8 @@ Building
 
 TTT uses Gradle to handle compilation and dependencies.
 
-1. Clone the repo and initialize the submodule with `git clone https://bitbucket.org/mproncace/ttt`
-2. Build the project with `./gradlew`, or on Windows, `gradlew`
+1. Clone the repo: `git clone https://github.com/caseif/TTT.git`
+2. Build the project: `./gradlew` (`gradlew` on Windows)
 
 License
 -------
