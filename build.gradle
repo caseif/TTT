@@ -14,7 +14,7 @@ defaultTasks 'clean', 'licenseFormat', 'build', 'shadowJar'
 
 // Project information
 group = 'net.amigocraft.ttt'
-version = '0.7.2'
+version = '0.8.0-SNAPSHOT'
 
 // Extended project information
 ext.projectName = 'ttt'
@@ -23,15 +23,16 @@ ext.inceptionYear = '2013'
 ext.packaging = 'jar'
 ext.versionSuffix = version.contains('SNAPSHOT') ? (
 		(
-				System.getenv('GIT_COMMIT') ? ('-git(' +
-						(System.getenv('GIT_BRANCH').contains('/') ? System.getenv('GIT_BRANCH').split('/')[1] : System.getenv('GIT_BRANCH')) + '-' +
-						System.getenv('GIT_COMMIT').substring(0, 7) + ')') : ''
-		) +
-				(System.getenv('BUILD_NUMBER') ? '-jnks' + System.getenv('BUILD_NUMBER') : '')
+		System.getenv('GIT_COMMIT') ? ('-git('
+				+ System.getenv('GIT_BRANCH')
+				.substring(System.getenv('GIT_BRANCH').split('/')[0].length() + 1) + '-'
+				+ System.getenv('GIT_COMMIT').substring(0, 7) + ')') : ''
+		)
+		+ (System.getenv('BUILD_NUMBER') ? '-jnks' + System.getenv('BUILD_NUMBER') : '')
 ) : ''
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 // Project repositories
 repositories {
@@ -111,4 +112,8 @@ checkstyle {
 tasks.withType(Checkstyle) {
 	exclude '**/*.properties'
 	exclude '**/*.yml'
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.6'
 }
