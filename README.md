@@ -1,12 +1,14 @@
 TTT
 ========
 
-TTT is a Bukkit minigame plugin which emulates the popular gamemode "Trouble In Terrorist Town" from the sandbox game _Garry's Mod_.
+TTT is a Bukkit minigame plugin which emulates the popular gamemode "Trouble In Terrorist Town" from the sandbox game
+*Garry's Mod*.
 
 Contributing
 ------------
 
-Pull requests are welcomed provided they follow TTT's coding style (tabs for indentation, braces on same line, etc.).
+Pull requests are always welcome. Contributions should first and foremost compile, and should follow
+[Google Java Style](https://google.github.io/styleguide/javaguide.html).
 
 Building
 --------
