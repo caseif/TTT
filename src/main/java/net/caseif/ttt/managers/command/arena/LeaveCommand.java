@@ -26,14 +26,12 @@ package net.caseif.ttt.managers.command.arena;
 import static net.caseif.ttt.util.Constants.ARENA_COLOR;
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 
-import net.amigocraft.mglib.api.MGPlayer;
-import net.amigocraft.mglib.exception.NoSuchPlayerException;
-import net.amigocraft.mglib.exception.PlayerOfflineException;
+import com.google.common.base.Optional;
+import net.caseif.flint.challenger.Challenger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -47,29 +45,19 @@ public class LeaveCommand extends SubcommandHandler {
     public void handle() {
         if (sender instanceof Player) {
             if (assertPermission()) {
-                if (Main.mg.isPlayer(sender.getName())) {
-                    MGPlayer mp = Main.mg.getMGPlayer(sender.getName());
-                    try {
-                        if (mp.getRound() != null) {
-                            String roundName = mp.getRound().getDisplayName();
-                            mp.removeFromRound();
-                            sender.sendMessage(getMessage("info.personal.arena.leave.success", INFO_COLOR,
-                                    ARENA_COLOR + roundName));
-                        } else {
-                            throw new NoSuchPlayerException();
-                        }
-                    } catch (NoSuchPlayerException ex) {
-                        sender.sendMessage(getMessage("error.round.outside", ERROR_COLOR));
-                    } catch (PlayerOfflineException ex) {
-                        ex.printStackTrace();
-                    }
+                Optional<Challenger> ch = TTTCore.mg.getChallenger(((Player) sender).getUniqueId());
+                if (ch.isPresent()) {
+                    String roundName = ch.get().getRound().getArena().getName();
+                    ch.get().removeFromRound();
+                    TTTCore.locale.getLocalizable("info.personal.arena.leave.success").withPrefix(INFO_COLOR.toString())
+                            .withReplacements(ARENA_COLOR + roundName).sendTo(sender);
                 } else {
-                    sender.sendMessage(getMessage("error.round.outside", ERROR_COLOR));
-                    sendUsage();
+                    TTTCore.locale.getLocalizable("error.round.outside").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
                 }
             }
         } else {
-            sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
+            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(ERROR_COLOR.toString()).sendTo(sender);
         }
     }
 }

@@ -28,12 +28,12 @@ import static net.caseif.ttt.util.Constants.INNOCENT_COLOR;
 import static net.caseif.ttt.util.Constants.TRAITOR_COLOR;
 
 import net.caseif.ttt.Config;
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 
-import net.amigocraft.mglib.api.LogLevel;
-import net.amigocraft.mglib.api.MGPlayer;
-import net.amigocraft.mglib.api.Round;
 import net.caseif.crosstitles.TitleUtil;
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.round.Round;
+import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -45,13 +45,14 @@ import java.util.UUID;
 public class MiscUtil {
 
     /**
-     * Determines whether a given {@link MGPlayer player} is marked as a Traitor.
+     * Determines whether a given {@link Challenger challenger} is marked as a
+     * Traitor.
      *
      * @param player the player to check
      * @return whether the player is a traitor
      */
-    public static boolean isTraitor(MGPlayer player) {
-        return player.getTeam() != null && player.getTeam().equals("Traitor");
+    public static boolean isTraitor(Challenger player) {
+        return player.getTeam().isPresent() && player.getTeam().get().getId().equals("traitor");
     }
 
     /**
@@ -62,7 +63,7 @@ public class MiscUtil {
      * @return whether the player was successfully banned
      */
     public static boolean ban(UUID player, int minutes) {
-        File f = new File(Main.plugin.getDataFolder(), "bans.yml");
+        File f = new File(TTTCore.getInstance().getDataFolder(), "bans.yml");
         YamlConfiguration y = new YamlConfiguration();
         Player p = Bukkit.getPlayer(player);
         try {
@@ -71,52 +72,35 @@ public class MiscUtil {
             y.set(player.toString(), unbanTime);
             y.save(f);
             if (p != null) {
-                MGPlayer m = Main.mg.getMGPlayer(p.getName());
-                m.removeFromRound();
+                Challenger ch = TTTCore.mg.getChallenger(p.getUniqueId()).get(); //TODO
+                ch.removeFromRound();
             }
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
-            Main.mg.log(getMessage("error.plugin.ban", null, false, p != null ? p.getName() : player.toString()),
-                    LogLevel.WARNING);
+            TTTCore.getInstance().logWarning("error.plugin.ban",
+                    p != null ? p.getName() : player.toString());
         }
         return false;
     }
 
-    public static boolean pardon(UUID player) {
-        File f = new File(Main.plugin.getDataFolder(), "bans.yml");
+    public static boolean pardon(UUID uuid) {
+        File f = new File(TTTCore.getInstance().getDataFolder(), "bans.yml");
         YamlConfiguration y = new YamlConfiguration();
-        Player p = Bukkit.getPlayer(player);
+        Player p = Bukkit.getPlayer(uuid);
         try {
             y.load(f);
-            y.set(player.toString(), null);
+            y.set(uuid.toString(), null);
             y.save(f);
             if (Config.VERBOSE_LOGGING) {
-                Main.mg.log(p != null ? p.getName() : player.toString() + "'s ban has been lifted", LogLevel.INFO);
+                TTTCore.log.info(p != null ? p.getName() : uuid.toString() + "'s ban has been lifted");
             }
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
-            Main.mg.log(getMessage("error.plugin.pardon", null, false, p != null ? p.getName() : player.toString()),
-                    LogLevel.WARNING);
+            TTTCore.getInstance().logWarning("error.plugin.pardon", p != null ? p.getName() : uuid.toString());
         }
         return false;
-    }
-
-    public static String getMessage(String key, ChatColor color, boolean prefix, String... replacements) {
-        if (color != null) {
-            for (int i = 0; i < replacements.length; i++) {
-                if (!replacements[i].equals(ChatColor.stripColor(replacements[i]))
-                        && !replacements[i].endsWith(color.toString())) {
-                    replacements[i] = replacements[i] + color.toString();
-                }
-            }
-        }
-        return (color != null ? color : "") + (prefix ? "[TTT] " : "") + Main.locale.getMessage(key, replacements);
-    }
-
-    public static String getMessage(String key, ChatColor color, String... replacements) {
-        return getMessage(key, color, true, replacements);
     }
 
     public static String fromNullableString(String nullable) {
@@ -129,7 +113,8 @@ public class MiscUtil {
                 throw new IllegalArgumentException("Player cannot be null!");
             }
             role = role.toLowerCase();
-            String title = Main.locale.getMessage("info.personal.status.role." + role + ".title");
+            String title = TTTCore.locale.getLocalizable("info.personal.status.role." + role + ".title")
+                    .localizeFor(player);
             ChatColor color;
             if (role.equals("innocent")) {
                 color = INNOCENT_COLOR;
@@ -151,16 +136,32 @@ public class MiscUtil {
             if (round == null) {
                 throw new IllegalArgumentException("Round cannot be null!");
             }
-            String msg = Main.locale.getMessage("info.global.round.event.end."
+            Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.end."
                     + (traitorVictory ? "traitor" : "innocent") + ".min");
             ChatColor color = traitorVictory ? TRAITOR_COLOR : INNOCENT_COLOR;
-            for (MGPlayer mp : round.getPlayerList()) {
+            for (Challenger ch : round.getChallengers()) {
+                Player pl = Bukkit.getPlayer(ch.getUniqueId());
                 if (Config.SMALL_VICTORY_TITLES) {
-                    TitleUtil.sendTitle(mp.getBukkitPlayer(), "", ChatColor.RESET, msg, color);
+                    TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), "", ChatColor.RESET, loc.localizeFor(pl),
+                            color);
                 } else {
-                    TitleUtil.sendTitle(mp.getBukkitPlayer(), msg, color);
+                    TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), loc.localizeFor(pl), color);
                 }
             }
+        }
+    }
+
+    /**
+     * Broadcasts a {@link Localizable} to a {@link Round}.
+     *
+     * @param round The {@link Round} to broadcast to
+     * @param localizable The {@link Localizable} to broadcast
+     */
+    public static void broadcast(Round round, Localizable localizable) {
+        for (Challenger ch : round.getChallengers()) {
+            Player pl = Bukkit.getPlayer(ch.getUniqueId());
+            assert pl != null;
+            localizable.sendTo(pl);
         }
     }
 

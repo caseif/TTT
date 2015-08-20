@@ -56,17 +56,17 @@ public class ContributorsReader {
                 while ((piece = in.read(buffer, 0, buffer.length)) >= 0) {
                     builder.append(buffer, 0, piece);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             } finally {
                 try {
                     in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (UnsupportedEncodingException ex) {
+            ex.printStackTrace();
         }
         return builder.toString();
     }

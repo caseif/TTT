@@ -25,12 +25,10 @@ package net.caseif.ttt.managers.command.arena;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 
-import net.amigocraft.mglib.exception.NoSuchArenaException;
 import org.bukkit.command.CommandSender;
 
 public class RemoveArenaCommand extends SubcommandHandler {
@@ -45,10 +43,11 @@ public class RemoveArenaCommand extends SubcommandHandler {
             if (args.length > 1) {
                 String name = args[1];
                 try {
-                    Main.mg.deleteArena(name);
-                    sender.sendMessage(getMessage("info.personal.arena.remove.success", INFO_COLOR, name));
-                } catch (NoSuchArenaException ex) {
-                    sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
+                    TTTCore.mg.removeArena(name);
+                    TTTCore.locale.getLocalizable("info.personal.arena.remove.success")
+                            .withPrefix(INFO_COLOR.toString()).withReplacements(name).sendTo(sender);
+                } catch (IllegalArgumentException ex) {
+                    TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(ERROR_COLOR.toString()).sendTo(sender);
                 }
             }
         }

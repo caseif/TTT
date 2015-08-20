@@ -24,16 +24,14 @@
 package net.caseif.ttt.managers.command.arena;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 
-import net.amigocraft.mglib.api.Round;
-import net.amigocraft.mglib.exception.NoSuchArenaException;
-import net.amigocraft.mglib.exception.PlayerOfflineException;
-import net.amigocraft.mglib.exception.PlayerPresentException;
-import net.amigocraft.mglib.exception.RoundFullException;
+import com.google.common.base.Optional;
+import net.caseif.flint.arena.Arena;
+import net.caseif.flint.exception.round.RoundJoinException;
+import net.caseif.flint.round.Round;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -48,28 +46,50 @@ public class JoinCommand extends SubcommandHandler {
         if (sender instanceof Player) {
             if (assertPermission()) {
                 if (args.length > 1) {
+                    Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
+                    if (!arena.isPresent()) {
+                        TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(ERROR_COLOR.toString())
+                                .sendTo(sender);
+                        return;
+                    }
+                    Round round = arena.get().getRound().isPresent()
+                            ? arena.get().getRound().get()
+                            : arena.get().createRound();
                     try {
-                        Round r = Main.mg.getRound(args[1]);
-                        if (r == null) {
-                            r = Main.mg.createRound(args[1]);
+                        round.addChallenger(((Player) sender).getUniqueId());
+                    } catch (RoundJoinException ex) {
+                        switch (ex.getReason()) {
+                            case ALREADY_ENTERED: {
+                                TTTCore.locale.getLocalizable("error.round.inside").withPrefix(ERROR_COLOR.toString())
+                                        .sendTo(sender);
+                                break;
+                            }
+                            case FULL: {
+                                TTTCore.locale.getLocalizable("error.round.full").withPrefix(ERROR_COLOR.toString())
+                                        .sendTo(sender);
+                                break;
+                            }
+                            case INTERNAL_ERROR: {
+                                throw new RuntimeException(ex); // sender is notified of internal error
+                            }
+                            case OFFLINE: {
+                                //TODO: message
+                                break;
+                            }
+                            default: {
+                                throw new AssertionError("Failed to determine reaosn for RoundJoinException. "
+                                        + "Report this immediately.");
+                            }
                         }
-                        r.addPlayer(sender.getName());
-                    } catch (NoSuchArenaException ex) {
-                        sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
-                    } catch (PlayerOfflineException ex) { // this should never be able to happen
-                        ex.printStackTrace();
-                    } catch (PlayerPresentException ex) {
-                        sender.sendMessage(getMessage("error.round.inside", ERROR_COLOR));
-                    } catch (RoundFullException ex) {
-                        sender.sendMessage(getMessage("error.round.full", ERROR_COLOR));
                     }
                 } else {
-                    sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                    TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
                     sendUsage();
                 }
             }
         } else {
-            sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
+            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(ERROR_COLOR.toString()).sendTo(sender);
         }
     }
 }

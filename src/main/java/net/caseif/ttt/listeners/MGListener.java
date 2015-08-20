@@ -29,31 +29,27 @@ import static net.caseif.ttt.util.Constants.ERROR_COLOR;
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
 import static net.caseif.ttt.util.Constants.INNOCENT_COLOR;
 import static net.caseif.ttt.util.Constants.TRAITOR_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
 import net.caseif.ttt.Body;
 import net.caseif.ttt.Config;
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.KarmaManager;
 import net.caseif.ttt.managers.ScoreManager;
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.MiscUtil;
 
-import net.amigocraft.mglib.api.Location3D;
-import net.amigocraft.mglib.api.LogLevel;
-import net.amigocraft.mglib.api.MGPlayer;
-import net.amigocraft.mglib.api.Minigame;
-import net.amigocraft.mglib.api.Round;
-import net.amigocraft.mglib.api.Stage;
-import net.amigocraft.mglib.event.player.MGPlayerDeathEvent;
-import net.amigocraft.mglib.event.player.PlayerJoinMinigameRoundEvent;
-import net.amigocraft.mglib.event.player.PlayerLeaveMinigameRoundEvent;
-import net.amigocraft.mglib.event.round.MinigameRoundEndEvent;
-import net.amigocraft.mglib.event.round.MinigameRoundPrepareEvent;
-import net.amigocraft.mglib.event.round.MinigameRoundStageChangeEvent;
-import net.amigocraft.mglib.event.round.MinigameRoundStartEvent;
-import net.amigocraft.mglib.event.round.MinigameRoundTickEvent;
+import com.google.common.base.Optional;
+import com.google.common.eventbus.Subscribe;
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.event.round.RoundChangeLifecycleStageEvent;
+import net.caseif.flint.event.round.RoundEndEvent;
+import net.caseif.flint.event.round.RoundTimerTickEvent;
+import net.caseif.flint.event.round.challenger.ChallengerJoinRoundEvent;
+import net.caseif.flint.event.round.challenger.ChallengerLeaveRoundEvent;
+import net.caseif.flint.round.Round;
+import net.caseif.flint.util.physical.Location3D;
+import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -63,46 +59,36 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class MGListener implements Listener {
+public class MGListener {
 
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerJoinRound(PlayerJoinMinigameRoundEvent e) {
-        File f = new File(Main.plugin.getDataFolder(), "bans.yml");
+    @Subscribe
+    public void onPlayerJoinRound(ChallengerJoinRoundEvent event) {
+        //TODO: move checks to when the player is being added to the round by TTT
+        File f = new File(TTTCore.getInstance().getDataFolder(), "bans.yml");
         YamlConfiguration y = new YamlConfiguration();
         try {
-            UUID uuid = Minigame.getOnlineUUIDs().get(e.getPlayer().getName());
-            if (uuid == null) {
-                // this bit is so it won't break when I'm testing, but offline servers will still get screwed up
-                List<String> testAccounts = Arrays.asList("testing123", "testing456", "testing789");
-                if (testAccounts.contains(e.getPlayer().getName().toLowerCase())) {
-                    uuid = e.getPlayer().getBukkitPlayer().getUniqueId();
-                }
-            }
             y.load(f);
-            if (y.isSet(uuid.toString())) {
-                long unbanTime = y.getLong(uuid.toString());
-                if (unbanTime != -1 && unbanTime <= System.currentTimeMillis() / 1000) {
-                    MiscUtil.pardon(uuid);
+            if (y.isSet(event.getChallenger().getUniqueId().toString())) {
+                long unbanTime = y.getLong(event.getChallenger().getUniqueId().toString());
+                if (unbanTime != -1 && unbanTime <= System.currentTimeMillis() / 1000L) {
+                    MiscUtil.pardon(event.getChallenger().getUniqueId());
                 } else {
-                    String m;
+                    Localizable loc;
                     if (unbanTime == -1) {
-                        m = getMessage("info.personal.ban.perm", ERROR_COLOR);
+                        loc = TTTCore.locale.getLocalizable("info.personal.ban.perm");
                     } else {
                         Calendar cal = Calendar.getInstance();
-                        cal.setTimeInMillis(unbanTime * 1000);
+                        cal.setTimeInMillis(unbanTime * 1000L);
                         String year = Integer.toString(cal.get(Calendar.YEAR));
                         String month = Integer.toString(cal.get(Calendar.MONTH) + 1);
                         String day = Integer.toString(cal.get(Calendar.DAY_OF_MONTH));
@@ -111,93 +97,110 @@ public class MGListener implements Listener {
                         String sec = Integer.toString(cal.get(Calendar.SECOND));
                         min = min.length() == 1 ? "0" + min : min;
                         sec = sec.length() == 1 ? "0" + sec : sec;
-                        m = getMessage(
-                                "info.personal.ban.temp.until",
-                                ERROR_COLOR,
-                                hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + "."
-                        );
+                        //TODO: localize fragment "on"
+                        loc = TTTCore.locale.getLocalizable("info.personal.ban.temp.until").withReplacements(
+                                hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + ".");
                     }
-                    e.getPlayer().getBukkitPlayer().sendMessage(m);
-                    e.setCancelled(true);
+                    loc.withPrefix(ERROR_COLOR.toString());
+                    loc.sendTo(Bukkit.getPlayer(event.getChallenger().getUniqueId()));
+                    event.getChallenger().removeFromRound();
                     return;
                 }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            Main.mg.log("Failed to load bans from disk!", LogLevel.WARNING);
+            TTTCore.log.warning("Failed to load bans from disk!");
         }
 
-        e.getPlayer().getBukkitPlayer().setHealth(e.getPlayer().getBukkitPlayer().getMaxHealth());
+        Bukkit.getPlayer(event.getChallenger().getUniqueId())
+                .setHealth(Bukkit.getPlayer(event.getChallenger().getUniqueId()).getMaxHealth());
 
-        KarmaManager.loadKarma(e.getPlayer().getName());
-        e.getPlayer().setMetadata("karma", KarmaManager.playerKarma.get(e.getPlayer().getName()));
-        e.getPlayer().setMetadata("displayKarma", KarmaManager.playerKarma.get(e.getPlayer().getName()));
-        e.getPlayer().getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
+        KarmaManager.loadKarma(event.getChallenger().getUniqueId());
+        event.getChallenger().getMetadata().set("karma",
+                KarmaManager.playerKarma.get(event.getChallenger().getUniqueId()));
+        event.getChallenger().getMetadata().set("displayKarma",
+                KarmaManager.playerKarma.get(event.getChallenger().getUniqueId()));
+        Bukkit.getPlayer(event.getChallenger().getUniqueId())
+                .setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 
-        if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
-            ScoreManager.sbManagers.get(e.getRound().getArena()).update(e.getPlayer());
-            e.getPlayer().getBukkitPlayer().setScoreboard(
-                    ScoreManager.sbManagers.get(e.getRound().getArena()).innocent
+        if (ScoreManager.sbManagers.containsKey(event.getRound().getArena().getId())) {
+            ScoreManager.sbManagers.get(event.getRound().getArena().getId()).update(event.getChallenger());
+            Bukkit.getPlayer(event.getChallenger().getUniqueId()).setScoreboard(
+                    ScoreManager.sbManagers.get(event.getRound().getArena().getId()).innocent
             );
         }
 
         String addition = "";
-        @SuppressWarnings("static-access")
-        UUID uuid = Main.mg.getOnlineUUIDs().get(e.getPlayer().getName());
-        if (Main.devs.contains(uuid)) {
-            addition = ", " + getMessage("fragment.special.dev", TRAITOR_COLOR, false) + "," + INFO_COLOR;
+        UUID uuid = event.getChallenger().getUniqueId();
+        Player pl = Bukkit.getPlayer(uuid);
+        assert pl != null;
+        if (TTTCore.devs.contains(uuid)) {
+            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.dev")
+                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + "," + INFO_COLOR;
+        } else if (TTTCore.alpha.contains(uuid) && TTTCore.translators.contains(uuid)) {
+            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester.alpha")
+                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + ", "
+                    + TTTCore.locale.getLocalizable("fragment.special.translator").localizeFor(pl) + ","
+                    + INFO_COLOR;
+        } else if (TTTCore.testers.contains(uuid) && TTTCore.translators.contains(uuid)) {
+            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester")
+                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + ", "
+                    + TTTCore.locale.getLocalizable("fragment.special.translator").localizeFor(pl) + ","
+                    + INFO_COLOR;
+        } else if (TTTCore.alpha.contains(uuid)) {
+            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester.alpha")
+                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + "," + INFO_COLOR;
+        } else if (TTTCore.testers.contains(uuid)) {
+            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester")
+                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + "," + INFO_COLOR;
+        } else if (TTTCore.translators.contains(uuid)) {
+            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.translator")
+                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + "," + INFO_COLOR;
         }
-        if (Main.alpha.contains(uuid) && Main.translators.contains(uuid)) {
-            addition += ", " + getMessage("fragment.special.tester.alpha", TRAITOR_COLOR, false) + ", "
-                    + Main.locale.getMessage("fragment.special.translator") + "," + INFO_COLOR;
-        } else if (Main.testers.contains(uuid) && Main.translators.contains(uuid)) {
-            addition += ", " + getMessage("fragment.special.tester", TRAITOR_COLOR, false) + ", "
-                    + Main.locale.getMessage("fragment.special.translator") + "," + INFO_COLOR;
-        } else if (Main.alpha.contains(uuid)) {
-            addition += ", " + getMessage("fragment.special.tester.alpha", TRAITOR_COLOR, false) + "," + INFO_COLOR;
-        } else if (Main.testers.contains(uuid)) {
-            addition += ", " + getMessage("fragment.special.tester", TRAITOR_COLOR, false) + "," + INFO_COLOR;
-        } else if (Main.translators.contains(uuid)) {
-            addition += ", " + getMessage("fragment.special.translator", TRAITOR_COLOR, false) + "," + INFO_COLOR;
-        }
-        Bukkit.broadcastMessage(getMessage("info.global.arena.event.join", INFO_COLOR,
-                e.getPlayer().getName() + addition, ARENA_COLOR + e.getRound().getDisplayName()));
+        TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(INFO_COLOR.toString())
+                .withReplacements(event.getChallenger().getName() + addition,
+                        ARENA_COLOR + event.getRound().getArena().getName() + INFO_COLOR)
+                .broadcast();
 
-        e.getPlayer().getBukkitPlayer().sendMessage(getMessage("info.personal.arena.join.success", INFO_COLOR,
-                ARENA_COLOR + e.getRound().getDisplayName()));
+        TTTCore.locale.getLocalizable("info.personal.arena.join.success").withPrefix(INFO_COLOR.toString())
+                .withReplacements(ARENA_COLOR + event.getRound().getArena().getName() + INFO_COLOR).sendTo(pl);
     }
 
-    @EventHandler
-    public void onPlayerLeaveRound(PlayerLeaveMinigameRoundEvent e) {
-        e.getPlayer().getBukkitPlayer().setScoreboard(
-                Main.plugin.getServer().getScoreboardManager().getNewScoreboard()
+    @Subscribe
+    public void onPlayerLeaveRound(ChallengerLeaveRoundEvent event) {
+        Bukkit.getPlayer(event.getChallenger().getUniqueId()).setScoreboard(
+                TTTCore.getInstance().getServer().getScoreboardManager().getNewScoreboard()
         );
-        e.getPlayer().getBukkitPlayer().setDisplayName(e.getPlayer().getBukkitPlayer().getName());
-        KarmaManager.saveKarma(e.getPlayer());
-        (e.getPlayer()).setMetadata("displayKarma", e.getPlayer().getMetadata("karma"));
-        if (e.getRound().getStage() != Stage.RESETTING) {
-            e.getRound().broadcast(getMessage("info.global.arena.event.leave", INFO_COLOR,
-                    e.getPlayer().getName(), ARENA_COLOR + e.getPlayer().getRound().getDisplayName()));
-        }
-        e.getPlayer().getBukkitPlayer().setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
+        Bukkit.getPlayer(event.getChallenger().getUniqueId())
+                .setDisplayName(event.getChallenger().getName());
+        KarmaManager.saveKarma(event.getChallenger());
+        //TODO: dunno what's up with the next line but it needs fixing
+        event.getChallenger().getMetadata().set("displayKarma",
+                event.getChallenger().getMetadata().<Integer>get("karma").get());
+        //TODO: determine whether the round is ending
+        MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
+                .withPrefix(INFO_COLOR.toString()).withReplacements(event.getChallenger().getName(),
+                        ARENA_COLOR + event.getChallenger().getRound().getArena().getName()));
+        Bukkit.getPlayer(event.getChallenger().getUniqueId())
+                .setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
     }
 
-    @EventHandler
-    public void onMGPlayerDeath(MGPlayerDeathEvent e) {
-        e.getPlayer().setPrefix(Config.SB_MIA_PREFIX);
-        e.getPlayer().getBukkitPlayer().setHealth(e.getPlayer().getBukkitPlayer().getMaxHealth());
-        e.getPlayer().setSpectating(true);
-        if (ScoreManager.sbManagers.containsKey(e.getPlayer().getArena())) {
-            ScoreManager.sbManagers.get(e.getPlayer().getArena()).update(e.getPlayer());
+    //TODO: find a place to call this from
+    public void onChallengerDeath(Challenger ch, Challenger killer) {
+        Player pl = Bukkit.getPlayer(ch.getUniqueId());
+        //ch.setPrefix(Config.SB_MIA_PREFIX); //TODO
+        pl.setHealth(pl.getMaxHealth());
+        ch.setSpectating(true);
+        if (ScoreManager.sbManagers.containsKey(ch.getRound().getArena().getId())) {
+            ScoreManager.sbManagers.get(ch.getRound().getArena().getId()).update(ch);
         }
-        if (e.getKiller() != null && e.getKiller() instanceof Player) {
+        if (killer != null) {
             // set killer's karma
-            MGPlayer killer = Main.mg.getMGPlayer((e.getKiller()).getName());
-            KarmaManager.handleKillKarma(killer, e.getPlayer());
-            e.getPlayer().setMetadata("killer", e.getKiller().getName());
+            KarmaManager.handleKillKarma(killer, ch);
+            ch.getMetadata().set("killer", killer.getUniqueId());
         }
-        Block block = e.getPlayer().getBukkitPlayer().getLocation().getBlock();
-        Main.mg.getRollbackManager().logBlockChange(block, e.getPlayer().getArena());
+        Block block = pl.getLocation().getBlock();
+        //TttPluginCore.mg.getRollbackManager().logBlockChange(block, ch.getArena()); //TODO
         BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
         boolean trapped = false;
         for (BlockFace bf : faces) {
@@ -207,83 +210,94 @@ public class MGListener implements Listener {
             }
         }
         //TODO: Add check for doors and such
+        //TODO: move this code to another method
         block.setType(trapped ? Material.TRAPPED_CHEST : Material.CHEST);
         Chest chest = (Chest) block.getState();
         // player identifier
         ItemStack id = new ItemStack(Material.PAPER, 1);
         ItemMeta idMeta = id.getItemMeta();
-        idMeta.setDisplayName(getMessage("item.id.name", ChatColor.RESET, false));
-        List<String> idLore = new ArrayList<String>();
-        idLore.add(getMessage("corpse.of", ChatColor.RESET, false, e.getPlayer().getName()));
-        idLore.add(e.getPlayer().getName());
+        idMeta.setDisplayName(TTTCore.locale.getLocalizable("item.id.name").localize());
+        List<String> idLore = new ArrayList<>();
+        idLore.add(TTTCore.locale.getLocalizable("corpse.of").withReplacements(ch.getName()).localize());
+        idLore.add(ch.getName());
         idMeta.setLore(idLore);
         id.setItemMeta(idMeta);
         // role identifier
         ItemStack ti = new ItemStack(Material.WOOL, 1);
         ItemMeta tiMeta = ti.getItemMeta();
-        if (e.getPlayer().hasMetadata("Detective")) {
+        //TODO: make this DRYer
+        if (ch.getMetadata().has("detective")) {
             ti.setDurability((short) 11);
-            tiMeta.setDisplayName(getMessage("fragment.detective", DETECTIVE_COLOR, false));
-            List<String> lore = new ArrayList<String>();
-            lore.add(Main.locale.getMessage("item.id.detective"));
+            tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.detective")
+                    .withPrefix(DETECTIVE_COLOR.toString()).localize());
+            List<String> lore = new ArrayList<>();
+            lore.add(TTTCore.locale.getLocalizable("item.id.detective").localize());
             tiMeta.setLore(lore);
-        } else if (e.getPlayer().getTeam() == null || e.getPlayer().getTeam().equals("Innocent")) {
+        } else if (!MiscUtil.isTraitor(ch)) {
             ti.setDurability((short) 5);
-            tiMeta.setDisplayName(getMessage("fragment.innocent", INNOCENT_COLOR, false));
-            List<String> tiLore = new ArrayList<String>();
-            tiLore.add(getMessage("item.id.innocent", ChatColor.RESET, false));
+            tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.innocent")
+                    .withPrefix(INNOCENT_COLOR.toString()).localize());
+            List<String> tiLore = new ArrayList<>();
+            tiLore.add(TTTCore.locale.getLocalizable("item.id.innocent").localize());
             tiMeta.setLore(tiLore);
         } else {
             ti.setDurability((short) 14);
-            tiMeta.setDisplayName(getMessage("fragment.traitor", TRAITOR_COLOR, false));
-            List<String> lore = new ArrayList<String>();
-            lore.add(getMessage("item.id.traitor", ChatColor.RESET, false));
+            tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.traitor")
+                    .withPrefix(TRAITOR_COLOR.toString()).localize());
+            List<String> lore = new ArrayList<>();
+            lore.add(TTTCore.locale.getLocalizable("item.id.traitor").localize());
             tiMeta.setLore(lore);
         }
         ti.setItemMeta(tiMeta);
         chest.getInventory().addItem(id, ti);
-        Main.bodies.add(
+        TTTCore.bodies.add(
                 new Body(
-                        e.getPlayer().getName(),
-                        e.getPlayer().getArena(),
-                        e.getPlayer().hasMetadata("Detective") ? "Detective" : e.getPlayer().getTeam(),
-                        Location3D.valueOf(block.getLocation()),
+                        ch.getUniqueId(),
+                        ch.getRound(),
+                        ch.getTeam().orNull(),
+                        new Location3D(block.getX(), block.getY(), block.getZ()),
                         System.currentTimeMillis()
                 )
         );
     }
 
-    @EventHandler
-    public void onRoundPrepare(MinigameRoundPrepareEvent e) {
-        e.getRound().broadcast(getMessage("info.global.round.event.starting", INFO_COLOR));
-        if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
-            ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
-            for (MGPlayer mp : e.getRound().getPlayerList()) {
-                ScoreManager.sbManagers.get(e.getRound().getArena()).update(mp);
+    @Subscribe
+    public void onRoundPrepare(RoundChangeLifecycleStageEvent event) {
+        if (event.getStageAfter() == Constants.PREPARING) {
+            MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
+                    .withPrefix(INFO_COLOR.toString()));
+            if (!ScoreManager.sbManagers.containsKey(event.getRound().getArena().getId())) {
+                ScoreManager.sbManagers.put(event.getRound().getArena().getId(), new ScoreManager(event.getRound()));
+                for (Challenger ch : event.getRound().getChallengers()) {
+                    ScoreManager.sbManagers.get(event.getRound().getArena().getId()).update(ch);
+                }
             }
+        } else if (event.getStageAfter() == Constants.PLAYING) {
+            startRound(event.getRound());
         }
     }
 
+    //TODO: this method isn't DRY
     @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onRoundStart(MinigameRoundStartEvent e) {
-        int players = e.getRound().getPlayers().size();
+    public void startRound(Round round) {
+        int players = round.getChallengers().size();
         int traitorCount = 0;
         int limit = (int) (players * Config.TRAITOR_RATIO);
         if (limit == 0) {
             limit = 1;
         }
-        List<String> innocents = new ArrayList<String>();
-        List<String> traitors = new ArrayList<String>();
-        List<String> detectives = new ArrayList<String>();
-        for (MGPlayer p : e.getRound().getPlayerList()) {
-            innocents.add(p.getName());
-            p.getBukkitPlayer().sendMessage(getMessage("info.global.round.event.started", INFO_COLOR));
+        List<UUID> innocents = new ArrayList<>();
+        List<UUID> traitors = new ArrayList<>();
+        List<UUID> detectives = new ArrayList<>();
+        for (Challenger ch : round.getChallengers()) {
+            innocents.add(ch.getUniqueId());
+            TTTCore.locale.getLocalizable("info.global.round.event.started").withPrefix(INFO_COLOR.toString())
+                    .sendTo(Bukkit.getPlayer(ch.getUniqueId()));
         }
         while (traitorCount < limit) {
             Random randomGenerator = new Random();
             int index = randomGenerator.nextInt(players);
-            String traitor = innocents.get(index);
+            UUID traitor = innocents.get(index);
             if (innocents.contains(traitor)) {
                 innocents.remove(traitor);
                 traitors.add(traitor);
@@ -298,55 +312,56 @@ public class MGListener implements Listener {
         while (detectiveNum < dLimit) {
             Random randomGenerator = new Random();
             int index = randomGenerator.nextInt(innocents.size());
-            String detective = innocents.get(index);
+            UUID detective = innocents.get(index);
             innocents.remove(detective);
             detectives.add(detective);
             detectiveNum += 1;
         }
         ItemStack crowbar = new ItemStack(Config.CROWBAR_ITEM, 1);
         ItemMeta cbMeta = crowbar.getItemMeta();
-        cbMeta.setDisplayName(getMessage("item.crowbar.name", INFO_COLOR, false));
+        cbMeta.setDisplayName(INFO_COLOR + TTTCore.locale.getLocalizable("item.crowbar.name").localize());
         crowbar.setItemMeta(cbMeta);
         ItemStack gun = new ItemStack(Config.GUN_ITEM, 1);
         ItemMeta gunMeta = crowbar.getItemMeta();
-        gunMeta.setDisplayName(getMessage("item.gun.name", INFO_COLOR, false));
+        cbMeta.setDisplayName(INFO_COLOR + TTTCore.locale.getLocalizable("item.gun.name").localize());
         gun.setItemMeta(gunMeta);
         ItemStack ammo = new ItemStack(Material.ARROW, Config.INITIAL_AMMO);
         ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
         ItemMeta dnaMeta = dnaScanner.getItemMeta();
-        dnaMeta.setDisplayName(getMessage("item.dna-scanner.name", DETECTIVE_COLOR, false));
+        cbMeta.setDisplayName(INFO_COLOR + TTTCore.locale.getLocalizable("item.dna-scanner.name").localize());
         dnaScanner.setItemMeta(dnaMeta);
-        for (String s : innocents) {
-            Player pl = Main.plugin.getServer().getPlayer(s);
-            MGPlayer player = Main.mg.getMGPlayer(s);
-            if (pl != null && player != null) {
-                player.setTeam("Innocent");
-                pl.sendMessage(getMessage("info.personal.status.role.innocent", INNOCENT_COLOR, false));
+        for (UUID uuid : innocents) {
+            Player pl = Bukkit.getPlayer(uuid);
+            Optional<Challenger> challenger = TTTCore.mg.getChallenger(uuid);
+            if (pl != null && challenger.isPresent()) {
+                challenger.get().getRound().getOrCreateTeam("innocent").addChallenger(challenger.get());
+                TTTCore.locale.getLocalizable("info.personal.status.role.innocent")
+                        .withPrefix(INNOCENT_COLOR.toString()).sendTo(pl);
                 MiscUtil.sendStatusTitle(pl, "innocent");
                 pl.getInventory().addItem(crowbar, gun, ammo);
                 pl.setHealth(20);
                 pl.setFoodLevel(20);
-                if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
-                    pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
-                    ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
+                if (ScoreManager.sbManagers.containsKey(round.getArena().getId())) {
+                    pl.setScoreboard(ScoreManager.sbManagers.get(round.getArena().getId()).innocent);
+                    ScoreManager.sbManagers.get(round.getArena().getId()).update(challenger.get());
                 }
             }
         }
-        for (String s : traitors) {
-            Player pl = Main.plugin.getServer().getPlayer(s);
-            MGPlayer player = Main.mg.getMGPlayer(s);
-            if (pl != null && player != null) {
-                player.setTeam("Traitor");
-                pl.sendMessage(getMessage(traitors.size() > 1
-                                ? "info.personal.status.role.traitor"
-                                : "info.personal.status.role.traitor.alone",
-                        TRAITOR_COLOR, false));
+        for (UUID uuid : traitors) {
+            Player pl = TTTCore.getInstance().getServer().getPlayer(uuid);
+            Optional<Challenger> challenger = TTTCore.mg.getChallenger(uuid);
+            if (pl != null && challenger != null) {
+                challenger.get().getRound().getOrCreateTeam("traitor").addChallenger(challenger.get());
+                TTTCore.locale.getLocalizable(traitors.size() > 1
+                        ? "info.personal.status.role.traitor"
+                        : "info.personal.status.role.traitor.alone").withPrefix(TRAITOR_COLOR.toString())
+                        .sendTo(pl);
                 MiscUtil.sendStatusTitle(pl, "traitor");
                 if (traitors.size() > 1) {
-                    pl.sendMessage(getMessage("info.personal.status.role.traitor.allies",
-                            TRAITOR_COLOR, false));
-                    for (String tr : traitors) {
-                        if (!tr.equals(s)) {
+                    TTTCore.locale.getLocalizable("info.personal.status.role.traitor.allies")
+                            .withPrefix(TRAITOR_COLOR.toString()).sendTo(pl);
+                    for (UUID tr : traitors) {
+                        if (!tr.equals(uuid)) {
                             pl.sendMessage(TRAITOR_COLOR + "- " + tr);
                         }
                     }
@@ -354,64 +369,76 @@ public class MGListener implements Listener {
                 pl.getInventory().addItem(crowbar, gun, ammo);
                 pl.setHealth(20);
                 pl.setFoodLevel(20);
-                if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
-                    pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).traitor);
-                    ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
+                if (ScoreManager.sbManagers.containsKey(round.getArena().getId())) {
+                    pl.setScoreboard(ScoreManager.sbManagers.get(round.getArena().getId()).traitor);
+                    ScoreManager.sbManagers.get(round.getArena().getId()).update(challenger.get());
                 }
             }
         }
-        for (String s : detectives) {
-            Player pl = Main.plugin.getServer().getPlayer(s);
-            MGPlayer player = Main.mg.getMGPlayer(s);
-            if (pl != null && player != null) {
-                player.setTeam("Innocent");
-                player.setMetadata("fragment.detective", true);
-                pl.sendMessage(getMessage("info.personal.status.role.detective", DETECTIVE_COLOR, false));
+        for (UUID uuid : detectives) {
+            Player pl = TTTCore.getInstance().getServer().getPlayer(uuid);
+            Optional<Challenger> challenger = TTTCore.mg.getChallenger(uuid);
+            if (pl != null && challenger.isPresent()) {
+                challenger.get().getRound().getOrCreateTeam("innocent").addChallenger(challenger.get());
+                challenger.get().getMetadata().set("fragment.detective", true);
+                TTTCore.locale.getLocalizable("info.personal.status.role.detective")
+                        .withPrefix(DETECTIVE_COLOR.toString()).sendTo(pl);
                 MiscUtil.sendStatusTitle(pl, "detective");
                 pl.getInventory().addItem(crowbar, gun, ammo, dnaScanner);
                 pl.setHealth(20);
                 pl.setFoodLevel(20);
-                if (ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
-                    pl.setScoreboard(ScoreManager.sbManagers.get(e.getRound().getArena()).innocent);
-                    ScoreManager.sbManagers.get(e.getRound().getArena()).update(player);
+                if (ScoreManager.sbManagers.containsKey(round.getArena().getId())) {
+                    pl.setScoreboard(ScoreManager.sbManagers.get(round.getArena().getId()).innocent);
+                    ScoreManager.sbManagers.get(round.getArena().getId()).update(challenger.get());
                 }
             }
         }
 
-        for (MGPlayer mp : e.getRound().getPlayerList()) {
+        for (Challenger ch : round.getChallengers()) {
             if (Config.DAMAGE_REDUCTION) {
-                KarmaManager.calculateDamageReduction(mp);
-                String percentage = getMessage("fragment.full", INFO_COLOR, false);
-                if ((Double) mp.getMetadata("damageRed") < 1) {
-                    percentage = Integer.toString((int) ((Double) mp.getMetadata("damageRed") * 100)) + "%";
+                Player pl = Bukkit.getPlayer(ch.getUniqueId());
+                KarmaManager.calculateDamageReduction(ch);
+                String percentage;
+                if (ch.getMetadata().has("damageRed") && ch.getMetadata().<Double>get("damageRed").get() < 1) {
+                    percentage = (int) (ch.getMetadata().<Double>get("damageRed").get() * 100) + "%";
+                } else {
+                    percentage = TTTCore.locale.getLocalizable("fragment.full")
+                            .withPrefix(INFO_COLOR.toString()).localizeFor(pl);
                 }
-                mp.getBukkitPlayer().sendMessage(getMessage("info.personal.status.karma-damage", INFO_COLOR,
-                        Integer.toString((Integer) mp.getMetadata("karma")), percentage));
+                TTTCore.locale.getLocalizable("info.personal.status.karma-damage")
+                        .withPrefix(INFO_COLOR.toString())
+                        .withReplacements(ch.getMetadata().<Integer>get("karma").get() + "", percentage).sendTo(pl);
             }
         }
     }
 
     @SuppressWarnings({"deprecation"})
-    @EventHandler
-    public void onRoundTick(MinigameRoundTickEvent e) {
-        if (e.getRound().getStage() == Stage.PREPARING) {
-            if (((e.getRound().getRemainingTime() % 10) == 0
-                    || e.getRound().getRemainingTime() < 10) && e.getRound().getRemainingTime() > 0) {
-                e.getRound().broadcast(getMessage("info.global.round.status.starting.time", INFO_COLOR,
-                        getMessage("fragment.seconds", INFO_COLOR, false,
-                                Integer.toString(e.getRound().getRemainingTime()))));
+    @Subscribe
+    public void onRoundTick(RoundTimerTickEvent event) {
+        if (event.getRound().getLifecycleStage() == Constants.PREPARING) {
+            if ((event.getRound().getRemainingTime() % 10) == 0) {
+                for (Challenger ch : event.getRound().getChallengers()) {
+                    Player pl = Bukkit.getPlayer(ch.getUniqueId());
+                    assert pl != null;
+                    TTTCore.locale.getLocalizable("info.global.round.status.starting.time")
+                            .withPrefix(INFO_COLOR.toString())
+                            .withReplacements(
+                                    TTTCore.locale.getLocalizable("fragment.seconds").localizeFor(pl),
+                                    event.getRound().getRemainingTime() + "")
+                            .sendTo(pl);
+                }
             }
-        } else if (e.getRound().getStage() == Stage.PLAYING) {
+        } else if (event.getRound().getLifecycleStage() == Constants.PLAYING) {
             // check if game is over
             boolean iLeft = false;
             boolean tLeft = false;
-            for (MGPlayer p : e.getRound().getPlayerList()) {
+            for (Challenger ch : event.getRound().getChallengers()) {
                 if (!tLeft || !iLeft) {
-                    if (!p.isSpectating()) {
-                        if (!iLeft && !p.getTeam().equals("Traitor")) {
+                    if (!ch.isSpectating()) {
+                        if (!iLeft && !MiscUtil.isTraitor(ch)) {
                             iLeft = true;
                         }
-                        if (!tLeft && p.getTeam().equals("Traitor")) {
+                        if (!tLeft && MiscUtil.isTraitor(ch)) {
                             tLeft = true;
                         }
                     }
@@ -420,15 +447,19 @@ public class MGListener implements Listener {
                 }
 
                 // manage DNA Scanners every n seconds
-                if (p.hasMetadata("fragment.detective") && p.getRound().getTime() % Config.SCANNER_CHARGE_TIME == 0) {
-                    Player tracker = Main.plugin.getServer().getPlayer(p.getName());
-                    if (p.hasMetadata("tracking")) {
-                        Player killer = Main.plugin.getServer().getPlayer((String) p.getMetadata("tracking"));
-                        if (killer != null && Main.mg.isPlayer((String) p.getMetadata("tracking"))) {
+                if (ch.getMetadata().has("fragment.detective")
+                        && ch.getRound().getTime() % Config.SCANNER_CHARGE_TIME == 0) {
+                    Player tracker = TTTCore.getInstance().getServer().getPlayer(ch.getName());
+                    if (ch.getMetadata().has("tracking")) {
+                        Player killer = TTTCore.getInstance().getServer()
+                                .getPlayer(ch.getMetadata().<UUID>get("tracking").get());
+                        if (killer != null
+                                && TTTCore.mg.getChallenger(ch.getMetadata().<UUID>get("tracking").get()).isPresent()) {
                             tracker.setCompassTarget(killer.getLocation());
                         } else {
-                            tracker.sendMessage(getMessage("error.round.trackee-left", INFO_COLOR));
-                            p.removeMetadata("tracking");
+                            TTTCore.locale.getLocalizable("error.round.trackee-left")
+                                    .withPrefix(INFO_COLOR.toString()).sendTo(tracker);
+                            ch.getMetadata().remove("tracking");
                             tracker.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
                         }
                     } else {
@@ -445,82 +476,84 @@ public class MGListener implements Listener {
                 }
             }
             if (!(tLeft && iLeft)) {
-                e.getRound().setMetadata("t-victory", tLeft);
-                e.getRound().end();
+                event.getRound().getMetadata().set("t-victory", tLeft);
+                event.getRound().end();
                 return;
             }
 
-            Round r = e.getRound();
-            int rTime = r.getRemainingTime();
-            if (rTime % 60 == 0 && rTime >= 60) {
-                r.broadcast(getMessage("info.global.round.status.time.remaining", INFO_COLOR, false,
-                        getMessage("fragment.minutes", INFO_COLOR, false, Integer.toString(rTime / 60))));
-            } else if ((rTime % 10 == 0 && rTime > 10 && rTime < 60) || (rTime < 10 && rTime > 0)) {
-                r.broadcast(getMessage("info.global.round.status.time.remaining", INFO_COLOR, false,
-                        getMessage("fragment.seconds", INFO_COLOR, false, Integer.toString(rTime))));
-            }
-            //TODO: this loop is probably an unnecessary artifact but I'm leaving it for now in case removing it causes
-            // odd side-effects
-            for (MGPlayer mp : e.getRound().getPlayerList()) {
-                if (!ScoreManager.sbManagers.containsKey(e.getRound().getArena())) {
-                    ScoreManager.sbManagers.put(e.getRound().getArena(), new ScoreManager(e.getRound().getArena()));
+            Round r = event.getRound();
+            long rTime = r.getRemainingTime();
+            if ((rTime % 60 == 0 && rTime >= 60) || (rTime % 10 == 0 && rTime > 10 && rTime < 60)) {
+                for (Challenger ch : r.getChallengers()) {
+                    Player pl = Bukkit.getPlayer(ch.getUniqueId());
+                    TTTCore.locale.getLocalizable("info.global.round.status.time.remaining")
+                            .withPrefix(INFO_COLOR.toString())
+                            .withReplacements(TTTCore.locale
+                                    .getLocalizable(rTime < 60 ? "fragment.minutes" : "fragment.seconds")
+                                    .withReplacements(Long.toString(rTime / 60)).localizeFor(pl))
+                            .sendTo(pl);
                 }
+            }
+
+            if (!ScoreManager.sbManagers.containsKey(event.getRound().getArena().getId())) {
+                ScoreManager.sbManagers.put(event.getRound().getArena().getId(), new ScoreManager(event.getRound()));
             }
         }
     }
 
-    @EventHandler
-    public void onRoundEnd(MinigameRoundEndEvent e) {
+    @Subscribe
+    public void onRoundEnd(RoundEndEvent event) {
         List<Body> removeBodies = new ArrayList<Body>();
         List<Body> removeFoundBodies = new ArrayList<Body>();
-        for (Body b : Main.bodies) {
+        for (Body b : TTTCore.bodies) {
             removeBodies.add(b);
-            if (Main.foundBodies.contains(b)) {
+            if (TTTCore.foundBodies.contains(b)) {
                 removeFoundBodies.add(b);
             }
         }
 
         for (Body b : removeBodies) {
-            Main.bodies.remove(b);
+            TTTCore.bodies.remove(b);
         }
 
         for (Body b : removeFoundBodies) {
-            Main.foundBodies.remove(b);
+            TTTCore.foundBodies.remove(b);
         }
 
         removeBodies.clear();
         removeFoundBodies.clear();
 
-        KarmaManager.allocateKarma(e.getRound());
+        KarmaManager.allocateKarma(event.getRound());
 
-        if (!e.getRound().hasMetadata("t-victory") || e.getRound().getMetadata("t-victory") == Boolean.FALSE) {
-            Bukkit.broadcastMessage(getMessage("info.global.round.event.end.innocent", INNOCENT_COLOR,
-                    ARENA_COLOR + e.getRound().getDisplayName()));
-            MiscUtil.sendVictoryTitle(e.getRound(), false);
-        } else {
-            Bukkit.broadcastMessage(getMessage("info.global.round.event.end.traitor", TRAITOR_COLOR,
-                    ARENA_COLOR + e.getRound().getDisplayName()));
-            MiscUtil.sendVictoryTitle(e.getRound(), true);
-        }
-        for (Entity ent : Bukkit.getWorld(e.getRound().getWorld()).getEntities()) {
+        boolean tVic = event.getRound().getMetadata().has("t-victory")
+                && event.getRound().getMetadata().<Boolean>get("t-victory").get();
+
+        TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? "traitor" : "innocent"))
+                .withPrefix(INNOCENT_COLOR.toString())
+                .withReplacements(ARENA_COLOR + event.getRound().getArena().getName()).broadcast();
+        MiscUtil.sendVictoryTitle(event.getRound(), tVic);
+
+        for (Entity ent : Bukkit.getWorld(event.getRound().getArena().getWorld()).getEntities()) {
             if (ent.getType() == EntityType.ARROW) {
                 ent.remove();
             }
         }
-        ScoreManager.sbManagers.remove(e.getRound().getArena());
+        ScoreManager.sbManagers.remove(event.getRound().getArena().getId());
     }
 
-    @EventHandler
-    public void onStageChange(MinigameRoundStageChangeEvent e) {
-        if ((e.getStageBefore() == Stage.PREPARING || e.getStageBefore() == Stage.PLAYING)
-                && (e.getStageAfter() == Stage.PREPARING)) {
-            ScoreManager sm = ScoreManager.sbManagers.get(e.getRound().getArena());
+    @Subscribe
+    public void onStageChange(RoundChangeLifecycleStageEvent event) {
+        if ((event.getStageBefore() == Constants.PREPARING || event.getStageBefore() == Constants.PLAYING)
+                && (event.getStageAfter() == Constants.PREPARING)) {
+            ScoreManager sm = ScoreManager.sbManagers.get(event.getRound().getArena().getId());
             sm.iObj.unregister();
             sm.tObj.unregister();
-            ScoreManager.sbManagers.remove(e.getRound().getArena());
-            for (MGPlayer mp : e.getRound().getPlayerList()) {
-                mp.getBukkitPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-                mp.setTeam(null);
+            ScoreManager.sbManagers.remove(event.getRound().getArena().getId());
+            for (Challenger ch : event.getRound().getChallengers()) {
+                Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                if (ch.getTeam().isPresent()) {
+                    ch.getTeam().get().removeChallenger(ch);
+                }
             }
         }
     }

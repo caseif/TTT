@@ -60,7 +60,8 @@ repositories {
 
 ext {
     bukkit = 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
-    mglib = 'net.amigocraft.mglib:mglib:0.4.0'
+    flint = 'net.caseif.flint:flint:1.0'
+    rosetta = 'net.caseif.rosetta:rosetta:1.0.0'
     crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.1'
     updater = 'net.gravitydevelopment.updater:updater:2.3'
     metrics = 'org.mcstats.bukkit:metrics:R7'
@@ -69,7 +70,8 @@ ext {
 // Project dependencies
 dependencies {
     compile bukkit
-    compile mglib
+    compile flint
+    compile rosetta
     compile crosstitles
     compile updater
     compile metrics

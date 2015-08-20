@@ -24,8 +24,9 @@
 package net.caseif.ttt.managers.command;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.Constants.MIN_MGLIB_VERSION;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
+import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
+
+import net.caseif.ttt.TTTCore;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,9 +38,11 @@ public class SpecialCommandManager implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (label.equalsIgnoreCase("ttt")) {
             if (sender.hasPermission("ttt.build.warn")) {
-                sender.sendMessage(getMessage("error.plugin.mglib", ERROR_COLOR, MIN_MGLIB_VERSION));
+                TTTCore.locale.getLocalizable("error.plugin.flint").withPrefix(ERROR_COLOR.toString())
+                        .withReplacements(MIN_FLINT_VERSION + "").sendTo(sender);
             } else {
-                sender.sendMessage(getMessage("error.plugin.disabled", ERROR_COLOR));
+                TTTCore.locale.getLocalizable("error.plugin.disabled").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
             }
             return true;
         }

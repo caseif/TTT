@@ -25,9 +25,8 @@ package net.caseif.ttt.managers.command.misc;
 
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
 import static net.caseif.ttt.util.Constants.SPECIAL_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 
 import org.bukkit.command.CommandSender;
@@ -40,8 +39,9 @@ public class DefaultCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
-        sender.sendMessage(getMessage("info.plugin.info", SPECIAL_COLOR,
-                Main.plugin.getDescription().getVersion(), "Maxim Roncacé"));
-        sender.sendMessage(getMessage("info.command.usage.help", INFO_COLOR));
+        TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(SPECIAL_COLOR.toString())
+                .withReplacements(TTTCore.getInstance().getDescription().getVersion(), "Max Roncacé")
+                .sendTo(sender);
+        TTTCore.locale.getLocalizable("info.command.usage.help").withPrefix(INFO_COLOR.toString()).sendTo(sender);
     }
 }

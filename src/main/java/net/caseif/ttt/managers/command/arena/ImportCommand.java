@@ -25,14 +25,15 @@ package net.caseif.ttt.managers.command.arena;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 import net.caseif.ttt.util.FileUtil;
 
-import net.amigocraft.mglib.exception.ArenaExistsException;
+import net.caseif.flint.util.physical.Boundary;
+import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
@@ -50,6 +51,7 @@ public class ImportCommand extends SubcommandHandler {
         if (assertPermission()) {
             if (args.length > 1) {
                 String worldName = null;
+                //TODO: null-check
                 for (File f : Bukkit.getWorldContainer().listFiles()) {
                     if (f.getName().equalsIgnoreCase(args[1])) {
                         worldName = f.getName();
@@ -59,20 +61,26 @@ public class ImportCommand extends SubcommandHandler {
                     if (FileUtil.isWorld(args[1])) {
                         World w = Bukkit.createWorld(new WorldCreator(worldName));
                         if (w != null) {
-                            try {
-                                Main.mg.createArena(worldName, w.getSpawnLocation());
-                                sender.sendMessage(getMessage("info.personal.arena.import.success", INFO_COLOR));
-                            } catch (ArenaExistsException e) {
+                            if (TTTCore.mg.getArena(worldName).isPresent()) {
                                 //TODO: replace this message with something more accurate
-                                sender.sendMessage(getMessage("error.arena.already-exists", ERROR_COLOR));
+                                TTTCore.locale.getLocalizable("error.arena.already-exists")
+                                        .withPrefix(ERROR_COLOR.toString()).sendTo(sender);
                             }
+                            Location l = w.getSpawnLocation();
+                            TTTCore.mg.createArena(worldName,
+                                    new Location3D(l.getBlockX(), l.getBlockY(), l.getBlockZ()), Boundary.INFINITE);
+                            TTTCore.locale.getLocalizable("info.personal.arena.import.success")
+                                    .withPrefix(INFO_COLOR.toString()).sendTo(sender);
                             return;
                         }
                     }
                 }
-                sender.sendMessage(getMessage("error.plugin.world-load", ERROR_COLOR));
+                // this executes only if something goes wrong loading the world
+                TTTCore.locale.getLocalizable("error.plugin.world-load").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
             } else {
-                sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
                 sendUsage();
             }
         }

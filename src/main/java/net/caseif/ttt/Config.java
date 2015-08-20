@@ -143,7 +143,7 @@ public final class Config {
     }
 
     public static String getString(String key) {
-        String value = Main.plugin.getConfig().getString(key);
+        String value = TTTCore.getInstance().getConfig().getString(key);
         if (value != null) {
             if (value.contains("Â§")) { // fix encoding mistakes on Windoofs
                 value = value.replace("Â§", "§");
@@ -154,15 +154,15 @@ public final class Config {
     }
 
     public static boolean getBoolean(String key) {
-        return Main.plugin.getConfig().getBoolean(key);
+        return TTTCore.getInstance().getConfig().getBoolean(key);
     }
 
     public static int getInt(String key) {
-        return Main.plugin.getConfig().getInt(key);
+        return TTTCore.getInstance().getConfig().getInt(key);
     }
 
     public static double getDouble(String key) {
-        return Main.plugin.getConfig().getDouble(key);
+        return TTTCore.getInstance().getConfig().getDouble(key);
     }
 
     public static Material getMaterial(String key) {
@@ -170,13 +170,13 @@ public final class Config {
     }
 
     public static Material getMaterial(String key, Material fallback) {
-        Material m = MaterialConverter.fromNotchName(Main.plugin.getConfig().getString(key));
+        Material m = MaterialConverter.fromNotchName(TTTCore.getInstance().getConfig().getString(key));
         return m != null ? m : fallback;
     }
 
     public static void addMissingKeys() throws InvalidConfigurationException, IOException {
-        BufferedReader is = new BufferedReader(new InputStreamReader(Main.class.getResourceAsStream("/config.yml")));
-        File configYml = new File(Main.plugin.getDataFolder(), "config.yml");
+        BufferedReader is = new BufferedReader(new InputStreamReader(TTTCore.class.getResourceAsStream("/config.yml")));
+        File configYml = new File(TTTCore.getInstance().getDataFolder(), "config.yml");
         YamlConfiguration yml = new YamlConfiguration();
         yml.load(configYml);
         StringBuilder sb = new StringBuilder();

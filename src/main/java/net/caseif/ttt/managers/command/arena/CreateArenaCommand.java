@@ -25,16 +25,15 @@ package net.caseif.ttt.managers.command.arena;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 import net.caseif.ttt.util.FileUtil;
 import net.caseif.ttt.util.NumUtil;
 
-import net.amigocraft.mglib.exception.ArenaExistsException;
+import net.caseif.flint.util.physical.Boundary;
+import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -47,6 +46,7 @@ public class CreateArenaCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
+        //TODO: get corners (probably need a wizard for that :P)
         if (assertPermission()) {
             String w;
             int x;
@@ -59,7 +59,8 @@ public class CreateArenaCommand extends SubcommandHandler {
                     y = ((Player) sender).getLocation().getBlockY();
                     z = ((Player) sender).getLocation().getBlockZ();
                 } else {
-                    sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
+                    TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
                     return;
                 }
             } else if (args.length == 6) { // use 3 provided coords and world
@@ -70,21 +71,25 @@ public class CreateArenaCommand extends SubcommandHandler {
                     z = Integer.parseInt(args[4]);
                     w = args[5];
                 } else {
-                    sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
                     sendUsage();
                     return;
                 }
             } else {
-                sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
                 sendUsage();
                 return;
             }
-            try {
-                Main.mg.createArena(args[1], new Location(Bukkit.createWorld(new WorldCreator(w)), x, y, z));
-                sender.sendMessage(getMessage("info.personal.arena.create.success", INFO_COLOR, args[1]));
-            } catch (ArenaExistsException ex) {
-                sender.sendMessage(getMessage("error.arena.already-exists", ERROR_COLOR));
+            if (TTTCore.mg.getArena(args[1]).isPresent()) {
+                TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
             }
+            TTTCore.mg.createArena(args[1], new Location3D(Bukkit.createWorld(new WorldCreator(w)).getName(), x, y, z),
+                    Boundary.INFINITE);
+            TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(INFO_COLOR.toString())
+                    .withReplacements(args[1]).sendTo(sender);
         }
     }
 }

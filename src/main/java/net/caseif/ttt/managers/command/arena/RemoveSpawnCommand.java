@@ -24,15 +24,14 @@
 package net.caseif.ttt.managers.command.arena;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 import net.caseif.ttt.util.NumUtil;
 
-import net.amigocraft.mglib.MGUtil;
+import net.caseif.flint.arena.Arena;
+import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class RemoveSpawnCommand extends SubcommandHandler {
@@ -44,6 +43,12 @@ public class RemoveSpawnCommand extends SubcommandHandler {
     @Override
     public void handle() {
         if (assertPermission()) {
+            if (!TTTCore.mg.getArena(args[1]).isPresent()) {
+                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(ERROR_COLOR.toString()).sendTo(sender);
+                sendUsage();
+                return;
+            }
+            Arena arena = TTTCore.mg.getArena(args[1]).get();
             int x = 0;
             int y = 0;
             int z = 0;
@@ -54,14 +59,16 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                     y = ((Player) sender).getLocation().getBlockY();
                     z = ((Player) sender).getLocation().getBlockZ();
                 } else {
-                    sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
+                    TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
                     return;
                 }
             } else if (args.length == 3) {
                 if (NumUtil.isInt(args[2])) {
                     index = Integer.parseInt(args[2]);
                 } else {
-                    sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
                     sendUsage();
                     return;
                 }
@@ -71,44 +78,26 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                     y = Integer.parseInt(args[3]);
                     z = Integer.parseInt(args[4]);
                 } else {
-                    sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
                     sendUsage();
                     return;
                 }
             } else {
-                sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
                 sendUsage();
                 return;
             }
-            if (index != Integer.MAX_VALUE) {
-                YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
-                if (yaml.isSet(args[1] + ".spawns")) {
-                    if (yaml.isSet(args[1] + ".spawns." + index)) {
-                        yaml.set(args[1] + ".spawns." + index, null);
-                        MGUtil.saveArenaYaml("TTT", yaml);
-                    } else {
-                        sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-                        sendUsage();
-                    }
+            try {
+                if (index != Integer.MAX_VALUE) {
+                    arena.removeSpawnPoint(index);
                 } else {
-                    sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
+                    arena.removeSpawnPoint(new Location3D(x, y, z));
                 }
-            } else {
-                YamlConfiguration yaml = MGUtil.loadArenaYaml("TTT");
-                if (yaml.isSet(args[1] + ".spawns")) {
-                    ConfigurationSection cs = yaml.getConfigurationSection(args[1] + ".spawns");
-                    for (String k : cs.getKeys(false)) {
-                        if (cs.getInt(k + ".x") == x && cs.getInt(k + ".y") == y && cs.getInt(k + ".z") == z) {
-                            cs.set(k, null);
-                            MGUtil.saveArenaYaml("TTT", yaml);
-                            return;
-                        }
-                    }
-                    sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-                    sendUsage();
-                } else {
-                    sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
-                }
+            } catch (IllegalArgumentException ex) {
+                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
             }
         }
     }

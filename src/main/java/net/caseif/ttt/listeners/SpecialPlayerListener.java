@@ -24,7 +24,9 @@
 package net.caseif.ttt.listeners;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
+import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
+
+import net.caseif.ttt.TTTCore;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,9 +35,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class SpecialPlayerListener implements Listener {
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        if (e.getPlayer().hasPermission("ttt.build.warn")) {
-            e.getPlayer().sendMessage(getMessage("error.plugin.mglib", ERROR_COLOR));
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        if (event.getPlayer().hasPermission("ttt.build.warn")) {
+            TTTCore.locale.getLocalizable("error.plugin.flint").withPrefix(ERROR_COLOR.toString())
+                    .withReplacements(MIN_FLINT_VERSION + "").sendTo(event.getPlayer());
         }
     }
 

@@ -29,36 +29,38 @@ minimum-players-for-detective: 5
 
 # How many seconds should the DNA scanner take to charge?
 # (Vanilla TTT uses 25 as default, but also displays the exact location rather than just the direction.)
-scanner-charge-time: 10
+scanner-charge-time: 7.5
 
 # Should TTT send fancy titles to players on round start and end?
 # This will not do anything on Minecraft versions prior to 1.8.
 send-titles: true
 
-# If true, status titles (e.g. "You are a traitor!") will be sent as subtitles. If false, normal titles will be sent.
-# Setting this to true may cause the title to be obstructed by the chat box.
+# If true, status titles (event.g. "You are a traitor!") will be sent as subtitles. If false, normal titles will be
+# sent. Setting this to true may cause the title to be obstructed by the chat box.
 small-status-titles: false
 
-# If true, victory titles (e.g. "The traitors won!") will be sent as subtitles. If false, normal titles will be sent.
-# Setting this to false may cause the title to not fit on the screen for certain locales (such as deDE).
+# If true, victory titles (event.g. "The traitors won!") will be sent as subtitles. If false, normal titles will be
+# sent. Setting this to false may cause the title to not fit on the screen for certain locales (such as de_DE).
 # Setting this to true may cause the title to be obstructed by the chat box.
 small-victory-titles: true
 
 # The item to use as a crowbar. This should be a Minecraft ID corresponding to an item type.
 # Full lists of IDs in the game can be found here: http://minecraft.gamepedia.com/Data_values/Block_IDs
 # and here: http://minecraft.gamepedia.com/Data_values/Item_IDs
-# The "minecraft:" prefix should be excluded. Block types in light blue may not be used due to client restrictions.
+# The "minecraft:" prefix should be excluded. Block types in light blue may not be used in 1.8 and later due to client
+# restrictions (a few will not work in prior versions either).
 crowbar-item: IRON_SWORD
 
 # The item to use as a gun. This should be a Minecraft ID corresponding to an item type.
 # See above for further information.
+# TODO: figure out how to change this and maintain backward-compatibility
 gun-item: IRON_HORSE_ARMOR
 
 ###################
 # Weapon Settings #
 ###################
 
-# How much damage should crowbars do at full karma? (How many half-hearts?)
+# How much damage should crowbars do at full karma (in half-hearts)?
 crowbar-damage: 6
   
 # Should guns be functional outside of arenas?
@@ -132,22 +134,6 @@ damage-reduction: true
 # When true, karma changes will be logged to the console. Note that this will typically cause massive log spam.
 karma-debug: false
 
-##################
-# Event Settings #
-##################
-
-# What events should be cancelled in worlds containing arenas?
-# Note: these are events which would otherwise not be rolled back.
-block-burn: true
-block-fade: true
-block-grow: true
-block-ignite: true
-block-flow: false
-block-piston: false
-block-spread: true
-# Explosions from TNT blocks placed by players in a round will be rolled back. Other TNT blocks, creepers, and anything else will not.
-entity-explode: true
-
 #######################
 # Scoreboard Settings #
 #######################
@@ -189,6 +175,7 @@ sb-dead-prefix: §m
 # Setting this to true will cause TTT to use the sidebar to display the karma scoreboard, as opposed to the player list.
 # We highly recommend you leave this false, as it violently murdered our testing server the last time we tested it.
 # The backend has since been rewritten, but we haven't retested this display mode.
+#
 # We disclaim all responsibility for damages and/or frustration caused by this "feature."
 sb-use-sidebar: false
 
@@ -199,18 +186,12 @@ sb-use-sidebar: false
 # Should potentially unnecessary information be logged?
 verbose-logging: true
 
-# (TTT's locale is now defined in plugins/MGLib/config.yml)
+# What locale should be used by default? (TTT will attempt to send messages to players in their respective locale, but
+# will fall back to this. This will also be used for console messages.
+locale: en_US
 
 # Should the plugin update itself? (recommended)
 enable-auto-update: true
 
 # Allow me to collect anonymous usage information? (Pretty please? :3)
 enable-metrics: true
-
-# Should the plugin print a warning when the current build status can't be determined?
-# (Set this to false if you plan on modifying the plugin.yml file.)
-unknown-build-warning: true
-
-# Should the plugin print a warning if the current build is marked as unstable?
-# (We highly recommend you set this as true.)
-unstable-build-warning: true

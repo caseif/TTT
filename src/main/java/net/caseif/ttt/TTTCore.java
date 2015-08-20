@@ -23,8 +23,7 @@
  */
 package net.caseif.ttt;
 
-import static net.caseif.ttt.util.Constants.MIN_MGLIB_VERSION;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
+import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.listeners.MGListener;
 import net.caseif.ttt.listeners.PlayerListener;
@@ -35,18 +34,12 @@ import net.caseif.ttt.managers.command.CommandManager;
 import net.caseif.ttt.managers.command.SpecialCommandManager;
 import net.caseif.ttt.util.ContributorsReader;
 
-import net.amigocraft.mglib.MGUtil;
-import net.amigocraft.mglib.api.ConfigManager;
-import net.amigocraft.mglib.api.Locale;
-import net.amigocraft.mglib.api.LogLevel;
-import net.amigocraft.mglib.api.Minigame;
 import net.caseif.crosstitles.TitleUtil;
+import net.caseif.flint.FlintCore;
+import net.caseif.flint.minigame.Minigame;
+import net.caseif.rosetta.LocaleManager;
 import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -66,9 +59,9 @@ import java.util.logging.Logger;
  * Minecraft port of Trouble In Terrorist Town.
  *
  * @author Maxim Roncacé
- * @version 0.7.0
+ * @version 0.8.0-SNAPSHOT
  */
-public class Main extends JavaPlugin {
+public class TTTCore extends JavaPlugin {
 
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_WHITE = "\u001B[37m";
@@ -77,9 +70,8 @@ public class Main extends JavaPlugin {
 
     public static Logger log;
     public static Logger kLog;
-    public static Main plugin;
-    public static Locale locale;
-    public static String lang;
+    private static TTTCore plugin;
+    public static LocaleManager locale;
 
     //TODO: associate bodies with rounds
     public static List<Body> bodies = new ArrayList<>();
@@ -92,81 +84,26 @@ public class Main extends JavaPlugin {
     public static List<UUID> testers = new ArrayList<>();
     public static List<UUID> translators = new ArrayList<>();
 
-    public static void createFile(String s) {
-        File f = new File(Main.plugin.getDataFolder(), s);
-        if (!f.exists()) {
-            if (Config.VERBOSE_LOGGING) {
-                mg.log(locale.getMessage("info.plugin.compatibility.creating-file", s), LogLevel.INFO);
-            }
-            try {
-                f.createNewFile();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                mg.log(locale.getMessage("error.plugin.file-write", s), LogLevel.INFO);
-            }
-        }
-    }
-
-    public static void createLocale(String s) {
-        File exLocale = new File(Main.plugin.getDataFolder() + File.separator + "locales", s);
-        if (!exLocale.exists()) {
-            InputStream is = null;
-            OutputStream os = null;
-            try {
-                File dir = new File(Main.plugin.getDataFolder(), "locales");
-                dir.mkdir();
-                exLocale.createNewFile();
-                is = Main.class.getClassLoader().getResourceAsStream("locales/" + s);
-                os = new FileOutputStream(exLocale);
-                byte[] buffer = new byte[1024];
-                int len;
-                while ((len = is.read(buffer)) != -1) {
-                    os.write(buffer, 0, len);
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            } finally {
-                try {
-                    if (is != null) {
-                        is.close();
-                    }
-                    if (os != null) {
-                        os.close();
-                    }
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                }
-            }
-        }
-    }
-
     @Override
     public void onEnable() {
         log = this.getLogger();
         kLog = Logger.getLogger("TTT Karma Debug");
         plugin = this;
+        locale = new LocaleManager(this);
 
-        boolean compatibleMethod = false;
-        if (Bukkit.getPluginManager().isPluginEnabled("MGLib")) {
-            try {
-                Minigame.class.getMethod("isMGLibCompatible", String.class);
-                compatibleMethod = true;
-            } catch (NoSuchMethodException ignored) {
-            }
-        }
-        if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !compatibleMethod
-                || !Minigame.isMGLibCompatible(MIN_MGLIB_VERSION)) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("Flint") || FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
             MGLIB = false;
-            Main.log.info(ANSI_RED + getMessage("error.plugin.mglib", null, MIN_MGLIB_VERSION) + ANSI_WHITE);
+            logInfo("error.plugin.mglib", MIN_FLINT_VERSION + "");
             getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
             getCommand("ttt").setExecutor(new SpecialCommandManager());
             return;
         }
 
         // register plugin with MGLib
-        mg = Minigame.registerPlugin(this);
+        mg = FlintCore.registerPlugin(getName());
 
-        ConfigManager cm = mg.getConfigManager();
+        //TODO: reimplement these functionalities
+        /*ConfigManager cm = mg.getConfigManager();
         cm.setBlockPlaceAllowed(false);
         cm.setBlockBreakAllowed(false);
         cm.setHangingBreakAllowed(false);
@@ -186,66 +123,23 @@ public class Main extends JavaPlugin {
         cm.setOverrideDeathEvent(true);
         cm.setMobSpawningAllowed(false);
         cm.setEntityTargetingEnabled(false);
-        cm.setDefaultLocale(Config.LOCALE);
-
-        locale = mg.getLocale();
-
-        try {
-            File spawnFile = new File(Main.plugin.getDataFolder() + File.separator + "spawn.yml");
-            if (spawnFile.exists()) {
-                YamlConfiguration spawnYaml = new YamlConfiguration();
-                spawnYaml.load(spawnFile);
-                World w = Bukkit.getWorld(spawnYaml.getString("world"));
-                if (w == null) {
-                    w = Bukkit.createWorld(new WorldCreator(spawnYaml.getString("world")));
-                }
-                if (w == null) {
-                    Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-                        public void run() {
-                            mg.log(locale.getMessage("error.plugin.set-exit"), LogLevel.WARNING);
-                        }
-                    }, 2L);
-                } else {
-                    if (spawnYaml.isSet("pitch") && spawnYaml.isSet("yaw")) {
-                        cm.setDefaultExitLocation(new Location(
-                                w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z"),
-                                (float) spawnYaml.getDouble("yaw"), (float) spawnYaml.getDouble("pitch")
-                        ));
-                    } else {
-                        cm.setDefaultExitLocation(new Location(
-                                w, spawnYaml.getDouble("x"), spawnYaml.getDouble("y"), spawnYaml.getDouble("z")
-                        ));
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-                public void run() {
-                    mg.log(locale.getMessage("error.plugin.load-exit"), LogLevel.WARNING);
-                }
-            }, 2L);
-        }
+        cm.setDefaultLocale(Config.LOCALE);*/
 
         // register events, commands, and the plugin variable
-        getServer().getPluginManager().registerEvents(new MGListener(), this);
+        mg.getEventBus().register(new MGListener());
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getCommand("ttt").setExecutor(new CommandManager());
 
         // copy pre-0.5 folder
         final File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
         if (old.exists() && !getDataFolder().exists()) {
-            Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-                public void run() {
-                    mg.log(locale.getMessage("info.plugin.compatibility.rename"), LogLevel.INFO);
-                    try {
-                        old.renameTo(getDataFolder());
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        mg.log(locale.getMessage("error.plugin.folder-rename"), LogLevel.WARNING);
-                    }
-                }
-            }, 2L);
+            logWarning("info.plugin.compatibility.rename");
+            try {
+                old.renameTo(getDataFolder());
+            } catch (Exception ex) {
+                logWarning("error.plugin.folder-rename");
+                ex.printStackTrace();
+            }
         }
 
         // check if config should be overwritten
@@ -256,7 +150,7 @@ public class Main extends JavaPlugin {
                 Config.addMissingKeys();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MGUtil.log("Failed to write new config keys!", null, LogLevel.SEVERE);
+                logSevere("Failed to write new config keys!");
             }
         }
 
@@ -284,11 +178,7 @@ public class Main extends JavaPlugin {
                 metrics.start();
             } catch (IOException ex) {
                 if (Config.VERBOSE_LOGGING) {
-                    Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-                        public void run() {
-                            mg.log(locale.getMessage("error.plugin.mcstats"), LogLevel.INFO);
-                        }
-                    }, 2L);
+                    logWarning("error.plugin.mcstats");
                 }
             }
         }
@@ -299,7 +189,7 @@ public class Main extends JavaPlugin {
         maxKarma = Config.MAX_KARMA;
 
         // add special players to list
-        ContributorsReader reader = new ContributorsReader(Main.class.getResourceAsStream("/contributors.txt"));
+        ContributorsReader reader = new ContributorsReader(TTTCore.class.getResourceAsStream("/contributors.txt"));
         Map<String, Set<String>> contributors = reader.read();
 
         if (contributors.containsKey("dev")) {
@@ -326,13 +216,9 @@ public class Main extends JavaPlugin {
             }
         }
 
-        Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-            public void run() {
-                if (Config.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
-                    Main.mg.log(Main.locale.getMessage("error.plugin.title-support"), LogLevel.WARNING);
-                }
-            }
-        }, 2L);
+        if (Config.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
+            logWarning("error.plugin.title-support");
+        }
     }
 
     @Override
@@ -342,10 +228,79 @@ public class Main extends JavaPlugin {
             KarmaManager.playerKarma = null;
             ScoreManager.uninitialize();
             if (Config.VERBOSE_LOGGING) {
-                mg.log(locale.getMessage("info.plugin.disable", this.toString()), LogLevel.INFO);
+                logInfo("info.plugin.disable", this.toString());
             }
         }
         locale = null;
         plugin = null;
     }
+
+    public static TTTCore getInstance() {
+        return plugin;
+    }
+
+    public void createFile(String s) {
+        File f = new File(TTTCore.plugin.getDataFolder(), s);
+        if (!f.exists()) {
+            if (Config.VERBOSE_LOGGING) {
+                logInfo("info.plugin.compatibility.creating-file", s);
+            }
+            try {
+                f.createNewFile();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                logWarning("error.plugin.file-write", s);
+            }
+        }
+    }
+
+    public void createLocale(String s) {
+        File exLocale = new File(TTTCore.plugin.getDataFolder() + File.separator + "locales", s);
+        if (!exLocale.exists()) {
+            InputStream is = null;
+            OutputStream os = null;
+            try {
+                File dir = new File(TTTCore.plugin.getDataFolder(), "locales");
+                dir.mkdir();
+                exLocale.createNewFile();
+                is = TTTCore.class.getClassLoader().getResourceAsStream("locales/" + s);
+                os = new FileOutputStream(exLocale);
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, len);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                try {
+                    if (is != null) {
+                        is.close();
+                    }
+                    if (os != null) {
+                        os.close();
+                    }
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void logInfo(String localizationKey, String... replacements) {
+        log.info(localize(localizationKey, replacements));
+    }
+
+    public void logWarning(String localizationKey, String... replacements) {
+        log.warning(localize(localizationKey, replacements));
+    }
+
+    public void logSevere(String localizationKey, String... replacements) {
+        log.severe(localize(localizationKey, replacements));
+    }
+
+    private String localize(String localizationKey, String... replacements) {
+        return locale.getLocalizable(localizationKey).withReplacements(replacements).localize();
+    }
+
 }

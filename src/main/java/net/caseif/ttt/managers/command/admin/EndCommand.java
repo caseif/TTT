@@ -25,13 +25,13 @@ package net.caseif.ttt.managers.command.admin;
 
 import static net.caseif.ttt.util.Constants.ARENA_COLOR;
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
+import net.caseif.ttt.util.Constants;
 
-import net.amigocraft.mglib.api.Round;
-import net.amigocraft.mglib.api.Stage;
+import com.google.common.base.Optional;
+import net.caseif.flint.arena.Arena;
 import org.bukkit.command.CommandSender;
 
 public class EndCommand extends SubcommandHandler {
@@ -44,25 +44,33 @@ public class EndCommand extends SubcommandHandler {
     public void handle() {
         if (assertPermission()) {
             if (args.length > 1) {
-                String arena = args[1];
-                Round r = Main.mg.getRound(arena);
-                if (r.getStage() == Stage.PREPARING || r.getStage() == Stage.PLAYING) {
-                    if (args.length > 2) {
-                        if (args[2].equalsIgnoreCase("t")) {
-                            r.setMetadata("t-victory", true);
-                        } else if (args[2].equalsIgnoreCase("i")) {
-                            r.setMetadata("t-victory", false);
-                        } else {
-                            sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
-                            return;
+                String arenaName = args[1];
+                Optional<Arena> arena = TTTCore.mg.getArena(arenaName);
+                if (arena.isPresent()) {
+                    if (arena.get().getRound().isPresent()
+                            && arena.get().getRound().get().getLifecycleStage() != Constants.WAITING) {
+                        if (args.length > 2) {
+                            if (args[2].equalsIgnoreCase("t")) {
+                                arena.get().getRound().get().getMetadata().set("t-victory", true);
+                            } else if (!args[2].equalsIgnoreCase("i")) {
+                                TTTCore.locale.getLocalizable("error.command.invalid-args")
+                                        .withPrefix(ERROR_COLOR.toString()).sendTo(sender);
+                                return;
+                            }
                         }
+                        arena.get().getRound().get().end();
+                    } else {
+                        TTTCore.locale.getLocalizable("error.arena.no-round")
+                        .withPrefix(ERROR_COLOR.toString()).withReplacements(ARENA_COLOR + arenaName).sendTo(sender);
                     }
-                    r.end();
                 } else {
-                    sender.sendMessage(getMessage("error.arena.no-round", ERROR_COLOR, ARENA_COLOR + r.getArena()));
+                    TTTCore.locale.getLocalizable("error.arena.dne")
+                            .withPrefix(ERROR_COLOR.toString()).withReplacements(ARENA_COLOR + arenaName)
+                            .sendTo(sender);
                 }
             } else {
-                sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
                 sendUsage();
             }
         }

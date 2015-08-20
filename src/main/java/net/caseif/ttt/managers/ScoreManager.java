@@ -26,11 +26,12 @@ package net.caseif.ttt.managers;
 import static net.caseif.ttt.util.MiscUtil.fromNullableString;
 
 import net.caseif.ttt.Config;
-import net.caseif.ttt.Main;
 import net.caseif.ttt.util.MiscUtil;
 
-import net.amigocraft.mglib.api.MGPlayer;
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.round.Round;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -44,7 +45,8 @@ public class ScoreManager {
 
     public static final boolean ENTRY_SUPPORT;
 
-    public static HashMap<String, ScoreManager> sbManagers = new HashMap<String, ScoreManager>();
+    //TODO: make this private and abstract mutation of it
+    public static HashMap<String, ScoreManager> sbManagers = new HashMap<>();
 
     public static ScoreboardManager manager = Bukkit.getScoreboardManager();
 
@@ -62,16 +64,16 @@ public class ScoreManager {
     public Scoreboard traitor;
     public Objective iObj;
     public Objective tObj;
-    public String arenaName;
+    public Round round;
     //TODO: fucking clean this next declaration up
     public Team
             iTeamIA, iTeamIM, iTeamID, iTeamTA, iTeamTM, iTeamTD, iTeamDA, iTeamDM, iTeamDD,
             tTeamIA, tTeamIM, tTeamID, tTeamTA, tTeamTM, tTeamTD, tTeamDA, tTeamDM, tTeamDD;
 
     @SuppressWarnings("deprecation")
-    public ScoreManager(String arenaName) {
+    public ScoreManager(Round round) {
 
-        this.arenaName = arenaName;
+        this.round = round;
         innocent = manager.getNewScoreboard();
         traitor = manager.getNewScoreboard();
 
@@ -161,20 +163,18 @@ public class ScoreManager {
                 fromNullableString(Config.SB_T_DETECTIVE_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
         );
 
-        for (MGPlayer m : Main.mg.getRound(arenaName).getPlayerList()) {
-            if (m.getBukkitPlayer() != null) {
-                update(m);
+        for (Challenger ch : round.getChallengers()) {
+            Player pl = Bukkit.getPlayer(ch.getUniqueId());
+            update(ch);
 
-                if (m.getTeam() != null) {
-                    if (!MiscUtil.isTraitor(m)) {
-                        m.getBukkitPlayer().setScoreboard(innocent);
-                    } else {
-                        m.getBukkitPlayer().setScoreboard(traitor);
-                    }
+            if (ch.getTeam().isPresent()) {
+                if (!MiscUtil.isTraitor(ch)) {
+                    pl.setScoreboard(innocent);
                 } else {
-                    m.getBukkitPlayer().setScoreboard(innocent);
+                    pl.setScoreboard(traitor);
                 }
-
+            } else {
+                pl.setScoreboard(innocent);
             }
         }
 
@@ -190,70 +190,70 @@ public class ScoreManager {
     }
 
     @SuppressWarnings("deprecation")
-    public void update(MGPlayer player) {
+    public void update(Challenger challenger) {
 
         if (ENTRY_SUPPORT) {
-            innocent.resetScores(player.getName());
-            traitor.resetScores(player.getName());
+            innocent.resetScores(challenger.getName());
+            traitor.resetScores(challenger.getName());
         } else {
-            innocent.resetScores(player.getName());
-            traitor.resetScores(player.getName());
+            innocent.resetScores(challenger.getName());
+            traitor.resetScores(challenger.getName());
         }
 
-        if (innocent.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName())) != null) {
-            innocent.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName()))
-                    .removePlayer(Bukkit.getOfflinePlayer(player.getName()));
+        if (innocent.getPlayerTeam(Bukkit.getOfflinePlayer(challenger.getName())) != null) {
+            innocent.getPlayerTeam(Bukkit.getOfflinePlayer(challenger.getName()))
+                    .removePlayer(Bukkit.getOfflinePlayer(challenger.getName()));
         }
-        if (traitor.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName())) != null) {
-            traitor.getPlayerTeam(Bukkit.getOfflinePlayer(player.getName()))
-                    .removePlayer(Bukkit.getOfflinePlayer(player.getName()));
+        if (traitor.getPlayerTeam(Bukkit.getOfflinePlayer(challenger.getName())) != null) {
+            traitor.getPlayerTeam(Bukkit.getOfflinePlayer(challenger.getName()))
+                    .removePlayer(Bukkit.getOfflinePlayer(challenger.getName()));
         }
 
-        if (player.hasMetadata("fragment.detective")) {
-            if (!player.isSpectating()) {
-                iTeamDA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-                tTeamDA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-            } else if (!player.hasMetadata("bodyFound")) {
-                iTeamDM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-                tTeamDM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+        if (challenger.getMetadata().has("detective")) {
+            if (!challenger.isSpectating()) {
+                iTeamDA.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+                tTeamDA.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+            } else if (!challenger.getMetadata().has("bodyFound")) {
+                iTeamDM.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+                tTeamDM.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
             } else {
-                iTeamDD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-                tTeamDD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+                iTeamDD.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+                tTeamDD.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
             }
-        } else if (player.getTeam() == null || player.getTeam().equals("Innocent")) {
-            if (!player.isSpectating()) {
-                iTeamIA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-                tTeamIA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-            } else if (!player.hasMetadata("bodyFound")) {
-                iTeamIM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-                tTeamIM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+        } else if (challenger.getTeam().isPresent() || challenger.getTeam().get().getId().equals("i")) {
+            if (!challenger.isSpectating()) {
+                iTeamIA.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+                tTeamIA.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+            } else if (!challenger.getMetadata().has("bodyFound")) {
+                iTeamIM.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+                tTeamIM.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
             } else {
-                iTeamID.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-                tTeamID.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+                iTeamID.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+                tTeamID.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
             }
-        } else if (player.getTeam().equals("Traitor")) {
-            if (!player.isSpectating()) {
-                iTeamTA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-                tTeamTA.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-            } else if (!player.hasMetadata("bodyFound")) {
-                iTeamTM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-                tTeamTM.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+        } else if (challenger.getTeam().isPresent() && challenger.getTeam().get().getId().equals("t")) {
+            if (!challenger.isSpectating()) {
+                iTeamTA.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+                tTeamTA.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+            } else if (!challenger.getMetadata().has("bodyFound")) {
+                iTeamTM.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+                tTeamTM.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
             } else {
-                iTeamTD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
-                tTeamTD.addPlayer(Bukkit.getOfflinePlayer(player.getName()));
+                iTeamTD.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
+                tTeamTD.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
             }
         }
         Score score1;
         Score score2;
         if (ENTRY_SUPPORT) {
-            score1 = iObj.getScore(player.getName());
-            score2 = tObj.getScore(player.getName());
+            score1 = iObj.getScore(challenger.getName());
+            score2 = tObj.getScore(challenger.getName());
         } else {
-            score1 = iObj.getScore(Bukkit.getOfflinePlayer(player.getName()));
-            score2 = tObj.getScore(Bukkit.getOfflinePlayer(player.getName()));
+            score1 = iObj.getScore(Bukkit.getOfflinePlayer(challenger.getName()));
+            score2 = tObj.getScore(Bukkit.getOfflinePlayer(challenger.getName()));
         }
-        score1.setScore((Integer) player.getMetadata("displayKarma"));
-        score2.setScore((Integer) player.getMetadata("displayKarma"));
+        score1.setScore(challenger.getMetadata().<Integer>get("displayKarma").get());
+        score2.setScore(challenger.getMetadata().<Integer>get("displayKarma").get());
     }
 
 }

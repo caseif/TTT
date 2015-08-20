@@ -28,18 +28,19 @@ import static net.caseif.ttt.util.Constants.ERROR_COLOR;
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
 import static net.caseif.ttt.util.Constants.INNOCENT_COLOR;
 import static net.caseif.ttt.util.Constants.TRAITOR_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
 import net.caseif.ttt.Body;
 import net.caseif.ttt.Config;
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.KarmaManager;
 import net.caseif.ttt.managers.ScoreManager;
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.InventoryUtil;
 
-import net.amigocraft.mglib.api.Location3D;
-import net.amigocraft.mglib.api.MGPlayer;
-import net.amigocraft.mglib.api.Stage;
+import com.google.common.base.Optional;
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.util.physical.Location3D;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -70,113 +71,146 @@ public class PlayerListener implements Listener {
 
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerInteract(PlayerInteractEvent e) {
-        if (Main.mg.isPlayer(e.getPlayer().getName())) { // check if player is in TTT round
-            MGPlayer player = Main.mg.getMGPlayer(e.getPlayer().getName());
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) { // check if player is in TTT round
+            Challenger ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get();
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 // disallow cheating/bed setting
-                if (e.getClickedBlock().getType() == Material.ENDER_CHEST
-                        || e.getClickedBlock().getType() == Material.BED_BLOCK) {
-                    e.setCancelled(true);
+                if (event.getClickedBlock().getType() == Material.ENDER_CHEST
+                        || event.getClickedBlock().getType() == Material.BED_BLOCK) {
+                    event.setCancelled(true);
                     return;
                 }
                 // handle body checking
-                if (e.getClickedBlock().getType() == Material.CHEST) {
-                    if (player.isSpectating()) {
-                        e.setCancelled(true);
-                        for (Body b : Main.bodies) {
-                            if (b.getLocation().equals(Location3D.valueOf(e.getClickedBlock().getLocation()))) {
-                                Inventory chestInv = ((Chest) e.getClickedBlock().getState()).getInventory();
-                                Inventory inv = Main.plugin.getServer().createInventory(chestInv.getHolder(),
+                Location3D clicked = new Location3D(
+                        event.getClickedBlock().getX(),
+                        event.getClickedBlock().getY(),
+                        event.getClickedBlock().getZ());
+                if (event.getClickedBlock().getType() == Material.CHEST) {
+                    if (ch.isSpectating()) {
+                        event.setCancelled(true);
+                        for (Body b : TTTCore.bodies) {
+                            if (b.getLocation().equals(clicked)) {
+                                Inventory chestInv = ((Chest) event.getClickedBlock().getState()).getInventory();
+                                Inventory inv = TTTCore.getInstance().getServer().createInventory(chestInv.getHolder(),
                                         chestInv.getSize());
                                 inv.setContents(chestInv.getContents());
-                                e.getPlayer().openInventory(inv);
-                                e.getPlayer().sendMessage(
-                                        getMessage("info.personal.status.discreet-search", INFO_COLOR));
+                                event.getPlayer().openInventory(inv);
+                                TTTCore.locale.getLocalizable("info.personal.status.discreet-search")
+                                        .withPrefix(INFO_COLOR.toString()).sendTo(event.getPlayer());
                                 break;
                             }
                         }
                     } else {
                         int index = -1;
-                        for (int i = 0; i < Main.bodies.size(); i++) {
-                            if (Main.bodies.get(i).getLocation()
-                                    .equals(Location3D.valueOf(e.getClickedBlock().getLocation()))) {
+                        for (int i = 0; i < TTTCore.bodies.size(); i++) {
+                            if (TTTCore.bodies.get(i).getLocation()
+                                    .equals(clicked)) {
                                 index = i;
                                 break;
                             }
                         }
                         if (index != -1) {
                             boolean found = false;
-                            for (Body b : Main.foundBodies) {
-                                if (b.getLocation().equals(Location3D.valueOf(e.getClickedBlock().getLocation()))) {
+                            for (Body b : TTTCore.foundBodies) {
+                                if (b.getLocation().equals(clicked)) {
                                     found = true;
                                     break;
                                 }
                             }
                             if (!found) { // it's a new body
-                                Body b = Main.bodies.get(index);
-                                MGPlayer bodyPlayer = Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer());
-                                switch (b.getTeam()) {
-                                    case "Innocent": {
-                                        Main.mg.getRound(b.getArena()).broadcast(
-                                                getMessage("info.global.round.event.body-find", INNOCENT_COLOR, false,
-                                                        e.getPlayer().getName(), b.getPlayer()) + " "
-                                                        + getMessage("info.global.round.event.body-find.innocent",
-                                                        INNOCENT_COLOR, false));
+                                Body b = TTTCore.bodies.get(index);
+                                Optional<Challenger> bodyPlayer
+                                        = TTTCore.mg.getChallenger(TTTCore.bodies.get(index).getPlayer());
+                                //TODO: make this DRYer
+                                switch (b.getTeam().getId()) {
+                                    case "innocent": {
+                                        for (Challenger c : b.getRound().getChallengers()) {
+                                            Player pl = Bukkit.getPlayer(c.getUniqueId());
+                                            pl.sendMessage(INNOCENT_COLOR
+                                                    + TTTCore.locale
+                                                    .getLocalizable("info.global.round.event.body-find")
+                                                    .withReplacements(event.getPlayer().getName(),
+                                                            b.getPlayer().toString()).localizeFor(pl) + " "
+                                                    + TTTCore.locale
+                                                    .getLocalizable("info.global.round.event.body-find.innocent")
+                                                    .localizeFor(pl));
+                                        }
                                         break;
                                     }
-                                    case "Traitor": {
-                                        Main.mg.getRound(b.getArena()).broadcast(
-                                                getMessage("info.global.round.event.body-find", TRAITOR_COLOR, false,
-                                                        e.getPlayer().getName(), b.getPlayer()) + " "
-                                                        + getMessage("info.global.round.event.body-find.traitor",
-                                                        TRAITOR_COLOR, false));
+                                    case "traitor": {
+                                        for (Challenger c : b.getRound().getChallengers()) {
+                                            Player pl = Bukkit.getPlayer(c.getUniqueId());
+                                            pl.sendMessage(TRAITOR_COLOR
+                                                    + TTTCore.locale
+                                                    .getLocalizable("info.global.round.event.body-find")
+                                                    .withReplacements(event.getPlayer().getName(),
+                                                            b.getPlayer().toString()).localizeFor(pl) + " "
+                                                    + TTTCore.locale
+                                                    .getLocalizable("info.global.round.event.body-find.traitor")
+                                                    .localizeFor(pl));
+                                        }
                                         break;
                                     }
-                                    default: {
-                                        Main.mg.getRound(b.getArena()).broadcast(
-                                                getMessage("info.global.round.event.body-find", DETECTIVE_COLOR, false,
-                                                        e.getPlayer().getName(), b.getPlayer()) + " "
-                                                        + getMessage("info.global.round.event.body-find.detective",
-                                                        DETECTIVE_COLOR, false));
+                                    default: { //TODO: don't think this is right, need to check on it later
+                                        for (Challenger c : b.getRound().getChallengers()) {
+                                            Player pl = Bukkit.getPlayer(c.getUniqueId());
+                                            pl.sendMessage(DETECTIVE_COLOR
+                                                    + TTTCore.locale
+                                                    .getLocalizable("info.global.round.event.body-find")
+                                                    .withReplacements(event.getPlayer().getName(),
+                                                            b.getPlayer().toString()).localizeFor(pl) + " "
+                                                    + TTTCore.locale
+                                                    .getLocalizable("info.global.round.event.body-find.detective")
+                                                    .localizeFor(pl));
+                                        }
                                         break;
                                     }
                                 }
-                                Main.foundBodies.add(Main.bodies.get(index));
-                                if (bodyPlayer != null
-                                        && bodyPlayer.getArena().equals(Main.bodies.get(index).getArena())) {
-                                    bodyPlayer.setPrefix(Config.SB_ALIVE_PREFIX);
-                                    bodyPlayer.setMetadata("bodyFound", true);
-                                    if (ScoreManager.sbManagers.containsKey(bodyPlayer.getArena())) {
-                                        ScoreManager.sbManagers.get(bodyPlayer.getArena()).update(bodyPlayer);
+                                TTTCore.foundBodies.add(TTTCore.bodies.get(index));
+                                if (bodyPlayer.isPresent()
+                                        && bodyPlayer.get().getRound().equals(TTTCore.bodies.get(index).getRound())) {
+                                    //TODO: no Flint equivalent for this
+                                    //bodyPlayer.setPrefix(Config.SB_ALIVE_PREFIX);
+                                    bodyPlayer.get().getMetadata().set("bodyFound", true);
+                                    if (ScoreManager.sbManagers.containsKey(bodyPlayer.get().getRound().getArena()
+                                            .getId())) {
+                                        ScoreManager.sbManagers.get(bodyPlayer.get().getRound().getArena().getId())
+                                                .update(bodyPlayer.get());
                                     }
                                 }
                             }
-                            if (player.hasMetadata("fragment.detective")) { // handle DNA scanning
-                                if (e.getPlayer().getItemInHand() != null
-                                        && e.getPlayer().getItemInHand().getType() == Material.COMPASS
-                                        && e.getPlayer().getItemInHand().getItemMeta() != null
-                                        && e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null
-                                        && e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(
-                                        getMessage("item.dna-scanner.name", DETECTIVE_COLOR, false))) {
-                                    e.setCancelled(true);
-                                    Player killer = Main.plugin.getServer().getPlayer(
+                            if (ch.getMetadata().has("fragment.detective")) { // handle DNA scanning
+                                if (event.getPlayer().getItemInHand() != null
+                                        && event.getPlayer().getItemInHand().getType() == Material.COMPASS
+                                        && event.getPlayer().getItemInHand().getItemMeta() != null
+                                        && event.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null
+                                        && event.getPlayer().getItemInHand().getItemMeta().getDisplayName().endsWith(
+                                        TTTCore.locale.getLocalizable("item.dna-scanner.name").localize())) {
+                                    event.setCancelled(true);
+                                    //TODO: killer should be stored with body
+                                    /*Player killer = Main.plugin.getServer().getPlayer(
                                             (String) Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer())
                                                     .getMetadata("killer")
-                                    );
+                                    );*/
+                                    Player killer = null;
                                     if (killer != null) {
-                                        if (Main.mg.isPlayer(killer.getName())) {
-                                            if (!Main.mg.getMGPlayer(killer.getName()).isSpectating()) {
-                                                player.setMetadata("tracking", killer.getName());
+                                        if (TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()) {
+                                            if (!TTTCore.mg.getChallenger(killer.getUniqueId()).get().isSpectating()) {
+                                                ch.getMetadata().set("tracking", killer.getName());
                                             }
-                                            e.getPlayer().sendMessage(getMessage("info.personal.status.collect-dna",
-                                                    INFO_COLOR, Main.bodies.get(index).getPlayer()));
+                                            TTTCore.locale.getLocalizable("info.personal.status.collect-dna")
+                                                    .withPrefix(INFO_COLOR.toString())
+                                                    .withReplacements(Bukkit.getPlayer(TTTCore.bodies.get(index)
+                                                            .getPlayer()).getName())
+                                                    .sendTo(event.getPlayer());
                                         } else {
-                                            e.getPlayer().sendMessage(getMessage("error.round.killer-left",
-                                                    ERROR_COLOR));
+                                            TTTCore.locale.getLocalizable("error.round.killer-left")
+                                                    .withPrefix(ERROR_COLOR.toString()).sendTo(event.getPlayer());
                                         }
                                     } else {
-                                        e.getPlayer().sendMessage(getMessage("error.round.killer-left", ERROR_COLOR));
+                                        TTTCore.locale.getLocalizable("error.round.killer-left")
+                                                .withPrefix(ERROR_COLOR.toString()).sendTo(event.getPlayer());
                                     }
                                     return;
                                 }
@@ -187,26 +221,27 @@ public class PlayerListener implements Listener {
             }
         }
         // guns
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
-            if (e.getPlayer().getItemInHand() != null) {
-                if (e.getPlayer().getItemInHand().getItemMeta() != null) {
-                    if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null) {
-                        if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName()
-                                .endsWith(Main.locale.getMessage("item.gun.name"))) {
-                            if ((Main.mg.isPlayer(e.getPlayer().getName())
-                                    && !Main.mg.getMGPlayer(e.getPlayer().getName()).isSpectating()
-                                    && (Main.mg.getMGPlayer(e.getPlayer().getName()).getRound().getStage()
-                                    == Stage.PLAYING) || Config.GUNS_OUTSIDE_ARENAS)) {
-                                e.setCancelled(true);
-                                if (e.getPlayer().getInventory().contains(Material.ARROW)
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+            if (event.getPlayer().getItemInHand() != null) {
+                if (event.getPlayer().getItemInHand().getItemMeta() != null) {
+                    if (event.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null) {
+                        if (event.getPlayer().getItemInHand().getItemMeta().getDisplayName()
+                                .endsWith(TTTCore.locale.getLocalizable("item.gun.name").localize())) {
+                            if ((TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()
+                                    && !TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().isSpectating()
+                                    && (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().getRound()
+                                    .getLifecycleStage() == Constants.PLAYING) || Config.GUNS_OUTSIDE_ARENAS)) {
+                                event.setCancelled(true);
+                                if (event.getPlayer().getInventory().contains(Material.ARROW)
                                         || !Config.REQUIRE_AMMO_FOR_GUNS) {
                                     if (Config.REQUIRE_AMMO_FOR_GUNS) {
-                                        InventoryUtil.removeArrow(e.getPlayer().getInventory());
-                                        e.getPlayer().updateInventory();
+                                        InventoryUtil.removeArrow(event.getPlayer().getInventory());
+                                        event.getPlayer().updateInventory();
                                     }
-                                    e.getPlayer().launchProjectile(Arrow.class);
+                                    event.getPlayer().launchProjectile(Arrow.class);
                                 } else {
-                                    e.getPlayer().sendMessage(getMessage("info.personal.status.no-ammo", ERROR_COLOR));
+                                    TTTCore.locale.getLocalizable("info.personal.status.no-ammo")
+                                            .withPrefix(ERROR_COLOR.toString()).sendTo(event.getPlayer());
                                 }
                             }
                         }
@@ -217,45 +252,46 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEntityDamage(EntityDamageEvent e) {
-        if (e.getEntityType() == EntityType.PLAYER) {
-            MGPlayer victim = Main.mg.getMGPlayer(((Player) e.getEntity()).getName());
-            if (victim != null && victim.getRound().getStage() != Stage.PLAYING) {
-                if (e.getCause() == DamageCause.VOID) {
-                    victim.spawnIn();
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (event.getEntityType() == EntityType.PLAYER) {
+            Optional<Challenger> victim = TTTCore.mg.getChallenger(event.getEntity().getUniqueId());
+            if (victim.isPresent() && victim.get().getRound().getLifecycleStage() != Constants.PLAYING) {
+                if (event.getCause() == DamageCause.VOID) {
+                    Bukkit.getPlayer(victim.get().getUniqueId());
                 } else {
-                    e.setCancelled(true);
+                    event.setCancelled(true);
                 }
             }
-            if (e instanceof EntityDamageByEntityEvent) {
-                EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent) e;
+            if (event instanceof EntityDamageByEntityEvent) {
+                EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent) event;
                 if (ed.getDamager().getType() == EntityType.PLAYER
                         || (ed.getDamager() instanceof Projectile
-                                && ((Projectile) ed.getDamager()).getShooter() instanceof Player)) {
+                        && ((Projectile) ed.getDamager()).getShooter() instanceof Player)) {
                     Player damager = ed.getDamager().getType() == EntityType.PLAYER
                             ? (Player) ed.getDamager()
                             : (Player) ((Projectile) ed.getDamager()).getShooter();
-                    if (Main.mg.isPlayer(damager.getName())) {
-                        MGPlayer mgDamager = Main.mg.getMGPlayer(damager.getName());
-                        if (mgDamager.getRound().getStage() != Stage.PLAYING) {
-                            e.setCancelled(true);
-                            return;
-                        } else if (victim == null) {
-                            e.setCancelled(true);
+                    if (TTTCore.mg.getChallenger(damager.getUniqueId()).isPresent()) {
+                        Challenger mgDamager = TTTCore.mg.getChallenger(damager.getUniqueId()).get();
+                        if (mgDamager.getRound().getLifecycleStage() != Constants.PLAYING || !victim.isPresent()) {
+                            event.setCancelled(true);
                             return;
                         }
                         if (damager.getItemInHand() != null) {
                             if (damager.getItemInHand().getItemMeta() != null) {
                                 if (damager.getItemInHand().getItemMeta().getDisplayName() != null) {
                                     if (damager.getItemInHand().getItemMeta().getDisplayName()
-                                            .endsWith(Main.locale.getMessage("item.crowbar.name"))) {
-                                        e.setDamage(Config.CROWBAR_DAMAGE);
+                                            .endsWith(TTTCore.locale.getLocalizable("item.crowbar.name")
+                                                    .localize())) {
+                                        event.setDamage(Config.CROWBAR_DAMAGE);
                                     }
                                 }
                             }
                         }
-                        e.setDamage((int) (e.getDamage() * (Double) mgDamager.getMetadata("damageRed")));
-                        KarmaManager.handleDamageKarma(mgDamager, victim, e.getDamage());
+                        Optional<Double> reduc = mgDamager.getMetadata().<Double>get("damageRed");
+                        if (reduc.isPresent()) {
+                            event.setDamage((int) (event.getDamage() * reduc.get()));
+                        }
+                        KarmaManager.handleDamageKarma(mgDamager, victim.get(), event.getDamage());
                     }
                 }
             }
@@ -263,72 +299,74 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerPickupItem(PlayerPickupItemEvent e) {
-        if (Main.mg.isPlayer(e.getPlayer().getName())) {
-            e.setCancelled(true);
+    public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+        if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
+            event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onPlayerDropItem(PlayerDropItemEvent e) {
-        if (Main.mg.isPlayer(e.getPlayer().getName())) {
-            e.setCancelled(true);
-            e.getPlayer().sendMessage(getMessage("info.personal.status.no-drop", ERROR_COLOR));
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
+            event.setCancelled(true);
+            TTTCore.locale.getLocalizable("info.personal.status.no-drop").withPrefix(ERROR_COLOR.toString())
+                    .sendTo(event.getPlayer());
         }
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         if (Config.KARMA_PERSISTENCE) {
-            KarmaManager.loadKarma(e.getPlayer().getName());
+            KarmaManager.loadKarma(event.getPlayer().getUniqueId());
         }
     }
 
     @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent e) {
+    public void onPlayerQuit(PlayerQuitEvent event) {
         if (!Config.KARMA_PERSISTENCE) {
-            KarmaManager.playerKarma.remove(e.getPlayer().getName());
+            KarmaManager.playerKarma.remove(event.getPlayer().getUniqueId());
         }
     }
 
     @EventHandler
-    public void onHealthRegenerate(EntityRegainHealthEvent e) {
-        if (e.getEntity() instanceof Player) {
-            Player p = (Player) e.getEntity();
-            if (Main.mg.isPlayer(p.getName())) {
-                e.setCancelled(true);
+    public void onHealthRegenerate(EntityRegainHealthEvent event) {
+        if (event.getEntity() instanceof Player) {
+            Player p = (Player) event.getEntity();
+            if (TTTCore.mg.getChallenger(p.getUniqueId()).isPresent()) {
+                event.setCancelled(true);
             }
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onInventoryClick(InventoryClickEvent e) {
-        for (HumanEntity he : e.getViewers()) {
+    public void onInventoryClick(InventoryClickEvent event) {
+        for (HumanEntity he : event.getViewers()) {
             Player p = (Player) he;
-            if (Main.mg.isPlayer(p.getName())) {
-                if (e.getInventory().getType() == InventoryType.CHEST) {
+            if (TTTCore.mg.getChallenger(p.getUniqueId()).isPresent()) {
+                if (event.getInventory().getType() == InventoryType.CHEST) {
                     Block block;
                     Block block2 = null;
-                    if (e.getInventory().getHolder() instanceof Chest) {
-                        block = ((Chest) e.getInventory().getHolder()).getBlock();
-                    } else if (e.getInventory().getHolder() instanceof DoubleChest) {
-                        block = ((Chest) ((DoubleChest) e.getInventory().getHolder()).getLeftSide()).getBlock();
-                        block2 = ((Chest) ((DoubleChest) e.getInventory().getHolder()).getRightSide()).getBlock();
+                    if (event.getInventory().getHolder() instanceof Chest) {
+                        block = ((Chest) event.getInventory().getHolder()).getBlock();
+                    } else if (event.getInventory().getHolder() instanceof DoubleChest) {
+                        block = ((Chest) ((DoubleChest) event.getInventory().getHolder()).getLeftSide()).getBlock();
+                        block2 = ((Chest) ((DoubleChest) event.getInventory().getHolder()).getRightSide()).getBlock();
                     } else {
                         return;
                     }
                     boolean found1 = false;
-                    for (Body b : Main.bodies) {
-                        if (b.getLocation().equals(Location3D.valueOf(block.getLocation()))) {
+                    for (Body b : TTTCore.bodies) {
+                        if (b.getLocation().equals(new Location3D(block.getX(), block.getY(), block.getZ()))) {
                             found1 = true;
-                            e.setCancelled(true);
+                            event.setCancelled(true);
                             if (block2 == null) {
                                 break;
                             }
                         }
                         if (block2 != null) {
-                            if (b.getLocation().equals(Location3D.valueOf(block.getLocation()))) {
-                                e.setCancelled(true);
+                            //TODO: inspect this conditional for a possible bug (block2?)
+                            if (b.getLocation().equals(new Location3D(block.getX(), block.getY(), block.getZ()))) {
+                                event.setCancelled(true);
                                 if (!found1) {
                                     break;
                                 }

@@ -24,15 +24,14 @@
 package net.caseif.ttt.managers.command.arena;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 import net.caseif.ttt.util.NumUtil;
 
-import net.amigocraft.mglib.exception.InvalidLocationException;
-import net.amigocraft.mglib.exception.NoSuchArenaException;
-import org.bukkit.Location;
+import com.google.common.base.Optional;
+import net.caseif.flint.arena.Arena;
+import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -57,7 +56,8 @@ public class AddSpawnCommand extends SubcommandHandler {
                     y = ((Player) sender).getLocation().getBlockY();
                     z = ((Player) sender).getLocation().getBlockZ();
                 } else {
-                    sender.sendMessage(getMessage("error.command.ingame", ERROR_COLOR));
+                    TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
                     return;
                 }
             } else if (args.length == 5) { // use 3 provided coords
@@ -66,25 +66,31 @@ public class AddSpawnCommand extends SubcommandHandler {
                     y = Integer.parseInt(args[3]);
                     z = Integer.parseInt(args[4]);
                 } else {
-                    sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
                     sendUsage();
                     return;
                 }
             } else {
-                sender.sendMessage(getMessage("error.command.invalid-args", ERROR_COLOR));
+                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
                 sendUsage();
                 return;
             }
-            try {
+            Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
+            if (arena.isPresent()) {
                 if (w == null) {
-                    Main.mg.getArenaFactory(args[1]).addSpawn(x, y, z);
+                    arena.get().addSpawnPoint(new Location3D(x, y, z));
                 } else {
-                    Main.mg.getArenaFactory(args[1]).addSpawn(new Location(w, x, y, z));
+                    if (!arena.get().getWorld().equals(w.getName())) {
+                        TTTCore.locale.getLocalizable("error.arena.invalid-location").withPrefix(ERROR_COLOR.toString())
+                                .sendTo(sender);
+                        return;
+                    }
+                    arena.get().addSpawnPoint(new Location3D(w.getName(), x, y, z));
                 }
-            } catch (InvalidLocationException ex) {
-                sender.sendMessage(getMessage("error.arena.invalid-location", ERROR_COLOR));
-            } catch (NoSuchArenaException ex) {
-                sender.sendMessage(getMessage("error.arena.dne", ERROR_COLOR));
+            } else {
+                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(ERROR_COLOR.toString()).sendTo(sender);
             }
         }
     }

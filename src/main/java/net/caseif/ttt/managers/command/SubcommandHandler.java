@@ -24,10 +24,9 @@
 package net.caseif.ttt.managers.command;
 
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.MiscUtil;
 
 import org.bukkit.command.CommandSender;
 
@@ -52,7 +51,8 @@ public abstract class SubcommandHandler {
      */
     public boolean assertPermission() {
         if (perm != null && !sender.hasPermission(perm)) {
-            sender.sendMessage(MiscUtil.getMessage("error.perms.generic", Constants.ERROR_COLOR));
+            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Constants.ERROR_COLOR.toString())
+                    .sendTo(sender);
             return false;
         }
         return true;
@@ -68,6 +68,7 @@ public abstract class SubcommandHandler {
     }
 
     public void sendUsage() {
-        sender.sendMessage(getMessage("fragment.usage", INFO_COLOR) + ": " + getUsage());
+        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(INFO_COLOR.toString()).withReplacements(getUsage())
+                .sendTo(sender);
     }
 }

@@ -23,33 +23,36 @@
  */
 package net.caseif.ttt;
 
-import net.amigocraft.mglib.api.Location3D;
-// the class
+import net.caseif.flint.challenger.Team;
+import net.caseif.flint.round.Round;
+import net.caseif.flint.util.physical.Location3D;
+
+import java.util.UUID;
 
 public class Body {
-    private String player;
-    private String arena;
-    private String team;
+    private UUID player;
+    private Round round;
+    private Team team;
     private Location3D l;
     private long time;
 
-    public Body(String player, String arena, String team, Location3D l, long time) {
+    public Body(UUID player, Round round, Team team, Location3D l, long time) {
         this.player = player;
-        this.arena = arena;
+        this.round = round;
         this.team = team;
         this.l = l;
         this.time = time;
     }
 
-    public String getPlayer() {
+    public UUID getPlayer() {
         return player;
     }
 
-    public String getArena() {
-        return arena;
+    public Round getRound() {
+        return round;
     }
 
-    public String getTeam() {
+    public Team getTeam() {
         return team;
     }
 
@@ -62,8 +65,8 @@ public class Body {
     }
 
     public boolean equals(Object b) {
-        return b instanceof Body && player.equals(((Body) b).getPlayer()) && arena.equals(((Body) b).getArena())
-                && team.equals(((Body) b).getTeam()) && l.equals(((Body) b).getLocation());
+        return b instanceof Body && player.equals(((Body) b).getPlayer()) && round == ((Body) b).getRound()
+                && team == ((Body) b).getTeam() && l.equals(((Body) b).getLocation());
     }
 
     public int hashCode() {

@@ -24,16 +24,16 @@
 package net.caseif.ttt.managers.command.admin;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.NumUtil;
+import net.caseif.ttt.util.UUIDFetcher;
 
-import net.amigocraft.mglib.UUIDFetcher;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -53,38 +53,48 @@ public class BanCommand extends SubcommandHandler {
                     if (NumUtil.isInt(args[2])) {
                         time = Integer.parseInt(args[2]);
                     } else {
-                        sender.sendMessage(getMessage("error.admin.ban.invalid-time", ERROR_COLOR));
+                        TTTCore.locale.getLocalizable("error.admin.ban.invalid-time").withPrefix(ERROR_COLOR.toString())
+                                .sendTo(sender);
                         return;
                     }
                 }
                 try {
                     UUID uuid = UUIDFetcher.getUUIDOf(name);
                     if (uuid == null) {
-                        sender.sendMessage(getMessage("error.plugin.uuid", ERROR_COLOR));
+                        TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(ERROR_COLOR.toString())
+                                .sendTo(sender);
                         return;
                     }
                     if (MiscUtil.ban(uuid, time)) {
-                        Bukkit.getPlayer(name).sendMessage(
-                                time == -1
-                                        ? getMessage("info.personal.ban.perm", ERROR_COLOR)
-                                        : getMessage("info.personal.ban.temp", ERROR_COLOR,
-                                                time + getMessage("fragment.minutes", ERROR_COLOR, false))
-                        );
-                        sender.sendMessage(
-                                time == -1
-                                        ? getMessage("info.personal.ban.other.perm", INFO_COLOR, name)
-                                        : getMessage("info.personal.ban.other.temp", INFO_COLOR, name,
-                                                time + getMessage("fragment.minutes", INFO_COLOR, false))
-                        );
+                        Player pl = Bukkit.getPlayer(uuid);
+                        if (time == -1) {
+                            TTTCore.locale.getLocalizable("info.personal.ban.perm")
+                                    .withPrefix(ERROR_COLOR.toString()).sendTo(pl);
+                            TTTCore.locale.getLocalizable("info.personal.ban.other.perm")
+                                    .withPrefix(ERROR_COLOR.toString()).sendTo(pl);
+                        } else {
+                            TTTCore.locale.getLocalizable("info.personal.ban.temp").withPrefix(ERROR_COLOR.toString())
+                                    .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
+                                            .localizeFor(pl))
+                                    .sendTo(pl);
+                            TTTCore.locale.getLocalizable("info.personal.ban.other.temp")
+                                    .withPrefix(ERROR_COLOR.toString())
+                                    .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
+                                            .localizeFor(sender))
+                                    .sendTo(sender);
+                        }
                     } else {
-                        sender.sendMessage(getMessage("error.plugin.ban", ERROR_COLOR));
+                        TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(ERROR_COLOR.toString())
+                                .sendTo(sender);
                     }
                 } catch (Exception ex) {
-                    sender.sendMessage(getMessage("error.plugin.generic", ERROR_COLOR));
+                    TTTCore.locale.getLocalizable("error.plugin.generic").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
                     ex.printStackTrace();
                 }
             } else {
-                sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
                 sendUsage();
             }
         }

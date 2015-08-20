@@ -26,14 +26,14 @@ package net.caseif.ttt.managers.command.admin;
 import static net.caseif.ttt.util.Constants.ARENA_COLOR;
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
-import net.caseif.ttt.util.NumUtil;
+import net.caseif.ttt.util.Constants;
 
-import net.amigocraft.mglib.api.Round;
-import net.amigocraft.mglib.api.Stage;
+import com.google.common.base.Optional;
+import net.caseif.flint.arena.Arena;
+import net.caseif.flint.round.Round;
 import org.bukkit.command.CommandSender;
 
 public class PrepareCommand extends SubcommandHandler {
@@ -46,25 +46,31 @@ public class PrepareCommand extends SubcommandHandler {
     public void handle() {
         if (assertPermission()) {
             if (args.length > 1) {
-                String arena = args[1];
-                Round r = Main.mg.getRound(arena);
-                if (r != null) {
-                    if (r.getPlayerCount() > 1) {
-                        if (args.length > 2 && NumUtil.isInt(args[2])) {
-                            r.setPreparationTime(Integer.parseInt(args[2]));
+                String arenaName = args[1];
+                Optional<Arena> arena = TTTCore.mg.getArena(arenaName);
+                if (arena.isPresent()) {
+                    if (arena.get().getRound().isPresent()) {
+                        Round round = arena.get().getRound().get();
+                        if (round.getChallengers().size() > 1) {
+                            round.setLifecycleStage(Constants.PREPARING);
+                            round.setTime(0);
+                            TTTCore.locale.getLocalizable("info.personal.arena.set-stage.preparing.success")
+                                    .withPrefix(INFO_COLOR.toString())
+                                    .withReplacements(ARENA_COLOR + arena.get().getName()).sendTo(sender);
+                        } else {
+                            TTTCore.locale.getLocalizable("error.arena.too-few-players")
+                                    .withPrefix(ERROR_COLOR.toString()).sendTo(sender);
                         }
-                        r.setStage(Stage.WAITING);
-                        r.start();
-                        sender.sendMessage(getMessage("info.personal.arena.set-stage.preparing.success",
-                                INFO_COLOR, ARENA_COLOR + r.getArena()));
                     } else {
-                        sender.sendMessage(getMessage("error.arena.too-few-players", ERROR_COLOR));
+                        //TODO: message
                     }
                 } else {
-                    sender.sendMessage(getMessage("error.round.dne", ERROR_COLOR, ARENA_COLOR + arena));
+                    TTTCore.locale.getLocalizable("error.round.dne").withPrefix(ERROR_COLOR.toString())
+                            .withReplacements(ARENA_COLOR + arenaName + ERROR_COLOR).sendTo(sender);
                 }
             } else {
-                sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
                 sendUsage();
             }
         }

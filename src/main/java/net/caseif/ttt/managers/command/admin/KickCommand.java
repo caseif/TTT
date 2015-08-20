@@ -25,15 +25,15 @@ package net.caseif.ttt.managers.command.admin;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
 import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 
-import net.amigocraft.mglib.api.MGPlayer;
-import net.amigocraft.mglib.exception.NoSuchPlayerException;
-import net.amigocraft.mglib.exception.PlayerOfflineException;
+import com.google.common.base.Optional;
+import net.caseif.flint.challenger.Challenger;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class KickCommand extends SubcommandHandler {
 
@@ -46,23 +46,26 @@ public class KickCommand extends SubcommandHandler {
         if (assertPermission()) {
             if (args.length > 1) {
                 String name = args[1];
-                MGPlayer mp = Main.mg.getMGPlayer(name);
-                if (mp != null) {
-                    try {
-                        mp.removeFromRound();
-                        mp.getBukkitPlayer().sendMessage(getMessage("info.personal.kick", ERROR_COLOR));
-                        sender.sendMessage(getMessage("info.global.round.event.kick", INFO_COLOR,
-                                mp.getBukkitPlayer().getName()));
-                    } catch (NoSuchPlayerException ex) { // shouldn't ever happen
-                        sender.sendMessage(getMessage("error.round.no-such-player", ERROR_COLOR));
-                    } catch (PlayerOfflineException ex) {
-                        sender.sendMessage(getMessage("error.round.player-offline", ERROR_COLOR));
-                    }
+                @SuppressWarnings("deprecation")
+                Player pl = Bukkit.getPlayer(name);
+                if (pl == null) {
+                    TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
+                    return;
+                }
+                Optional<Challenger> ch = TTTCore.mg.getChallenger(pl.getUniqueId());
+                if (ch.isPresent()) {
+                    ch.get().removeFromRound();
+                    TTTCore.locale.getLocalizable("info.personal.kick").withPrefix(ERROR_COLOR.toString()).sendTo(pl);
+                    TTTCore.locale.getLocalizable("info.global.round.event.kick").withPrefix(INFO_COLOR.toString())
+                            .withReplacements(ch.get().getName()).sendTo(sender);
                 } else {
-                    sender.sendMessage(getMessage("error.round.no-such-player", ERROR_COLOR));
+                    TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(ERROR_COLOR.toString())
+                            .sendTo(sender);
                 }
             } else {
-                sender.sendMessage(getMessage("error.command.too-few-args", ERROR_COLOR));
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(ERROR_COLOR.toString())
+                        .sendTo(sender);
                 sendUsage();
             }
         }

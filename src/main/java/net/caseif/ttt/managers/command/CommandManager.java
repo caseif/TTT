@@ -23,7 +23,7 @@
  */
 package net.caseif.ttt.managers.command;
 
-import net.caseif.ttt.Main;
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.admin.BanCommand;
 import net.caseif.ttt.managers.command.admin.EndCommand;
 import net.caseif.ttt.managers.command.admin.KickCommand;
@@ -37,11 +37,9 @@ import net.caseif.ttt.managers.command.arena.JoinCommand;
 import net.caseif.ttt.managers.command.arena.LeaveCommand;
 import net.caseif.ttt.managers.command.arena.RemoveArenaCommand;
 import net.caseif.ttt.managers.command.arena.RemoveSpawnCommand;
-import net.caseif.ttt.managers.command.arena.SetExitCommand;
 import net.caseif.ttt.managers.command.misc.DefaultCommand;
 import net.caseif.ttt.managers.command.misc.HelpCommand;
 import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.MiscUtil;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -57,7 +55,7 @@ public class CommandManager implements CommandExecutor {
      * @return the usage for the given subcommand, or null if not specified
      */
     public static String getUsage(String subcommand) {
-        Object map = Main.plugin.getDescription().getCommands()
+        Object map = TTTCore.getInstance().getDescription().getCommands()
                 .get("ttt").get(subcommand);
         if (map instanceof Map) {
             return ((Map) map).get("usage").toString();
@@ -99,13 +97,11 @@ public class CommandManager implements CommandExecutor {
                 } else if (subCmd.equalsIgnoreCase("pardon")) {
                     new PardonCommand(sender, args).handle();
                     // misc. commands
-                } else if (subCmd.equalsIgnoreCase("setexit") || subCmd.equalsIgnoreCase("se")
-                        || subCmd.equalsIgnoreCase("setspawn") || subCmd.equalsIgnoreCase("ss")) {
-                    new SetExitCommand(sender, args).handle();
                 } else if (subCmd.equalsIgnoreCase("help") || subCmd.equalsIgnoreCase("?")) {
                     new HelpCommand(sender, args).handle();
                 } else {
-                    sender.sendMessage(MiscUtil.getMessage("error.command.invalid-args", Constants.ERROR_COLOR));
+                    TTTCore.locale.getLocalizable("error.command.invalid-args")
+                            .withPrefix(Constants.ERROR_COLOR.toString()).sendTo(sender);
                 }
             } else {
                 new DefaultCommand(sender, args).handle();

@@ -23,6 +23,9 @@
  */
 package net.caseif.ttt.util;
 
+import net.caseif.ttt.Config;
+
+import net.caseif.flint.round.LifecycleStage;
 import org.bukkit.ChatColor;
 
 /**
@@ -41,6 +44,11 @@ public class Constants {
     public static final ChatColor TRAITOR_COLOR = ChatColor.DARK_RED;
     public static final ChatColor USAGE_COLOR = ChatColor.GOLD;
 
-    public static final String MIN_MGLIB_VERSION = "0.4.0";
+    // lifecycle stages
+    public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
+    public static final LifecycleStage PREPARING = new LifecycleStage("preparing", Config.SETUP_TIME);
+    public static final LifecycleStage PLAYING = new LifecycleStage("playing", Config.TIME_LIMIT);
+
+    public static final int MIN_FLINT_VERSION = 1;
 
 }
