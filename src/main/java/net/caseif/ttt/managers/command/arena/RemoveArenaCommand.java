@@ -23,8 +23,7 @@
  */
 package net.caseif.ttt.managers.command.arena;
 
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.Constants.INFO_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
@@ -45,9 +44,9 @@ public class RemoveArenaCommand extends SubcommandHandler {
                 try {
                     TTTCore.mg.removeArena(name);
                     TTTCore.locale.getLocalizable("info.personal.arena.remove.success")
-                            .withPrefix(INFO_COLOR.toString()).withReplacements(name).sendTo(sender);
+                            .withPrefix(Color.INFO.toString()).withReplacements(name).sendTo(sender);
                 } catch (IllegalArgumentException ex) {
-                    TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(ERROR_COLOR.toString()).sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString()).sendTo(sender);
                 }
             }
         }

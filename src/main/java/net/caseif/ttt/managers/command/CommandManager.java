@@ -23,6 +23,8 @@
  */
 package net.caseif.ttt.managers.command;
 
+import static net.caseif.ttt.util.Constants.Color;
+
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.admin.BanCommand;
 import net.caseif.ttt.managers.command.admin.EndCommand;
@@ -39,7 +41,6 @@ import net.caseif.ttt.managers.command.arena.RemoveArenaCommand;
 import net.caseif.ttt.managers.command.arena.RemoveSpawnCommand;
 import net.caseif.ttt.managers.command.misc.DefaultCommand;
 import net.caseif.ttt.managers.command.misc.HelpCommand;
-import net.caseif.ttt.util.Constants;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -101,7 +102,7 @@ public class CommandManager implements CommandExecutor {
                     new HelpCommand(sender, args).handle();
                 } else {
                     TTTCore.locale.getLocalizable("error.command.invalid-args")
-                            .withPrefix(Constants.ERROR_COLOR.toString()).sendTo(sender);
+                            .withPrefix(Color.ERROR.toString()).sendTo(sender);
                 }
             } else {
                 new DefaultCommand(sender, args).handle();

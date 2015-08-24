@@ -23,7 +23,7 @@
  */
 package net.caseif.ttt.listeners;
 
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
+import static net.caseif.ttt.util.Constants.Color.ERROR;
 import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.TTTCore;
@@ -37,7 +37,7 @@ public class SpecialPlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (event.getPlayer().hasPermission("ttt.build.warn")) {
-            TTTCore.locale.getLocalizable("error.plugin.flint").withPrefix(ERROR_COLOR.toString())
+            TTTCore.locale.getLocalizable("error.plugin.flint").withPrefix(ERROR.toString())
                     .withReplacements(MIN_FLINT_VERSION + "").sendTo(event.getPlayer());
         }
     }

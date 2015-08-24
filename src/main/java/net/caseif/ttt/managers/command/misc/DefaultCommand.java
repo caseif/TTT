@@ -23,8 +23,7 @@
  */
 package net.caseif.ttt.managers.command.misc;
 
-import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.Constants.SPECIAL_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
@@ -39,9 +38,9 @@ public class DefaultCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
-        TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(SPECIAL_COLOR.toString())
+        TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(Color.SPECIAL.toString())
                 .withReplacements(TTTCore.getInstance().getDescription().getVersion(), "Max Roncacé")
                 .sendTo(sender);
-        TTTCore.locale.getLocalizable("info.command.usage.help").withPrefix(INFO_COLOR.toString()).sendTo(sender);
+        TTTCore.locale.getLocalizable("info.command.usage.help").withPrefix(Color.INFO.toString()).sendTo(sender);
     }
 }

@@ -33,22 +33,33 @@ import org.bukkit.ChatColor;
  */
 public class Constants {
 
-    // message formatting
-    public static final ChatColor ARENA_COLOR = ChatColor.ITALIC;
-    public static final ChatColor DESCRIPTION_COLOR = ChatColor.GREEN;
-    public static final ChatColor DETECTIVE_COLOR = ChatColor.BLUE;
-    public static final ChatColor ERROR_COLOR = ChatColor.RED;
-    public static final ChatColor INFO_COLOR = ChatColor.DARK_PURPLE;
-    public static final ChatColor INNOCENT_COLOR = ChatColor.DARK_GREEN;
-    public static final ChatColor SPECIAL_COLOR = ChatColor.LIGHT_PURPLE;
-    public static final ChatColor TRAITOR_COLOR = ChatColor.DARK_RED;
-    public static final ChatColor USAGE_COLOR = ChatColor.GOLD;
+    public static final int MIN_FLINT_VERSION = 1;
+
+    // message colors
+    public static class Color {
+        public static final ChatColor ARENA = ChatColor.ITALIC;
+        public static final ChatColor DESCRIPTION = ChatColor.GREEN;
+        public static final ChatColor DETECTIVE = ChatColor.BLUE;
+        public static final ChatColor ERROR = ChatColor.RED;
+        public static final ChatColor INFO = ChatColor.DARK_PURPLE;
+        public static final ChatColor INNOCENT = ChatColor.DARK_GREEN;
+        public static final ChatColor SPECIAL = ChatColor.LIGHT_PURPLE;
+        public static final ChatColor TRAITOR = ChatColor.DARK_RED;
+        public static final ChatColor USAGE = ChatColor.GOLD;
+    }
 
     // lifecycle stages
-    public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
-    public static final LifecycleStage PREPARING = new LifecycleStage("preparing", Config.SETUP_TIME);
-    public static final LifecycleStage PLAYING = new LifecycleStage("playing", Config.TIME_LIMIT);
+    public static class Stage {
+        public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
+        public static final LifecycleStage PREPARING = new LifecycleStage("preparing", Config.SETUP_TIME);
+        public static final LifecycleStage PLAYING = new LifecycleStage("playing", Config.TIME_LIMIT);
+    }
 
-    public static final int MIN_FLINT_VERSION = 1;
+    public static class Role {
+        //TODO: implement these when I have more time
+        public static final String INNOCENT = "innocent";
+        public static final String TRAITOR = "traitor";
+        public static final String DETECTIVE = "detective";
+    }
 
 }

@@ -23,8 +23,7 @@
  */
 package net.caseif.ttt.managers.command.admin;
 
-import static net.caseif.ttt.util.Constants.ARENA_COLOR;
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
@@ -48,28 +47,28 @@ public class EndCommand extends SubcommandHandler {
                 Optional<Arena> arena = TTTCore.mg.getArena(arenaName);
                 if (arena.isPresent()) {
                     if (arena.get().getRound().isPresent()
-                            && arena.get().getRound().get().getLifecycleStage() != Constants.WAITING) {
+                            && arena.get().getRound().get().getLifecycleStage() != Constants.Stage.WAITING) {
                         if (args.length > 2) {
                             if (args[2].equalsIgnoreCase("t")) {
                                 arena.get().getRound().get().getMetadata().set("t-victory", true);
                             } else if (!args[2].equalsIgnoreCase("i")) {
                                 TTTCore.locale.getLocalizable("error.command.invalid-args")
-                                        .withPrefix(ERROR_COLOR.toString()).sendTo(sender);
+                                        .withPrefix(Color.ERROR.toString()).sendTo(sender);
                                 return;
                             }
                         }
                         arena.get().getRound().get().end();
                     } else {
                         TTTCore.locale.getLocalizable("error.arena.no-round")
-                        .withPrefix(ERROR_COLOR.toString()).withReplacements(ARENA_COLOR + arenaName).sendTo(sender);
+                        .withPrefix(Color.ERROR.toString()).withReplacements(Color.ARENA + arenaName).sendTo(sender);
                     }
                 } else {
                     TTTCore.locale.getLocalizable("error.arena.dne")
-                            .withPrefix(ERROR_COLOR.toString()).withReplacements(ARENA_COLOR + arenaName)
+                            .withPrefix(Color.ERROR.toString()).withReplacements(Color.ARENA + arenaName)
                             .sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(ERROR_COLOR.toString())
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
                         .sendTo(sender);
                 sendUsage();
             }

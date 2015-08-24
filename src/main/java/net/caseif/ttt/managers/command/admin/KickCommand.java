@@ -23,8 +23,7 @@
  */
 package net.caseif.ttt.managers.command.admin;
 
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.Constants.INFO_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
@@ -49,22 +48,22 @@ public class KickCommand extends SubcommandHandler {
                 @SuppressWarnings("deprecation")
                 Player pl = Bukkit.getPlayer(name);
                 if (pl == null) {
-                    TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(ERROR_COLOR.toString())
+                    TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
                     return;
                 }
                 Optional<Challenger> ch = TTTCore.mg.getChallenger(pl.getUniqueId());
                 if (ch.isPresent()) {
                     ch.get().removeFromRound();
-                    TTTCore.locale.getLocalizable("info.personal.kick").withPrefix(ERROR_COLOR.toString()).sendTo(pl);
-                    TTTCore.locale.getLocalizable("info.global.round.event.kick").withPrefix(INFO_COLOR.toString())
+                    TTTCore.locale.getLocalizable("info.personal.kick").withPrefix(Color.ERROR.toString()).sendTo(pl);
+                    TTTCore.locale.getLocalizable("info.global.round.event.kick").withPrefix(Color.INFO.toString())
                             .withReplacements(ch.get().getName()).sendTo(sender);
                 } else {
-                    TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(ERROR_COLOR.toString())
+                    TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(ERROR_COLOR.toString())
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
                         .sendTo(sender);
                 sendUsage();
             }

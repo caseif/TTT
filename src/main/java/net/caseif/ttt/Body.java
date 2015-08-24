@@ -23,53 +23,52 @@
  */
 package net.caseif.ttt;
 
-import net.caseif.flint.challenger.Team;
+import com.google.common.base.Optional;
 import net.caseif.flint.round.Round;
 import net.caseif.flint.util.physical.Location3D;
 
 import java.util.UUID;
 
 public class Body {
-    private UUID player;
-    private Round round;
-    private Team team;
-    private Location3D l;
-    private long time;
 
-    public Body(UUID player, Round round, Team team, Location3D l, long time) {
-        this.player = player;
+    private final Round round;
+    private final Location3D location;
+    private final UUID player;
+    private final UUID killer;
+    private final String role;
+    private final long time;
+
+    public Body(Round round, Location3D location, UUID player, UUID killer, String role, long time) {
         this.round = round;
-        this.team = team;
-        this.l = l;
+        this.location = location;
+        this.player = player;
+        this.killer = killer;
+        this.role = role;
         this.time = time;
-    }
-
-    public UUID getPlayer() {
-        return player;
     }
 
     public Round getRound() {
         return round;
     }
 
-    public Team getTeam() {
-        return team;
+    public Location3D getLocation() {
+        return location;
     }
 
-    public Location3D getLocation() {
-        return l;
+    public UUID getPlayer() {
+        return player;
+    }
+
+    public Optional<UUID> getKiller() {
+        return Optional.fromNullable(killer);
+    }
+
+    public String getRole() {
+        return role;
     }
 
     public long getTime() {
         return time;
     }
 
-    public boolean equals(Object b) {
-        return b instanceof Body && player.equals(((Body) b).getPlayer()) && round == ((Body) b).getRound()
-                && team == ((Body) b).getTeam() && l.equals(((Body) b).getLocation());
-    }
-
-    public int hashCode() {
-        return 41 * (41 + player.hashCode() + l.hashCode());
-    }
 }

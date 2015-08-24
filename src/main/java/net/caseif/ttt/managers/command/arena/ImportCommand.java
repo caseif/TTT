@@ -23,8 +23,7 @@
  */
 package net.caseif.ttt.managers.command.arena;
 
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.Constants.INFO_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
@@ -63,22 +62,22 @@ public class ImportCommand extends SubcommandHandler {
                             if (TTTCore.mg.getArena(worldName).isPresent()) {
                                 //TODO: replace this message with something more accurate
                                 TTTCore.locale.getLocalizable("error.arena.already-exists")
-                                        .withPrefix(ERROR_COLOR.toString()).sendTo(sender);
+                                        .withPrefix(Color.ERROR.toString()).sendTo(sender);
                             }
                             Location l = w.getSpawnLocation();
                             TTTCore.mg.createArena(worldName,
                                     new Location3D(l.getBlockX(), l.getBlockY(), l.getBlockZ()), Boundary.INFINITE);
                             TTTCore.locale.getLocalizable("info.personal.arena.import.success")
-                                    .withPrefix(INFO_COLOR.toString()).sendTo(sender);
+                                    .withPrefix(Color.INFO.toString()).sendTo(sender);
                             return;
                         }
                     }
                 }
                 // this executes only if something goes wrong loading the world
-                TTTCore.locale.getLocalizable("error.plugin.world-load").withPrefix(ERROR_COLOR.toString())
+                TTTCore.locale.getLocalizable("error.plugin.world-load").withPrefix(Color.ERROR.toString())
                         .sendTo(sender);
             } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(ERROR_COLOR.toString())
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
                         .sendTo(sender);
                 sendUsage();
             }

@@ -23,7 +23,7 @@
  */
 package net.caseif.ttt.managers.command.arena;
 
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
@@ -48,7 +48,7 @@ public class JoinCommand extends SubcommandHandler {
                 if (args.length > 1) {
                     Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
                     if (!arena.isPresent()) {
-                        TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(ERROR_COLOR.toString())
+                        TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString())
                                 .sendTo(sender);
                         return;
                     }
@@ -60,12 +60,12 @@ public class JoinCommand extends SubcommandHandler {
                     } catch (RoundJoinException ex) {
                         switch (ex.getReason()) {
                             case ALREADY_ENTERED: {
-                                TTTCore.locale.getLocalizable("error.round.inside").withPrefix(ERROR_COLOR.toString())
+                                TTTCore.locale.getLocalizable("error.round.inside").withPrefix(Color.ERROR.toString())
                                         .sendTo(sender);
                                 break;
                             }
                             case FULL: {
-                                TTTCore.locale.getLocalizable("error.round.full").withPrefix(ERROR_COLOR.toString())
+                                TTTCore.locale.getLocalizable("error.round.full").withPrefix(Color.ERROR.toString())
                                         .sendTo(sender);
                                 break;
                             }
@@ -74,7 +74,7 @@ public class JoinCommand extends SubcommandHandler {
                             }
                             case OFFLINE: {
                                 TTTCore.locale.getLocalizable("error.round.player-offline")
-                                        .withPrefix(ERROR_COLOR.toString()).sendTo(sender);
+                                        .withPrefix(Color.ERROR.toString()).sendTo(sender);
                                 break;
                             }
                             default: {
@@ -84,13 +84,13 @@ public class JoinCommand extends SubcommandHandler {
                         }
                     }
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(ERROR_COLOR.toString())
+                    TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
                     sendUsage();
                 }
             }
         } else {
-            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(ERROR_COLOR.toString()).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR.toString()).sendTo(sender);
         }
     }
 }

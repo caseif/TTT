@@ -23,11 +23,7 @@
  */
 package net.caseif.ttt.listeners;
 
-import static net.caseif.ttt.util.Constants.DETECTIVE_COLOR;
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.Constants.INNOCENT_COLOR;
-import static net.caseif.ttt.util.Constants.TRAITOR_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.Body;
 import net.caseif.ttt.Config;
@@ -97,7 +93,7 @@ public class PlayerListener implements Listener {
                                 inv.setContents(chestInv.getContents());
                                 event.getPlayer().openInventory(inv);
                                 TTTCore.locale.getLocalizable("info.personal.status.discreet-search")
-                                        .withPrefix(INFO_COLOR.toString()).sendTo(event.getPlayer());
+                                        .withPrefix(Color.INFO.toString()).sendTo(event.getPlayer());
                                 break;
                             }
                         }
@@ -123,11 +119,11 @@ public class PlayerListener implements Listener {
                                 Optional<Challenger> bodyPlayer
                                         = TTTCore.mg.getChallenger(TTTCore.bodies.get(index).getPlayer());
                                 //TODO: make this DRYer
-                                switch (b.getTeam().getId()) {
+                                switch (b.getRole()) {
                                     case "innocent": {
                                         for (Challenger c : b.getRound().getChallengers()) {
                                             Player pl = Bukkit.getPlayer(c.getUniqueId());
-                                            pl.sendMessage(INNOCENT_COLOR
+                                            pl.sendMessage(Color.INNOCENT
                                                     + TTTCore.locale
                                                     .getLocalizable("info.global.round.event.body-find")
                                                     .withReplacements(event.getPlayer().getName(),
@@ -141,7 +137,7 @@ public class PlayerListener implements Listener {
                                     case "traitor": {
                                         for (Challenger c : b.getRound().getChallengers()) {
                                             Player pl = Bukkit.getPlayer(c.getUniqueId());
-                                            pl.sendMessage(TRAITOR_COLOR
+                                            pl.sendMessage(Color.TRAITOR
                                                     + TTTCore.locale
                                                     .getLocalizable("info.global.round.event.body-find")
                                                     .withReplacements(event.getPlayer().getName(),
@@ -156,7 +152,7 @@ public class PlayerListener implements Listener {
                                         //TODO: actually, fixing it involves revamping how bodies work
                                         for (Challenger c : b.getRound().getChallengers()) {
                                             Player pl = Bukkit.getPlayer(c.getUniqueId());
-                                            pl.sendMessage(DETECTIVE_COLOR
+                                            pl.sendMessage(Color.DETECTIVE
                                                     + TTTCore.locale
                                                     .getLocalizable("info.global.round.event.body-find")
                                                     .withReplacements(event.getPlayer().getName(),
@@ -194,24 +190,28 @@ public class PlayerListener implements Listener {
                                             (String) Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer())
                                                     .getMetadata("killer")
                                     );*/
-                                    Player killer = null;
-                                    if (killer != null) {
-                                        if (TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()) {
-                                            if (!TTTCore.mg.getChallenger(killer.getUniqueId()).get().isSpectating()) {
-                                                ch.getMetadata().set("tracking", killer.getName());
+                                    Body body = TTTCore.bodies.get(index);
+                                    if (body.getKiller().isPresent()) {
+                                        Player killer = Bukkit.getPlayer(body.getKiller().get());
+                                        if (killer != null) {
+                                            if (TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()) {
+                                                if (!TTTCore.mg.getChallenger(killer.getUniqueId()).get()
+                                                        .isSpectating()) {
+                                                    ch.getMetadata().set("tracking", killer.getName());
+                                                }
+                                                TTTCore.locale.getLocalizable("info.personal.status.collect-dna")
+                                                        .withPrefix(Color.INFO.toString())
+                                                        .withReplacements(Bukkit.getPlayer(TTTCore.bodies.get(index)
+                                                                .getPlayer()).getName())
+                                                        .sendTo(event.getPlayer());
+                                            } else {
+                                                TTTCore.locale.getLocalizable("error.round.killer-left")
+                                                        .withPrefix(Color.ERROR.toString()).sendTo(event.getPlayer());
                                             }
-                                            TTTCore.locale.getLocalizable("info.personal.status.collect-dna")
-                                                    .withPrefix(INFO_COLOR.toString())
-                                                    .withReplacements(Bukkit.getPlayer(TTTCore.bodies.get(index)
-                                                            .getPlayer()).getName())
-                                                    .sendTo(event.getPlayer());
                                         } else {
                                             TTTCore.locale.getLocalizable("error.round.killer-left")
-                                                    .withPrefix(ERROR_COLOR.toString()).sendTo(event.getPlayer());
+                                                    .withPrefix(Color.ERROR.toString()).sendTo(event.getPlayer());
                                         }
-                                    } else {
-                                        TTTCore.locale.getLocalizable("error.round.killer-left")
-                                                .withPrefix(ERROR_COLOR.toString()).sendTo(event.getPlayer());
                                     }
                                     return;
                                 }
@@ -231,7 +231,7 @@ public class PlayerListener implements Listener {
                             if ((TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()
                                     && !TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().isSpectating()
                                     && (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().getRound()
-                                    .getLifecycleStage() == Constants.PLAYING) || Config.GUNS_OUTSIDE_ARENAS)) {
+                                    .getLifecycleStage() == Constants.Stage.PLAYING) || Config.GUNS_OUTSIDE_ARENAS)) {
                                 event.setCancelled(true);
                                 if (event.getPlayer().getInventory().contains(Material.ARROW)
                                         || !Config.REQUIRE_AMMO_FOR_GUNS) {
@@ -242,7 +242,7 @@ public class PlayerListener implements Listener {
                                     event.getPlayer().launchProjectile(Arrow.class);
                                 } else {
                                     TTTCore.locale.getLocalizable("info.personal.status.no-ammo")
-                                            .withPrefix(ERROR_COLOR.toString()).sendTo(event.getPlayer());
+                                            .withPrefix(Color.ERROR.toString()).sendTo(event.getPlayer());
                                 }
                             }
                         }
@@ -256,7 +256,7 @@ public class PlayerListener implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         if (event.getEntityType() == EntityType.PLAYER) {
             Optional<Challenger> victim = TTTCore.mg.getChallenger(event.getEntity().getUniqueId());
-            if (victim.isPresent() && victim.get().getRound().getLifecycleStage() != Constants.PLAYING) {
+            if (victim.isPresent() && victim.get().getRound().getLifecycleStage() != Constants.Stage.PLAYING) {
                 if (event.getCause() == DamageCause.VOID) {
                     Bukkit.getPlayer(victim.get().getUniqueId());
                 } else {
@@ -273,7 +273,8 @@ public class PlayerListener implements Listener {
                             : (Player) ((Projectile) ed.getDamager()).getShooter();
                     if (TTTCore.mg.getChallenger(damager.getUniqueId()).isPresent()) {
                         Challenger mgDamager = TTTCore.mg.getChallenger(damager.getUniqueId()).get();
-                        if (mgDamager.getRound().getLifecycleStage() != Constants.PLAYING || !victim.isPresent()) {
+                        if (mgDamager.getRound().getLifecycleStage() != Constants.Stage.PLAYING
+                                || !victim.isPresent()) {
                             event.setCancelled(true);
                             return;
                         }
@@ -310,7 +311,7 @@ public class PlayerListener implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
             event.setCancelled(true);
-            TTTCore.locale.getLocalizable("info.personal.status.no-drop").withPrefix(ERROR_COLOR.toString())
+            TTTCore.locale.getLocalizable("info.personal.status.no-drop").withPrefix(Color.ERROR.toString())
                     .sendTo(event.getPlayer());
         }
     }
@@ -356,7 +357,7 @@ public class PlayerListener implements Listener {
                         return;
                     }
                     Location3D l1 = new Location3D(block.getX(), block.getY(), block.getZ());
-                    Location3D l2 = block2 != null ? new Location3D(block2.getX(), block2.getY(), block2.getZ()): null;
+                    Location3D l2 = block2 != null ? new Location3D(block2.getX(), block2.getY(), block2.getZ()) : null;
                     for (Body b : TTTCore.bodies) {
                         if (b.getLocation().equals(l1) || b.getLocation().equals(l2)) {
                             event.setCancelled(true);

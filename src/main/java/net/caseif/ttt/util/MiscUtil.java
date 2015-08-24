@@ -23,9 +23,9 @@
  */
 package net.caseif.ttt.util;
 
-import static net.caseif.ttt.util.Constants.DETECTIVE_COLOR;
-import static net.caseif.ttt.util.Constants.INNOCENT_COLOR;
-import static net.caseif.ttt.util.Constants.TRAITOR_COLOR;
+import static net.caseif.ttt.util.Constants.Color.DETECTIVE;
+import static net.caseif.ttt.util.Constants.Color.INNOCENT;
+import static net.caseif.ttt.util.Constants.Color.TRAITOR;
 
 import net.caseif.ttt.Config;
 import net.caseif.ttt.TTTCore;
@@ -117,11 +117,11 @@ public class MiscUtil {
                     .localizeFor(player);
             ChatColor color;
             if (role.equals("innocent")) {
-                color = INNOCENT_COLOR;
+                color = INNOCENT;
             } else if (role.equals("detective")) {
-                color = DETECTIVE_COLOR;
+                color = DETECTIVE;
             } else {
-                color = TRAITOR_COLOR;
+                color = TRAITOR;
             }
             if (Config.SMALL_STATUS_TITLES) {
                 TitleUtil.sendTitle(player, "", ChatColor.RESET, title, color);
@@ -138,7 +138,7 @@ public class MiscUtil {
             }
             Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.end."
                     + (traitorVictory ? "traitor" : "innocent") + ".min");
-            ChatColor color = traitorVictory ? TRAITOR_COLOR : INNOCENT_COLOR;
+            ChatColor color = traitorVictory ? TRAITOR : INNOCENT;
             for (Challenger ch : round.getChallengers()) {
                 Player pl = Bukkit.getPlayer(ch.getUniqueId());
                 if (Config.SMALL_VICTORY_TITLES) {

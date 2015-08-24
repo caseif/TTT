@@ -23,11 +23,11 @@
  */
 package net.caseif.ttt.managers;
 
+import static net.caseif.ttt.util.Constants.Color;
 import static net.caseif.ttt.util.MiscUtil.isTraitor;
 
 import net.caseif.ttt.Config;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.MiscUtil;
 
 import net.caseif.flint.challenger.Challenger;
@@ -136,15 +136,15 @@ public class KarmaManager {
                 MiscUtil.ban(p.getUniqueId(), Config.KARMA_BAN_TIME);
                 if (Config.KARMA_BAN_TIME < 0) {
                     TTTCore.locale.getLocalizable("info.personal.ban.perm.karma")
-                            .withPrefix(Constants.INFO_COLOR.toString()).withReplacements(Config.KARMA_KICK + "")
+                            .withPrefix(Color.INFO.toString()).withReplacements(Config.KARMA_KICK + "")
                             .sendTo(p);
                 } else {
                     TTTCore.locale.getLocalizable("info.personal.ban.temp.karma")
-                            .withPrefix(Constants.INFO_COLOR.toString())
+                            .withPrefix(Color.INFO.toString())
                             .withReplacements(Config.KARMA_BAN_TIME + "", Config.KARMA_KICK + "").sendTo(p);
                 }
             } else {
-                TTTCore.locale.getLocalizable("info.personal.kick.karma").withPrefix(Constants.INFO_COLOR.toString())
+                TTTCore.locale.getLocalizable("info.personal.kick.karma").withPrefix(Color.INFO.toString())
                         .withReplacements(Config.KARMA_KICK + "").sendTo(p);
             }
         }

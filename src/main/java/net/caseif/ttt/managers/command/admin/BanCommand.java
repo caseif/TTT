@@ -23,7 +23,7 @@
  */
 package net.caseif.ttt.managers.command.admin;
 
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
@@ -53,7 +53,7 @@ public class BanCommand extends SubcommandHandler {
                     if (NumUtil.isInt(args[2])) {
                         time = Integer.parseInt(args[2]);
                     } else {
-                        TTTCore.locale.getLocalizable("error.admin.ban.invalid-time").withPrefix(ERROR_COLOR.toString())
+                        TTTCore.locale.getLocalizable("error.admin.ban.invalid-time").withPrefix(Color.ERROR.toString())
                                 .sendTo(sender);
                         return;
                     }
@@ -61,7 +61,7 @@ public class BanCommand extends SubcommandHandler {
                 try {
                     UUID uuid = UUIDFetcher.getUUIDOf(name);
                     if (uuid == null) {
-                        TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(ERROR_COLOR.toString())
+                        TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR.toString())
                                 .sendTo(sender);
                         return;
                     }
@@ -69,31 +69,31 @@ public class BanCommand extends SubcommandHandler {
                         Player pl = Bukkit.getPlayer(uuid);
                         if (time == -1) {
                             TTTCore.locale.getLocalizable("info.personal.ban.perm")
-                                    .withPrefix(ERROR_COLOR.toString()).sendTo(pl);
+                                    .withPrefix(Color.ERROR.toString()).sendTo(pl);
                             TTTCore.locale.getLocalizable("info.personal.ban.other.perm")
-                                    .withPrefix(ERROR_COLOR.toString()).sendTo(pl);
+                                    .withPrefix(Color.ERROR.toString()).sendTo(pl);
                         } else {
-                            TTTCore.locale.getLocalizable("info.personal.ban.temp").withPrefix(ERROR_COLOR.toString())
+                            TTTCore.locale.getLocalizable("info.personal.ban.temp").withPrefix(Color.ERROR.toString())
                                     .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
                                             .localizeFor(pl))
                                     .sendTo(pl);
                             TTTCore.locale.getLocalizable("info.personal.ban.other.temp")
-                                    .withPrefix(ERROR_COLOR.toString())
+                                    .withPrefix(Color.ERROR.toString())
                                     .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
                                             .localizeFor(sender))
                                     .sendTo(sender);
                         }
                     } else {
-                        TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(ERROR_COLOR.toString())
+                        TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(Color.ERROR.toString())
                                 .sendTo(sender);
                     }
                 } catch (Exception ex) {
-                    TTTCore.locale.getLocalizable("error.plugin.generic").withPrefix(ERROR_COLOR.toString())
+                    TTTCore.locale.getLocalizable("error.plugin.generic").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
                     ex.printStackTrace();
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(ERROR_COLOR.toString())
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
                         .sendTo(sender);
                 sendUsage();
             }

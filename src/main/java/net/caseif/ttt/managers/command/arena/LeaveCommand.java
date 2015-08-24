@@ -23,9 +23,7 @@
  */
 package net.caseif.ttt.managers.command.arena;
 
-import static net.caseif.ttt.util.Constants.ARENA_COLOR;
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.Constants.INFO_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
@@ -49,15 +47,15 @@ public class LeaveCommand extends SubcommandHandler {
                 if (ch.isPresent()) {
                     String roundName = ch.get().getRound().getArena().getName();
                     ch.get().removeFromRound();
-                    TTTCore.locale.getLocalizable("info.personal.arena.leave.success").withPrefix(INFO_COLOR.toString())
-                            .withReplacements(ARENA_COLOR + roundName).sendTo(sender);
+                    TTTCore.locale.getLocalizable("info.personal.arena.leave.success").withPrefix(Color.INFO.toString())
+                            .withReplacements(Color.ARENA + roundName).sendTo(sender);
                 } else {
-                    TTTCore.locale.getLocalizable("error.round.outside").withPrefix(ERROR_COLOR.toString())
+                    TTTCore.locale.getLocalizable("error.round.outside").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
                 }
             }
         } else {
-            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(ERROR_COLOR.toString()).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR.toString()).sendTo(sender);
         }
     }
 }

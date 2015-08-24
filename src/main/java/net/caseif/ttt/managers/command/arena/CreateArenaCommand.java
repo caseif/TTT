@@ -23,8 +23,7 @@
  */
 package net.caseif.ttt.managers.command.arena;
 
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.Constants.INFO_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
@@ -59,7 +58,7 @@ public class CreateArenaCommand extends SubcommandHandler {
                     y = ((Player) sender).getLocation().getBlockY();
                     z = ((Player) sender).getLocation().getBlockZ();
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(ERROR_COLOR.toString())
+                    TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
                     return;
                 }
@@ -71,24 +70,24 @@ public class CreateArenaCommand extends SubcommandHandler {
                     z = Integer.parseInt(args[4]);
                     w = args[5];
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(ERROR_COLOR.toString())
+                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
                     sendUsage();
                     return;
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(ERROR_COLOR.toString())
+                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
                         .sendTo(sender);
                 sendUsage();
                 return;
             }
             if (TTTCore.mg.getArena(args[1]).isPresent()) {
-                TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(ERROR_COLOR.toString())
+                TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(Color.ERROR.toString())
                         .sendTo(sender);
             }
             TTTCore.mg.createArena(args[1], new Location3D(Bukkit.createWorld(new WorldCreator(w)).getName(), x, y, z),
                     Boundary.INFINITE);
-            TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(INFO_COLOR.toString())
+            TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(Color.INFO.toString())
                     .withReplacements(args[1]).sendTo(sender);
         }
     }

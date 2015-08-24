@@ -23,11 +23,7 @@
  */
 package net.caseif.ttt.managers.command.misc;
 
-import static net.caseif.ttt.util.Constants.DESCRIPTION_COLOR;
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.Constants.SPECIAL_COLOR;
-import static net.caseif.ttt.util.Constants.USAGE_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.CommandManager;
@@ -82,29 +78,29 @@ public class HelpCommand extends SubcommandHandler {
                 Object[] info = commands.get(cmd);
                 if (info != null) {
                     if (sender.hasPermission((String) info[1])) {
-                        sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " "
-                                + DESCRIPTION_COLOR + ((Localizable) info[0]).localizeFor(sender));
-                        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(INFO_COLOR.toString())
+                        sender.sendMessage(Color.INFO + "/ttt " + cmd + " "
+                                + Color.DESCRIPTION + ((Localizable) info[0]).localizeFor(sender));
+                        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO.toString())
                                 .withReplacements(CommandManager.getUsage(cmd)).sendTo(sender);
                     } else {
-                        TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(ERROR_COLOR.toString())
+                        TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR.toString())
                                 .sendTo(sender);
                     }
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(ERROR_COLOR.toString())
+                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("info.help.available-cmds").withPrefix(SPECIAL_COLOR.toString())
+                TTTCore.locale.getLocalizable("info.help.available-cmds").withPrefix(Color.SPECIAL.toString())
                         .sendTo(sender);
                 sender.sendMessage("");
                 for (String cmd : commands.keySet()) {
                     Object[] info = commands.get(cmd);
                     if (sender.hasPermission((String) info[1])) {
-                        sender.sendMessage(INFO_COLOR + "/ttt " + cmd + " "
-                                + DESCRIPTION_COLOR + ((Localizable) info[0]).localizeFor(sender));
-                        sender.sendMessage(INFO_COLOR + "    " + TTTCore.locale.getLocalizable("fragment.usage")
-                                + " " + USAGE_COLOR + CommandManager.getUsage(cmd));
+                        sender.sendMessage(Color.INFO + "/ttt " + cmd + " "
+                                + Color.DESCRIPTION + ((Localizable) info[0]).localizeFor(sender));
+                        sender.sendMessage(Color.INFO + "    " + TTTCore.locale.getLocalizable("fragment.usage")
+                                + " " + Color.USAGE + CommandManager.getUsage(cmd));
                     }
                 }
             }

@@ -23,12 +23,7 @@
  */
 package net.caseif.ttt.listeners;
 
-import static net.caseif.ttt.util.Constants.ARENA_COLOR;
-import static net.caseif.ttt.util.Constants.DETECTIVE_COLOR;
-import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.Constants.INFO_COLOR;
-import static net.caseif.ttt.util.Constants.INNOCENT_COLOR;
-import static net.caseif.ttt.util.Constants.TRAITOR_COLOR;
+import static net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.ttt.Body;
 import net.caseif.ttt.Config;
@@ -101,7 +96,7 @@ public class MGListener {
                         loc = TTTCore.locale.getLocalizable("info.personal.ban.temp.until").withReplacements(
                                 hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + ".");
                     }
-                    loc.withPrefix(ERROR_COLOR.toString());
+                    loc.withPrefix(Color.ERROR.toString());
                     loc.sendTo(Bukkit.getPlayer(event.getChallenger().getUniqueId()));
                     event.getChallenger().removeFromRound();
                     return;
@@ -136,34 +131,34 @@ public class MGListener {
         assert pl != null;
         if (TTTCore.devs.contains(uuid)) {
             addition += ", " + TTTCore.locale.getLocalizable("fragment.special.dev")
-                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + "," + INFO_COLOR;
+                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + "," + Color.INFO;
         } else if (TTTCore.alpha.contains(uuid) && TTTCore.translators.contains(uuid)) {
             addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester.alpha")
-                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + ", "
+                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + ", "
                     + TTTCore.locale.getLocalizable("fragment.special.translator").localizeFor(pl) + ","
-                    + INFO_COLOR;
+                    + Color.INFO;
         } else if (TTTCore.testers.contains(uuid) && TTTCore.translators.contains(uuid)) {
             addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester")
-                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + ", "
+                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + ", "
                     + TTTCore.locale.getLocalizable("fragment.special.translator").localizeFor(pl) + ","
-                    + INFO_COLOR;
+                    + Color.INFO;
         } else if (TTTCore.alpha.contains(uuid)) {
             addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester.alpha")
-                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + "," + INFO_COLOR;
+                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + "," + Color.INFO;
         } else if (TTTCore.testers.contains(uuid)) {
             addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester")
-                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + "," + INFO_COLOR;
+                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + "," + Color.INFO;
         } else if (TTTCore.translators.contains(uuid)) {
             addition += ", " + TTTCore.locale.getLocalizable("fragment.special.translator")
-                    .withPrefix(TRAITOR_COLOR.toString()).localizeFor(pl) + "," + INFO_COLOR;
+                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + "," + Color.INFO;
         }
-        TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(INFO_COLOR.toString())
+        TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO.toString())
                 .withReplacements(event.getChallenger().getName() + addition,
-                        ARENA_COLOR + event.getRound().getArena().getName() + INFO_COLOR)
+                        Color.ARENA + event.getRound().getArena().getName() + Color.INFO)
                 .broadcast();
 
-        TTTCore.locale.getLocalizable("info.personal.arena.join.success").withPrefix(INFO_COLOR.toString())
-                .withReplacements(ARENA_COLOR + event.getRound().getArena().getName() + INFO_COLOR).sendTo(pl);
+        TTTCore.locale.getLocalizable("info.personal.arena.join.success").withPrefix(Color.INFO.toString())
+                .withReplacements(Color.ARENA + event.getRound().getArena().getName() + Color.INFO).sendTo(pl);
     }
 
     @Subscribe
@@ -176,8 +171,8 @@ public class MGListener {
         KarmaManager.saveKarma(event.getChallenger());
         //TODO: determine whether the round is ending (I'll probably tackle this in Flint 1.1)
         MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
-                .withPrefix(INFO_COLOR.toString()).withReplacements(event.getChallenger().getName(),
-                        ARENA_COLOR + event.getChallenger().getRound().getArena().getName()));
+                .withPrefix(Color.INFO.toString()).withReplacements(event.getChallenger().getName(),
+                        Color.ARENA + event.getChallenger().getRound().getArena().getName()));
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
     }
@@ -226,21 +221,21 @@ public class MGListener {
         if (ch.getMetadata().has("detective")) {
             ti.setDurability((short) 11);
             tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.detective")
-                    .withPrefix(DETECTIVE_COLOR.toString()).localize());
+                    .withPrefix(Color.DETECTIVE.toString()).localize());
             List<String> lore = new ArrayList<>();
             lore.add(TTTCore.locale.getLocalizable("item.id.detective").localize());
             tiMeta.setLore(lore);
         } else if (!MiscUtil.isTraitor(ch)) {
             ti.setDurability((short) 5);
             tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.innocent")
-                    .withPrefix(INNOCENT_COLOR.toString()).localize());
+                    .withPrefix(Color.INNOCENT.toString()).localize());
             List<String> tiLore = new ArrayList<>();
             tiLore.add(TTTCore.locale.getLocalizable("item.id.innocent").localize());
             tiMeta.setLore(tiLore);
         } else {
             ti.setDurability((short) 14);
             tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.traitor")
-                    .withPrefix(TRAITOR_COLOR.toString()).localize());
+                    .withPrefix(Color.TRAITOR.toString()).localize());
             List<String> lore = new ArrayList<>();
             lore.add(TTTCore.locale.getLocalizable("item.id.traitor").localize());
             tiMeta.setLore(lore);
@@ -249,10 +244,13 @@ public class MGListener {
         chest.getInventory().addItem(id, ti);
         TTTCore.bodies.add(
                 new Body(
-                        ch.getUniqueId(),
                         ch.getRound(),
-                        ch.getTeam().orNull(),
                         new Location3D(block.getX(), block.getY(), block.getZ()),
+                        ch.getUniqueId(),
+                        killer != null ? killer.getUniqueId() : null,
+                        ch.getMetadata().has("detective")
+                                ? "detective"
+                                : (ch.getTeam().isPresent() ? ch.getTeam().get().getId() : null),
                         System.currentTimeMillis()
                 )
         );
@@ -260,16 +258,16 @@ public class MGListener {
 
     @Subscribe
     public void onRoundPrepare(RoundChangeLifecycleStageEvent event) {
-        if (event.getStageAfter() == Constants.PREPARING) {
+        if (event.getStageAfter() == Constants.Stage.PREPARING) {
             MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
-                    .withPrefix(INFO_COLOR.toString()));
+                    .withPrefix(Color.INFO.toString()));
             if (!ScoreManager.sbManagers.containsKey(event.getRound().getArena().getId())) {
                 ScoreManager.sbManagers.put(event.getRound().getArena().getId(), new ScoreManager(event.getRound()));
                 for (Challenger ch : event.getRound().getChallengers()) {
                     ScoreManager.sbManagers.get(event.getRound().getArena().getId()).update(ch);
                 }
             }
-        } else if (event.getStageAfter() == Constants.PLAYING) {
+        } else if (event.getStageAfter() == Constants.Stage.PLAYING) {
             startRound(event.getRound());
         }
     }
@@ -288,7 +286,7 @@ public class MGListener {
         List<UUID> detectives = new ArrayList<>();
         for (Challenger ch : round.getChallengers()) {
             innocents.add(ch.getUniqueId());
-            TTTCore.locale.getLocalizable("info.global.round.event.started").withPrefix(INFO_COLOR.toString())
+            TTTCore.locale.getLocalizable("info.global.round.event.started").withPrefix(Color.INFO.toString())
                     .sendTo(Bukkit.getPlayer(ch.getUniqueId()));
         }
         while (traitorCount < limit) {
@@ -316,16 +314,16 @@ public class MGListener {
         }
         ItemStack crowbar = new ItemStack(Config.CROWBAR_ITEM, 1);
         ItemMeta cbMeta = crowbar.getItemMeta();
-        cbMeta.setDisplayName(INFO_COLOR + TTTCore.locale.getLocalizable("item.crowbar.name").localize());
+        cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.crowbar.name").localize());
         crowbar.setItemMeta(cbMeta);
         ItemStack gun = new ItemStack(Config.GUN_ITEM, 1);
         ItemMeta gunMeta = crowbar.getItemMeta();
-        cbMeta.setDisplayName(INFO_COLOR + TTTCore.locale.getLocalizable("item.gun.name").localize());
+        cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.gun.name").localize());
         gun.setItemMeta(gunMeta);
         ItemStack ammo = new ItemStack(Material.ARROW, Config.INITIAL_AMMO);
         ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
         ItemMeta dnaMeta = dnaScanner.getItemMeta();
-        cbMeta.setDisplayName(INFO_COLOR + TTTCore.locale.getLocalizable("item.dna-scanner.name").localize());
+        cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.dna-scanner.name").localize());
         dnaScanner.setItemMeta(dnaMeta);
         for (UUID uuid : innocents) {
             Player pl = Bukkit.getPlayer(uuid);
@@ -333,7 +331,7 @@ public class MGListener {
             if (pl != null && challenger.isPresent()) {
                 challenger.get().getRound().getOrCreateTeam("innocent").addChallenger(challenger.get());
                 TTTCore.locale.getLocalizable("info.personal.status.role.innocent")
-                        .withPrefix(INNOCENT_COLOR.toString()).sendTo(pl);
+                        .withPrefix(Color.INNOCENT.toString()).sendTo(pl);
                 MiscUtil.sendStatusTitle(pl, "innocent");
                 pl.getInventory().addItem(crowbar, gun, ammo);
                 pl.setHealth(20);
@@ -351,15 +349,15 @@ public class MGListener {
                 challenger.get().getRound().getOrCreateTeam("traitor").addChallenger(challenger.get());
                 TTTCore.locale.getLocalizable(traitors.size() > 1
                         ? "info.personal.status.role.traitor"
-                        : "info.personal.status.role.traitor.alone").withPrefix(TRAITOR_COLOR.toString())
+                        : "info.personal.status.role.traitor.alone").withPrefix(Color.TRAITOR.toString())
                         .sendTo(pl);
                 MiscUtil.sendStatusTitle(pl, "traitor");
                 if (traitors.size() > 1) {
                     TTTCore.locale.getLocalizable("info.personal.status.role.traitor.allies")
-                            .withPrefix(TRAITOR_COLOR.toString()).sendTo(pl);
+                            .withPrefix(Color.TRAITOR.toString()).sendTo(pl);
                     for (UUID tr : traitors) {
                         if (!tr.equals(uuid)) {
-                            pl.sendMessage(TRAITOR_COLOR + "- " + tr);
+                            pl.sendMessage(Color.TRAITOR + "- " + tr);
                         }
                     }
                 }
@@ -379,7 +377,7 @@ public class MGListener {
                 challenger.get().getRound().getOrCreateTeam("innocent").addChallenger(challenger.get());
                 challenger.get().getMetadata().set("fragment.detective", true);
                 TTTCore.locale.getLocalizable("info.personal.status.role.detective")
-                        .withPrefix(DETECTIVE_COLOR.toString()).sendTo(pl);
+                        .withPrefix(Color.DETECTIVE.toString()).sendTo(pl);
                 MiscUtil.sendStatusTitle(pl, "detective");
                 pl.getInventory().addItem(crowbar, gun, ammo, dnaScanner);
                 pl.setHealth(20);
@@ -400,10 +398,10 @@ public class MGListener {
                     percentage = (int) (ch.getMetadata().<Double>get("damageRed").get() * 100) + "%";
                 } else {
                     percentage = TTTCore.locale.getLocalizable("fragment.full")
-                            .withPrefix(INFO_COLOR.toString()).localizeFor(pl);
+                            .withPrefix(Color.INFO.toString()).localizeFor(pl);
                 }
                 TTTCore.locale.getLocalizable("info.personal.status.karma-damage")
-                        .withPrefix(INFO_COLOR.toString())
+                        .withPrefix(Color.INFO.toString())
                         .withReplacements(ch.getMetadata().<Integer>get("karma").get() + "", percentage).sendTo(pl);
             }
         }
@@ -412,20 +410,20 @@ public class MGListener {
     @SuppressWarnings({"deprecation"})
     @Subscribe
     public void onRoundTick(RoundTimerTickEvent event) {
-        if (event.getRound().getLifecycleStage() == Constants.PREPARING) {
+        if (event.getRound().getLifecycleStage() == Constants.Stage.PREPARING) {
             if ((event.getRound().getRemainingTime() % 10) == 0) {
                 for (Challenger ch : event.getRound().getChallengers()) {
                     Player pl = Bukkit.getPlayer(ch.getUniqueId());
                     assert pl != null;
                     TTTCore.locale.getLocalizable("info.global.round.status.starting.time")
-                            .withPrefix(INFO_COLOR.toString())
+                            .withPrefix(Color.INFO.toString())
                             .withReplacements(
                                     TTTCore.locale.getLocalizable("fragment.seconds").localizeFor(pl),
                                     event.getRound().getRemainingTime() + "")
                             .sendTo(pl);
                 }
             }
-        } else if (event.getRound().getLifecycleStage() == Constants.PLAYING) {
+        } else if (event.getRound().getLifecycleStage() == Constants.Stage.PLAYING) {
             // check if game is over
             boolean iLeft = false;
             boolean tLeft = false;
@@ -455,7 +453,7 @@ public class MGListener {
                             tracker.setCompassTarget(killer.getLocation());
                         } else {
                             TTTCore.locale.getLocalizable("error.round.trackee-left")
-                                    .withPrefix(INFO_COLOR.toString()).sendTo(tracker);
+                                    .withPrefix(Color.INFO.toString()).sendTo(tracker);
                             ch.getMetadata().remove("tracking");
                             tracker.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
                         }
@@ -484,7 +482,7 @@ public class MGListener {
                 for (Challenger ch : r.getChallengers()) {
                     Player pl = Bukkit.getPlayer(ch.getUniqueId());
                     TTTCore.locale.getLocalizable("info.global.round.status.time.remaining")
-                            .withPrefix(INFO_COLOR.toString())
+                            .withPrefix(Color.INFO.toString())
                             .withReplacements(TTTCore.locale
                                     .getLocalizable(rTime < 60 ? "fragment.minutes" : "fragment.seconds")
                                     .withReplacements(Long.toString(rTime / 60)).localizeFor(pl))
@@ -526,8 +524,8 @@ public class MGListener {
                 && event.getRound().getMetadata().<Boolean>get("t-victory").get();
 
         TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? "traitor" : "innocent"))
-                .withPrefix(INNOCENT_COLOR.toString())
-                .withReplacements(ARENA_COLOR + event.getRound().getArena().getName()).broadcast();
+                .withPrefix(Color.INNOCENT.toString())
+                .withReplacements(Color.ARENA + event.getRound().getArena().getName()).broadcast();
         MiscUtil.sendVictoryTitle(event.getRound(), tVic);
 
         for (Entity ent : Bukkit.getWorld(event.getRound().getArena().getWorld()).getEntities()) {
@@ -540,8 +538,8 @@ public class MGListener {
 
     @Subscribe
     public void onStageChange(RoundChangeLifecycleStageEvent event) {
-        if ((event.getStageBefore() == Constants.PREPARING || event.getStageBefore() == Constants.PLAYING)
-                && (event.getStageAfter() == Constants.PREPARING)) {
+        if ((event.getStageBefore() == Constants.Stage.PREPARING || event.getStageBefore() == Constants.Stage.PLAYING)
+                && (event.getStageAfter() == Constants.Stage.PREPARING)) {
             ScoreManager sm = ScoreManager.sbManagers.get(event.getRound().getArena().getId());
             sm.iObj.unregister();
             sm.tObj.unregister();
