@@ -97,7 +97,7 @@ public class MGListener {
                         String sec = Integer.toString(cal.get(Calendar.SECOND));
                         min = min.length() == 1 ? "0" + min : min;
                         sec = sec.length() == 1 ? "0" + sec : sec;
-                        //TODO: localize fragment "on"
+                        //TODO: localize time/date (UGH)
                         loc = TTTCore.locale.getLocalizable("info.personal.ban.temp.until").withReplacements(
                                 hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + ".");
                     }
@@ -174,10 +174,7 @@ public class MGListener {
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setDisplayName(event.getChallenger().getName());
         KarmaManager.saveKarma(event.getChallenger());
-        //TODO: dunno what's up with the next line but it needs fixing
-        event.getChallenger().getMetadata().set("displayKarma",
-                event.getChallenger().getMetadata().<Integer>get("karma").get());
-        //TODO: determine whether the round is ending
+        //TODO: determine whether the round is ending (I'll probably tackle this in Flint 1.1)
         MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                 .withPrefix(INFO_COLOR.toString()).withReplacements(event.getChallenger().getName(),
                         ARENA_COLOR + event.getChallenger().getRound().getArena().getName()));
@@ -200,7 +197,7 @@ public class MGListener {
             ch.getMetadata().set("killer", killer.getUniqueId());
         }
         Block block = pl.getLocation().getBlock();
-        //TttPluginCore.mg.getRollbackManager().logBlockChange(block, ch.getArena()); //TODO
+        //TttPluginCore.mg.getRollbackManager().logBlockChange(block, ch.getArena()); //TODO (probably Flint 1.1)
         BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
         boolean trapped = false;
         for (BlockFace bf : faces) {

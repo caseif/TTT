@@ -153,6 +153,7 @@ public class PlayerListener implements Listener {
                                         break;
                                     }
                                     default: { //TODO: don't think this is right, need to check on it later
+                                        //TODO: actually, fixing it involves revamping how bodies work
                                         for (Challenger c : b.getRound().getChallengers()) {
                                             Player pl = Bukkit.getPlayer(c.getUniqueId());
                                             pl.sendMessage(DETECTIVE_COLOR
@@ -354,23 +355,12 @@ public class PlayerListener implements Listener {
                     } else {
                         return;
                     }
-                    boolean found1 = false;
+                    Location3D l1 = new Location3D(block.getX(), block.getY(), block.getZ());
+                    Location3D l2 = block2 != null ? new Location3D(block2.getX(), block2.getY(), block2.getZ()): null;
                     for (Body b : TTTCore.bodies) {
-                        if (b.getLocation().equals(new Location3D(block.getX(), block.getY(), block.getZ()))) {
-                            found1 = true;
+                        if (b.getLocation().equals(l1) || b.getLocation().equals(l2)) {
                             event.setCancelled(true);
-                            if (block2 == null) {
-                                break;
-                            }
-                        }
-                        if (block2 != null) {
-                            //TODO: inspect this conditional for a possible bug (block2?)
-                            if (b.getLocation().equals(new Location3D(block.getX(), block.getY(), block.getZ()))) {
-                                event.setCancelled(true);
-                                if (!found1) {
-                                    break;
-                                }
-                            }
+                            return;
                         }
                     }
                 }

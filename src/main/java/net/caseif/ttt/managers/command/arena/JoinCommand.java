@@ -73,7 +73,8 @@ public class JoinCommand extends SubcommandHandler {
                                 throw new RuntimeException(ex); // sender is notified of internal error
                             }
                             case OFFLINE: {
-                                //TODO: message
+                                TTTCore.locale.getLocalizable("error.round.player-offline")
+                                        .withPrefix(ERROR_COLOR.toString()).sendTo(sender);
                                 break;
                             }
                             default: {

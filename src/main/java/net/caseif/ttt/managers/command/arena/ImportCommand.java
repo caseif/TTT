@@ -51,7 +51,6 @@ public class ImportCommand extends SubcommandHandler {
         if (assertPermission()) {
             if (args.length > 1) {
                 String worldName = null;
-                //TODO: null-check
                 for (File f : Bukkit.getWorldContainer().listFiles()) {
                     if (f.getName().equalsIgnoreCase(args[1])) {
                         worldName = f.getName();

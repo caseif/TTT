@@ -62,10 +62,11 @@ public class PrepareCommand extends SubcommandHandler {
                                     .withPrefix(ERROR_COLOR.toString()).sendTo(sender);
                         }
                     } else {
-                        //TODO: message
+                        TTTCore.locale.getLocalizable("error.round.dne").withPrefix(ERROR_COLOR.toString())
+                                .withReplacements(ARENA_COLOR + arenaName + ERROR_COLOR).sendTo(sender);
                     }
                 } else {
-                    TTTCore.locale.getLocalizable("error.round.dne").withPrefix(ERROR_COLOR.toString())
+                    TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(ERROR_COLOR.toString())
                             .withReplacements(ARENA_COLOR + arenaName + ERROR_COLOR).sendTo(sender);
                 }
             } else {

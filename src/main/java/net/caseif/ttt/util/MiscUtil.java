@@ -72,7 +72,7 @@ public class MiscUtil {
             y.set(player.toString(), unbanTime);
             y.save(f);
             if (p != null) {
-                Challenger ch = TTTCore.mg.getChallenger(p.getUniqueId()).get(); //TODO
+                Challenger ch = TTTCore.mg.getChallenger(p.getUniqueId()).get(); //TODO: figure out why I added a TODO
                 ch.removeFromRound();
             }
             return true;
