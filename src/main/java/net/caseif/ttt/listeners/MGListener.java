@@ -24,7 +24,17 @@
 package net.caseif.ttt.listeners;
 
 import static net.caseif.ttt.util.Constants.Color;
+import static net.caseif.ttt.util.Constants.Role;
 
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.event.round.RoundChangeLifecycleStageEvent;
+import net.caseif.flint.event.round.RoundEndEvent;
+import net.caseif.flint.event.round.RoundTimerTickEvent;
+import net.caseif.flint.event.round.challenger.ChallengerJoinRoundEvent;
+import net.caseif.flint.event.round.challenger.ChallengerLeaveRoundEvent;
+import net.caseif.flint.round.Round;
+import net.caseif.flint.util.physical.Location3D;
+import net.caseif.rosetta.Localizable;
 import net.caseif.ttt.Body;
 import net.caseif.ttt.Config;
 import net.caseif.ttt.TTTCore;
@@ -35,15 +45,6 @@ import net.caseif.ttt.util.MiscUtil;
 
 import com.google.common.base.Optional;
 import com.google.common.eventbus.Subscribe;
-import net.caseif.flint.challenger.Challenger;
-import net.caseif.flint.event.round.RoundChangeLifecycleStageEvent;
-import net.caseif.flint.event.round.RoundEndEvent;
-import net.caseif.flint.event.round.RoundTimerTickEvent;
-import net.caseif.flint.event.round.challenger.ChallengerJoinRoundEvent;
-import net.caseif.flint.event.round.challenger.ChallengerLeaveRoundEvent;
-import net.caseif.flint.round.Round;
-import net.caseif.flint.util.physical.Location3D;
-import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -218,7 +219,7 @@ public class MGListener {
         ItemStack ti = new ItemStack(Material.WOOL, 1);
         ItemMeta tiMeta = ti.getItemMeta();
         //TODO: make this DRYer
-        if (ch.getMetadata().has("detective")) {
+        if (ch.getMetadata().has(Role.DETECTIVE)) {
             ti.setDurability((short) 11);
             tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.detective")
                     .withPrefix(Color.DETECTIVE.toString()).localize());
@@ -248,8 +249,8 @@ public class MGListener {
                         new Location3D(block.getX(), block.getY(), block.getZ()),
                         ch.getUniqueId(),
                         killer != null ? killer.getUniqueId() : null,
-                        ch.getMetadata().has("detective")
-                                ? "detective"
+                        ch.getMetadata().has(Role.DETECTIVE)
+                                ? Role.DETECTIVE
                                 : (ch.getTeam().isPresent() ? ch.getTeam().get().getId() : null),
                         System.currentTimeMillis()
                 )
@@ -329,10 +330,10 @@ public class MGListener {
             Player pl = Bukkit.getPlayer(uuid);
             Optional<Challenger> challenger = TTTCore.mg.getChallenger(uuid);
             if (pl != null && challenger.isPresent()) {
-                challenger.get().getRound().getOrCreateTeam("innocent").addChallenger(challenger.get());
+                challenger.get().getRound().getOrCreateTeam(Role.INNOCENT).addChallenger(challenger.get());
                 TTTCore.locale.getLocalizable("info.personal.status.role.innocent")
                         .withPrefix(Color.INNOCENT.toString()).sendTo(pl);
-                MiscUtil.sendStatusTitle(pl, "innocent");
+                MiscUtil.sendStatusTitle(pl, Role.INNOCENT);
                 pl.getInventory().addItem(crowbar, gun, ammo);
                 pl.setHealth(20);
                 pl.setFoodLevel(20);
@@ -346,12 +347,12 @@ public class MGListener {
             Player pl = TTTCore.getInstance().getServer().getPlayer(uuid);
             Optional<Challenger> challenger = TTTCore.mg.getChallenger(uuid);
             if (pl != null && challenger != null) {
-                challenger.get().getRound().getOrCreateTeam("traitor").addChallenger(challenger.get());
+                challenger.get().getRound().getOrCreateTeam(Role.TRAITOR).addChallenger(challenger.get());
                 TTTCore.locale.getLocalizable(traitors.size() > 1
                         ? "info.personal.status.role.traitor"
                         : "info.personal.status.role.traitor.alone").withPrefix(Color.TRAITOR.toString())
                         .sendTo(pl);
-                MiscUtil.sendStatusTitle(pl, "traitor");
+                MiscUtil.sendStatusTitle(pl, Role.TRAITOR);
                 if (traitors.size() > 1) {
                     TTTCore.locale.getLocalizable("info.personal.status.role.traitor.allies")
                             .withPrefix(Color.TRAITOR.toString()).sendTo(pl);
@@ -374,11 +375,12 @@ public class MGListener {
             Player pl = TTTCore.getInstance().getServer().getPlayer(uuid);
             Optional<Challenger> challenger = TTTCore.mg.getChallenger(uuid);
             if (pl != null && challenger.isPresent()) {
-                challenger.get().getRound().getOrCreateTeam("innocent").addChallenger(challenger.get());
-                challenger.get().getMetadata().set("fragment.detective", true);
+                // detectives are technically innocents so we put them on the innocent team
+                challenger.get().getRound().getOrCreateTeam(Role.INNOCENT).addChallenger(challenger.get());
+                challenger.get().getMetadata().set(Role.DETECTIVE, true);
                 TTTCore.locale.getLocalizable("info.personal.status.role.detective")
                         .withPrefix(Color.DETECTIVE.toString()).sendTo(pl);
-                MiscUtil.sendStatusTitle(pl, "detective");
+                MiscUtil.sendStatusTitle(pl, Role.DETECTIVE);
                 pl.getInventory().addItem(crowbar, gun, ammo, dnaScanner);
                 pl.setHealth(20);
                 pl.setFoodLevel(20);
@@ -442,7 +444,7 @@ public class MGListener {
                 }
 
                 // manage DNA Scanners every n seconds
-                if (ch.getMetadata().has("fragment.detective")
+                if (ch.getMetadata().has(Role.DETECTIVE)
                         && ch.getRound().getTime() % Config.SCANNER_CHARGE_TIME == 0) {
                     Player tracker = TTTCore.getInstance().getServer().getPlayer(ch.getName());
                     if (ch.getMetadata().has("tracking")) {
@@ -523,7 +525,7 @@ public class MGListener {
         boolean tVic = event.getRound().getMetadata().has("t-victory")
                 && event.getRound().getMetadata().<Boolean>get("t-victory").get();
 
-        TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? "traitor" : "innocent"))
+        TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
                 .withPrefix(Color.INNOCENT.toString())
                 .withReplacements(Color.ARENA + event.getRound().getArena().getName()).broadcast();
         MiscUtil.sendVictoryTitle(event.getRound(), tVic);

@@ -24,7 +24,10 @@
 package net.caseif.ttt.listeners;
 
 import static net.caseif.ttt.util.Constants.Color;
+import static net.caseif.ttt.util.Constants.Role;
 
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.util.physical.Location3D;
 import net.caseif.ttt.Body;
 import net.caseif.ttt.Config;
 import net.caseif.ttt.TTTCore;
@@ -34,8 +37,6 @@ import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.InventoryUtil;
 
 import com.google.common.base.Optional;
-import net.caseif.flint.challenger.Challenger;
-import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -120,7 +121,7 @@ public class PlayerListener implements Listener {
                                         = TTTCore.mg.getChallenger(TTTCore.bodies.get(index).getPlayer());
                                 //TODO: make this DRYer
                                 switch (b.getRole()) {
-                                    case "innocent": {
+                                    case Role.INNOCENT: {
                                         for (Challenger c : b.getRound().getChallengers()) {
                                             Player pl = Bukkit.getPlayer(c.getUniqueId());
                                             pl.sendMessage(Color.INNOCENT
@@ -134,7 +135,7 @@ public class PlayerListener implements Listener {
                                         }
                                         break;
                                     }
-                                    case "traitor": {
+                                    case Role.TRAITOR: {
                                         for (Challenger c : b.getRound().getChallengers()) {
                                             Player pl = Bukkit.getPlayer(c.getUniqueId());
                                             pl.sendMessage(Color.TRAITOR
@@ -148,8 +149,7 @@ public class PlayerListener implements Listener {
                                         }
                                         break;
                                     }
-                                    default: { //TODO: don't think this is right, need to check on it later
-                                        //TODO: actually, fixing it involves revamping how bodies work
+                                    case Role.DETECTIVE: {
                                         for (Challenger c : b.getRound().getChallengers()) {
                                             Player pl = Bukkit.getPlayer(c.getUniqueId());
                                             pl.sendMessage(Color.DETECTIVE
@@ -162,6 +162,12 @@ public class PlayerListener implements Listener {
                                                     .localizeFor(pl));
                                         }
                                         break;
+                                    }
+                                    default: {
+                                        event.getPlayer().sendMessage("Something's gone terribly wrong inside the TTT " +
+                                                "plugin. Please notify an admin."); // eh, may as well tell the player
+                                        throw new AssertionError("Failed to determine role of found body. " +
+                                                "Report this immediately.");
                                     }
                                 }
                                 TTTCore.foundBodies.add(TTTCore.bodies.get(index));
@@ -177,7 +183,7 @@ public class PlayerListener implements Listener {
                                     }
                                 }
                             }
-                            if (ch.getMetadata().has("fragment.detective")) { // handle DNA scanning
+                            if (ch.getMetadata().has(Role.DETECTIVE)) { // handle DNA scanning
                                 if (event.getPlayer().getItemInHand() != null
                                         && event.getPlayer().getItemInHand().getType() == Material.COMPASS
                                         && event.getPlayer().getItemInHand().getItemMeta() != null

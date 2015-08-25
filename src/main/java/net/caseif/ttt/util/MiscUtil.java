@@ -23,17 +23,17 @@
  */
 package net.caseif.ttt.util;
 
-import static net.caseif.ttt.util.Constants.Color.DETECTIVE;
-import static net.caseif.ttt.util.Constants.Color.INNOCENT;
-import static net.caseif.ttt.util.Constants.Color.TRAITOR;
-
-import net.caseif.ttt.Config;
-import net.caseif.ttt.TTTCore;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static net.caseif.ttt.util.Constants.Color;
+import static net.caseif.ttt.util.Constants.Role;
 
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
 import net.caseif.rosetta.Localizable;
+import net.caseif.ttt.Config;
+import net.caseif.ttt.TTTCore;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -52,7 +52,7 @@ public class MiscUtil {
      * @return whether the player is a traitor
      */
     public static boolean isTraitor(Challenger player) {
-        return player.getTeam().isPresent() && player.getTeam().get().getId().equals("traitor");
+        return player.getTeam().isPresent() && player.getTeam().get().getId().equals(Role.TRAITOR);
     }
 
     /**
@@ -116,12 +116,19 @@ public class MiscUtil {
             String title = TTTCore.locale.getLocalizable("info.personal.status.role." + role + ".title")
                     .localizeFor(player);
             ChatColor color;
-            if (role.equals("innocent")) {
-                color = INNOCENT;
-            } else if (role.equals("detective")) {
-                color = DETECTIVE;
-            } else {
-                color = TRAITOR;
+            switch (role) {
+                case Role.INNOCENT: {
+                    color = Color.INNOCENT;
+                    break;
+                }
+                case Role.DETECTIVE: {
+                    color = Color.DETECTIVE;
+                    break;
+                }
+                default: {
+                    color = Color.TRAITOR;
+                    break;
+                }
             }
             if (Config.SMALL_STATUS_TITLES) {
                 TitleUtil.sendTitle(player, "", ChatColor.RESET, title, color);
@@ -133,12 +140,10 @@ public class MiscUtil {
 
     public static void sendVictoryTitle(Round round, boolean traitorVictory) {
         if (Config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
-            if (round == null) {
-                throw new IllegalArgumentException("Round cannot be null!");
-            }
+            checkNotNull(round, "Round cannot be null!");
             Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.end."
-                    + (traitorVictory ? "traitor" : "innocent") + ".min");
-            ChatColor color = traitorVictory ? TRAITOR : INNOCENT;
+                    + (traitorVictory ? Role.TRAITOR : Role.INNOCENT) + ".min");
+            ChatColor color = traitorVictory ? Color.TRAITOR : Color.INNOCENT;
             for (Challenger ch : round.getChallengers()) {
                 Player pl = Bukkit.getPlayer(ch.getUniqueId());
                 if (Config.SMALL_VICTORY_TITLES) {

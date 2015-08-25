@@ -23,6 +23,7 @@
  */
 package net.caseif.ttt.managers;
 
+import static net.caseif.ttt.util.Constants.Role;
 import static net.caseif.ttt.util.MiscUtil.fromNullableString;
 
 import net.caseif.ttt.Config;
@@ -209,7 +210,7 @@ public class ScoreManager {
                     .removePlayer(Bukkit.getOfflinePlayer(challenger.getName()));
         }
 
-        if (challenger.getMetadata().has("detective")) {
+        if (challenger.getMetadata().has(Role.DETECTIVE)) {
             if (!challenger.isSpectating()) {
                 iTeamDA.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
                 tTeamDA.addPlayer(Bukkit.getOfflinePlayer(challenger.getName()));
