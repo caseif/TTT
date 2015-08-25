@@ -23,7 +23,6 @@
  */
 package net.caseif.ttt.managers.command;
 
-import static net.caseif.ttt.util.Constants.Color.ERROR;
 import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.TTTCore;

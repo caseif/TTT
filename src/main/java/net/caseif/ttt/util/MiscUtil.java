@@ -24,16 +24,16 @@
 package net.caseif.ttt.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static net.caseif.ttt.util.Constants.Color;
-import static net.caseif.ttt.util.Constants.Role;
+
+import net.caseif.ttt.Config;
+import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.Role;
 
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
 import net.caseif.rosetta.Localizable;
-import net.caseif.ttt.Config;
-import net.caseif.ttt.TTTCore;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;

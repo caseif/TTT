@@ -23,11 +23,11 @@
  */
 package net.caseif.ttt.managers;
 
-import static net.caseif.ttt.util.Constants.Color;
 import static net.caseif.ttt.util.MiscUtil.isTraitor;
 
 import net.caseif.ttt.Config;
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.MiscUtil;
 
 import net.caseif.flint.challenger.Challenger;

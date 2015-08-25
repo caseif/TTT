@@ -23,11 +23,10 @@
  */
 package net.caseif.ttt.managers.command.admin;
 
-import static net.caseif.ttt.util.Constants.Color;
-
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.Constants.Color;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;

@@ -23,20 +23,19 @@
  */
 package net.caseif.ttt.listeners;
 
-import static net.caseif.ttt.util.Constants.Color;
-import static net.caseif.ttt.util.Constants.Role;
-
-import net.caseif.flint.challenger.Challenger;
-import net.caseif.flint.util.physical.Location3D;
 import net.caseif.ttt.Body;
 import net.caseif.ttt.Config;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.KarmaManager;
 import net.caseif.ttt.managers.ScoreManager;
 import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.InventoryUtil;
 
 import com.google.common.base.Optional;
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -164,10 +163,10 @@ public class PlayerListener implements Listener {
                                         break;
                                     }
                                     default: {
-                                        event.getPlayer().sendMessage("Something's gone terribly wrong inside the TTT " +
-                                                "plugin. Please notify an admin."); // eh, may as well tell the player
-                                        throw new AssertionError("Failed to determine role of found body. " +
-                                                "Report this immediately.");
+                                        event.getPlayer().sendMessage("Something's gone terribly wrong inside the TTT "
+                                                + "plugin. Please notify an admin."); // eh, may as well tell the player
+                                        throw new AssertionError("Failed to determine role of found body. "
+                                                + "Report this immediately.");
                                     }
                                 }
                                 TTTCore.foundBodies.add(TTTCore.bodies.get(index));

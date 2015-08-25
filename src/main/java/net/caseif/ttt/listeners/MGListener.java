@@ -23,9 +23,18 @@
  */
 package net.caseif.ttt.listeners;
 
-import static net.caseif.ttt.util.Constants.Color;
-import static net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.Body;
+import net.caseif.ttt.Config;
+import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.managers.KarmaManager;
+import net.caseif.ttt.managers.ScoreManager;
+import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.MiscUtil;
 
+import com.google.common.base.Optional;
+import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.event.round.RoundChangeLifecycleStageEvent;
 import net.caseif.flint.event.round.RoundEndEvent;
@@ -35,16 +44,6 @@ import net.caseif.flint.event.round.challenger.ChallengerLeaveRoundEvent;
 import net.caseif.flint.round.Round;
 import net.caseif.flint.util.physical.Location3D;
 import net.caseif.rosetta.Localizable;
-import net.caseif.ttt.Body;
-import net.caseif.ttt.Config;
-import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.managers.KarmaManager;
-import net.caseif.ttt.managers.ScoreManager;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.MiscUtil;
-
-import com.google.common.base.Optional;
-import com.google.common.eventbus.Subscribe;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

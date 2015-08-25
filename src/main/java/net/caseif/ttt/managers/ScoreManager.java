@@ -23,10 +23,10 @@
  */
 package net.caseif.ttt.managers;
 
-import static net.caseif.ttt.util.Constants.Role;
 import static net.caseif.ttt.util.MiscUtil.fromNullableString;
 
 import net.caseif.ttt.Config;
+import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.MiscUtil;
 
 import net.caseif.flint.challenger.Challenger;

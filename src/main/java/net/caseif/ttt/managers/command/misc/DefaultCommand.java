@@ -23,10 +23,9 @@
  */
 package net.caseif.ttt.managers.command.misc;
 
-import static net.caseif.ttt.util.Constants.Color;
-
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.managers.command.SubcommandHandler;
+import net.caseif.ttt.util.Constants.Color;
 
 import org.bukkit.command.CommandSender;
 
