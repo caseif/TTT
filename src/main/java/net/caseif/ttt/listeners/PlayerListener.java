@@ -24,6 +24,7 @@
 package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.Body;
+import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.manager.KarmaManager;
@@ -32,6 +33,7 @@ import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.helper.InventoryHelper;
+import net.caseif.ttt.util.helper.NmsHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -39,6 +41,7 @@ import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Arrow;
@@ -54,6 +57,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -62,6 +66,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerListener implements Listener {
 
@@ -289,7 +298,7 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                        Optional<Double> reduc = mgDamager.getMetadata().<Double>get("damageRed");
+                        Optional<Double> reduc = mgDamager.getMetadata().get("damageRed");
                         if (reduc.isPresent()) {
                             event.setDamage((int) (event.getDamage() * reduc.get()));
                         }
@@ -368,4 +377,93 @@ public class PlayerListener implements Listener {
             }
         }
     }
+
+    //TODO: probably split this up a little
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player pl = event.getEntity();
+        // admittedly not the best way of doing this, but easiest for the purpose of porting
+        Optional<Challenger> chOpt = TTTCore.mg.getChallenger(pl.getUniqueId());
+        if (chOpt.isPresent()) {
+            Challenger ch = chOpt.get();
+            Challenger killer = TTTCore.mg.getChallenger(event.getEntity().getKiller().getUniqueId()).orNull();
+            NmsHelper.sendRespawnPacket(pl);
+            ch.setSpectating(true);
+            //ch.setPrefix(Config.SB_MIA_PREFIX); //TODO
+            pl.setHealth(pl.getMaxHealth());
+            ch.setSpectating(true);
+            if (ScoreManager.sbManagers.containsKey(ch.getRound().getArena().getId())) {
+                ScoreManager.sbManagers.get(ch.getRound().getArena().getId()).update(ch);
+            }
+            if (killer != null) {
+                // set killer's karma
+                KarmaManager.handleKillKarma(killer, ch);
+                ch.getMetadata().set("killer", killer.getUniqueId());
+            }
+            Block block = pl.getLocation().getBlock();
+            //TttPluginCore.mg.getRollbackManager().logBlockChange(block, ch.getArena()); //TODO (probably Flint 1.1)
+            BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
+            boolean trapped = false;
+            for (BlockFace bf : faces) {
+                if (block.getRelative(bf).getType() == Material.CHEST) {
+                    trapped = true;
+                    break;
+                }
+            }
+            //TODO: Add check for doors and such
+            //TODO: move this code to another method
+            block.setType(trapped ? Material.TRAPPED_CHEST : Material.CHEST);
+            Chest chest = (Chest) block.getState();
+            // player identifier
+            ItemStack id = new ItemStack(Material.PAPER, 1);
+            ItemMeta idMeta = id.getItemMeta();
+            idMeta.setDisplayName(TTTCore.locale.getLocalizable("item.id.name").localize());
+            List<String> idLore = new ArrayList<>();
+            idLore.add(TTTCore.locale.getLocalizable("corpse.of").withReplacements(ch.getName()).localize());
+            idLore.add(ch.getName());
+            idMeta.setLore(idLore);
+            id.setItemMeta(idMeta);
+            // role identifier
+            ItemStack ti = new ItemStack(Material.WOOL, 1);
+            ItemMeta tiMeta = ti.getItemMeta();
+            //TODO: make this DRYer
+            if (ch.getMetadata().has(Role.DETECTIVE)) {
+                ti.setDurability((short) 11);
+                tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.detective")
+                        .withPrefix(Color.DETECTIVE.toString()).localize());
+                List<String> lore = new ArrayList<>();
+                lore.add(TTTCore.locale.getLocalizable("item.id.detective").localize());
+                tiMeta.setLore(lore);
+            } else if (!MiscUtil.isTraitor(ch)) {
+                ti.setDurability((short) 5);
+                tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.innocent")
+                        .withPrefix(Color.INNOCENT.toString()).localize());
+                List<String> tiLore = new ArrayList<>();
+                tiLore.add(TTTCore.locale.getLocalizable("item.id.innocent").localize());
+                tiMeta.setLore(tiLore);
+            } else {
+                ti.setDurability((short) 14);
+                tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.traitor")
+                        .withPrefix(Color.TRAITOR.toString()).localize());
+                List<String> lore = new ArrayList<>();
+                lore.add(TTTCore.locale.getLocalizable("item.id.traitor").localize());
+                tiMeta.setLore(lore);
+            }
+            ti.setItemMeta(tiMeta);
+            chest.getInventory().addItem(id, ti);
+            TTTCore.bodies.add(
+                    new Body(
+                            ch.getRound(),
+                            new Location3D(block.getX(), block.getY(), block.getZ()),
+                            ch.getUniqueId(),
+                            killer != null ? killer.getUniqueId() : null,
+                            ch.getMetadata().has(Role.DETECTIVE)
+                                    ? Role.DETECTIVE
+                                    : (ch.getTeam().isPresent() ? ch.getTeam().get().getId() : null),
+                            System.currentTimeMillis()
+                    )
+            );
+        }
+    }
+
 }
