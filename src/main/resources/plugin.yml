@@ -68,6 +68,7 @@ permissions:
       ttt.admin.*: true
       ttt.arena.*: true
       ttt.lobby.*: true
+      ttt.build.warn: true
 
   ttt.admin:
     description: Allows for full use of administrative commands.
@@ -165,24 +166,28 @@ permissions:
     description: Allows use of lobby signs.
     default: true
 
+  ttt.build.warn:
+    description: Players with this node will be notified of persistent issues with the plugin on join or command.
+    default: op
+
   # deprecated nodes
   ttt.import:
     description: Allows player to import worlds into the plugin. (deprecated)
-    default: op
+    default: false
     children:
       ttt.arena.import: true
   ttt.join:
     description: Allows player to join TTT rounds. (deprecated)
-    default: true
+    default: false
     children:
       ttt.arena.join: true
   ttt.quit:
     description: Allows player to leave TTT rounds. (deprecated)
-    default: true
+    default: false
     children:
       ttt.arena.leave: true
   ttt.setspawn:
     description: Sets the spawn upon round exit to the sender's current location. (deprecated)
-    default: op
+    default: false
     children:
       ttt.setexit: true
