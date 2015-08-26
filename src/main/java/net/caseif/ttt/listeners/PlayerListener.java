@@ -24,14 +24,14 @@
 package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.Body;
-import net.caseif.ttt.util.MiscUtil;
-import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.manager.KarmaManager;
 import net.caseif.ttt.manager.ScoreManager;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.Constants.Stage;
+import net.caseif.ttt.util.MiscUtil;
+import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.helper.InventoryHelper;
 import net.caseif.ttt.util.helper.NmsHelper;
 
@@ -240,7 +240,8 @@ public class PlayerListener implements Listener {
                             if ((TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()
                                     && !TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().isSpectating()
                                     && (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().getRound()
-                                    .getLifecycleStage() == Constants.Stage.PLAYING) || ConfigHelper.GUNS_OUTSIDE_ARENAS)) {
+                                    .getLifecycleStage() == Stage.PLAYING)
+                                    || ConfigHelper.GUNS_OUTSIDE_ARENAS)) {
                                 event.setCancelled(true);
                                 if (event.getPlayer().getInventory().contains(Material.ARROW)
                                         || !ConfigHelper.REQUIRE_AMMO_FOR_GUNS) {
@@ -265,7 +266,7 @@ public class PlayerListener implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         if (event.getEntityType() == EntityType.PLAYER) {
             Optional<Challenger> victim = TTTCore.mg.getChallenger(event.getEntity().getUniqueId());
-            if (victim.isPresent() && victim.get().getRound().getLifecycleStage() != Constants.Stage.PLAYING) {
+            if (victim.isPresent() && victim.get().getRound().getLifecycleStage() != Stage.PLAYING) {
                 if (event.getCause() == DamageCause.VOID) {
                     Bukkit.getPlayer(victim.get().getUniqueId());
                 } else {
@@ -282,7 +283,7 @@ public class PlayerListener implements Listener {
                             : (Player) ((Projectile) ed.getDamager()).getShooter();
                     if (TTTCore.mg.getChallenger(damager.getUniqueId()).isPresent()) {
                         Challenger mgDamager = TTTCore.mg.getChallenger(damager.getUniqueId()).get();
-                        if (mgDamager.getRound().getLifecycleStage() != Constants.Stage.PLAYING
+                        if (mgDamager.getRound().getLifecycleStage() != Stage.PLAYING
                                 || !victim.isPresent()) {
                             event.setCancelled(true);
                             return;

@@ -33,7 +33,7 @@ import net.caseif.ttt.manager.ScoreManager;
 import net.caseif.ttt.manager.command.CommandManager;
 import net.caseif.ttt.manager.command.SpecialCommandManager;
 import net.caseif.ttt.util.helper.ConfigHelper;
-import net.caseif.ttt.util.ContributorsReader;
+import net.caseif.ttt.util.helper.ContributorListHelper;
 
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.FlintCore;
@@ -51,9 +51,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -80,10 +77,7 @@ public class TTTCore extends JavaPlugin {
 
     public static int maxKarma = 1000;
 
-    public static List<UUID> devs = new ArrayList<>();
-    public static List<UUID> alpha = new ArrayList<>();
-    public static List<UUID> testers = new ArrayList<>();
-    public static List<UUID> translators = new ArrayList<>();
+    public static ContributorListHelper clh;
 
     @Override
     public void onEnable() {
@@ -99,6 +93,8 @@ public class TTTCore extends JavaPlugin {
             getCommand("ttt").setExecutor(new SpecialCommandManager());
             return;
         }
+
+        clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
 
         // register plugin with MGLib
         mg = FlintCore.registerPlugin(getName());
@@ -188,34 +184,6 @@ public class TTTCore extends JavaPlugin {
         invDir.mkdir();
 
         maxKarma = ConfigHelper.MAX_KARMA;
-
-        // add special players to list
-        ContributorsReader reader = new ContributorsReader(TTTCore.class.getResourceAsStream("/contributors.txt"));
-        Map<String, Set<String>> contributors = reader.read();
-
-        if (contributors.containsKey("dev")) {
-            for (String uuid : contributors.get("dev")) {
-                devs.add(UUID.fromString(uuid));
-            }
-        }
-
-        if (contributors.containsKey("alpha")) {
-            for (String uuid : contributors.get("alpha")) {
-                alpha.add(UUID.fromString(uuid));
-            }
-        }
-
-        if (contributors.containsKey("tester")) {
-            for (String uuid : contributors.get("tester")) {
-                testers.add(UUID.fromString(uuid));
-            }
-        }
-
-        if (contributors.containsKey("translator")) {
-            for (String uuid : contributors.get("translator")) {
-                translators.add(UUID.fromString(uuid));
-            }
-        }
 
         if (ConfigHelper.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
             logWarning("error.plugin.title-support");

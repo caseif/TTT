@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013-2015, Maxim Roncacé <mproncace@lapis.blue>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package net.caseif.ttt.util.helper;
 
 import net.caseif.ttt.TTTCore;
@@ -62,20 +85,17 @@ public class NmsHelper {
                     clientCommandPacketInstance = getNmsClass("PacketPlayInClientCommand")
                             .getConstructor(performRespawn.getClass())
                             .newInstance(performRespawn);
-                }
-                catch (ClassNotFoundException ex) { // pre-1.6
+                } catch (ClassNotFoundException ex) { // pre-1.6
                     ex.printStackTrace();
                     clientCommandPacketInstance = getNmsClass("Packet205ClientCommand").getConstructor().newInstance();
                     clientCommandPacketInstance.getClass().getDeclaredField("a").set(clientCommandPacketInstance, 1);
                 }
-            }
-            catch (ClassNotFoundException ex) {
+            } catch (ClassNotFoundException ex) {
                 ex.printStackTrace();
                 TTTCore.getInstance()
                         .logSevere(TTTCore.locale.getLocalizable("plugin.alert.nms.client-command").localize());
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             TTTCore.getInstance().logSevere(TTTCore.locale.getLocalizable("plugin.alert.nms.fail").localize());
             nmsException = true;
@@ -92,11 +112,9 @@ public class NmsHelper {
      * Retrieves a class by the given name from the package
      * {@code net.minecraft.server}.
      *
-     * @param name the class to retrieve
-     * @return the class object from the package
-     * {@code net.minecraft.server}
-     * @throws ClassNotFoundException if the class does not exist in the
-     * package
+     * @param name The name of the class to retrieve
+     * @return The class object from the package {@code net.minecraft.server}
+     * @throws ClassNotFoundException If the class does not exist in the package
      */
     private static Class<?> getNmsClass(String name) throws ClassNotFoundException {
         String className = "net.minecraft.server." + VERSION_STRING + name;
@@ -107,11 +125,9 @@ public class NmsHelper {
      * Retrieves a class by the given name from the package
      * {@code org.bukkit.craftbukkit}.
      *
-     * @param name the class to retrieve
-     * @return the class object from the package
-     * {@code org.bukkit.craftbukkit}
-     * @throws ClassNotFoundException if the class does not exist in the
-     * package
+     * @param name The name of the class to retrieve
+     * @return The class object from the package {@code org.bukkit.craftbukkit}
+     * @throws ClassNotFoundException If the class does not exist in the package
      */
     private static Class<?> getCraftClass(String name) throws ClassNotFoundException {
         String className = "org.bukkit.craftbukkit." + VERSION_STRING + name;
@@ -121,7 +137,7 @@ public class NmsHelper {
     /**
      * Sends a PlayInClientCommand packet to the given player.
      *
-     * @param player the {@link Player} to send the packet to
+     * @param player The {@link Player} to send the packet to
      */
     public static void sendRespawnPacket(Player player) {
         if (NMS_SUPPORT) {

@@ -25,10 +25,10 @@ package net.caseif.ttt.manager;
 
 import static net.caseif.ttt.util.MiscUtil.isTraitor;
 
-import net.caseif.ttt.util.helper.BanHelper;
-import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.helper.BanHelper;
+import net.caseif.ttt.util.helper.ConfigHelper;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
@@ -95,7 +95,8 @@ public class KarmaManager {
                     if ((ConfigHelper.MAX_KARMA - 1000) > 0) {
                         karmaHeal = (int) Math.round(
                                 ConfigHelper.KARMA_CLEAN_BONUS * Math.pow(.5, (getKarma(challenger) - 1000.0)
-                                                / ((double) (ConfigHelper.MAX_KARMA - 1000) * ConfigHelper.KARMA_CLEAN_HALF)
+                                                / ((double) (ConfigHelper.MAX_KARMA - 1000)
+                                                * ConfigHelper.KARMA_CLEAN_HALF)
                                 )
                         );
                     }

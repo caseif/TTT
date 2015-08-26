@@ -61,4 +61,11 @@ public final class Constants {
         public static final String DETECTIVE = "detective";
     }
 
+    public static class Contributor {
+        public static final String DEVELOPER = "dev";
+        public static final String ALPHA_TESTER = "alpha";
+        public static final String TESTER = "tester";
+        public static final String TRANSLATOR = "translator";
+    }
+
 }

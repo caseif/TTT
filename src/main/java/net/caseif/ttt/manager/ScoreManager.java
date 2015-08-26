@@ -25,9 +25,9 @@ package net.caseif.ttt.manager;
 
 import static net.caseif.ttt.util.MiscUtil.fromNullableString;
 
-import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.MiscUtil;
+import net.caseif.ttt.util.helper.ConfigHelper;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
@@ -125,7 +125,8 @@ public class ScoreManager {
         );
 
         iTeamDA.setPrefix(
-                fromNullableString(ConfigHelper.SB_I_DETECTIVE_PREFIX) + fromNullableString(ConfigHelper.SB_ALIVE_PREFIX)
+                fromNullableString(ConfigHelper.SB_I_DETECTIVE_PREFIX)
+                        + fromNullableString(ConfigHelper.SB_ALIVE_PREFIX)
         );
         iTeamDM.setPrefix(
                 fromNullableString(ConfigHelper.SB_I_DETECTIVE_PREFIX) + fromNullableString(ConfigHelper.SB_MIA_PREFIX)
@@ -155,7 +156,8 @@ public class ScoreManager {
         );
 
         tTeamDA.setPrefix(
-                fromNullableString(ConfigHelper.SB_T_DETECTIVE_PREFIX) + fromNullableString(ConfigHelper.SB_ALIVE_PREFIX)
+                fromNullableString(ConfigHelper.SB_T_DETECTIVE_PREFIX)
+                        + fromNullableString(ConfigHelper.SB_ALIVE_PREFIX)
         );
         tTeamDM.setPrefix(
                 fromNullableString(ConfigHelper.SB_T_DETECTIVE_PREFIX) + fromNullableString(ConfigHelper.SB_MIA_PREFIX)

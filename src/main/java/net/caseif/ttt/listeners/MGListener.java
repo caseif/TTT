@@ -123,40 +123,14 @@ public class MGListener {
             );
         }
 
-        String addition = "";
         UUID uuid = event.getChallenger().getUniqueId();
         Player pl = Bukkit.getPlayer(uuid);
         assert pl != null;
-        if (TTTCore.devs.contains(uuid)) {
-            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.dev")
-                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + "," + Color.INFO;
-        } else if (TTTCore.alpha.contains(uuid) && TTTCore.translators.contains(uuid)) {
-            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester.alpha")
-                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + ", "
-                    + TTTCore.locale.getLocalizable("fragment.special.translator").localizeFor(pl) + ","
-                    + Color.INFO;
-        } else if (TTTCore.testers.contains(uuid) && TTTCore.translators.contains(uuid)) {
-            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester")
-                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + ", "
-                    + TTTCore.locale.getLocalizable("fragment.special.translator").localizeFor(pl) + ","
-                    + Color.INFO;
-        } else if (TTTCore.alpha.contains(uuid)) {
-            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester.alpha")
-                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + "," + Color.INFO;
-        } else if (TTTCore.testers.contains(uuid)) {
-            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.tester")
-                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + "," + Color.INFO;
-        } else if (TTTCore.translators.contains(uuid)) {
-            addition += ", " + TTTCore.locale.getLocalizable("fragment.special.translator")
-                    .withPrefix(Color.TRAITOR.toString()).localizeFor(pl) + "," + Color.INFO;
-        }
-        TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO.toString())
-                .withReplacements(event.getChallenger().getName() + addition,
-                        Color.ARENA + event.getRound().getArena().getName() + Color.INFO)
-                .broadcast();
 
-        TTTCore.locale.getLocalizable("info.personal.arena.join.success").withPrefix(Color.INFO.toString())
-                .withReplacements(Color.ARENA + event.getRound().getArena().getName() + Color.INFO).sendTo(pl);
+        TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Constants.Color.INFO.toString())
+                .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl),
+                        Constants.Color.ARENA + event.getRound().getArena().getName() + Constants.Color.INFO)
+                .broadcast();
     }
 
     @Subscribe
