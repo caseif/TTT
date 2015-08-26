@@ -26,7 +26,6 @@ package net.caseif.ttt.util.helper;
 import static net.caseif.ttt.util.MiscUtil.isDouble;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.MaterialConverter;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -174,47 +173,67 @@ public final class ConfigHelper {
     }
 
     public static Material getMaterial(String key, Material fallback) {
-        Material m = MaterialConverter.fromNotchName(TTTCore.getInstance().getConfig().getString(key));
+        Material m = Material.getMaterial(TTTCore.getInstance().getConfig().getString(key));
         return m != null ? m : fallback;
     }
 
     public static void addMissingKeys() throws InvalidConfigurationException, IOException {
-        BufferedReader is = new BufferedReader(new InputStreamReader(TTTCore.class.getResourceAsStream("/config.yml")));
-        File configYml = new File(TTTCore.getInstance().getDataFolder(), "config.yml");
-        YamlConfiguration yml = new YamlConfiguration();
-        yml.load(configYml);
+        BufferedReader stockConfig
+                = new BufferedReader(new InputStreamReader(TTTCore.class.getResourceAsStream("/config.yml")));
+        File userConfigFile = new File(TTTCore.getInstance().getDataFolder(), "config.yml");
+        YamlConfiguration userConfig = new YamlConfiguration();
+        userConfig.load(userConfigFile);
         StringBuilder sb = new StringBuilder();
         final char newlineChar = '\n';
         String line;
-        while ((line = is.readLine()) != null) {
-            if (!line.startsWith("#")) {
-                if (line.contains(":")) {
+        // Before reading this code, understand that this method reconstructs the user config from scratch using the
+        // internal config as a foundation and substituting in user-changed values where possible.
+        while ((line = stockConfig.readLine()) != null) { // iterate the lines of the internal config file
+
+            if (line.equals("gun-item: IRON_HORSE_ARMOR")) { // special case to maintain reverse-compatibility
+                sb.append("gun-item: IRON_BARDING").append(newlineChar);
+                continue;
+            }
+
+            if (!line.startsWith("#")) { // check that the line's not a comment
+                if (line.contains(":")) { // check that it's not a list item or something
                     //TODO: this method doesn't support nested keys, but it doesn't need to atm anyway
-                    String key = line.split(":")[0];
-                    String value = line.substring(key.length() + 1, line.length()).trim();
-                    String newValue = yml.contains(key.trim()) ? yml.getString(key.trim()) : value;
-                    boolean equal = false;
+                    String key = line.split(":")[0]; // derive the key
+                    String internalValue = line.substring(key.length() + 1, line.length()).trim(); // derive the value
+                    // get the value of the key as defined in the user config
+                    String userValue = userConfig.contains(key.trim())
+                            ? userConfig.getString(key.trim())
+                            : internalValue;
+
+                    // This seems counterintuitive, but bear with me: essentially, the internal value will be used if
+                    // the key is missing from the user config (so that `userValue == internalValue`), or if the
+                    // user-defined value is effectively the same as the internal value
+                    // (i.e. `1 == 1` or `1.0 == 1.00`). This ensures that the user config is as clean as possible
+                    boolean equal;
                     try {
-                        equal = NumberFormat.getInstance().parse(value)
-                                .equals(NumberFormat.getInstance().parse(newValue));
+                        // try to parse it as a number and compare it
+                        equal = NumberFormat.getInstance().parse(internalValue)
+                                .equals(NumberFormat.getInstance().parse(userValue));
                     } catch (ParseException ex) {
-                        equal = value.equals(newValue);
+                        // it's not a number, so just compare it as a string
+                        equal = internalValue.equals(userValue);
                     }
-                    if (!equal) {
-                        String writeValue = yml.getString(key.trim());
+                    if (equal) { // if they're effectively equal, just copy the line as-is from the internal config
+                        sb.append(line).append(newlineChar);
+                    } else { // otherwise, reconstruct the line using the user-defined value
+                        String writeValue = userConfig.getString(key.trim());
                         if (isDouble(writeValue)) {
+                            // clean the value-to-write up if it's a double
                             writeValue = BigDecimal.valueOf(Double.parseDouble(writeValue))
                                     .stripTrailingZeros().toPlainString();
                         }
                         sb.append(key).append(": ").append(writeValue).append(newlineChar);
-                        continue;
                     }
                 }
             }
-            sb.append(line).append(newlineChar);
         }
-        FileHelper.copyFile(configYml, new File(configYml.getParentFile(), "config.yml.old"));
-        FileWriter w = new FileWriter(configYml);
+        FileHelper.copyFile(userConfigFile, new File(userConfigFile.getParentFile(), "config.yml.old"));
+        FileWriter w = new FileWriter(userConfigFile);
         w.append(sb.toString());
         w.flush();
     }

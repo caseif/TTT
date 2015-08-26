@@ -51,10 +51,10 @@ small-victory-titles: true
 # restrictions (a few will not work in prior versions either).
 crowbar-item: IRON_SWORD
 
-# The item to use as a gun. This should be a Minecraft ID corresponding to an item type.
-# See above for further information.
-# TODO: figure out how to change this and maintain backward-compatibility
-gun-item: IRON_HORSE_ARMOR
+# The item to use as a gun. This should be a raw Material enum value.
+# See here for all valid values: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+# The default value is IRON_BARDING, which represents iron horse armor.
+gun-item: IRON_BARDING
 
 ###################
 # Weapon Settings #
