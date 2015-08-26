@@ -27,6 +27,9 @@ import static net.caseif.ttt.util.MiscUtil.isDouble;
 
 import net.caseif.ttt.TTTCore;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableMap;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,6 +42,8 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Static utility class for config-related functionality.
@@ -94,6 +99,8 @@ public final class ConfigHelper {
     public static final Material CROWBAR_ITEM;
     public static final Material GUN_ITEM;
 
+    private static final ImmutableMap<String, String> LEGACY_NODES;
+
     static {
         TIME_LIMIT = getInt("time-limit");
         SETUP_TIME = getInt("setup-time");
@@ -107,23 +114,25 @@ public final class ConfigHelper {
         GUNS_OUTSIDE_ARENAS = getBoolean("guns-outside-arenas");
         REQUIRE_AMMO_FOR_GUNS = getBoolean("require-ammo-for-guns");
         INITIAL_AMMO = getInt("initial-ammo");
-        KARMA_PERSISTENCE = getBoolean("karma-persistence");
-        DEFAULT_KARMA = getInt("default-karma");
-        MAX_KARMA = getInt("max-karma");
-        KARMA_HEAL = getInt("karma-heal");
+
+        KARMA_STRICT = getBoolean("karma-strict");
+        DEFAULT_KARMA = getInt("karma-starting");
+        MAX_KARMA = getInt("karma-max");
+        DAMAGE_PENALTY = getDouble("karma-ratio");
+        KILL_PENALTY = getInt("karma-kill-penalty");
+        KARMA_HEAL = getInt("karma-round-increment");
         KARMA_CLEAN_BONUS = getInt("karma-clean-bonus");
         KARMA_CLEAN_HALF = getDouble("karma-clean-half");
-        DAMAGE_PENALTY = getDouble("damage-penalty");
-        KILL_PENALTY = getInt("kill-penalty");
-        T_DAMAGE_REWARD = getInt("t-damage-reward");
-        TBONUS = getInt("tbonus");
+        T_DAMAGE_REWARD = getInt("karma-traitordmg-ratio");
+        TBONUS = getInt("karma-traitorkill-bonus");
+        KARMA_KICK = getInt("karma-low-autokick");
+        KARMA_BAN = getBoolean("karma-low-ban");
+        KARMA_BAN_TIME = getInt("karma-low-ban-minutes");
+        KARMA_PERSISTENCE = getBoolean("karma-persist");
+        DAMAGE_REDUCTION = getBoolean("karma-damage-reduction");
         KARMA_ROUND_TO_ONE = getBoolean("karma-round-to-one");
-        KARMA_STRICT = getBoolean("karma-strict");
-        KARMA_KICK = getInt("info.personal.kick.karma");
-        KARMA_BAN = getBoolean("info.personal.ban.temp.karma");
-        KARMA_BAN_TIME = getInt("karma-ban-time");
-        DAMAGE_REDUCTION = getBoolean("damage-reduction");
         KARMA_DEBUG = getBoolean("karma-debug");
+
         VERBOSE_LOGGING = getBoolean("verbose-logging");
         ENABLE_AUTO_UPDATE = getBoolean("enable-auto-update");
         ENABLE_METRICS = getBoolean("enable-metrics");
@@ -143,6 +152,21 @@ public final class ConfigHelper {
         SMALL_VICTORY_TITLES = getBoolean("small-victory-titles");
         CROWBAR_ITEM = getMaterial("crowbar-item", Material.IRON_SWORD);
         GUN_ITEM = getMaterial("gun-item", Material.IRON_BARDING);
+
+        LEGACY_NODES = ImmutableMap.<String, String>builder()
+                .put("default-karma", "karma-starting")
+                .put("max-karma", "karma-max")
+                .put("damage-penalty", "karma-ratio")
+                .put("kill-penalty", "karma-kill-penalty")
+                .put("karma-heal", "karma-round-increment")
+                .put("t-damage-reward", "karma-traitordmg-ratio")
+                .put("tbonus", "karma-traitorkill-bonus")
+                .put("karma-kick", "karma-low-autokick")
+                .put("karma-ban", "karma-low-ban")
+                .put("karma-ban-time", "karma-low-ban-minutes")
+                .put("karma-persistance", "karma-persist")
+                .put("damage-reduction", "karma-damage-reduction")
+                .build();
     }
 
     public static String getString(String key) {
@@ -177,6 +201,19 @@ public final class ConfigHelper {
         return m != null ? m : fallback;
     }
 
+    private static String getModernKey(String legacyKey) {
+        return LEGACY_NODES.get(legacyKey);
+    }
+
+    private static Set<String> getLegacyKeys(final String modernKey) {
+        return new HashSet<>(Collections2.filter(LEGACY_NODES.keySet(), new Predicate<String>() {
+            @Override
+            public boolean apply(String key) {
+                return LEGACY_NODES.get(key).equals(modernKey);
+            }
+        }));
+    }
+
     public static void addMissingKeys() throws InvalidConfigurationException, IOException {
         BufferedReader stockConfig
                 = new BufferedReader(new InputStreamReader(TTTCore.class.getResourceAsStream("/config.yml")));
@@ -199,11 +236,24 @@ public final class ConfigHelper {
                 if (line.contains(":")) { // check that it's not a list item or something
                     //TODO: this method doesn't support nested keys, but it doesn't need to atm anyway
                     String key = line.split(":")[0]; // derive the key
+                    String legacyKey = null;
                     String internalValue = line.substring(key.length() + 1, line.length()).trim(); // derive the value
                     // get the value of the key as defined in the user config
-                    String userValue = userConfig.contains(key.trim())
-                            ? userConfig.getString(key.trim())
-                            : internalValue;
+                    String userValue = null;
+                    if (userConfig.contains(key.trim())) {
+                        userValue = userConfig.getString(key.trim());
+                    } else {
+                        Set<String> legacyKeys = getLegacyKeys(key.trim());
+                        for (String leg : legacyKeys) {
+                            if (userConfig.contains(leg)) {
+                                userValue = userConfig.getString(leg);
+                                break;
+                            }
+                        }
+                        if (userValue == null) {
+                            userValue = internalValue;
+                        }
+                    }
 
                     // This seems counterintuitive, but bear with me: essentially, the internal value will be used if
                     // the key is missing from the user config (so that `userValue == internalValue`), or if the
@@ -218,19 +268,19 @@ public final class ConfigHelper {
                         // it's not a number, so just compare it as a string
                         equal = internalValue.equals(userValue);
                     }
-                    if (equal) { // if they're effectively equal, just copy the line as-is from the internal config
-                        sb.append(line).append(newlineChar);
-                    } else { // otherwise, reconstruct the line using the user-defined value
-                        String writeValue = userConfig.getString(key.trim());
-                        if (isDouble(writeValue)) {
+                    if (!equal) { // if they're not effectively equal, reconstruct the line using the user-defined value
+                        if (isDouble(userValue)) {
                             // clean the value-to-write up if it's a double
-                            writeValue = BigDecimal.valueOf(Double.parseDouble(writeValue))
+                            userValue = BigDecimal.valueOf(Double.parseDouble(userValue))
                                     .stripTrailingZeros().toPlainString();
                         }
-                        sb.append(key).append(": ").append(writeValue).append(newlineChar);
+                        sb.append(key).append(": ").append(userValue).append(newlineChar);
+                        continue;
                     }
                 }
             }
+            // just copy the line directly if it hasn't already been reconstructed
+            sb.append(line).append(newlineChar);
         }
         FileHelper.copyFile(userConfigFile, new File(userConfigFile.getParentFile(), "config.yml.old"));
         FileWriter w = new FileWriter(userConfigFile);
