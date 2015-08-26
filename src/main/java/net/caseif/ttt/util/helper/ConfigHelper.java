@@ -233,17 +233,10 @@ public final class ConfigHelper {
         // Before reading this code, understand that this method reconstructs the user config from scratch using the
         // internal config as a foundation and substituting in user-changed values where possible.
         while ((line = stockConfig.readLine()) != null) { // iterate the lines of the internal config file
-
-            if (line.equals("gun-item: IRON_HORSE_ARMOR")) { // special case to maintain reverse-compatibility
-                sb.append("gun-item: IRON_BARDING").append(newlineChar);
-                continue;
-            }
-
             if (!line.startsWith("#")) { // check that the line's not a comment
                 if (line.contains(":")) { // check that it's not a list item or something
                     //TODO: this method doesn't support nested keys, but it doesn't need to atm anyway
                     String key = line.split(":")[0]; // derive the key
-                    String legacyKey = null;
                     String internalValue = line.substring(key.length() + 1, line.length()).trim(); // derive the value
                     // get the value of the key as defined in the user config
                     String userValue = null;
@@ -260,6 +253,10 @@ public final class ConfigHelper {
                         if (userValue == null) {
                             userValue = internalValue;
                         }
+                    }
+
+                    if (key.equals("gun-item") && userValue.equals("IRON_HORSE_ARMOR")) {
+                        userValue = "IRON_BARDING";
                     }
 
                     // This seems counterintuitive, but bear with me: essentially, the internal value will be used if
