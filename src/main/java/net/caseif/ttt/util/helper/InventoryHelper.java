@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util;
+package net.caseif.ttt.util.helper;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class InventoryUtil {
+public class InventoryHelper {
 
     public static void removeArrow(Inventory inv) {
         for (int i = 0; i < inv.getContents().length; i++) {

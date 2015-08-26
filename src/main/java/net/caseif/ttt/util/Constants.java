@@ -23,7 +23,7 @@
  */
 package net.caseif.ttt.util;
 
-import net.caseif.ttt.Config;
+import net.caseif.ttt.util.helper.ConfigHelper;
 
 import net.caseif.flint.round.LifecycleStage;
 import org.bukkit.ChatColor;
@@ -51,12 +51,11 @@ public class Constants {
     // lifecycle stages
     public static class Stage {
         public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
-        public static final LifecycleStage PREPARING = new LifecycleStage("preparing", Config.SETUP_TIME);
-        public static final LifecycleStage PLAYING = new LifecycleStage("playing", Config.TIME_LIMIT);
+        public static final LifecycleStage PREPARING = new LifecycleStage("preparing", ConfigHelper.SETUP_TIME);
+        public static final LifecycleStage PLAYING = new LifecycleStage("playing", ConfigHelper.TIME_LIMIT);
     }
 
     public static class Role {
-        //TODO: implement these when I have more time
         public static final String INNOCENT = "innocent";
         public static final String TRAITOR = "traitor";
         public static final String DETECTIVE = "detective";

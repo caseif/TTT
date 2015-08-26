@@ -28,10 +28,11 @@ import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 import net.caseif.ttt.listeners.MGListener;
 import net.caseif.ttt.listeners.PlayerListener;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
-import net.caseif.ttt.managers.KarmaManager;
-import net.caseif.ttt.managers.ScoreManager;
-import net.caseif.ttt.managers.command.CommandManager;
-import net.caseif.ttt.managers.command.SpecialCommandManager;
+import net.caseif.ttt.manager.KarmaManager;
+import net.caseif.ttt.manager.ScoreManager;
+import net.caseif.ttt.manager.command.CommandManager;
+import net.caseif.ttt.manager.command.SpecialCommandManager;
+import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.ContributorsReader;
 
 import net.caseif.crosstitles.TitleUtil;
@@ -93,7 +94,7 @@ public class TTTCore extends JavaPlugin {
 
         if (!Bukkit.getPluginManager().isPluginEnabled("Flint") || FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
             MGLIB = false;
-            logInfo("error.plugin.mglib", MIN_FLINT_VERSION + "");
+            logInfo("error.plugin.flint", MIN_FLINT_VERSION + "");
             getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
             getCommand("ttt").setExecutor(new SpecialCommandManager());
             return;
@@ -147,7 +148,7 @@ public class TTTCore extends JavaPlugin {
             saveDefaultConfig();
         } else {
             try {
-                Config.addMissingKeys();
+                ConfigHelper.addMissingKeys();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 logSevere("Failed to write new config keys!");
@@ -158,12 +159,12 @@ public class TTTCore extends JavaPlugin {
         createFile("bans.yml");
 
         // autoupdate
-        if (Config.ENABLE_AUTO_UPDATE) {
+        if (ConfigHelper.ENABLE_AUTO_UPDATE) {
             new Updater(this, 52474, this.getFile(), Updater.UpdateType.DEFAULT, true);
         }
 
         // submit metrics
-        if (Config.ENABLE_METRICS) {
+        if (ConfigHelper.ENABLE_METRICS) {
             try {
                 Metrics metrics = new Metrics(this);
                 Metrics.Graph graph = metrics.createGraph("MGLib Version");
@@ -177,7 +178,7 @@ public class TTTCore extends JavaPlugin {
                 metrics.addGraph(graph);
                 metrics.start();
             } catch (IOException ex) {
-                if (Config.VERBOSE_LOGGING) {
+                if (ConfigHelper.VERBOSE_LOGGING) {
                     logWarning("error.plugin.mcstats");
                 }
             }
@@ -186,7 +187,7 @@ public class TTTCore extends JavaPlugin {
         File invDir = new File(this.getDataFolder() + File.separator + "inventories");
         invDir.mkdir();
 
-        maxKarma = Config.MAX_KARMA;
+        maxKarma = ConfigHelper.MAX_KARMA;
 
         // add special players to list
         ContributorsReader reader = new ContributorsReader(TTTCore.class.getResourceAsStream("/contributors.txt"));
@@ -216,7 +217,7 @@ public class TTTCore extends JavaPlugin {
             }
         }
 
-        if (Config.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
+        if (ConfigHelper.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
             logWarning("error.plugin.title-support");
         }
     }
@@ -227,7 +228,7 @@ public class TTTCore extends JavaPlugin {
             // uninitialize static variables so as not to cause memory leaks when reloading
             KarmaManager.playerKarma = null;
             ScoreManager.uninitialize();
-            if (Config.VERBOSE_LOGGING) {
+            if (ConfigHelper.VERBOSE_LOGGING) {
                 logInfo("info.plugin.disable", this.toString());
             }
         }
@@ -242,7 +243,7 @@ public class TTTCore extends JavaPlugin {
     public void createFile(String s) {
         File f = new File(TTTCore.plugin.getDataFolder(), s);
         if (!f.exists()) {
-            if (Config.VERBOSE_LOGGING) {
+            if (ConfigHelper.VERBOSE_LOGGING) {
                 logInfo("info.plugin.compatibility.creating-file", s);
             }
             try {

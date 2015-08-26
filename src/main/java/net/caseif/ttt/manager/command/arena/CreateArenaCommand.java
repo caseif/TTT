@@ -21,39 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.managers.command.arena;
+package net.caseif.ttt.manager.command.arena;
+
+import static net.caseif.ttt.util.MiscUtil.isInt;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.managers.command.SubcommandHandler;
+import net.caseif.ttt.manager.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.NumUtil;
+import net.caseif.ttt.util.helper.FileHelper;
 
-import net.caseif.flint.arena.Arena;
+import net.caseif.flint.util.physical.Boundary;
 import net.caseif.flint.util.physical.Location3D;
+import org.bukkit.Bukkit;
+import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RemoveSpawnCommand extends SubcommandHandler {
+public class CreateArenaCommand extends SubcommandHandler {
 
-    public RemoveSpawnCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.arena.removespawn");
+    public CreateArenaCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.arena.create");
     }
 
     @Override
     public void handle() {
+        //TODO: get corners (probably need a wizard for that :P)
         if (assertPermission()) {
-            if (!TTTCore.mg.getArena(args[1]).isPresent()) {
-                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString()).sendTo(sender);
-                sendUsage();
-                return;
-            }
-            Arena arena = TTTCore.mg.getArena(args[1]).get();
-            int x = 0;
-            int y = 0;
-            int z = 0;
-            int index = Integer.MAX_VALUE;
+            String w;
+            int x;
+            int y;
+            int z;
             if (args.length == 2) { // use sender's location
                 if (sender instanceof Player) {
+                    w = ((Player) sender).getWorld().getName();
                     x = ((Player) sender).getLocation().getBlockX();
                     y = ((Player) sender).getLocation().getBlockY();
                     z = ((Player) sender).getLocation().getBlockZ();
@@ -62,20 +62,13 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                             .sendTo(sender);
                     return;
                 }
-            } else if (args.length == 3) {
-                if (NumUtil.isInt(args[2])) {
-                    index = Integer.parseInt(args[2]);
-                } else {
-                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
-                            .sendTo(sender);
-                    sendUsage();
-                    return;
-                }
-            } else if (args.length == 5) { // use 3 provided coords
-                if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])) {
+            } else if (args.length == 6) { // use 3 provided coords and world
+                if (isInt(args[2]) && isInt(args[3]) && isInt(args[4])
+                        && FileHelper.isWorld(args[5])) {
                     x = Integer.parseInt(args[2]);
                     y = Integer.parseInt(args[3]);
                     z = Integer.parseInt(args[4]);
+                    w = args[5];
                 } else {
                     TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
@@ -88,16 +81,14 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                 sendUsage();
                 return;
             }
-            try {
-                if (index != Integer.MAX_VALUE) {
-                    arena.removeSpawnPoint(index);
-                } else {
-                    arena.removeSpawnPoint(new Location3D(x, y, z));
-                }
-            } catch (IllegalArgumentException ex) {
-                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
+            if (TTTCore.mg.getArena(args[1]).isPresent()) {
+                TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(Color.ERROR.toString())
                         .sendTo(sender);
             }
+            TTTCore.mg.createArena(args[1], new Location3D(Bukkit.createWorld(new WorldCreator(w)).getName(), x, y, z),
+                    Boundary.INFINITE);
+            TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(Color.INFO.toString())
+                    .withReplacements(args[1]).sendTo(sender);
         }
     }
 }

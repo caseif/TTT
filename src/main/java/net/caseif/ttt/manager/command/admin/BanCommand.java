@@ -21,22 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.managers.command.admin;
+package net.caseif.ttt.manager.command.admin;
+
+import static net.caseif.ttt.util.MiscUtil.isInt;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.managers.command.SubcommandHandler;
+import net.caseif.ttt.manager.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.UUIDFetcher;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class PardonCommand extends SubcommandHandler {
+public class BanCommand extends SubcommandHandler {
 
-    public PardonCommand(CommandSender sender, String[] args) {
+    public BanCommand(CommandSender sender, String[] args) {
         super(sender, args, "ttt.admin.ban");
     }
 
@@ -45,6 +48,16 @@ public class PardonCommand extends SubcommandHandler {
         if (assertPermission()) {
             if (args.length > 1) {
                 String name = args[1];
+                int time = -1;
+                if (args.length > 2) {
+                    if (isInt(args[2])) {
+                        time = Integer.parseInt(args[2]);
+                    } else {
+                        TTTCore.locale.getLocalizable("error.admin.ban.invalid-time").withPrefix(Color.ERROR.toString())
+                                .sendTo(sender);
+                        return;
+                    }
+                }
                 try {
                     UUID uuid = UUIDFetcher.getUUIDOf(name);
                     if (uuid == null) {
@@ -52,13 +65,26 @@ public class PardonCommand extends SubcommandHandler {
                                 .sendTo(sender);
                         return;
                     }
-                    if (MiscUtil.pardon(uuid)) {
-                        TTTCore.locale.getLocalizable("info.personal.pardon").withPrefix(Color.INFO.toString())
-                        .sendTo(Bukkit.getPlayer(uuid));
-                        TTTCore.locale.getLocalizable("info.personal.pardon.other")
-                                .withPrefix(Color.INFO.toString()).withReplacements(name).sendTo(sender);
+                    if (MiscUtil.ban(uuid, time)) {
+                        Player pl = Bukkit.getPlayer(uuid);
+                        if (time == -1) {
+                            TTTCore.locale.getLocalizable("info.personal.ban.perm")
+                                    .withPrefix(Color.ERROR.toString()).sendTo(pl);
+                            TTTCore.locale.getLocalizable("info.personal.ban.other.perm")
+                                    .withPrefix(Color.ERROR.toString()).sendTo(pl);
+                        } else {
+                            TTTCore.locale.getLocalizable("info.personal.ban.temp").withPrefix(Color.ERROR.toString())
+                                    .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
+                                            .localizeFor(pl))
+                                    .sendTo(pl);
+                            TTTCore.locale.getLocalizable("info.personal.ban.other.temp")
+                                    .withPrefix(Color.ERROR.toString())
+                                    .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
+                                            .localizeFor(sender))
+                                    .sendTo(sender);
+                        }
                     } else {
-                        TTTCore.locale.getLocalizable("error.plugin.pardon").withPrefix(Color.ERROR.toString())
+                        TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(Color.ERROR.toString())
                                 .sendTo(sender);
                     }
                 } catch (Exception ex) {

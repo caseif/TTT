@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.managers.command.admin;
+package net.caseif.ttt.manager.command.admin;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.managers.command.SubcommandHandler;
+import net.caseif.ttt.manager.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 
@@ -33,10 +33,10 @@ import net.caseif.flint.arena.Arena;
 import net.caseif.flint.round.Round;
 import org.bukkit.command.CommandSender;
 
-public class PrepareCommand extends SubcommandHandler {
+public class StartCommand extends SubcommandHandler {
 
-    public PrepareCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.adnin.prepare");
+    public StartCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.admin.start");
     }
 
     @Override
@@ -51,20 +51,21 @@ public class PrepareCommand extends SubcommandHandler {
                         if (round.getChallengers().size() > 1) {
                             round.setLifecycleStage(Constants.Stage.PREPARING);
                             round.setTime(0);
-                            TTTCore.locale.getLocalizable("info.personal.arena.set-stage.preparing.success")
+                            TTTCore.locale.getLocalizable("info.personal.arena.set-stage.playing.success")
                                     .withPrefix(Color.INFO.toString())
-                                    .withReplacements(Color.ARENA + arena.get().getName()).sendTo(sender);
+                                    .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
                         } else {
                             TTTCore.locale.getLocalizable("error.arena.too-few-players")
-                                    .withPrefix(Color.ERROR.toString()).sendTo(sender);
+                                    .withPrefix(Color.ERROR.toString())
+                                    .sendTo(sender);
                         }
                     } else {
                         TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR.toString())
-                                .withReplacements(Color.ARENA + arenaName + Color.ERROR).sendTo(sender);
+                                .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
                     }
                 } else {
-                    TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString())
-                            .withReplacements(Color.ARENA + arenaName + Color.ERROR).sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR.toString())
+                            .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
                 }
             } else {
                 TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())

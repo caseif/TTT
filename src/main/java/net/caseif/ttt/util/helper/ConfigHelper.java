@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt;
+package net.caseif.ttt.util.helper;
 
-import net.caseif.ttt.util.FileUtil;
+import static net.caseif.ttt.util.MiscUtil.isDouble;
+
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.MaterialConverter;
-import net.caseif.ttt.util.NumUtil;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -40,7 +41,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-public final class Config {
+public final class ConfigHelper {
 
     public static final double DETECTIVE_RATIO;
     public static final int MAXIMUM_PLAYERS;
@@ -198,7 +199,7 @@ public final class Config {
                     }
                     if (!equal) {
                         String writeValue = yml.getString(key.trim());
-                        if (NumUtil.isDouble(writeValue)) {
+                        if (isDouble(writeValue)) {
                             writeValue = BigDecimal.valueOf(Double.parseDouble(writeValue))
                                     .stripTrailingZeros().toPlainString();
                         }
@@ -209,7 +210,7 @@ public final class Config {
             }
             sb.append(line).append(newlineChar);
         }
-        FileUtil.copyFile(configYml, new File(configYml.getParentFile(), "config.yml.old"));
+        FileHelper.copyFile(configYml, new File(configYml.getParentFile(), "config.yml.old"));
         FileWriter w = new FileWriter(configYml);
         w.append(sb.toString());
         w.flush();

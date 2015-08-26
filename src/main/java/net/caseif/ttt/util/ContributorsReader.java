@@ -35,7 +35,7 @@ import java.util.Set;
 
 public class ContributorsReader {
 
-    private Map<String, Set<String>> contributors = new HashMap<String, Set<String>>();
+    private Map<String, Set<String>> contributors = new HashMap<>();
     private InputStream stream = null;
 
     public ContributorsReader(InputStream in) {
@@ -85,7 +85,7 @@ public class ContributorsReader {
                 if (contributors.containsKey(key)) {
                     contributors.get(key).add(value);
                 } else {
-                    Set<String> set = new HashSet<String>();
+                    Set<String> set = new HashSet<>();
                     set.add(value);
                     contributors.put(key, set);
                 }

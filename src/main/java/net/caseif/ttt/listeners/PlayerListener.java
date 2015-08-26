@@ -24,14 +24,14 @@
 package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.Body;
-import net.caseif.ttt.Config;
+import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.managers.KarmaManager;
-import net.caseif.ttt.managers.ScoreManager;
+import net.caseif.ttt.manager.KarmaManager;
+import net.caseif.ttt.manager.ScoreManager;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.InventoryUtil;
+import net.caseif.ttt.util.helper.InventoryHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -190,11 +190,6 @@ public class PlayerListener implements Listener {
                                         && event.getPlayer().getItemInHand().getItemMeta().getDisplayName().endsWith(
                                         TTTCore.locale.getLocalizable("item.dna-scanner.name").localize())) {
                                     event.setCancelled(true);
-                                    //TODO: killer should be stored with body
-                                    /*Player killer = Main.plugin.getServer().getPlayer(
-                                            (String) Main.mg.getMGPlayer(Main.bodies.get(index).getPlayer())
-                                                    .getMetadata("killer")
-                                    );*/
                                     Body body = TTTCore.bodies.get(index);
                                     if (body.getKiller().isPresent()) {
                                         Player killer = Bukkit.getPlayer(body.getKiller().get());
@@ -236,12 +231,12 @@ public class PlayerListener implements Listener {
                             if ((TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()
                                     && !TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().isSpectating()
                                     && (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().getRound()
-                                    .getLifecycleStage() == Constants.Stage.PLAYING) || Config.GUNS_OUTSIDE_ARENAS)) {
+                                    .getLifecycleStage() == Constants.Stage.PLAYING) || ConfigHelper.GUNS_OUTSIDE_ARENAS)) {
                                 event.setCancelled(true);
                                 if (event.getPlayer().getInventory().contains(Material.ARROW)
-                                        || !Config.REQUIRE_AMMO_FOR_GUNS) {
-                                    if (Config.REQUIRE_AMMO_FOR_GUNS) {
-                                        InventoryUtil.removeArrow(event.getPlayer().getInventory());
+                                        || !ConfigHelper.REQUIRE_AMMO_FOR_GUNS) {
+                                    if (ConfigHelper.REQUIRE_AMMO_FOR_GUNS) {
+                                        InventoryHelper.removeArrow(event.getPlayer().getInventory());
                                         event.getPlayer().updateInventory();
                                     }
                                     event.getPlayer().launchProjectile(Arrow.class);
@@ -289,7 +284,7 @@ public class PlayerListener implements Listener {
                                     if (damager.getItemInHand().getItemMeta().getDisplayName()
                                             .endsWith(TTTCore.locale.getLocalizable("item.crowbar.name")
                                                     .localize())) {
-                                        event.setDamage(Config.CROWBAR_DAMAGE);
+                                        event.setDamage(ConfigHelper.CROWBAR_DAMAGE);
                                     }
                                 }
                             }
@@ -323,14 +318,14 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (Config.KARMA_PERSISTENCE) {
+        if (ConfigHelper.KARMA_PERSISTENCE) {
             KarmaManager.loadKarma(event.getPlayer().getUniqueId());
         }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (!Config.KARMA_PERSISTENCE) {
+        if (!ConfigHelper.KARMA_PERSISTENCE) {
             KarmaManager.playerKarma.remove(event.getPlayer().getUniqueId());
         }
     }

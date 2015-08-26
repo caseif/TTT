@@ -21,38 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.managers.command.arena;
+package net.caseif.ttt.manager.command.arena;
+
+import static net.caseif.ttt.util.MiscUtil.isInt;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.managers.command.SubcommandHandler;
+import net.caseif.ttt.manager.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.FileUtil;
-import net.caseif.ttt.util.NumUtil;
 
-import net.caseif.flint.util.physical.Boundary;
+import com.google.common.base.Optional;
+import net.caseif.flint.arena.Arena;
 import net.caseif.flint.util.physical.Location3D;
-import org.bukkit.Bukkit;
-import org.bukkit.WorldCreator;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CreateArenaCommand extends SubcommandHandler {
+public class AddSpawnCommand extends SubcommandHandler {
 
-    public CreateArenaCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.arena.create");
+    public AddSpawnCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.arena.addspawn");
     }
 
     @Override
     public void handle() {
-        //TODO: get corners (probably need a wizard for that :P)
         if (assertPermission()) {
-            String w;
+            World w = null;
             int x;
             int y;
             int z;
             if (args.length == 2) { // use sender's location
                 if (sender instanceof Player) {
-                    w = ((Player) sender).getWorld().getName();
+                    w = ((Player) sender).getWorld();
                     x = ((Player) sender).getLocation().getBlockX();
                     y = ((Player) sender).getLocation().getBlockY();
                     z = ((Player) sender).getLocation().getBlockZ();
@@ -61,13 +60,11 @@ public class CreateArenaCommand extends SubcommandHandler {
                             .sendTo(sender);
                     return;
                 }
-            } else if (args.length == 6) { // use 3 provided coords and world
-                if (NumUtil.isInt(args[2]) && NumUtil.isInt(args[3]) && NumUtil.isInt(args[4])
-                        && FileUtil.isWorld(args[5])) {
+            } else if (args.length == 5) { // use 3 provided coords
+                if (isInt(args[2]) && isInt(args[3]) && isInt(args[4])) {
                     x = Integer.parseInt(args[2]);
                     y = Integer.parseInt(args[3]);
                     z = Integer.parseInt(args[4]);
-                    w = args[5];
                 } else {
                     TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
@@ -80,14 +77,21 @@ public class CreateArenaCommand extends SubcommandHandler {
                 sendUsage();
                 return;
             }
-            if (TTTCore.mg.getArena(args[1]).isPresent()) {
-                TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(Color.ERROR.toString())
-                        .sendTo(sender);
+            Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
+            if (arena.isPresent()) {
+                if (w == null) {
+                    arena.get().addSpawnPoint(new Location3D(x, y, z));
+                } else {
+                    if (!arena.get().getWorld().equals(w.getName())) {
+                        TTTCore.locale.getLocalizable("error.arena.invalid-location").withPrefix(Color.ERROR.toString())
+                                .sendTo(sender);
+                        return;
+                    }
+                    arena.get().addSpawnPoint(new Location3D(w.getName(), x, y, z));
+                }
+            } else {
+                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString()).sendTo(sender);
             }
-            TTTCore.mg.createArena(args[1], new Location3D(Bukkit.createWorld(new WorldCreator(w)).getName(), x, y, z),
-                    Boundary.INFINITE);
-            TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(Color.INFO.toString())
-                    .withReplacements(args[1]).sendTo(sender);
         }
     }
 }

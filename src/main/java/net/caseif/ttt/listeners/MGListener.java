@@ -24,10 +24,10 @@
 package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.Body;
-import net.caseif.ttt.Config;
+import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.managers.KarmaManager;
-import net.caseif.ttt.managers.ScoreManager;
+import net.caseif.ttt.manager.KarmaManager;
+import net.caseif.ttt.manager.ScoreManager;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
@@ -277,7 +277,7 @@ public class MGListener {
     public void startRound(Round round) {
         int players = round.getChallengers().size();
         int traitorCount = 0;
-        int limit = (int) (players * Config.TRAITOR_RATIO);
+        int limit = (int) (players * ConfigHelper.TRAITOR_RATIO);
         if (limit == 0) {
             limit = 1;
         }
@@ -299,8 +299,8 @@ public class MGListener {
                 traitorCount += 1;
             }
         }
-        int dLimit = (int) (players * Config.DETECTIVE_RATIO);
-        if (players >= Config.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0) {
+        int dLimit = (int) (players * ConfigHelper.DETECTIVE_RATIO);
+        if (players >= ConfigHelper.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0) {
             dLimit += 1;
         }
         int detectiveNum = 0;
@@ -312,15 +312,15 @@ public class MGListener {
             detectives.add(detective);
             detectiveNum += 1;
         }
-        ItemStack crowbar = new ItemStack(Config.CROWBAR_ITEM, 1);
+        ItemStack crowbar = new ItemStack(ConfigHelper.CROWBAR_ITEM, 1);
         ItemMeta cbMeta = crowbar.getItemMeta();
         cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.crowbar.name").localize());
         crowbar.setItemMeta(cbMeta);
-        ItemStack gun = new ItemStack(Config.GUN_ITEM, 1);
+        ItemStack gun = new ItemStack(ConfigHelper.GUN_ITEM, 1);
         ItemMeta gunMeta = crowbar.getItemMeta();
         cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.gun.name").localize());
         gun.setItemMeta(gunMeta);
-        ItemStack ammo = new ItemStack(Material.ARROW, Config.INITIAL_AMMO);
+        ItemStack ammo = new ItemStack(Material.ARROW, ConfigHelper.INITIAL_AMMO);
         ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
         ItemMeta dnaMeta = dnaScanner.getItemMeta();
         cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.dna-scanner.name").localize());
@@ -391,7 +391,7 @@ public class MGListener {
         }
 
         for (Challenger ch : round.getChallengers()) {
-            if (Config.DAMAGE_REDUCTION) {
+            if (ConfigHelper.DAMAGE_REDUCTION) {
                 Player pl = Bukkit.getPlayer(ch.getUniqueId());
                 KarmaManager.calculateDamageReduction(ch);
                 String percentage;
@@ -444,7 +444,7 @@ public class MGListener {
 
                 // manage DNA Scanners every n seconds
                 if (ch.getMetadata().has(Role.DETECTIVE)
-                        && ch.getRound().getTime() % Config.SCANNER_CHARGE_TIME == 0) {
+                        && ch.getRound().getTime() % ConfigHelper.SCANNER_CHARGE_TIME == 0) {
                     Player tracker = TTTCore.getInstance().getServer().getPlayer(ch.getName());
                     if (ch.getMetadata().has("tracking")) {
                         Player killer = TTTCore.getInstance().getServer()

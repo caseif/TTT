@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.managers;
+package net.caseif.ttt.manager;
 
 import static net.caseif.ttt.util.MiscUtil.fromNullableString;
 
-import net.caseif.ttt.Config;
+import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.MiscUtil;
 
@@ -82,8 +82,8 @@ public class ScoreManager {
         tObj = traitor.registerNewObjective("p", "dummy");
         iObj.setDisplayName("Players");
         tObj.setDisplayName("Players");
-        iObj.setDisplaySlot(Config.SB_USE_SIDEBAR ? DisplaySlot.SIDEBAR : DisplaySlot.PLAYER_LIST);
-        tObj.setDisplaySlot(Config.SB_USE_SIDEBAR ? DisplaySlot.SIDEBAR : DisplaySlot.PLAYER_LIST);
+        iObj.setDisplaySlot(ConfigHelper.SB_USE_SIDEBAR ? DisplaySlot.SIDEBAR : DisplaySlot.PLAYER_LIST);
+        tObj.setDisplaySlot(ConfigHelper.SB_USE_SIDEBAR ? DisplaySlot.SIDEBAR : DisplaySlot.PLAYER_LIST);
 
         iTeamIA = innocent.registerNewTeam("ia");
         iTeamIM = innocent.registerNewTeam("im");
@@ -105,63 +105,63 @@ public class ScoreManager {
         tTeamDD = traitor.registerNewTeam("dd");
 
         iTeamIA.setPrefix(
-                fromNullableString(Config.SB_I_INNOCENT_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+                fromNullableString(ConfigHelper.SB_I_INNOCENT_PREFIX) + fromNullableString(ConfigHelper.SB_ALIVE_PREFIX)
         );
         iTeamIM.setPrefix(
-                fromNullableString(Config.SB_I_INNOCENT_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+                fromNullableString(ConfigHelper.SB_I_INNOCENT_PREFIX) + fromNullableString(ConfigHelper.SB_MIA_PREFIX)
         );
         iTeamID.setPrefix(
-                fromNullableString(Config.SB_I_INNOCENT_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+                fromNullableString(ConfigHelper.SB_I_INNOCENT_PREFIX) + fromNullableString(ConfigHelper.SB_DEAD_PREFIX)
         );
 
         iTeamTA.setPrefix(
-                fromNullableString(Config.SB_I_TRAITOR_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+                fromNullableString(ConfigHelper.SB_I_TRAITOR_PREFIX) + fromNullableString(ConfigHelper.SB_ALIVE_PREFIX)
         );
         iTeamTM.setPrefix(
-                fromNullableString(Config.SB_I_TRAITOR_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+                fromNullableString(ConfigHelper.SB_I_TRAITOR_PREFIX) + fromNullableString(ConfigHelper.SB_MIA_PREFIX)
         );
         iTeamTD.setPrefix(
-                fromNullableString(Config.SB_I_TRAITOR_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+                fromNullableString(ConfigHelper.SB_I_TRAITOR_PREFIX) + fromNullableString(ConfigHelper.SB_DEAD_PREFIX)
         );
 
         iTeamDA.setPrefix(
-                fromNullableString(Config.SB_I_DETECTIVE_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+                fromNullableString(ConfigHelper.SB_I_DETECTIVE_PREFIX) + fromNullableString(ConfigHelper.SB_ALIVE_PREFIX)
         );
         iTeamDM.setPrefix(
-                fromNullableString(Config.SB_I_DETECTIVE_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+                fromNullableString(ConfigHelper.SB_I_DETECTIVE_PREFIX) + fromNullableString(ConfigHelper.SB_MIA_PREFIX)
         );
         iTeamDD.setPrefix(
-                fromNullableString(Config.SB_I_DETECTIVE_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+                fromNullableString(ConfigHelper.SB_I_DETECTIVE_PREFIX) + fromNullableString(ConfigHelper.SB_DEAD_PREFIX)
         );
 
         tTeamIA.setPrefix(
-                fromNullableString(Config.SB_T_INNOCENT_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+                fromNullableString(ConfigHelper.SB_T_INNOCENT_PREFIX) + fromNullableString(ConfigHelper.SB_ALIVE_PREFIX)
         );
         tTeamIM.setPrefix(
-                fromNullableString(Config.SB_T_INNOCENT_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+                fromNullableString(ConfigHelper.SB_T_INNOCENT_PREFIX) + fromNullableString(ConfigHelper.SB_MIA_PREFIX)
         );
         tTeamID.setPrefix(
-                fromNullableString(Config.SB_T_INNOCENT_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+                fromNullableString(ConfigHelper.SB_T_INNOCENT_PREFIX) + fromNullableString(ConfigHelper.SB_DEAD_PREFIX)
         );
 
         tTeamTA.setPrefix(
-                fromNullableString(Config.SB_T_TRAITOR_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+                fromNullableString(ConfigHelper.SB_T_TRAITOR_PREFIX) + fromNullableString(ConfigHelper.SB_ALIVE_PREFIX)
         );
         tTeamTM.setPrefix(
-                fromNullableString(Config.SB_T_TRAITOR_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+                fromNullableString(ConfigHelper.SB_T_TRAITOR_PREFIX) + fromNullableString(ConfigHelper.SB_MIA_PREFIX)
         );
         tTeamTD.setPrefix(
-                fromNullableString(Config.SB_T_TRAITOR_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+                fromNullableString(ConfigHelper.SB_T_TRAITOR_PREFIX) + fromNullableString(ConfigHelper.SB_DEAD_PREFIX)
         );
 
         tTeamDA.setPrefix(
-                fromNullableString(Config.SB_T_DETECTIVE_PREFIX) + fromNullableString(Config.SB_ALIVE_PREFIX)
+                fromNullableString(ConfigHelper.SB_T_DETECTIVE_PREFIX) + fromNullableString(ConfigHelper.SB_ALIVE_PREFIX)
         );
         tTeamDM.setPrefix(
-                fromNullableString(Config.SB_T_DETECTIVE_PREFIX) + fromNullableString(Config.SB_MIA_PREFIX)
+                fromNullableString(ConfigHelper.SB_T_DETECTIVE_PREFIX) + fromNullableString(ConfigHelper.SB_MIA_PREFIX)
         );
         tTeamDD.setPrefix(
-                fromNullableString(Config.SB_T_DETECTIVE_PREFIX) + fromNullableString(Config.SB_DEAD_PREFIX)
+                fromNullableString(ConfigHelper.SB_T_DETECTIVE_PREFIX) + fromNullableString(ConfigHelper.SB_DEAD_PREFIX)
         );
 
         for (Challenger ch : round.getChallengers()) {

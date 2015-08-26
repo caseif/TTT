@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util;
+package net.caseif.ttt.util.helper;
 
 import org.bukkit.Bukkit;
 
@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class FileUtil {
+public class FileHelper {
 
     // world checking method from Multiverse
     public static boolean isWorld(String worldName) {

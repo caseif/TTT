@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.managers.command.arena;
+package net.caseif.ttt.manager.command.arena;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.managers.command.SubcommandHandler;
+import net.caseif.ttt.manager.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.FileUtil;
+import net.caseif.ttt.util.helper.FileHelper;
 
 import net.caseif.flint.util.physical.Boundary;
 import net.caseif.flint.util.physical.Location3D;
@@ -55,7 +55,7 @@ public class ImportCommand extends SubcommandHandler {
                     }
                 }
                 if (worldName != null) {
-                    if (FileUtil.isWorld(args[1])) {
+                    if (FileHelper.isWorld(args[1])) {
                         World w = Bukkit.createWorld(new WorldCreator(worldName));
                         if (w != null) {
                             if (TTTCore.mg.getArena(worldName).isPresent()) {

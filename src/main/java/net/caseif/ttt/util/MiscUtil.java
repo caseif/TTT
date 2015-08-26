@@ -25,10 +25,10 @@ package net.caseif.ttt.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import net.caseif.ttt.Config;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.helper.ConfigHelper;
 
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.challenger.Challenger;
@@ -92,7 +92,7 @@ public class MiscUtil {
             y.load(f);
             y.set(uuid.toString(), null);
             y.save(f);
-            if (Config.VERBOSE_LOGGING) {
+            if (ConfigHelper.VERBOSE_LOGGING) {
                 TTTCore.log.info(p != null ? p.getName() : uuid.toString() + "'s ban has been lifted");
             }
             return true;
@@ -108,7 +108,7 @@ public class MiscUtil {
     }
 
     public static void sendStatusTitle(Player player, String role) {
-        if (Config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
+        if (ConfigHelper.SEND_TITLES && TitleUtil.areTitlesSupported()) {
             if (player == null) {
                 throw new IllegalArgumentException("Player cannot be null!");
             }
@@ -130,7 +130,7 @@ public class MiscUtil {
                     break;
                 }
             }
-            if (Config.SMALL_STATUS_TITLES) {
+            if (ConfigHelper.SMALL_STATUS_TITLES) {
                 TitleUtil.sendTitle(player, "", ChatColor.RESET, title, color);
             } else {
                 TitleUtil.sendTitle(player, title, color);
@@ -139,14 +139,14 @@ public class MiscUtil {
     }
 
     public static void sendVictoryTitle(Round round, boolean traitorVictory) {
-        if (Config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
+        if (ConfigHelper.SEND_TITLES && TitleUtil.areTitlesSupported()) {
             checkNotNull(round, "Round cannot be null!");
             Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.end."
                     + (traitorVictory ? Role.TRAITOR : Role.INNOCENT) + ".min");
             ChatColor color = traitorVictory ? Color.TRAITOR : Color.INNOCENT;
             for (Challenger ch : round.getChallengers()) {
                 Player pl = Bukkit.getPlayer(ch.getUniqueId());
-                if (Config.SMALL_VICTORY_TITLES) {
+                if (ConfigHelper.SMALL_VICTORY_TITLES) {
                     TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), "", ChatColor.RESET, loc.localizeFor(pl),
                             color);
                 } else {
@@ -167,6 +167,26 @@ public class MiscUtil {
             Player pl = Bukkit.getPlayer(ch.getUniqueId());
             assert pl != null;
             localizable.sendTo(pl);
+        }
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static boolean isInt(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static boolean isDouble(String s) {
+        try {
+            Double.parseDouble(s);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
         }
     }
 

@@ -24,15 +24,17 @@
 package net.caseif.ttt.util;
 
 import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 import org.bukkit.Material;
 
 /**
  * Utility class for converting between Minecraft names and Bukkit materials. Stolen/repurposed from Pore.
  */
+//TODO: remove
 public final class MaterialConverter {
 
     public static final BiMap<Material, String> ITEM_TYPE_CONVERTER;
-    private static final BiMapBuilder<Material, String> builder = BiMapBuilder.builder();
+    private static final ImmutableBiMap.Builder<Material, String> builder = ImmutableBiMap.builder();
 
     static {
         addMaterial("STONE", "STONE");
