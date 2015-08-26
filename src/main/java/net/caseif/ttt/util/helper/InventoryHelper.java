@@ -27,6 +27,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Static utility class for inventory-related functionality.
+ */
 public class InventoryHelper {
 
     public static void removeArrow(Inventory inv) {

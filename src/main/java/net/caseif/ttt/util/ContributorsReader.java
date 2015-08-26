@@ -33,7 +33,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ContributorsReader {
+public final class ContributorsReader {
 
     private Map<String, Set<String>> contributors = new HashMap<>();
     private InputStream stream = null;

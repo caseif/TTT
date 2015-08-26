@@ -47,7 +47,7 @@ import java.util.concurrent.Callable;
  *
  * @author evilmidget38
  */
-public class UUIDFetcher implements Callable<Map<String, UUID>> {
+public final class UUIDFetcher implements Callable<Map<String, UUID>> {
 
     static HashMap<String, UUID> uuids = new HashMap<>();
 

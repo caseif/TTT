@@ -31,7 +31,7 @@ import org.bukkit.ChatColor;
 /**
  * Contains constant values for use throughout the plugin.
  */
-public class Constants {
+public final class Constants {
 
     public static final int MIN_FLINT_VERSION = 1;
 

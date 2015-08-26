@@ -28,8 +28,8 @@ import static net.caseif.ttt.util.MiscUtil.isInt;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.manager.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.UUIDFetcher;
+import net.caseif.ttt.util.helper.BanHelper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -65,7 +65,7 @@ public class BanCommand extends SubcommandHandler {
                                 .sendTo(sender);
                         return;
                     }
-                    if (MiscUtil.ban(uuid, time)) {
+                    if (BanHelper.ban(uuid, time)) {
                         Player pl = Bukkit.getPlayer(uuid);
                         if (time == -1) {
                             TTTCore.locale.getLocalizable("info.personal.ban.perm")

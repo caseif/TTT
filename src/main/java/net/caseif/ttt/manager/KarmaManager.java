@@ -25,10 +25,10 @@ package net.caseif.ttt.manager;
 
 import static net.caseif.ttt.util.MiscUtil.isTraitor;
 
+import net.caseif.ttt.util.helper.BanHelper;
 import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.MiscUtil;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
@@ -133,7 +133,7 @@ public class KarmaManager {
         if (p != null) {
             player.removeFromRound();
             if (ConfigHelper.KARMA_BAN) {
-                MiscUtil.ban(p.getUniqueId(), ConfigHelper.KARMA_BAN_TIME);
+                BanHelper.ban(p.getUniqueId(), ConfigHelper.KARMA_BAN_TIME);
                 if (ConfigHelper.KARMA_BAN_TIME < 0) {
                     TTTCore.locale.getLocalizable("info.personal.ban.perm.karma")
                             .withPrefix(Color.INFO.toString()).withReplacements(ConfigHelper.KARMA_KICK + "")

@@ -24,7 +24,6 @@
 package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.Body;
-import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.manager.KarmaManager;
 import net.caseif.ttt.manager.ScoreManager;
@@ -32,6 +31,9 @@ import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.MiscUtil;
+import net.caseif.ttt.util.helper.BanHelper;
+import net.caseif.ttt.util.helper.ConfigHelper;
+import net.caseif.ttt.util.helper.TitleHelper;
 
 import com.google.common.base.Optional;
 import com.google.common.eventbus.Subscribe;
@@ -76,7 +78,7 @@ public class MGListener {
             if (y.isSet(event.getChallenger().getUniqueId().toString())) {
                 long unbanTime = y.getLong(event.getChallenger().getUniqueId().toString());
                 if (unbanTime != -1 && unbanTime <= System.currentTimeMillis() / 1000L) {
-                    MiscUtil.pardon(event.getChallenger().getUniqueId());
+                    BanHelper.pardon(event.getChallenger().getUniqueId());
                 } else {
                     Localizable loc;
                     if (unbanTime == -1) {
@@ -332,7 +334,7 @@ public class MGListener {
                 challenger.get().getRound().getOrCreateTeam(Role.INNOCENT).addChallenger(challenger.get());
                 TTTCore.locale.getLocalizable("info.personal.status.role.innocent")
                         .withPrefix(Color.INNOCENT.toString()).sendTo(pl);
-                MiscUtil.sendStatusTitle(pl, Role.INNOCENT);
+                TitleHelper.sendStatusTitle(pl, Role.INNOCENT);
                 pl.getInventory().addItem(crowbar, gun, ammo);
                 pl.setHealth(20);
                 pl.setFoodLevel(20);
@@ -351,7 +353,7 @@ public class MGListener {
                         ? "info.personal.status.role.traitor"
                         : "info.personal.status.role.traitor.alone").withPrefix(Color.TRAITOR.toString())
                         .sendTo(pl);
-                MiscUtil.sendStatusTitle(pl, Role.TRAITOR);
+                TitleHelper.sendStatusTitle(pl, Role.TRAITOR);
                 if (traitors.size() > 1) {
                     TTTCore.locale.getLocalizable("info.personal.status.role.traitor.allies")
                             .withPrefix(Color.TRAITOR.toString()).sendTo(pl);
@@ -379,7 +381,7 @@ public class MGListener {
                 challenger.get().getMetadata().set(Role.DETECTIVE, true);
                 TTTCore.locale.getLocalizable("info.personal.status.role.detective")
                         .withPrefix(Color.DETECTIVE.toString()).sendTo(pl);
-                MiscUtil.sendStatusTitle(pl, Role.DETECTIVE);
+                TitleHelper.sendStatusTitle(pl, Role.DETECTIVE);
                 pl.getInventory().addItem(crowbar, gun, ammo, dnaScanner);
                 pl.setHealth(20);
                 pl.setFoodLevel(20);
@@ -527,7 +529,7 @@ public class MGListener {
         TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
                 .withPrefix(Color.INNOCENT.toString())
                 .withReplacements(Color.ARENA + event.getRound().getArena().getName()).broadcast();
-        MiscUtil.sendVictoryTitle(event.getRound(), tVic);
+        TitleHelper.sendVictoryTitle(event.getRound(), tVic);
 
         for (Entity ent : Bukkit.getWorld(event.getRound().getArena().getWorld()).getEntities()) {
             if (ent.getType() == EntityType.ARROW) {

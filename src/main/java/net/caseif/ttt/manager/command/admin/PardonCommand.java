@@ -26,8 +26,8 @@ package net.caseif.ttt.manager.command.admin;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.manager.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.UUIDFetcher;
+import net.caseif.ttt.util.helper.BanHelper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -52,7 +52,7 @@ public class PardonCommand extends SubcommandHandler {
                                 .sendTo(sender);
                         return;
                     }
-                    if (MiscUtil.pardon(uuid)) {
+                    if (BanHelper.pardon(uuid)) {
                         TTTCore.locale.getLocalizable("info.personal.pardon").withPrefix(Color.INFO.toString())
                         .sendTo(Bukkit.getPlayer(uuid));
                         TTTCore.locale.getLocalizable("info.personal.pardon.other")

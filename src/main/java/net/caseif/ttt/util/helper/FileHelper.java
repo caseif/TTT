@@ -33,7 +33,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class FileHelper {
+/**
+ * Static utility class for file-related functionality.
+ */
+public final class FileHelper {
 
     // world checking method from Multiverse
     public static boolean isWorld(String worldName) {

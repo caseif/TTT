@@ -41,6 +41,9 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
+/**
+ * Static utility class for config-related functionality.
+ */
 public final class ConfigHelper {
 
     public static final double DETECTIVE_RATIO;
