@@ -106,8 +106,8 @@ public final class ConfigHelper {
         SETUP_TIME = getInt("setup-time");
         MINIMUM_PLAYERS = getInt("minimum-players");
         MAXIMUM_PLAYERS = getInt("maximum-players");
-        TRAITOR_RATIO = getDouble("traitor-ratio");
-        DETECTIVE_RATIO = getDouble("detective-ratio");
+        TRAITOR_RATIO = getDouble("traitor-pct");
+        DETECTIVE_RATIO = getDouble("detective-pct");
         MINIMUM_PLAYERS_FOR_DETECTIVE = getInt("minimum-players-for-detective");
         SCANNER_CHARGE_TIME = getInt("scanner-charge-time");
         CROWBAR_DAMAGE = getInt("crowbar-damage");
@@ -154,6 +154,13 @@ public final class ConfigHelper {
         GUN_ITEM = getMaterial("gun-item", Material.IRON_BARDING);
 
         LEGACY_NODES = ImmutableMap.<String, String>builder()
+                .put("setup-time", "preptime_seconds")
+                .put("time-limit", "roundtime-seconds")
+
+                .put("traitor-ratio", "traitor-pct")
+                .put("detective-ratio", "detective-pct")
+                .put("minimum-players-for-detective", "detective-min-players")
+
                 .put("default-karma", "karma-starting")
                 .put("max-karma", "karma-max")
                 .put("damage-penalty", "karma-ratio")

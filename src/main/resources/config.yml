@@ -2,15 +2,18 @@
 # # TTT Configuration # #
 # ##################### #
 
-##################
-# Round Settings #
-##################
+# See http://ttt.badking.net/config-and-commands/convars#TOC-Karma
+# for more detailed descriptions of certain config settings.
 
-# How long should rounds last for (in seconds)?
-time-limit: 360
+###################
+# Round Structure #
+###################
 
 # How long should the plugin wait before starting a new round once enough players have joined?
-setup-time: 90
+preptime-seconds: 60
+
+# How long should rounds last for?
+roundtime-seconds: 360
 
 # How many players are required to start a round?
 minimum-players: 3
@@ -18,18 +21,26 @@ minimum-players: 3
 # How many players are allowed to enter a given round? (Set to -1 for no limit.)
 maximum-players: 32
 
+##############################
+# Traitor/Detective Settings #
+##############################
+
 # What should the ratio of traitors to innocents be (as a decimal)?
-traitor-ratio: 0.2
+traitor-pct: 0.25
 
 # What should the ratio be for detectives to other players?
-detective-ratio: 0.15
+detective-pct: 0.13
 
 # If at least this many players are in a game, there is guaranteed to be a detective.
-minimum-players-for-detective: 5
+detective-min-players: 10
 
 # How many seconds should the DNA scanner take to charge?
 # (Vanilla TTT uses 25 as default, but also displays the exact location rather than just the direction.)
 scanner-charge-time: 7.5
+
+##################
+# Title Settings #
+##################
 
 # Should TTT send fancy titles to players on round start and end?
 # This will not do anything on Minecraft versions prior to 1.8.
@@ -44,21 +55,18 @@ small-status-titles: false
 # Setting this to true may cause the title to be obstructed by the chat box.
 small-victory-titles: true
 
-# The item to use as a crowbar. This should be a Minecraft ID corresponding to an item type.
-# Full lists of IDs in the game can be found here: http://minecraft.gamepedia.com/Data_values/Block_IDs
-# and here: http://minecraft.gamepedia.com/Data_values/Item_IDs
-# The "minecraft:" prefix should be excluded. Block types in light blue may not be used in 1.8 and later due to client
-# restrictions (a few will not work in prior versions either).
+###################
+# Weapon Settings #
+###################
+
+# The item to use as a gun. This should be a raw Material enum value.
+# See here for all valid values: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 crowbar-item: IRON_SWORD
 
 # The item to use as a gun. This should be a raw Material enum value.
 # See here for all valid values: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
-# The default value is IRON_BARDING, which represents iron horse armor.
+# The default value, IRON_BARDING, represents iron horse armor.
 gun-item: IRON_BARDING
-
-###################
-# Weapon Settings #
-###################
 
 # How much damage should crowbars do at full karma (in half-hearts)?
 crowbar-damage: 6
@@ -75,7 +83,6 @@ initial-ammo: 40
 ##################
 # Karma Settings #
 ##################
-# See http://ttt.badking.net/config-and-commands/convars#TOC-Karma for more detailed descriptions of config settings.
 
 # When strict is off, the damage penalty is very low when people stay above 800.
 # However, beyond this limit it will follow a more parabolic curve, dropping more severely the lower the player's karma.
@@ -114,14 +121,14 @@ karma-traitordmg-ratio: 0.0003
 karma-traitorkill-bonus: 40
 
 # Players will be kicked from the round once they reach or go under this karma level. (Set to -1 for no autokick.)
-karma-low-autokick: -1
+karma-low-autokick: 450
 
 # Should player's be temporarily banned from using the plugin rather than kicked?
 karma-low-ban: false
 
 # How long in minutes should users be banned from using the plugin for? (Set to -1 for a permanent ban.)
 # Note: changing this will not retroactively apply to previously issued bans.
-karma-low-ban-minutes: 30
+karma-low-ban-minutes: 60
 
 # Should karma persist through reloads and PlayerQuitEvents (players leaving)? (If false, karma will reset when
 # the plugin is reloaded and when players leave the server.)
