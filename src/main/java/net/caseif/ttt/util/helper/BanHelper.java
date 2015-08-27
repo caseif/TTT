@@ -24,13 +24,16 @@
 package net.caseif.ttt.util.helper;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.Constants;
 
 import net.caseif.flint.challenger.Challenger;
+import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.UUID;
 
 /**
@@ -82,6 +85,53 @@ public final class BanHelper {
         } catch (Exception ex) {
             ex.printStackTrace();
             TTTCore.getInstance().logWarning("error.plugin.pardon", p != null ? p.getName() : uuid.toString());
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether the given UUID is banned from using TTT and notifies the
+     * player if so.
+     *
+     * @param uuid The UUID to check
+     * @return Whether the UUID is banend from using TTT
+     */
+    public static boolean checkBan(UUID uuid) {
+        File f = new File(TTTCore.getInstance().getDataFolder(), "bans.yml");
+        YamlConfiguration y = new YamlConfiguration();
+        try {
+            y.load(f);
+            if (y.isSet(uuid.toString())) {
+                long unbanTime = y.getLong(uuid.toString());
+                if (unbanTime != -1 && unbanTime <= System.currentTimeMillis() / 1000L) {
+                    BanHelper.pardon(uuid);
+                } else {
+                    Localizable loc;
+                    if (unbanTime == -1) {
+                        loc = TTTCore.locale.getLocalizable("info.personal.ban.perm");
+                    } else {
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTimeInMillis(unbanTime * 1000L);
+                        String year = Integer.toString(cal.get(Calendar.YEAR));
+                        String month = Integer.toString(cal.get(Calendar.MONTH) + 1);
+                        String day = Integer.toString(cal.get(Calendar.DAY_OF_MONTH));
+                        String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
+                        String min = Integer.toString(cal.get(Calendar.MINUTE));
+                        String sec = Integer.toString(cal.get(Calendar.SECOND));
+                        min = min.length() == 1 ? "0" + min : min;
+                        sec = sec.length() == 1 ? "0" + sec : sec;
+                        //TODO: localize time/date (UGH)
+                        loc = TTTCore.locale.getLocalizable("info.personal.ban.temp.until").withReplacements(
+                                hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + ".");
+                    }
+                    loc.withPrefix(Constants.Color.ERROR.toString());
+                    loc.sendTo(Bukkit.getPlayer(uuid));
+                    return true;
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            TTTCore.log.warning("Failed to load bans from disk!");
         }
         return false;
     }

@@ -25,7 +25,6 @@ package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.manager.KarmaManager;
 import net.caseif.ttt.manager.ScoreManager;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
@@ -33,6 +32,7 @@ import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.helper.InventoryHelper;
+import net.caseif.ttt.util.helper.KarmaHelper;
 import net.caseif.ttt.util.helper.NmsHelper;
 
 import com.google.common.base.Optional;
@@ -62,7 +62,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
@@ -303,7 +302,7 @@ public class PlayerListener implements Listener {
                         if (reduc.isPresent()) {
                             event.setDamage((int) (event.getDamage() * reduc.get()));
                         }
-                        KarmaManager.handleDamageKarma(mgDamager, victim.get(), event.getDamage());
+                        KarmaHelper.applyDamageKarma(mgDamager, victim.get(), event.getDamage());
                     }
                 }
             }
@@ -327,16 +326,9 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if (ConfigHelper.KARMA_PERSISTENCE) {
-            KarmaManager.loadKarma(event.getPlayer().getUniqueId());
-        }
-    }
-
-    @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         if (!ConfigHelper.KARMA_PERSISTENCE) {
-            KarmaManager.playerKarma.remove(event.getPlayer().getUniqueId());
+            KarmaHelper.resetKarma(event.getPlayer().getUniqueId());
         }
     }
 
@@ -398,7 +390,7 @@ public class PlayerListener implements Listener {
             }
             if (killer != null) {
                 // set killer's karma
-                KarmaManager.handleKillKarma(killer, ch);
+                KarmaHelper.applyKillKarma(killer, ch);
                 ch.getMetadata().set("killer", killer.getUniqueId());
             }
             Block block = pl.getLocation().getBlock();

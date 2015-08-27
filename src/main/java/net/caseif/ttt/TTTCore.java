@@ -28,7 +28,6 @@ import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 import net.caseif.ttt.listeners.MGListener;
 import net.caseif.ttt.listeners.PlayerListener;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
-import net.caseif.ttt.manager.KarmaManager;
 import net.caseif.ttt.manager.ScoreManager;
 import net.caseif.ttt.manager.command.CommandManager;
 import net.caseif.ttt.manager.command.SpecialCommandManager;
@@ -194,7 +193,6 @@ public class TTTCore extends JavaPlugin {
     public void onDisable() {
         if (MGLIB) {
             // uninitialize static variables so as not to cause memory leaks when reloading
-            KarmaManager.playerKarma = null;
             ScoreManager.uninitialize();
             if (ConfigHelper.VERBOSE_LOGGING) {
                 logInfo("info.plugin.disable", this.toString());

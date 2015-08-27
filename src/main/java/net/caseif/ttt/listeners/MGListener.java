@@ -25,17 +25,17 @@ package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.manager.KarmaManager;
 import net.caseif.ttt.manager.ScoreManager;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.MiscUtil;
-import net.caseif.ttt.util.helper.BanHelper;
 import net.caseif.ttt.util.helper.ConfigHelper;
+import net.caseif.ttt.util.helper.InventoryHelper;
+import net.caseif.ttt.util.helper.KarmaHelper;
+import net.caseif.ttt.util.helper.RoleHelper;
 import net.caseif.ttt.util.helper.TitleHelper;
 
-import com.google.common.base.Optional;
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.event.round.RoundChangeLifecycleStageEvent;
@@ -44,20 +44,13 @@ import net.caseif.flint.event.round.RoundTimerTickEvent;
 import net.caseif.flint.event.round.challenger.ChallengerJoinRoundEvent;
 import net.caseif.flint.event.round.challenger.ChallengerLeaveRoundEvent;
 import net.caseif.flint.round.Round;
-import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -66,53 +59,11 @@ public class MGListener {
 
     @Subscribe
     public void onPlayerJoinRound(ChallengerJoinRoundEvent event) {
-        //TODO: move checks to when the player is being added to the round by TTT
-        File f = new File(TTTCore.getInstance().getDataFolder(), "bans.yml");
-        YamlConfiguration y = new YamlConfiguration();
-        try {
-            y.load(f);
-            if (y.isSet(event.getChallenger().getUniqueId().toString())) {
-                long unbanTime = y.getLong(event.getChallenger().getUniqueId().toString());
-                if (unbanTime != -1 && unbanTime <= System.currentTimeMillis() / 1000L) {
-                    BanHelper.pardon(event.getChallenger().getUniqueId());
-                } else {
-                    Localizable loc;
-                    if (unbanTime == -1) {
-                        loc = TTTCore.locale.getLocalizable("info.personal.ban.perm");
-                    } else {
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTimeInMillis(unbanTime * 1000L);
-                        String year = Integer.toString(cal.get(Calendar.YEAR));
-                        String month = Integer.toString(cal.get(Calendar.MONTH) + 1);
-                        String day = Integer.toString(cal.get(Calendar.DAY_OF_MONTH));
-                        String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
-                        String min = Integer.toString(cal.get(Calendar.MINUTE));
-                        String sec = Integer.toString(cal.get(Calendar.SECOND));
-                        min = min.length() == 1 ? "0" + min : min;
-                        sec = sec.length() == 1 ? "0" + sec : sec;
-                        //TODO: localize time/date (UGH)
-                        loc = TTTCore.locale.getLocalizable("info.personal.ban.temp.until").withReplacements(
-                                hour + ":" + min + ":" + sec + " on " + month + "/" + day + "/" + year + ".");
-                    }
-                    loc.withPrefix(Color.ERROR.toString());
-                    loc.sendTo(Bukkit.getPlayer(event.getChallenger().getUniqueId()));
-                    event.getChallenger().removeFromRound();
-                    return;
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            TTTCore.log.warning("Failed to load bans from disk!");
-        }
-
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setHealth(Bukkit.getPlayer(event.getChallenger().getUniqueId()).getMaxHealth());
 
-        KarmaManager.loadKarma(event.getChallenger().getUniqueId());
-        event.getChallenger().getMetadata().set("karma",
-                KarmaManager.playerKarma.get(event.getChallenger().getUniqueId()));
-        event.getChallenger().getMetadata().set("displayKarma",
-                KarmaManager.playerKarma.get(event.getChallenger().getUniqueId()));
+        KarmaHelper.applyKarma(event.getChallenger());
+
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 
@@ -140,7 +91,7 @@ public class MGListener {
         );
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setDisplayName(event.getChallenger().getName());
-        KarmaManager.saveKarma(event.getChallenger());
+        KarmaHelper.saveKarma(event.getChallenger());
         //TODO: determine whether the round is ending (I'll probably tackle this in Flint 1.1)
         MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                 .withPrefix(Color.INFO.toString()).withReplacements(event.getChallenger().getName(),
@@ -168,135 +119,57 @@ public class MGListener {
     //TODO: this method isn't DRY
     @SuppressWarnings("deprecation")
     public void startRound(Round round) {
-        int players = round.getChallengers().size();
-        int traitorCount = 0;
-        int limit = (int) (players * ConfigHelper.TRAITOR_RATIO);
-        if (limit == 0) {
-            limit = 1;
-        }
-        List<UUID> innocents = new ArrayList<>();
-        List<UUID> traitors = new ArrayList<>();
-        List<UUID> detectives = new ArrayList<>();
-        for (Challenger ch : round.getChallengers()) {
-            innocents.add(ch.getUniqueId());
-            TTTCore.locale.getLocalizable("info.global.round.event.started").withPrefix(Color.INFO.toString())
-                    .sendTo(Bukkit.getPlayer(ch.getUniqueId()));
-        }
-        while (traitorCount < limit) {
-            Random randomGenerator = new Random();
-            int index = randomGenerator.nextInt(players);
-            UUID traitor = innocents.get(index);
-            if (innocents.contains(traitor)) {
-                innocents.remove(traitor);
-                traitors.add(traitor);
-                traitorCount += 1;
-            }
-        }
-        int dLimit = (int) (players * ConfigHelper.DETECTIVE_RATIO);
-        if (players >= ConfigHelper.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0) {
-            dLimit += 1;
-        }
-        int detectiveNum = 0;
-        while (detectiveNum < dLimit) {
-            Random randomGenerator = new Random();
-            int index = randomGenerator.nextInt(innocents.size());
-            UUID detective = innocents.get(index);
-            innocents.remove(detective);
-            detectives.add(detective);
-            detectiveNum += 1;
-        }
-        ItemStack crowbar = new ItemStack(ConfigHelper.CROWBAR_ITEM, 1);
-        ItemMeta cbMeta = crowbar.getItemMeta();
-        cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.crowbar.name").localize());
-        crowbar.setItemMeta(cbMeta);
-        ItemStack gun = new ItemStack(ConfigHelper.GUN_ITEM, 1);
-        ItemMeta gunMeta = crowbar.getItemMeta();
-        cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.gun.name").localize());
-        gun.setItemMeta(gunMeta);
-        ItemStack ammo = new ItemStack(Material.ARROW, ConfigHelper.INITIAL_AMMO);
-        ItemStack dnaScanner = new ItemStack(Material.COMPASS, 1);
-        ItemMeta dnaMeta = dnaScanner.getItemMeta();
-        cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.dna-scanner.name").localize());
-        dnaScanner.setItemMeta(dnaMeta);
-        for (UUID uuid : innocents) {
-            Player pl = Bukkit.getPlayer(uuid);
-            Optional<Challenger> challenger = TTTCore.mg.getChallenger(uuid);
-            if (pl != null && challenger.isPresent()) {
-                challenger.get().getRound().getOrCreateTeam(Role.INNOCENT).addChallenger(challenger.get());
-                TTTCore.locale.getLocalizable("info.personal.status.role.innocent")
-                        .withPrefix(Color.INNOCENT.toString()).sendTo(pl);
-                TitleHelper.sendStatusTitle(pl, Role.INNOCENT);
-                pl.getInventory().addItem(crowbar, gun, ammo);
-                pl.setHealth(20);
-                pl.setFoodLevel(20);
-                if (ScoreManager.sbManagers.containsKey(round.getArena().getId())) {
-                    pl.setScoreboard(ScoreManager.sbManagers.get(round.getArena().getId()).innocent);
-                    ScoreManager.sbManagers.get(round.getArena().getId()).update(challenger.get());
-                }
-            }
-        }
-        for (UUID uuid : traitors) {
-            Player pl = TTTCore.getInstance().getServer().getPlayer(uuid);
-            Optional<Challenger> challenger = TTTCore.mg.getChallenger(uuid);
-            if (pl != null && challenger != null) {
-                challenger.get().getRound().getOrCreateTeam(Role.TRAITOR).addChallenger(challenger.get());
-                TTTCore.locale.getLocalizable(traitors.size() > 1
-                        ? "info.personal.status.role.traitor"
-                        : "info.personal.status.role.traitor.alone").withPrefix(Color.TRAITOR.toString())
-                        .sendTo(pl);
-                TitleHelper.sendStatusTitle(pl, Role.TRAITOR);
-                if (traitors.size() > 1) {
-                    TTTCore.locale.getLocalizable("info.personal.status.role.traitor.allies")
-                            .withPrefix(Color.TRAITOR.toString()).sendTo(pl);
-                    for (UUID tr : traitors) {
-                        if (!tr.equals(uuid)) {
-                            pl.sendMessage(Color.TRAITOR + "- " + tr);
-                        }
-                    }
-                }
-                pl.getInventory().addItem(crowbar, gun, ammo);
-                pl.setHealth(20);
-                pl.setFoodLevel(20);
-                if (ScoreManager.sbManagers.containsKey(round.getArena().getId())) {
-                    pl.setScoreboard(ScoreManager.sbManagers.get(round.getArena().getId()).traitor);
-                    ScoreManager.sbManagers.get(round.getArena().getId()).update(challenger.get());
-                }
-            }
-        }
-        for (UUID uuid : detectives) {
-            Player pl = TTTCore.getInstance().getServer().getPlayer(uuid);
-            Optional<Challenger> challenger = TTTCore.mg.getChallenger(uuid);
-            if (pl != null && challenger.isPresent()) {
-                // detectives are technically innocents so we put them on the innocent team
-                challenger.get().getRound().getOrCreateTeam(Role.INNOCENT).addChallenger(challenger.get());
-                challenger.get().getMetadata().set(Role.DETECTIVE, true);
-                TTTCore.locale.getLocalizable("info.personal.status.role.detective")
-                        .withPrefix(Color.DETECTIVE.toString()).sendTo(pl);
-                TitleHelper.sendStatusTitle(pl, Role.DETECTIVE);
-                pl.getInventory().addItem(crowbar, gun, ammo, dnaScanner);
-                pl.setHealth(20);
-                pl.setFoodLevel(20);
-                if (ScoreManager.sbManagers.containsKey(round.getArena().getId())) {
-                    pl.setScoreboard(ScoreManager.sbManagers.get(round.getArena().getId()).innocent);
-                    ScoreManager.sbManagers.get(round.getArena().getId()).update(challenger.get());
-                }
-            }
-        }
+        InventoryHelper.distributeItems(round);
+        RoleHelper.assignRoles(round);
 
         for (Challenger ch : round.getChallengers()) {
-            if (ConfigHelper.DAMAGE_REDUCTION) {
-                Player pl = Bukkit.getPlayer(ch.getUniqueId());
-                KarmaManager.calculateDamageReduction(ch);
-                String percentage;
-                if (ch.getMetadata().has("damageRed") && ch.getMetadata().<Double>get("damageRed").get() < 1) {
-                    percentage = (int) (ch.getMetadata().<Double>get("damageRed").get() * 100) + "%";
+            assert ch.getTeam().isPresent();
+            Player pl = TTTCore.getInstance().getServer().getPlayer(ch.getUniqueId());
+            assert pl != null;
+
+            pl.setHealth(pl.getMaxHealth());
+            pl.setFoodLevel(20);
+
+            if (ch.getTeam().get().getId().equals(Role.INNOCENT)) {
+                if (ch.getMetadata().has(Role.DETECTIVE)) {
+                    TTTCore.locale.getLocalizable("info.personal.status.role.detective")
+                            .withPrefix(Color.DETECTIVE.toString()).sendTo(pl);
+                    TitleHelper.sendStatusTitle(pl, Role.DETECTIVE);
                 } else {
-                    percentage = TTTCore.locale.getLocalizable("fragment.full")
-                            .withPrefix(Color.INFO.toString()).localizeFor(pl);
+                    TTTCore.locale.getLocalizable("info.personal.status.role.innocent")
+                            .withPrefix(Color.INNOCENT.toString()).sendTo(pl);
+                    TitleHelper.sendStatusTitle(pl, Role.INNOCENT);
                 }
+                pl.setScoreboard(ScoreManager.sbManagers.get(round.getArena().getId()).innocent);
+            } else if (ch.getTeam().get().getId().equals(Role.TRAITOR)) {
+                if (ch.getTeam().get().getChallengers().size() > 1) {
+                    TTTCore.locale.getLocalizable("info.personal.status.role.traitor")
+                            .withPrefix(Color.TRAITOR.toString()).sendTo(pl);
+                    TTTCore.locale.getLocalizable("info.personal.status.role.traitor.allies")
+                            .withPrefix(Color.TRAITOR.toString()).sendTo(pl);
+                    for (Challenger traitor : ch.getTeam().get().getChallengers()) {
+                        if (traitor != ch) { // they aren't their own ally
+                            pl.sendMessage(Color.TRAITOR + "- " + traitor.getName());
+                        }
+                    }
+                } else {
+                    TTTCore.locale.getLocalizable("info.personal.status.role.traitor.alone")
+                            .withPrefix(Color.TRAITOR.toString()).sendTo(pl);
+                }
+                TitleHelper.sendStatusTitle(pl, Role.TRAITOR);
+                pl.setScoreboard(ScoreManager.sbManagers.get(round.getArena().getId()).innocent);
+            }
+
+            ScoreManager.sbManagers.get(round.getArena().getId()).update(ch);
+
+            if (ConfigHelper.DAMAGE_REDUCTION) {
+                KarmaHelper.applyDamageReduction(ch);
+                double reduc = KarmaHelper.getDamageReduction(ch);
+                String percentage = reduc < 1 ? (reduc * 100) + "%" : TTTCore.locale.getLocalizable("fragment.full")
+                        .withPrefix(Color.INFO.toString()).localizeFor(pl);
                 TTTCore.locale.getLocalizable("info.personal.status.karma-damage")
-                        .withPrefix(Color.INFO.toString())
-                        .withReplacements(ch.getMetadata().<Integer>get("karma").get() + "", percentage).sendTo(pl);
+                        .withPrefix(Color.INFO.toString()).withReplacements(KarmaHelper.getKarma(ch) + "", percentage)
+                        .sendTo(pl);
             }
         }
     }
@@ -412,7 +285,7 @@ public class MGListener {
         removeBodies.clear();
         removeFoundBodies.clear();
 
-        KarmaManager.allocateKarma(event.getRound());
+        KarmaHelper.allocateKarma(event.getRound());
 
         boolean tVic = event.getRound().getMetadata().has("t-victory")
                 && event.getRound().getMetadata().<Boolean>get("t-victory").get();

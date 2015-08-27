@@ -23,19 +23,13 @@
  */
 package net.caseif.ttt.util;
 
-import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.helper.ConfigHelper;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
 import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-
-import java.io.File;
-import java.util.UUID;
 
 public class MiscUtil {
 
@@ -86,6 +80,10 @@ public class MiscUtil {
         } catch (NumberFormatException ex) {
             return false;
         }
+    }
+
+    public static int clamp(int val, int min, int max) {
+        return Math.max(min, Math.min(max, val));
     }
 
 }

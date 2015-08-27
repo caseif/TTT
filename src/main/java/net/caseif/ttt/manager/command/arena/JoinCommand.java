@@ -26,6 +26,7 @@ package net.caseif.ttt.manager.command.arena;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.manager.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.helper.BanHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;
@@ -45,15 +46,21 @@ public class JoinCommand extends SubcommandHandler {
         if (sender instanceof Player) {
             if (assertPermission()) {
                 if (args.length > 1) {
+                    if (BanHelper.checkBan(((Player) sender).getUniqueId())) {
+                        return;
+                    }
+
                     Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
                     if (!arena.isPresent()) {
                         TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString())
                                 .sendTo(sender);
                         return;
                     }
+
                     Round round = arena.get().getRound().isPresent()
                             ? arena.get().getRound().get()
                             : arena.get().createRound();
+
                     try {
                         round.addChallenger(((Player) sender).getUniqueId());
                     } catch (RoundJoinException ex) {
