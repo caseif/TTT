@@ -25,7 +25,7 @@ package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.manager.ScoreManager;
+import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.Constants.Stage;
@@ -183,10 +183,10 @@ public class PlayerListener implements Listener {
                                     //TODO: no Flint equivalent for this
                                     //bodyPlayer.setPrefix(Config.SB_ALIVE_PREFIX);
                                     bodyPlayer.get().getMetadata().set("bodyFound", true);
-                                    if (ScoreManager.sbManagers.containsKey(bodyPlayer.get().getRound().getArena()
-                                            .getId())) {
-                                        ScoreManager.sbManagers.get(bodyPlayer.get().getRound().getArena().getId())
-                                                .update(bodyPlayer.get());
+                                    if (ScoreboardManager.getScoreboardManager(bodyPlayer.get().getRound().getArena())
+                                            .isPresent()) {
+                                        ScoreboardManager.getScoreboardManager(bodyPlayer.get().getRound().getArena())
+                                                .get().update(bodyPlayer.get());
                                     }
                                 }
                             }
@@ -385,8 +385,8 @@ public class PlayerListener implements Listener {
             //ch.setPrefix(Config.SB_MIA_PREFIX); //TODO
             pl.setHealth(pl.getMaxHealth());
             ch.setSpectating(true);
-            if (ScoreManager.sbManagers.containsKey(ch.getRound().getArena().getId())) {
-                ScoreManager.sbManagers.get(ch.getRound().getArena().getId()).update(ch);
+            if (ScoreboardManager.getScoreboardManager(ch.getRound().getArena()).isPresent()) {
+                ScoreboardManager.getScoreboardManager(ch.getRound().getArena()).get().update(ch);
             }
             if (killer != null) {
                 // set killer's karma

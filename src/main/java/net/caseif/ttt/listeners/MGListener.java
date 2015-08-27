@@ -25,7 +25,7 @@ package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.manager.ScoreManager;
+import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
@@ -67,15 +67,12 @@ public class MGListener {
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 
-        if (ScoreManager.sbManagers.containsKey(event.getRound().getArena().getId())) {
-            ScoreManager.sbManagers.get(event.getRound().getArena().getId()).update(event.getChallenger());
-            Bukkit.getPlayer(event.getChallenger().getUniqueId()).setScoreboard(
-                    ScoreManager.sbManagers.get(event.getRound().getArena().getId()).innocent
-            );
+        if (ScoreboardManager.getScoreboardManager(event.getRound().getArena()).isPresent()) {
+            ScoreboardManager.getScoreboardManager(event.getRound().getArena()).get()
+                    .assignScoreboard(event.getChallenger());
         }
 
-        UUID uuid = event.getChallenger().getUniqueId();
-        Player pl = Bukkit.getPlayer(uuid);
+        Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
         assert pl != null;
 
         TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Constants.Color.INFO.toString())
@@ -105,22 +102,19 @@ public class MGListener {
         if (event.getStageAfter() == Constants.Stage.PREPARING) {
             MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
                     .withPrefix(Color.INFO.toString()));
-            if (!ScoreManager.sbManagers.containsKey(event.getRound().getArena().getId())) {
-                ScoreManager.sbManagers.put(event.getRound().getArena().getId(), new ScoreManager(event.getRound()));
-                for (Challenger ch : event.getRound().getChallengers()) {
-                    ScoreManager.sbManagers.get(event.getRound().getArena().getId()).update(ch);
-                }
+            if (!ScoreboardManager.getScoreboardManager(event.getRound().getArena()).isPresent()) {
+                new ScoreboardManager(event.getRound());
             }
         } else if (event.getStageAfter() == Constants.Stage.PLAYING) {
             startRound(event.getRound());
         }
     }
 
-    //TODO: this method isn't DRY
     @SuppressWarnings("deprecation")
     public void startRound(Round round) {
         InventoryHelper.distributeItems(round);
         RoleHelper.assignRoles(round);
+        ScoreboardManager.getScoreboardManager(round.getArena()).get().assignScoreboards();
 
         for (Challenger ch : round.getChallengers()) {
             assert ch.getTeam().isPresent();
@@ -140,7 +134,6 @@ public class MGListener {
                             .withPrefix(Color.INNOCENT.toString()).sendTo(pl);
                     TitleHelper.sendStatusTitle(pl, Role.INNOCENT);
                 }
-                pl.setScoreboard(ScoreManager.sbManagers.get(round.getArena().getId()).innocent);
             } else if (ch.getTeam().get().getId().equals(Role.TRAITOR)) {
                 if (ch.getTeam().get().getChallengers().size() > 1) {
                     TTTCore.locale.getLocalizable("info.personal.status.role.traitor")
@@ -157,10 +150,7 @@ public class MGListener {
                             .withPrefix(Color.TRAITOR.toString()).sendTo(pl);
                 }
                 TitleHelper.sendStatusTitle(pl, Role.TRAITOR);
-                pl.setScoreboard(ScoreManager.sbManagers.get(round.getArena().getId()).innocent);
             }
-
-            ScoreManager.sbManagers.get(round.getArena().getId()).update(ch);
 
             if (ConfigHelper.DAMAGE_REDUCTION) {
                 KarmaHelper.applyDamageReduction(ch);
@@ -257,16 +247,16 @@ public class MGListener {
                 }
             }
 
-            if (!ScoreManager.sbManagers.containsKey(event.getRound().getArena().getId())) {
-                ScoreManager.sbManagers.put(event.getRound().getArena().getId(), new ScoreManager(event.getRound()));
+            if (!ScoreboardManager.getScoreboardManager(event.getRound().getArena()).isPresent()) {
+                new ScoreboardManager(event.getRound());
             }
         }
     }
 
     @Subscribe
     public void onRoundEnd(RoundEndEvent event) {
-        List<Body> removeBodies = new ArrayList<Body>();
-        List<Body> removeFoundBodies = new ArrayList<Body>();
+        List<Body> removeBodies = new ArrayList<>();
+        List<Body> removeFoundBodies = new ArrayList<>();
         for (Body b : TTTCore.bodies) {
             removeBodies.add(b);
             if (TTTCore.foundBodies.contains(b)) {
@@ -300,17 +290,15 @@ public class MGListener {
                 ent.remove();
             }
         }
-        ScoreManager.sbManagers.remove(event.getRound().getArena().getId());
+        ScoreboardManager.getScoreboardManager(event.getRound().getArena()).get().unregister();
     }
 
     @Subscribe
     public void onStageChange(RoundChangeLifecycleStageEvent event) {
         if ((event.getStageBefore() == Constants.Stage.PREPARING || event.getStageBefore() == Constants.Stage.PLAYING)
                 && (event.getStageAfter() == Constants.Stage.PREPARING)) {
-            ScoreManager sm = ScoreManager.sbManagers.get(event.getRound().getArena().getId());
-            sm.iObj.unregister();
-            sm.tObj.unregister();
-            ScoreManager.sbManagers.remove(event.getRound().getArena().getId());
+            ScoreboardManager sm = ScoreboardManager.getScoreboardManager(event.getRound().getArena()).get();
+            sm.unregister();
             for (Challenger ch : event.getRound().getChallengers()) {
                 Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
                 if (ch.getTeam().isPresent()) {

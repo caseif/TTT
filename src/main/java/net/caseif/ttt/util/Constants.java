@@ -61,6 +61,12 @@ public final class Constants {
         public static final String DETECTIVE = "detective";
     }
 
+    public static class AliveStatus {
+        public static final String ALIVE = "alive";
+        public static final String MIA = "mia";
+        public static final String CONFIRMED_DEAD = "dead";
+    }
+
     public static class Contributor {
         public static final String DEVELOPER = "dev";
         public static final String ALPHA_TESTER = "alpha";

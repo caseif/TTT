@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.manager.command.misc;
+package net.caseif.ttt.command.misc;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.manager.command.CommandManager;
-import net.caseif.ttt.manager.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandManager;
+import net.caseif.ttt.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.rosetta.Localizable;

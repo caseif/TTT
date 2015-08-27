@@ -21,24 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.manager.command;
+package net.caseif.ttt.command;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.manager.command.admin.BanCommand;
-import net.caseif.ttt.manager.command.admin.EndCommand;
-import net.caseif.ttt.manager.command.admin.KickCommand;
-import net.caseif.ttt.manager.command.admin.PardonCommand;
-import net.caseif.ttt.manager.command.admin.PrepareCommand;
-import net.caseif.ttt.manager.command.admin.StartCommand;
-import net.caseif.ttt.manager.command.arena.AddSpawnCommand;
-import net.caseif.ttt.manager.command.arena.CreateArenaCommand;
-import net.caseif.ttt.manager.command.arena.ImportCommand;
-import net.caseif.ttt.manager.command.arena.JoinCommand;
-import net.caseif.ttt.manager.command.arena.LeaveCommand;
-import net.caseif.ttt.manager.command.arena.RemoveArenaCommand;
-import net.caseif.ttt.manager.command.arena.RemoveSpawnCommand;
-import net.caseif.ttt.manager.command.misc.DefaultCommand;
-import net.caseif.ttt.manager.command.misc.HelpCommand;
+import net.caseif.ttt.command.admin.BanCommand;
+import net.caseif.ttt.command.admin.EndCommand;
+import net.caseif.ttt.command.admin.KickCommand;
+import net.caseif.ttt.command.admin.PardonCommand;
+import net.caseif.ttt.command.admin.PrepareCommand;
+import net.caseif.ttt.command.admin.StartCommand;
+import net.caseif.ttt.command.arena.AddSpawnCommand;
+import net.caseif.ttt.command.arena.CreateArenaCommand;
+import net.caseif.ttt.command.arena.ImportCommand;
+import net.caseif.ttt.command.arena.JoinCommand;
+import net.caseif.ttt.command.arena.LeaveCommand;
+import net.caseif.ttt.command.arena.RemoveArenaCommand;
+import net.caseif.ttt.command.arena.RemoveSpawnCommand;
+import net.caseif.ttt.command.misc.DefaultCommand;
+import net.caseif.ttt.command.misc.HelpCommand;
 import net.caseif.ttt.util.Constants.Color;
 
 import org.bukkit.command.Command;

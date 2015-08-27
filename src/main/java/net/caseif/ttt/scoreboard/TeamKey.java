@@ -21,25 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.manager.command.misc;
+package net.caseif.ttt.scoreboard;
 
-import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.manager.command.SubcommandHandler;
-import net.caseif.ttt.util.Constants.Color;
+import com.google.common.base.Objects;
 
-import org.bukkit.command.CommandSender;
+/**
+ * Represents a hashable object used to denote the properties of a {@link Team}
+ * in a map.
+ */
+class TeamKey {
 
-public class DefaultCommand extends SubcommandHandler {
+    private boolean traitorBoard;
+    private String role;
+    private String aliveStatus;
 
-    public DefaultCommand(CommandSender sender, String[] args) {
-        super(sender, args, null);
+    TeamKey(boolean isTraitorBoard, String role, String aliveStatus) {
+        this.traitorBoard = isTraitorBoard;
+        this.role = role;
+        this.aliveStatus = aliveStatus;
     }
 
-    @Override
-    public void handle() {
-        TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(Color.SPECIAL.toString())
-                .withReplacements(TTTCore.getInstance().getDescription().getVersion(), "Max Roncacé")
-                .sendTo(sender);
-        TTTCore.locale.getLocalizable("info.command.usage.help").withPrefix(Color.INFO.toString()).sendTo(sender);
+    boolean isTraitorBoard() {
+        return traitorBoard;
     }
+
+    String getRole() {
+        return role;
+    }
+
+    String getAliveStatus() {
+        return aliveStatus;
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof TeamKey) {
+            TeamKey tk = (TeamKey) obj;
+            return traitorBoard == tk.traitorBoard && role.equals(tk.role) && aliveStatus.equals(tk.aliveStatus);
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        return Objects.hashCode(traitorBoard, role, aliveStatus);
+    }
+
 }

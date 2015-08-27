@@ -25,12 +25,12 @@ package net.caseif.ttt;
 
 import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 
+import net.caseif.ttt.command.CommandManager;
+import net.caseif.ttt.command.SpecialCommandManager;
 import net.caseif.ttt.listeners.MGListener;
 import net.caseif.ttt.listeners.PlayerListener;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
-import net.caseif.ttt.manager.ScoreManager;
-import net.caseif.ttt.manager.command.CommandManager;
-import net.caseif.ttt.manager.command.SpecialCommandManager;
+import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.helper.ContributorListHelper;
 
@@ -60,8 +60,6 @@ import java.util.logging.Logger;
  */
 public class TTTCore extends JavaPlugin {
 
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_WHITE = "\u001B[37m";
     public static boolean MGLIB = true;
     public static Minigame mg;
 
@@ -193,7 +191,7 @@ public class TTTCore extends JavaPlugin {
     public void onDisable() {
         if (MGLIB) {
             // uninitialize static variables so as not to cause memory leaks when reloading
-            ScoreManager.uninitialize();
+            ScoreboardManager.uninitialize();
             if (ConfigHelper.VERBOSE_LOGGING) {
                 logInfo("info.plugin.disable", this.toString());
             }

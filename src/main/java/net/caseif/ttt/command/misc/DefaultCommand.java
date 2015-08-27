@@ -21,52 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.manager.command;
+package net.caseif.ttt.command.misc;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
 import org.bukkit.command.CommandSender;
 
-public abstract class SubcommandHandler {
+public class DefaultCommand extends SubcommandHandler {
 
-    protected CommandSender sender;
-    protected String[] args;
-    protected String perm;
-
-    public SubcommandHandler(CommandSender sender, String[] args, String perm) {
-        this.sender = sender;
-        this.args = args;
-        this.perm = perm;
+    public DefaultCommand(CommandSender sender, String[] args) {
+        super(sender, args, null);
     }
 
-    public abstract void handle();
-
-    /**
-     * Asserts that the sender has permission to use a subcommand. Sends an error message if not.
-     *
-     * @return whether the sender has permission to use a subcommand
-     */
-    public boolean assertPermission() {
-        if (perm != null && !sender.hasPermission(perm)) {
-            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR.toString())
-                    .sendTo(sender);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Retrieves the usage for this subcommand from the plugin.yml file.
-     *
-     * @return the usage for this subcommand, or null if not specified
-     */
-    public String getUsage() {
-        return CommandManager.getUsage(args[0]);
-    }
-
-    public void sendUsage() {
-        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO.toString()).withReplacements(getUsage())
+    @Override
+    public void handle() {
+        TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(Color.SPECIAL.toString())
+                .withReplacements(TTTCore.getInstance().getDescription().getVersion(), "Max Roncacé")
                 .sendTo(sender);
+        TTTCore.locale.getLocalizable("info.command.usage.help").withPrefix(Color.INFO.toString()).sendTo(sender);
     }
 }

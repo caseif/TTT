@@ -21,32 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.manager.command;
-
-import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
+package net.caseif.ttt.command.arena;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.util.Constants.Color;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class SpecialCommandManager implements CommandExecutor {
+public class RemoveArenaCommand extends SubcommandHandler {
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (label.equalsIgnoreCase("ttt")) {
-            if (sender.hasPermission("ttt.build.warn")) {
-                TTTCore.locale.getLocalizable("error.plugin.flint").withPrefix(Constants.Color.ERROR.toString())
-                        .withReplacements(MIN_FLINT_VERSION + "").sendTo(sender);
-            } else {
-                TTTCore.locale.getLocalizable("error.plugin.disabled").withPrefix(Constants.Color.ERROR.toString())
-                        .sendTo(sender);
-            }
-            return true;
-        }
-        return false;
+    public RemoveArenaCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.arena.remove");
     }
 
+    @Override
+    public void handle() {
+        if (assertPermission()) {
+            if (args.length > 1) {
+                String name = args[1];
+                try {
+                    TTTCore.mg.removeArena(name);
+                    TTTCore.locale.getLocalizable("info.personal.arena.remove.success")
+                            .withPrefix(Color.INFO.toString()).withReplacements(name).sendTo(sender);
+                } catch (IllegalArgumentException ex) {
+                    TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString()).sendTo(sender);
+                }
+            }
+        }
+    }
 }

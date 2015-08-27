@@ -21,55 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.manager.command.arena;
+package net.caseif.ttt.command.arena;
 
 import static net.caseif.ttt.util.MiscUtil.isInt;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.manager.command.SubcommandHandler;
+import net.caseif.ttt.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
+import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;
 import net.caseif.flint.util.physical.Location3D;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RemoveSpawnCommand extends SubcommandHandler {
+public class AddSpawnCommand extends SubcommandHandler {
 
-    public RemoveSpawnCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.arena.removespawn");
+    public AddSpawnCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.arena.addspawn");
     }
 
     @Override
     public void handle() {
         if (assertPermission()) {
-            if (!TTTCore.mg.getArena(args[1]).isPresent()) {
-                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString()).sendTo(sender);
-                sendUsage();
-                return;
-            }
-            Arena arena = TTTCore.mg.getArena(args[1]).get();
-            int x = 0;
-            int y = 0;
-            int z = 0;
-            int index = Integer.MAX_VALUE;
+            World w = null;
+            int x;
+            int y;
+            int z;
             if (args.length == 2) { // use sender's location
                 if (sender instanceof Player) {
+                    w = ((Player) sender).getWorld();
                     x = ((Player) sender).getLocation().getBlockX();
                     y = ((Player) sender).getLocation().getBlockY();
                     z = ((Player) sender).getLocation().getBlockZ();
                 } else {
                     TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
-                    return;
-                }
-            } else if (args.length == 3) {
-                if (isInt(args[2])) {
-                    index = Integer.parseInt(args[2]);
-                } else {
-                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
-                            .sendTo(sender);
-                    sendUsage();
                     return;
                 }
             } else if (args.length == 5) { // use 3 provided coords
@@ -89,15 +77,20 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                 sendUsage();
                 return;
             }
-            try {
-                if (index != Integer.MAX_VALUE) {
-                    arena.removeSpawnPoint(index);
+            Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
+            if (arena.isPresent()) {
+                if (w == null) {
+                    arena.get().addSpawnPoint(new Location3D(x, y, z));
                 } else {
-                    arena.removeSpawnPoint(new Location3D(x, y, z));
+                    if (!arena.get().getWorld().equals(w.getName())) {
+                        TTTCore.locale.getLocalizable("error.arena.invalid-location").withPrefix(Color.ERROR.toString())
+                                .sendTo(sender);
+                        return;
+                    }
+                    arena.get().addSpawnPoint(new Location3D(w.getName(), x, y, z));
                 }
-            } catch (IllegalArgumentException ex) {
-                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
-                        .sendTo(sender);
+            } else {
+                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString()).sendTo(sender);
             }
         }
     }

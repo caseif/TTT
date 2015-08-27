@@ -21,50 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.manager.command.admin;
+package net.caseif.ttt.command.admin;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.manager.command.SubcommandHandler;
+import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.UUIDFetcher;
-import net.caseif.ttt.util.helper.BanHelper;
 
-import org.bukkit.Bukkit;
+import com.google.common.base.Optional;
+import net.caseif.flint.arena.Arena;
 import org.bukkit.command.CommandSender;
 
-import java.util.UUID;
+public class EndCommand extends SubcommandHandler {
 
-public class PardonCommand extends SubcommandHandler {
-
-    public PardonCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.admin.ban");
+    public EndCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.admin.end");
     }
 
     @Override
     public void handle() {
         if (assertPermission()) {
             if (args.length > 1) {
-                String name = args[1];
-                try {
-                    UUID uuid = UUIDFetcher.getUUIDOf(name);
-                    if (uuid == null) {
-                        TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR.toString())
-                                .sendTo(sender);
-                        return;
-                    }
-                    if (BanHelper.pardon(uuid)) {
-                        TTTCore.locale.getLocalizable("info.personal.pardon").withPrefix(Color.INFO.toString())
-                        .sendTo(Bukkit.getPlayer(uuid));
-                        TTTCore.locale.getLocalizable("info.personal.pardon.other")
-                                .withPrefix(Color.INFO.toString()).withReplacements(name).sendTo(sender);
+                String arenaName = args[1];
+                Optional<Arena> arena = TTTCore.mg.getArena(arenaName);
+                if (arena.isPresent()) {
+                    if (arena.get().getRound().isPresent()
+                            && arena.get().getRound().get().getLifecycleStage() != Constants.Stage.WAITING) {
+                        if (args.length > 2) {
+                            if (args[2].equalsIgnoreCase("t")) {
+                                arena.get().getRound().get().getMetadata().set("t-victory", true);
+                            } else if (!args[2].equalsIgnoreCase("i")) {
+                                TTTCore.locale.getLocalizable("error.command.invalid-args")
+                                        .withPrefix(Color.ERROR.toString()).sendTo(sender);
+                                return;
+                            }
+                        }
+                        arena.get().getRound().get().end();
                     } else {
-                        TTTCore.locale.getLocalizable("error.plugin.pardon").withPrefix(Color.ERROR.toString())
-                                .sendTo(sender);
+                        TTTCore.locale.getLocalizable("error.arena.no-round")
+                        .withPrefix(Color.ERROR.toString()).withReplacements(Color.ARENA + arenaName).sendTo(sender);
                     }
-                } catch (Exception ex) {
-                    TTTCore.locale.getLocalizable("error.plugin.generic").withPrefix(Color.ERROR.toString())
+                } else {
+                    TTTCore.locale.getLocalizable("error.arena.dne")
+                            .withPrefix(Color.ERROR.toString()).withReplacements(Color.ARENA + arenaName)
                             .sendTo(sender);
-                    ex.printStackTrace();
                 }
             } else {
                 TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
@@ -73,6 +73,4 @@ public class PardonCommand extends SubcommandHandler {
             }
         }
     }
-
-
 }
