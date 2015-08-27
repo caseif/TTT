@@ -68,20 +68,24 @@ public class NmsHelper {
 
             try {
                 try { // 1.6 and above
+                    @SuppressWarnings("rawtypes")
                     Class<? extends Enum> enumClass;
-                    Object performRespawn;
                     try {
                         // this changed at some point in 1.8 to an inner class; I don't care to figure out exactly when
+                        String className = "PacketPlayInClientCommand$EnumClientCommand";
 
-                        //noinspection unchecked
-                        enumClass = (Class<? extends Enum>) getNmsClass("PacketPlayInClientCommand$EnumClientCommand");
+                        // do an indirect declaration to avoid compiler errors
+                        // (I don't want to disable warnings for the whole method)
+                        @SuppressWarnings({"rawtypes", "unchecked"})
+                        Class<? extends Enum> temp = (Class<? extends Enum>) getNmsClass(className);
+                        enumClass = temp;
                     } catch (ClassNotFoundException ex) { // older 1.8 builds/1.7
-                        //noinspection unchecked
-                        enumClass = (Class<? extends Enum>) getNmsClass("EnumClientCommand");
+                        @SuppressWarnings({"rawtypes", "unchecked"})
+                        Class<? extends Enum> temp = (Class<? extends Enum>) getNmsClass("EnumClientCommand");
+                        enumClass = temp;
                     }
-                    performRespawn = Enum.valueOf(
-                            enumClass, "PERFORM_RESPAWN"
-                    );
+                    @SuppressWarnings("unchecked")
+                    Object performRespawn = Enum.valueOf(enumClass, "PERFORM_RESPAWN");
                     clientCommandPacketInstance = getNmsClass("PacketPlayInClientCommand")
                             .getConstructor(performRespawn.getClass())
                             .newInstance(performRespawn);
