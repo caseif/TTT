@@ -27,7 +27,7 @@ import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.command.CommandManager;
 import net.caseif.ttt.command.SpecialCommandManager;
-import net.caseif.ttt.listeners.MGListener;
+import net.caseif.ttt.listeners.MinigameListener;
 import net.caseif.ttt.listeners.PlayerListener;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
@@ -120,7 +120,7 @@ public class TTTCore extends JavaPlugin {
         cm.setDefaultLocale(Config.LOCALE);*/
 
         // register events, commands, and the plugin variable
-        mg.getEventBus().register(new MGListener());
+        mg.getEventBus().register(new MinigameListener());
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getCommand("ttt").setExecutor(new CommandManager());
 

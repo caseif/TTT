@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class MGListener {
+public class MinigameListener {
 
     @Subscribe
     public void onPlayerJoinRound(ChallengerJoinRoundEvent event) {
