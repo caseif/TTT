@@ -35,18 +35,7 @@ import net.caseif.ttt.managers.command.CommandManager;
 import net.caseif.ttt.managers.command.SpecialCommandManager;
 import net.caseif.ttt.util.ContributorsReader;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Logger;
-
+import com.google.common.base.StandardSystemProperty;
 import net.amigocraft.mglib.MGUtil;
 import net.amigocraft.mglib.api.ConfigManager;
 import net.amigocraft.mglib.api.Locale;
@@ -61,6 +50,18 @@ import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Minecraft port of Trouble In Terrorist Town.
@@ -97,6 +98,8 @@ public class Main extends JavaPlugin {
 		log = this.getLogger();
 		kLog = Logger.getLogger("TTT Karma Debug");
 		plugin = this;
+
+		checkJavaVersion();
 
 		boolean compatibleMethod = false;
 		if (Bukkit.getPluginManager().isPluginEnabled("MGLib")) {
@@ -360,4 +363,20 @@ public class Main extends JavaPlugin {
 			}
 		}
 	}
+
+	// borrowed/stolen from http://git.io/vGjDf
+	private void checkJavaVersion() {
+		try {
+			if (Float.parseFloat(StandardSystemProperty.JAVA_CLASS_VERSION.value()) < 52.0) {
+				getLogger().warning("You're using Java 7 or lower. Keep in mind that future versions of TTT are " +
+						"likely to require Java 8 or higher. Java 8 contains various improvements, especially " +
+						"regarding performance. If possible, please upgrade as soon as possible.");
+			}
+		} catch (NumberFormatException ignored) {
+			getLogger().warning("Failed to detect Java version. If you're using Java 7 or lower, keep in mind that " +
+					"future versions of TTT are likely to require Java 8 or higher. Java 8 contains various " +
+					"improvements, especially regarding performance. If possible, please upgrade as soon as possible.");
+		}
+	}
+
 }
