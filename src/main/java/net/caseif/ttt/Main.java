@@ -24,7 +24,6 @@
 package net.caseif.ttt;
 
 import static net.caseif.ttt.util.Constants.MIN_MGLIB_VERSION;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
 
 import net.caseif.ttt.listeners.MGListener;
 import net.caseif.ttt.listeners.PlayerListener;
@@ -71,8 +70,6 @@ import java.util.logging.Logger;
  */
 public class Main extends JavaPlugin {
 
-	public static final String ANSI_RED = "\u001B[31m";
-	public static final String ANSI_WHITE = "\u001B[37m";
 	public static boolean MGLIB = true;
 	public static Minigame mg;
 
@@ -113,7 +110,9 @@ public class Main extends JavaPlugin {
 		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !compatibleMethod ||
 				!Minigame.isMGLibCompatible(MIN_MGLIB_VERSION)) {
 			MGLIB = false;
-			Main.log.info(ANSI_RED + getMessage("error.plugin.mglib", null, MIN_MGLIB_VERSION) + ANSI_WHITE);
+			Main.log.info("This version of TTT requires MGLib version " + MIN_MGLIB_VERSION +
+					" or higher. You can download and install it from http://dev.bukkit.org/bukkit-plugins/mglib/. " +
+					"Note that TTT will not function without it!");
 			getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
 			getCommand("ttt").setExecutor(new SpecialCommandManager());
 			return;
