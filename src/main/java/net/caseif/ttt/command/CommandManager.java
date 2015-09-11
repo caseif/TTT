@@ -31,7 +31,6 @@ import net.caseif.ttt.command.admin.PardonCommand;
 import net.caseif.ttt.command.admin.PrepareCommand;
 import net.caseif.ttt.command.admin.StartCommand;
 import net.caseif.ttt.command.arena.AddSpawnCommand;
-import net.caseif.ttt.command.arena.CreateArenaCommand;
 import net.caseif.ttt.command.arena.ImportCommand;
 import net.caseif.ttt.command.arena.JoinCommand;
 import net.caseif.ttt.command.arena.LeaveCommand;
@@ -41,6 +40,7 @@ import net.caseif.ttt.command.misc.DefaultCommand;
 import net.caseif.ttt.command.misc.HelpCommand;
 import net.caseif.ttt.util.Constants.Color;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -76,7 +76,9 @@ public class CommandManager implements CommandExecutor {
                         || subCmd.equalsIgnoreCase("quit") || subCmd.equalsIgnoreCase("q")) {
                     new LeaveCommand(sender, args).handle();
                 } else if (subCmd.equalsIgnoreCase("carena") || subCmd.equalsIgnoreCase("ca")) {
-                    new CreateArenaCommand(sender, args).handle();
+                    //new CreateArenaCommand(sender, args).handle();
+                    sender.sendMessage(ChatColor.RED + "[TTT] Arena creation is not supported by this snapshot build. "
+                            + "It will become available at a later time.");
                 } else if (subCmd.equalsIgnoreCase("rarena") || subCmd.equalsIgnoreCase("ra")) {
                     new RemoveArenaCommand(sender, args).handle();
                 } else if (subCmd.equalsIgnoreCase("addspawn") || subCmd.equalsIgnoreCase("as")) {
