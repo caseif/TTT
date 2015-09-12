@@ -98,8 +98,9 @@ public class HelpCommand extends SubcommandHandler {
                     if (sender.hasPermission((String) info[1])) {
                         sender.sendMessage(Color.INFO + "/ttt " + cmd + " "
                                 + Color.DESCRIPTION + ((Localizable) info[0]).localizeFor(sender));
-                        sender.sendMessage(Color.INFO + "    " + TTTCore.locale.getLocalizable("fragment.usage")
-                                + " " + Color.USAGE + CommandManager.getUsage(cmd));
+                        sender.sendMessage(Color.INFO + "    "
+                                + TTTCore.locale.getLocalizable("fragment.usage")
+                                .withReplacements(Color.USAGE + CommandManager.getUsage(cmd)).localizeFor(sender));
                     }
                 }
             }
