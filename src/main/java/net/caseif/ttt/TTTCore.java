@@ -60,7 +60,7 @@ import java.util.logging.Logger;
  */
 public class TTTCore extends JavaPlugin {
 
-    public static boolean MGLIB = true;
+    public static boolean STEEL = true;
     public static Minigame mg;
 
     public static Logger log;
@@ -84,7 +84,7 @@ public class TTTCore extends JavaPlugin {
         locale = new LocaleManager(this);
 
         if (!Bukkit.getPluginManager().isPluginEnabled("Steel") || FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
-            MGLIB = false;
+            STEEL = false;
             logInfo("error.plugin.flint", MIN_FLINT_VERSION + "");
             getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
             getCommand("ttt").setExecutor(new SpecialCommandManager());
@@ -160,9 +160,9 @@ public class TTTCore extends JavaPlugin {
         if (ConfigHelper.ENABLE_METRICS) {
             try {
                 Metrics metrics = new Metrics(this);
-                Metrics.Graph graph = metrics.createGraph("MGLib Version");
+                Metrics.Graph graph = metrics.createGraph("Steel Version");
                 graph.addPlotter(new Metrics.Plotter(
-                        Bukkit.getPluginManager().getPlugin("MGLib").getDescription().getVersion()
+                        Bukkit.getPluginManager().getPlugin("Steel").getDescription().getVersion()
                 ) {
                     public int getValue() {
                         return 1;
@@ -189,7 +189,7 @@ public class TTTCore extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (MGLIB) {
+        if (STEEL) {
             // uninitialize static variables so as not to cause memory leaks when reloading
             ScoreboardManager.uninitialize();
             if (ConfigHelper.VERBOSE_LOGGING) {

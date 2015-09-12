@@ -4,7 +4,7 @@ main: net.caseif.ttt.TTTCore
 author: Maxim Roncacé
 website: http://dev.bukkit.org/bukkit-plugins/ttt
 description: A Bukkit minigame based off the Garry's Mod gamemode Trouble In Terrorist Town.
-softdepend: [MGLib]
+softdepend: [Steel]
 
 commands:
   ttt:
