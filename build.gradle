@@ -95,6 +95,7 @@ jar {
 
 shadowJar {
     dependencies {
+        include dependency(rosetta)
         include dependency(crosstitles)
         include dependency(updater)
         include dependency(metrics)
