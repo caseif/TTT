@@ -83,7 +83,7 @@ public class TTTCore extends JavaPlugin {
         plugin = this;
         locale = new LocaleManager(this);
 
-        if (!Bukkit.getPluginManager().isPluginEnabled("Flint") || FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("Steel") || FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
             MGLIB = false;
             logInfo("error.plugin.flint", MIN_FLINT_VERSION + "");
             getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
