@@ -102,8 +102,8 @@ public final class ConfigHelper {
     private static final ImmutableMap<String, String> LEGACY_NODES;
 
     static {
-        TIME_LIMIT = getInt("time-limit");
-        SETUP_TIME = getInt("setup-time");
+        TIME_LIMIT = getInt("roundtime-seconds");
+        SETUP_TIME = getInt("preptime-seconds");
         MINIMUM_PLAYERS = getInt("minimum-players");
         MAXIMUM_PLAYERS = getInt("maximum-players");
         TRAITOR_RATIO = getDouble("traitor-pct");
@@ -154,7 +154,7 @@ public final class ConfigHelper {
         GUN_ITEM = getMaterial("gun-item", Material.IRON_BARDING);
 
         LEGACY_NODES = ImmutableMap.<String, String>builder()
-                .put("setup-time", "preptime_seconds")
+                .put("setup-time", "preptime-seconds")
                 .put("time-limit", "roundtime-seconds")
 
                 .put("traitor-ratio", "traitor-pct")

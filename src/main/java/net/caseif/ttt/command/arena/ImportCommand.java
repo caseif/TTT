@@ -64,8 +64,11 @@ public class ImportCommand extends SubcommandHandler {
                                         .withPrefix(Color.ERROR.toString()).sendTo(sender);
                             }
                             Location l = w.getSpawnLocation();
-                            TTTCore.mg.createArena(worldName,
-                                    new Location3D(l.getBlockX(), l.getBlockY(), l.getBlockZ()), Boundary.INFINITE);
+                            TTTCore.mg.createArena(
+                                    worldName,
+                                    new Location3D(worldName, l.getBlockX(), l.getBlockY(), l.getBlockZ()),
+                                    Boundary.INFINITE
+                            );
                             TTTCore.locale.getLocalizable("info.personal.arena.import.success")
                                     .withPrefix(Color.INFO.toString()).sendTo(sender);
                             return;

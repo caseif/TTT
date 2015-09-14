@@ -23,16 +23,16 @@
  */
 package net.caseif.ttt.util.helper;
 
-import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.MiscUtil;
 
+import com.google.common.collect.Lists;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.challenger.Team;
 import net.caseif.flint.round.Round;
 
-import java.util.Random;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Static utility class for role-related functionality.
@@ -46,28 +46,20 @@ public class RoleHelper {
         Team tTeam = round.getOrCreateTeam(Role.TRAITOR);
         for (Challenger ch : round.getChallengers()) {
             iTeam.addChallenger(ch);
-            MiscUtil.broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
-                    .withPrefix(Constants.Color.INFO.toString()));
         }
-        while (tTeam.getChallengers().size() < tLimit) {
-            Random randomGenerator = new Random();
-            Challenger tPlayer = round.getChallengers().get(randomGenerator.nextInt(players));
-            if (tPlayer.getTeam().get().getId().equals(Role.INNOCENT)) {
-                tTeam.addChallenger(tPlayer);
-            }
+        List<Challenger> tList = Lists.newArrayList(round.getChallengers());
+        Collections.shuffle(tList);
+        for (int i = 0; i < tLimit; i++) {
+            tTeam.addChallenger(tList.get(i));
         }
         int dLimit = (int) (players * ConfigHelper.DETECTIVE_RATIO);
         if (players >= ConfigHelper.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0) {
-            dLimit += 1;
+            dLimit = 1;
         }
-        int detectiveCount = 0;
-        while (detectiveCount < dLimit) {
-            Random randomGenerator = new Random();
-            Challenger dPlayer = round.getChallengers().get(randomGenerator.nextInt(players));
-            if (!dPlayer.getMetadata().has(Role.DETECTIVE)) {
-                dPlayer.getMetadata().set(Role.DETECTIVE, true);
-                detectiveCount++;
-            }
+        List<Challenger> dList = Lists.newArrayList(iTeam.getChallengers());
+        Collections.shuffle(dList);
+        for (int i = 0; i < dLimit; i++) {
+            dList.get(i).getMetadata().set(Role.DETECTIVE, true);
         }
     }
 

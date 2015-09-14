@@ -49,7 +49,7 @@ public class StartCommand extends SubcommandHandler {
                     if (arena.get().getRound().isPresent()) {
                         Round round = arena.get().getRound().get();
                         if (round.getChallengers().size() > 1) {
-                            round.setLifecycleStage(Constants.Stage.PREPARING);
+                            round.setLifecycleStage(Constants.Stage.PLAYING);
                             round.setTime(0);
                             TTTCore.locale.getLocalizable("info.personal.arena.set-stage.playing.success")
                                     .withPrefix(Color.INFO.toString())

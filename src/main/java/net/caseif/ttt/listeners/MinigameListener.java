@@ -162,22 +162,24 @@ public class MinigameListener {
                         .sendTo(pl);
             }
         }
+        MiscUtil.broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
+                .withPrefix(Constants.Color.INFO.toString()));
     }
 
     @SuppressWarnings({"deprecation"})
     @Subscribe
     public void onRoundTick(RoundTimerTickEvent event) {
         if (event.getRound().getLifecycleStage() == Constants.Stage.PREPARING) {
-            if ((event.getRound().getRemainingTime() % 10) == 0) {
+            if ((event.getRound().getRemainingTime() % 10) == 0 && event.getRound().getRemainingTime() > 0) {
                 for (Challenger ch : event.getRound().getChallengers()) {
                     Player pl = Bukkit.getPlayer(ch.getUniqueId());
                     assert pl != null;
                     TTTCore.locale.getLocalizable("info.global.round.status.starting.time")
                             .withPrefix(Color.INFO.toString())
                             .withReplacements(
-                                    TTTCore.locale.getLocalizable("fragment.seconds").localizeFor(pl),
-                                    event.getRound().getRemainingTime() + "")
-                            .sendTo(pl);
+                                    TTTCore.locale.getLocalizable("fragment.seconds")
+                                    .withReplacements(event.getRound().getRemainingTime() + "").localizeFor(pl))
+                                            .sendTo(pl);
                 }
             }
         } else if (event.getRound().getLifecycleStage() == Constants.Stage.PLAYING) {
@@ -206,7 +208,7 @@ public class MinigameListener {
                         Player killer = TTTCore.getInstance().getServer()
                                 .getPlayer(ch.getMetadata().<UUID>get("tracking").get());
                         if (killer != null
-                                && TTTCore.mg.getChallenger(ch.getMetadata().<UUID>get("tracking").get()).isPresent()) {
+                                && TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()) {
                             tracker.setCompassTarget(killer.getLocation());
                         } else {
                             TTTCore.locale.getLocalizable("error.round.trackee-left")
@@ -277,8 +279,7 @@ public class MinigameListener {
 
         KarmaHelper.allocateKarma(event.getRound());
 
-        boolean tVic = event.getRound().getMetadata().has("t-victory")
-                && event.getRound().getMetadata().<Boolean>get("t-victory").get();
+        boolean tVic = event.getRound().getMetadata().has("t-victory");
 
         TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
                 .withPrefix(Color.INNOCENT.toString())
@@ -295,8 +296,7 @@ public class MinigameListener {
 
     @Subscribe
     public void onStageChange(RoundChangeLifecycleStageEvent event) {
-        if ((event.getStageBefore() == Constants.Stage.PREPARING || event.getStageBefore() == Constants.Stage.PLAYING)
-                && (event.getStageAfter() == Constants.Stage.PREPARING)) {
+        if (event.getStageBefore() == Constants.Stage.PLAYING && event.getStageAfter() == Constants.Stage.PREPARING) {
             ScoreboardManager sm = ScoreboardManager.getScoreboardManager(event.getRound().getArena()).get();
             sm.unregister();
             for (Challenger ch : event.getRound().getChallengers()) {

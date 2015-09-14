@@ -31,11 +31,14 @@ import net.caseif.ttt.listeners.MinigameListener;
 import net.caseif.ttt.listeners.PlayerListener;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
+import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.helper.ContributorListHelper;
 
+import com.google.common.collect.ImmutableSet;
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.FlintCore;
+import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.minigame.Minigame;
 import net.caseif.rosetta.LocaleManager;
 import net.gravitydevelopment.updater.Updater;
@@ -95,6 +98,9 @@ public class TTTCore extends JavaPlugin {
 
         // register plugin with MGLib
         mg = FlintCore.registerPlugin(getName());
+
+        mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
+                ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING));
 
         //TODO: reimplement these functionalities
         /*ConfigManager cm = mg.getConfigManager();
