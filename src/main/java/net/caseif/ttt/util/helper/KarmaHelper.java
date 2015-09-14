@@ -142,23 +142,29 @@ public class KarmaHelper {
     private static void handleKick(Challenger player) {
         @SuppressWarnings("deprecation")
         Player p = TTTCore.getInstance().getServer().getPlayer(player.getName());
-        if (p != null) {
-            player.removeFromRound();
-            if (ConfigHelper.KARMA_BAN) {
+        assert p != null;
+        player.removeFromRound();
+        if (ConfigHelper.KARMA_BAN) {
+            try {
                 BanHelper.ban(p.getUniqueId(), ConfigHelper.KARMA_BAN_TIME);
                 if (ConfigHelper.KARMA_BAN_TIME < 0) {
                     TTTCore.locale.getLocalizable("info.personal.ban.perm.karma")
-                            .withPrefix(Constants.Color.INFO.toString()).withReplacements(ConfigHelper.KARMA_KICK + "")
-                            .sendTo(p);
+                            .withPrefix(Constants.Color.INFO.toString())
+                            .withReplacements(ConfigHelper.KARMA_KICK + "").sendTo(p);
                 } else {
                     TTTCore.locale.getLocalizable("info.personal.ban.temp.karma")
                             .withPrefix(Constants.Color.INFO.toString())
-                            .withReplacements(ConfigHelper.KARMA_BAN_TIME + "", ConfigHelper.KARMA_KICK + "").sendTo(p);
+                            .withReplacements(ConfigHelper.KARMA_BAN_TIME + "",
+                                    ConfigHelper.KARMA_KICK + "").sendTo(p);
                 }
-            } else {
-                TTTCore.locale.getLocalizable("info.personal.kick.karma").withPrefix(Constants.Color.INFO.toString())
-                        .withReplacements(ConfigHelper.KARMA_KICK + "").sendTo(p);
+            } catch (InvalidConfigurationException | IOException ex) {
+                ex.printStackTrace();
+                TTTCore.log.severe(TTTCore.locale.getLocalizable("error.plugin.ban")
+                        .withPrefix(Constants.Color.ERROR + "").withReplacements(player.getName()).localize());
             }
+        } else {
+            TTTCore.locale.getLocalizable("info.personal.kick.karma").withPrefix(Constants.Color.INFO.toString())
+                    .withReplacements(ConfigHelper.KARMA_KICK + "").sendTo(p);
         }
     }
 

@@ -26,13 +26,16 @@ package net.caseif.ttt.util.helper;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
 
+import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -48,45 +51,38 @@ public final class BanHelper {
      * @param minutes the length of time to ban the player for.
      * @return whether the player was successfully banned
      */
-    public static boolean ban(UUID player, int minutes) {
+    public static void ban(UUID player, int minutes) throws InvalidConfigurationException, IOException {
         File f = new File(TTTCore.getInstance().getDataFolder(), "bans.yml");
         YamlConfiguration y = new YamlConfiguration();
         Player p = Bukkit.getPlayer(player);
-        try {
-            y.load(f);
-            long unbanTime = minutes < 0 ? -1 : System.currentTimeMillis() / 1000L + (minutes * 60);
-            y.set(player.toString(), unbanTime);
-            y.save(f);
-            if (p != null) {
-                Challenger ch = TTTCore.mg.getChallenger(p.getUniqueId()).get(); //TODO: figure out why I added a TODO
-                ch.removeFromRound();
+        y.load(f);
+        long unbanTime = minutes < 0 ? -1 : System.currentTimeMillis() / 1000L + (minutes * 60);
+        y.set(player.toString(), unbanTime);
+        y.save(f);
+        if (p != null) {
+            Optional<Challenger> ch = TTTCore.mg.getChallenger(p.getUniqueId());
+            if (ch.isPresent()) {
+                ch.get().removeFromRound();
             }
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            TTTCore.getInstance().logWarning("error.plugin.ban",
-                    p != null ? p.getName() : player.toString());
         }
-        return false;
     }
 
-    public static boolean pardon(UUID uuid) {
+    public static boolean pardon(UUID uuid) throws InvalidConfigurationException, IOException {
         File f = new File(TTTCore.getInstance().getDataFolder(), "bans.yml");
         YamlConfiguration y = new YamlConfiguration();
         Player p = Bukkit.getPlayer(uuid);
-        try {
-            y.load(f);
+        y.load(f);
+        if (y.contains(uuid.toString())) {
             y.set(uuid.toString(), null);
             y.save(f);
             if (ConfigHelper.VERBOSE_LOGGING) {
-                TTTCore.log.info(p != null ? p.getName() : uuid.toString() + "'s ban has been lifted");
+                TTTCore.log.info(TTTCore.locale.getLocalizable("info.personal.pardon")
+                        .withReplacements(p != null ? p.getName() : uuid.toString()).localize());
             }
             return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            TTTCore.getInstance().logWarning("error.plugin.pardon", p != null ? p.getName() : uuid.toString());
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**

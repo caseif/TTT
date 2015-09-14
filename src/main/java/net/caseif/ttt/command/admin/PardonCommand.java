@@ -31,7 +31,10 @@ import net.caseif.ttt.util.helper.BanHelper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.util.UUID;
 
 public class PardonCommand extends SubcommandHandler {
@@ -45,26 +48,38 @@ public class PardonCommand extends SubcommandHandler {
         if (assertPermission()) {
             if (args.length > 1) {
                 String name = args[1];
-                try {
-                    UUID uuid = UUIDFetcher.getUUIDOf(name);
+                @SuppressWarnings("deprecation")
+                Player pl = Bukkit.getPlayer(name);
+                UUID uuid = null;
+                if (pl != null) {
+                    uuid = pl.getUniqueId();
+                } else {
+                    try {
+                        uuid = UUIDFetcher.getUUIDOf(name);
+                    } catch (UUIDFetcher.UUIDException ignored) {
+                    }
                     if (uuid == null) {
                         TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR.toString())
                                 .sendTo(sender);
                         return;
                     }
+                }
+                try {
                     if (BanHelper.pardon(uuid)) {
-                        TTTCore.locale.getLocalizable("info.personal.pardon").withPrefix(Color.INFO.toString())
-                        .sendTo(Bukkit.getPlayer(uuid));
+                        if (pl != null) {
+                            TTTCore.locale.getLocalizable("info.personal.pardon").withPrefix(Color.INFO.toString())
+                                    .sendTo(pl);
+                        }
                         TTTCore.locale.getLocalizable("info.personal.pardon.other")
                                 .withPrefix(Color.INFO.toString()).withReplacements(name).sendTo(sender);
                     } else {
-                        TTTCore.locale.getLocalizable("error.plugin.pardon").withPrefix(Color.ERROR.toString())
-                                .sendTo(sender);
+                        TTTCore.locale.getLocalizable("error.plugin.pardon.absent").withPrefix(Color.ERROR.toString())
+                                .withReplacements(name).sendTo(sender);
                     }
-                } catch (Exception ex) {
-                    TTTCore.locale.getLocalizable("error.plugin.generic").withPrefix(Color.ERROR.toString())
-                            .sendTo(sender);
+                } catch (InvalidConfigurationException | IOException ex) {
                     ex.printStackTrace();
+                    TTTCore.locale.getLocalizable("error.plugin.pardon").withPrefix(Color.ERROR.toString())
+                            .sendTo(sender);
                 }
             } else {
                 TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())

@@ -27,7 +27,9 @@ import com.google.common.collect.ImmutableList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -66,45 +68,57 @@ public final class UUIDFetcher implements Callable<Map<String, UUID>> {
         this(names, true);
     }
 
-    public Map<String, UUID> call() throws Exception {
+    public Map<String, UUID> call() throws UUIDException {
         Map<String, UUID> uuidMap = new HashMap<>();
         int requests = (int)Math.ceil(names.size() / PROFILES_PER_REQUEST);
-        for (int i = 0; i < requests; i++) {
-            HttpURLConnection connection = createConnection();
-            String body = JSONArray.toJSONString(names.subList(i * 100, Math.min((i + 1) * 100, names.size())));
-            writeBody(connection, body);
-            JSONArray array = (JSONArray)jsonParser.parse(new InputStreamReader(connection.getInputStream()));
-            for (Object profile : array) {
-                JSONObject jsonProfile = (JSONObject)profile;
-                String id = (String)jsonProfile.get("id");
-                String name = (String)jsonProfile.get("name");
-                UUID uuid = getUUID(id);
-                uuidMap.put(name, uuid);
+        try {
+            for (int i = 0; i < requests; i++) {
+                HttpURLConnection connection = createConnection();
+                String body = JSONArray.toJSONString(names.subList(i * 100, Math.min((i + 1) * 100, names.size())));
+                writeBody(connection, body);
+                JSONArray array = (JSONArray) jsonParser.parse(new InputStreamReader(connection.getInputStream()));
+                for (Object profile : array) {
+                    JSONObject jsonProfile = (JSONObject) profile;
+                    String id = (String) jsonProfile.get("id");
+                    String name = (String) jsonProfile.get("name");
+                    UUID uuid = getUUID(id);
+                    uuidMap.put(name, uuid);
+                }
+                if (rateLimiting && i != requests - 1) {
+                    Thread.sleep(100L);
+                }
             }
-            if (rateLimiting && i != requests - 1) {
-                Thread.sleep(100L);
-            }
+        } catch (InterruptedException | IOException | ParseException ex) {
+            throw new UUIDException(ex);
         }
         uuids.putAll(uuidMap);
         return uuidMap;
     }
 
-    private static void writeBody(HttpURLConnection connection, String body) throws Exception {
-        OutputStream stream = connection.getOutputStream();
-        stream.write(body.getBytes());
-        stream.flush();
-        stream.close();
+    private static void writeBody(HttpURLConnection connection, String body) throws UUIDException {
+        try {
+            OutputStream stream = connection.getOutputStream();
+            stream.write(body.getBytes());
+            stream.flush();
+            stream.close();
+        } catch (IOException ex) {
+            throw new UUIDException(ex);
+        }
     }
 
-    private static HttpURLConnection createConnection() throws Exception {
-        URL url = new URL(PROFILE_URL);
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setUseCaches(false);
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-        return connection;
+    private static HttpURLConnection createConnection() throws UUIDException {
+        try {
+            URL url = new URL(PROFILE_URL);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setUseCaches(false);
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            return connection;
+        } catch (IOException ex) {
+            throw new UUIDException(ex);
+        }
     }
 
     private static UUID getUUID(String id) {
@@ -129,7 +143,7 @@ public final class UUIDFetcher implements Callable<Map<String, UUID>> {
         return new UUID(mostSignificant, leastSignificant);
     }
 
-    public static UUID getUUIDOf(String name) throws Exception {
+    public static UUID getUUIDOf(String name) throws UUIDException {
         if (uuids.containsKey(name)) {
             return uuids.get(name);
         }
@@ -150,4 +164,13 @@ public final class UUIDFetcher implements Callable<Map<String, UUID>> {
         uuids.clear();
         uuids = null;
     }
+
+    public static class UUIDException extends Exception {
+        private static final long serialVersionUID = -1428969262256907686L;
+
+        public UUIDException(Exception cause) {
+            super("Failed to retrieve UUID(s)", cause);
+        }
+    }
+
 }

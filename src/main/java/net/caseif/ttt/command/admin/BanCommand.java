@@ -33,8 +33,10 @@ import net.caseif.ttt.util.helper.BanHelper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.util.UUID;
 
 public class BanCommand extends SubcommandHandler {
@@ -59,36 +61,46 @@ public class BanCommand extends SubcommandHandler {
                     }
                 }
                 try {
-                    UUID uuid = UUIDFetcher.getUUIDOf(name);
-                    if (uuid == null) {
-                        TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR.toString())
-                                .sendTo(sender);
-                        return;
+                    @SuppressWarnings("deprecation")
+                    Player pl = Bukkit.getPlayer(name);
+                    UUID uuid = null;
+                    if (pl != null) {
+                        uuid = pl.getUniqueId();
+                    } else {
+                        try {
+                            uuid = UUIDFetcher.getUUIDOf(name);
+                        } catch (UUIDFetcher.UUIDException ignored) {
+                        }
+                        if (uuid == null) {
+                            TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR.toString())
+                                    .sendTo(sender);
+                            return;
+                        }
                     }
-                    if (BanHelper.ban(uuid, time)) {
-                        Player pl = Bukkit.getPlayer(uuid);
-                        if (time == -1) {
+                    BanHelper.ban(uuid, time);
+                    if (time == -1) {
+                        if (pl != null) {
                             TTTCore.locale.getLocalizable("info.personal.ban.perm")
                                     .withPrefix(Color.ERROR.toString()).sendTo(pl);
-                            TTTCore.locale.getLocalizable("info.personal.ban.other.perm")
-                                    .withPrefix(Color.ERROR.toString()).sendTo(pl);
-                        } else {
-                            TTTCore.locale.getLocalizable("info.personal.ban.temp").withPrefix(Color.ERROR.toString())
+                        }
+                        TTTCore.locale.getLocalizable("info.personal.ban.other.perm")
+                                .withPrefix(Color.INFO.toString()).withReplacements(name).sendTo(sender);
+                    } else {
+                        if (pl != null) {
+                            TTTCore.locale.getLocalizable("info.personal.ban.temp")
+                                    .withPrefix(Color.ERROR.toString())
                                     .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
                                             .localizeFor(pl))
                                     .sendTo(pl);
-                            TTTCore.locale.getLocalizable("info.personal.ban.other.temp")
-                                    .withPrefix(Color.ERROR.toString())
-                                    .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
-                                            .localizeFor(sender))
-                                    .sendTo(sender);
                         }
-                    } else {
-                        TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(Color.ERROR.toString())
+                        TTTCore.locale.getLocalizable("info.personal.ban.other.temp")
+                                .withPrefix(Color.ERROR.toString())
+                                .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
+                                        .localizeFor(sender))
                                 .sendTo(sender);
                     }
-                } catch (Exception ex) {
-                    TTTCore.locale.getLocalizable("error.plugin.generic").withPrefix(Color.ERROR.toString())
+                } catch (InvalidConfigurationException | IOException ex) {
+                    TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(Color.ERROR.toString())
                             .sendTo(sender);
                     ex.printStackTrace();
                 }
