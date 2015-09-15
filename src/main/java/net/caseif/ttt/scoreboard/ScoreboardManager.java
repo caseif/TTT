@@ -32,7 +32,6 @@ import net.caseif.ttt.util.helper.ConfigHelper;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
-import net.caseif.flint.arena.Arena;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
 import org.bukkit.Bukkit;
@@ -139,8 +138,12 @@ public class ScoreboardManager {
         manager = null;
     }
 
-    public static Optional<ScoreboardManager> getScoreboardManager(Arena arena) {
-        return Optional.fromNullable(sbManagers.get(arena.getId()));
+    public static Optional<ScoreboardManager> get(Round round) {
+        return Optional.fromNullable(sbManagers.get(round.getArena().getId()));
+    }
+
+    public static ScoreboardManager getOrCreate(Round round) {
+        return get(round).or(new ScoreboardManager(round));
     }
 
     public void unregister() {

@@ -36,6 +36,7 @@ import net.caseif.ttt.util.helper.KarmaHelper;
 import net.caseif.ttt.util.helper.RoleHelper;
 import net.caseif.ttt.util.helper.TitleHelper;
 
+import com.google.common.base.Optional;
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.event.round.RoundChangeLifecycleStageEvent;
@@ -67,9 +68,8 @@ public class MinigameListener {
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 
-        if (ScoreboardManager.getScoreboardManager(event.getRound().getArena()).isPresent()) {
-            ScoreboardManager.getScoreboardManager(event.getRound().getArena()).get()
-                    .assignScoreboard(event.getChallenger());
+        if (ScoreboardManager.get(event.getRound()).isPresent()) {
+            ScoreboardManager.get(event.getRound()).get().assignScoreboard(event.getChallenger());
         }
 
         Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
@@ -102,9 +102,7 @@ public class MinigameListener {
         if (event.getStageAfter() == Constants.Stage.PREPARING) {
             MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
                     .withPrefix(Color.INFO.toString()));
-            if (!ScoreboardManager.getScoreboardManager(event.getRound().getArena()).isPresent()) {
-                new ScoreboardManager(event.getRound());
-            }
+            ScoreboardManager.getOrCreate(event.getRound());
         } else if (event.getStageAfter() == Constants.Stage.PLAYING) {
             startRound(event.getRound());
         }
@@ -114,7 +112,7 @@ public class MinigameListener {
     public void startRound(Round round) {
         InventoryHelper.distributeItems(round);
         RoleHelper.assignRoles(round);
-        ScoreboardManager.getScoreboardManager(round.getArena()).get().assignScoreboards();
+        ScoreboardManager.getOrCreate(round).assignScoreboards();
 
         for (Challenger ch : round.getChallengers()) {
             assert ch.getTeam().isPresent();
@@ -243,15 +241,13 @@ public class MinigameListener {
                     TTTCore.locale.getLocalizable("info.global.round.status.time.remaining")
                             .withPrefix(Color.INFO.toString())
                             .withReplacements(TTTCore.locale
-                                    .getLocalizable(rTime < 60 ? "fragment.minutes" : "fragment.seconds")
+                                    .getLocalizable(rTime < 60 ? "fragment.seconds" : "fragment.minutes")
                                     .withReplacements(Long.toString(rTime / 60)).localizeFor(pl))
                             .sendTo(pl);
                 }
             }
 
-            if (!ScoreboardManager.getScoreboardManager(event.getRound().getArena()).isPresent()) {
-                new ScoreboardManager(event.getRound());
-            }
+            ScoreboardManager.getOrCreate(event.getRound());
         }
     }
 
@@ -291,14 +287,16 @@ public class MinigameListener {
                 ent.remove();
             }
         }
-        ScoreboardManager.getScoreboardManager(event.getRound().getArena()).get().unregister();
+        Optional<ScoreboardManager> sbMan = ScoreboardManager.get(event.getRound());
+        if (sbMan.isPresent()) {
+            sbMan.get().unregister();
+        }
     }
 
     @Subscribe
     public void onStageChange(RoundChangeLifecycleStageEvent event) {
         if (event.getStageBefore() == Constants.Stage.PLAYING && event.getStageAfter() == Constants.Stage.PREPARING) {
-            ScoreboardManager sm = ScoreboardManager.getScoreboardManager(event.getRound().getArena()).get();
-            sm.unregister();
+            ScoreboardManager.getOrCreate(event.getRound()).unregister();
             for (Challenger ch : event.getRound().getChallengers()) {
                 Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
                 if (ch.getTeam().isPresent()) {

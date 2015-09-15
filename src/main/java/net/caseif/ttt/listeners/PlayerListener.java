@@ -69,12 +69,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PlayerListener implements Listener {
 
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGHEST)
+    //TODO: fix the crazy nesting in this method
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) { // check if player is in TTT round
             Challenger ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get();
@@ -183,10 +185,9 @@ public class PlayerListener implements Listener {
                                     //TODO: no Flint equivalent for this
                                     //bodyPlayer.setPrefix(Config.SB_ALIVE_PREFIX);
                                     bodyPlayer.get().getMetadata().set("bodyFound", true);
-                                    if (ScoreboardManager.getScoreboardManager(bodyPlayer.get().getRound().getArena())
-                                            .isPresent()) {
-                                        ScoreboardManager.getScoreboardManager(bodyPlayer.get().getRound().getArena())
-                                                .get().update(bodyPlayer.get());
+                                    if (ScoreboardManager.get(bodyPlayer.get().getRound()).isPresent()) {
+                                        ScoreboardManager.get(bodyPlayer.get().getRound()).get()
+                                                .update(bodyPlayer.get());
                                     }
                                 }
                             }
@@ -379,19 +380,21 @@ public class PlayerListener implements Listener {
         Optional<Challenger> chOpt = TTTCore.mg.getChallenger(pl.getUniqueId());
         if (chOpt.isPresent()) {
             Challenger ch = chOpt.get();
-            Challenger killer = TTTCore.mg.getChallenger(event.getEntity().getKiller().getUniqueId()).orNull();
+            Optional<Challenger> killer = event.getEntity().getKiller() != null
+                    ? TTTCore.mg.getChallenger(event.getEntity().getKiller().getUniqueId())
+                    : Optional.<Challenger>absent();
             NmsHelper.sendRespawnPacket(pl);
             ch.setSpectating(true);
             //ch.setPrefix(Config.SB_MIA_PREFIX); //TODO
             pl.setHealth(pl.getMaxHealth());
             ch.setSpectating(true);
-            if (ScoreboardManager.getScoreboardManager(ch.getRound().getArena()).isPresent()) {
-                ScoreboardManager.getScoreboardManager(ch.getRound().getArena()).get().update(ch);
+            if (ScoreboardManager.get(ch.getRound()).isPresent()) {
+                ScoreboardManager.get(ch.getRound()).get().update(ch);
             }
-            if (killer != null) {
+            if (killer.isPresent()) {
                 // set killer's karma
-                KarmaHelper.applyKillKarma(killer, ch);
-                ch.getMetadata().set("killer", killer.getUniqueId());
+                KarmaHelper.applyKillKarma(killer.get(), ch);
+                ch.getMetadata().set("killer", killer.get().getUniqueId());
             }
             Block block = pl.getLocation().getBlock();
             //TttPluginCore.mg.getRollbackManager().logBlockChange(block, ch.getArena()); //TODO (probably Flint 1.1)
@@ -419,29 +422,28 @@ public class PlayerListener implements Listener {
             // role identifier
             ItemStack ti = new ItemStack(Material.WOOL, 1);
             ItemMeta tiMeta = ti.getItemMeta();
-            //TODO: make this DRYer
+            short durability;
+            String name;
+            String lore;
             if (ch.getMetadata().has(Role.DETECTIVE)) {
-                ti.setDurability((short) 11);
-                tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.detective")
-                        .withPrefix(Color.DETECTIVE.toString()).localize());
-                List<String> lore = new ArrayList<>();
-                lore.add(TTTCore.locale.getLocalizable("item.id.detective").localize());
-                tiMeta.setLore(lore);
+                durability = 11;
+                name = TTTCore.locale.getLocalizable("fragment.detective")
+                        .withPrefix(Color.DETECTIVE.toString()).localize();
+                lore = TTTCore.locale.getLocalizable("item.id.detective").localize();
             } else if (!MiscUtil.isTraitor(ch)) {
-                ti.setDurability((short) 5);
-                tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.innocent")
-                        .withPrefix(Color.INNOCENT.toString()).localize());
-                List<String> tiLore = new ArrayList<>();
-                tiLore.add(TTTCore.locale.getLocalizable("item.id.innocent").localize());
-                tiMeta.setLore(tiLore);
+                durability = 5;
+                name = TTTCore.locale.getLocalizable("fragment.innocent")
+                        .withPrefix(Color.INNOCENT.toString()).localize();
+                lore = TTTCore.locale.getLocalizable("item.id.innocent").localize();
             } else {
-                ti.setDurability((short) 14);
-                tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment.traitor")
-                        .withPrefix(Color.TRAITOR.toString()).localize());
-                List<String> lore = new ArrayList<>();
-                lore.add(TTTCore.locale.getLocalizable("item.id.traitor").localize());
-                tiMeta.setLore(lore);
+                durability = 14;
+                name = TTTCore.locale.getLocalizable("fragment.traitor")
+                        .withPrefix(Color.TRAITOR.toString()).localize();
+                lore = TTTCore.locale.getLocalizable("item.id.traitor").localize();
             }
+            ti.setDurability(durability);
+            tiMeta.setDisplayName(name);
+            tiMeta.setLore(Collections.singletonList(lore));
             ti.setItemMeta(tiMeta);
             chest.getInventory().addItem(id, ti);
             TTTCore.bodies.add(
@@ -449,7 +451,7 @@ public class PlayerListener implements Listener {
                             ch.getRound(),
                             new Location3D(block.getX(), block.getY(), block.getZ()),
                             ch.getUniqueId(),
-                            killer != null ? killer.getUniqueId() : null,
+                            killer.isPresent() ? killer.get().getUniqueId() : null,
                             ch.getMetadata().has(Role.DETECTIVE)
                                     ? Role.DETECTIVE
                                     : (ch.getTeam().isPresent() ? ch.getTeam().get().getId() : null),
