@@ -383,6 +383,7 @@ public class PlayerListener implements Listener {
             Optional<Challenger> killer = event.getEntity().getKiller() != null
                     ? TTTCore.mg.getChallenger(event.getEntity().getKiller().getUniqueId())
                     : Optional.<Challenger>absent();
+            event.setDeathMessage("");
             NmsHelper.sendRespawnPacket(pl);
             ch.setSpectating(true);
             //ch.setPrefix(Config.SB_MIA_PREFIX); //TODO
