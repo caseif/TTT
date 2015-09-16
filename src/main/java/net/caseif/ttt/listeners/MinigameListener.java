@@ -25,6 +25,7 @@ package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.command.arena.JoinCommand;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
@@ -39,6 +40,7 @@ import net.caseif.ttt.util.helper.TitleHelper;
 import com.google.common.base.Optional;
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.event.lobby.PlayerClickLobbySignEvent;
 import net.caseif.flint.event.round.RoundChangeLifecycleStageEvent;
 import net.caseif.flint.event.round.RoundEndEvent;
 import net.caseif.flint.event.round.RoundTimerTickEvent;
@@ -305,6 +307,13 @@ public class MinigameListener {
                 }
             }
         }
+    }
+
+    @Subscribe
+    public void onPlayerClickLobbySign(PlayerClickLobbySignEvent event) {
+        Player player = Bukkit.getPlayer(event.getPlayer());
+        // lazy way of doing this, but it works
+        new JoinCommand(player, new String[]{"join", event.getLobbySign().getArena().getId()}).handle();
     }
 
 }
