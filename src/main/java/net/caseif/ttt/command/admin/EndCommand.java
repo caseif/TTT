@@ -59,11 +59,12 @@ public class EndCommand extends SubcommandHandler {
                         arena.get().getRound().get().end();
                     } else {
                         TTTCore.locale.getLocalizable("error.arena.no-round")
-                        .withPrefix(Color.ERROR.toString()).withReplacements(Color.ARENA + arenaName).sendTo(sender);
+                        .withPrefix(Color.ERROR.toString()).withReplacements(Color.ARENA + arenaName + Color.ERROR)
+                                .sendTo(sender);
                     }
                 } else {
                     TTTCore.locale.getLocalizable("error.arena.dne")
-                            .withPrefix(Color.ERROR.toString()).withReplacements(Color.ARENA + arenaName)
+                            .withPrefix(Color.ERROR.toString()).withReplacements(Color.ARENA + arenaName + Color.ERROR)
                             .sendTo(sender);
                 }
             } else {

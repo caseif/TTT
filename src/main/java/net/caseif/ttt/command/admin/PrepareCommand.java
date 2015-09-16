@@ -53,7 +53,7 @@ public class PrepareCommand extends SubcommandHandler {
                             round.setTime(0);
                             TTTCore.locale.getLocalizable("info.personal.arena.set-stage.preparing.success")
                                     .withPrefix(Color.INFO.toString())
-                                    .withReplacements(Color.ARENA + arena.get().getName()).sendTo(sender);
+                                    .withReplacements(Color.ARENA + arena.get().getName() + Color.ERROR).sendTo(sender);
                         } else {
                             TTTCore.locale.getLocalizable("error.arena.too-few-players")
                                     .withPrefix(Color.ERROR.toString()).sendTo(sender);

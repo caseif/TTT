@@ -26,9 +26,9 @@ package net.caseif.ttt.listeners;
 import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.helper.InventoryHelper;
@@ -75,9 +75,9 @@ public class MinigameListener {
         Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
         assert pl != null;
 
-        TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Constants.Color.INFO.toString())
+        TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO.toString())
                 .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl),
-                        Constants.Color.ARENA + event.getRound().getArena().getName() + Constants.Color.INFO)
+                        Color.ARENA + event.getRound().getArena().getName() + Color.INFO)
                 .broadcast();
     }
 
@@ -92,18 +92,18 @@ public class MinigameListener {
         //TODO: determine whether the round is ending (I'll probably tackle this in Flint 1.1)
         MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                 .withPrefix(Color.INFO.toString()).withReplacements(event.getChallenger().getName(),
-                        Color.ARENA + event.getChallenger().getRound().getArena().getName()));
+                        Color.ARENA + event.getChallenger().getRound().getArena().getName() + Color.INFO));
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
     }
 
     @Subscribe
     public void onRoundPrepare(RoundChangeLifecycleStageEvent event) {
-        if (event.getStageAfter() == Constants.Stage.PREPARING) {
+        if (event.getStageAfter() == Stage.PREPARING) {
             MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
                     .withPrefix(Color.INFO.toString()));
             ScoreboardManager.getOrCreate(event.getRound());
-        } else if (event.getStageAfter() == Constants.Stage.PLAYING) {
+        } else if (event.getStageAfter() == Stage.PLAYING) {
             startRound(event.getRound());
         }
     }
@@ -161,13 +161,13 @@ public class MinigameListener {
             }
         }
         MiscUtil.broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
-                .withPrefix(Constants.Color.INFO.toString()));
+                .withPrefix(Color.INFO.toString()));
     }
 
     @SuppressWarnings({"deprecation"})
     @Subscribe
     public void onRoundTick(RoundTimerTickEvent event) {
-        if (event.getRound().getLifecycleStage() == Constants.Stage.PREPARING) {
+        if (event.getRound().getLifecycleStage() == Stage.PREPARING) {
             if ((event.getRound().getRemainingTime() % 10) == 0 && event.getRound().getRemainingTime() > 0) {
                 for (Challenger ch : event.getRound().getChallengers()) {
                     Player pl = Bukkit.getPlayer(ch.getUniqueId());
@@ -180,7 +180,7 @@ public class MinigameListener {
                                             .sendTo(pl);
                 }
             }
-        } else if (event.getRound().getLifecycleStage() == Constants.Stage.PLAYING) {
+        } else if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
             // check if game is over
             boolean iLeft = false;
             boolean tLeft = false;
@@ -277,9 +277,10 @@ public class MinigameListener {
 
         boolean tVic = event.getRound().getMetadata().has("t-victory");
 
+        String color = (tVic ? Color.TRAITOR : Color.INNOCENT).toString();
         TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
-                .withPrefix(Color.INNOCENT.toString())
-                .withReplacements(Color.ARENA + event.getRound().getArena().getName()).broadcast();
+                .withPrefix(color)
+                .withReplacements(Color.ARENA + event.getRound().getArena().getName() + color).broadcast();
         TitleHelper.sendVictoryTitle(event.getRound(), tVic);
 
         for (Entity ent : Bukkit.getWorld(event.getRound().getArena().getWorld()).getEntities()) {
@@ -295,7 +296,7 @@ public class MinigameListener {
 
     @Subscribe
     public void onStageChange(RoundChangeLifecycleStageEvent event) {
-        if (event.getStageBefore() == Constants.Stage.PLAYING && event.getStageAfter() == Constants.Stage.PREPARING) {
+        if (event.getStageBefore() == Stage.PLAYING && event.getStageAfter() == Stage.PREPARING) {
             ScoreboardManager.getOrCreate(event.getRound()).unregister();
             for (Challenger ch : event.getRound().getChallengers()) {
                 Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
