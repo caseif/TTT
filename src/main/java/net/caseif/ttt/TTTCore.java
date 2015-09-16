@@ -32,6 +32,7 @@ import net.caseif.ttt.listeners.PlayerListener;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.Stage;
+import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
 import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.helper.ContributorListHelper;
 
@@ -98,6 +99,8 @@ public class TTTCore extends JavaPlugin {
 
         // register plugin with MGLib
         mg = FlintCore.registerPlugin(getName());
+
+        doCompatibilityActions();
 
         mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
                 ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING));
@@ -272,6 +275,11 @@ public class TTTCore extends JavaPlugin {
 
     private String localize(String localizationKey, String... replacements) {
         return locale.getLocalizable(localizationKey).withReplacements(replacements).localize();
+    }
+
+    private void doCompatibilityActions() {
+        LegacyMglibStorageConverter.convertArenaStore();
+        LegacyMglibStorageConverter.convertLobbyStore();
     }
 
 }
