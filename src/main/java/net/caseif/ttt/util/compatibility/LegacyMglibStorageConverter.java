@@ -166,7 +166,9 @@ public class LegacyMglibStorageConverter {
                         continue;
                     }
                     Location l = new Location(Bukkit.getWorld(world), x, y, z);
-                    l.getBlock().setType(Material.WALL_SIGN);
+                    if (l.getBlock().getType() != Material.WALL_SIGN && l.getBlock().getType() != Material.SIGN_POST) {
+                        l.getBlock().setType(Material.WALL_SIGN);
+                    }
                     Location3D loc = new Location3D(world, x, y, z);
                     switch (type) {
                         case "STATUS":
