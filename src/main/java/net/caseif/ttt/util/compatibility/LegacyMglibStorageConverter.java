@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Utility class for maintaining compatibility with MGLib's storage format.
+ * Static utility class for maintaining compatibility with MGLib's storage format.
  *
  * @author Max Roncacé
  */

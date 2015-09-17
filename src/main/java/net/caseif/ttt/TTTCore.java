@@ -33,6 +33,7 @@ import net.caseif.ttt.listeners.SpecialPlayerListener;
 import net.caseif.ttt.listeners.WizardListener;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.Stage;
+import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
 import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.helper.ContributorListHelper;
@@ -105,47 +106,14 @@ public class TTTCore extends JavaPlugin {
 
         mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
                 ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING));
-
-        //TODO: reimplement these functionalities
-        /*ConfigManager cm = mg.getConfigManager();
-        cm.setBlockPlaceAllowed(false);
-        cm.setBlockBreakAllowed(false);
-        cm.setHangingBreakAllowed(false);
-        cm.setKitsAllowed(false);
-        cm.setPMsAllowed(false);
-        cm.setRandomSpawning(false);
-        cm.setTeleportationAllowed(false);
-        cm.setTeamChatEnabled(true);
-        cm.setDefaultPreparationTime(Config.SETUP_TIME);
-        cm.setDefaultPlayingTime(Config.TIME_LIMIT);
-        cm.setAllowJoinRoundWhilePreparing(true);
-        cm.setAllowJoinRoundInProgress(false);
-        cm.setMinPlayers(Config.MINIMUM_PLAYERS);
-        cm.setMaxPlayers(Config.MAXIMUM_PLAYERS);
-        cm.setPvPAllowed(true);
-        cm.setTeamDamageAllowed(true);
-        cm.setOverrideDeathEvent(true);
-        cm.setMobSpawningAllowed(false);
-        cm.setEntityTargetingEnabled(false);
-        cm.setDefaultLocale(Config.LOCALE);*/
+        mg.setConfigValue(ConfigNode.MAX_PLAYERS, ConfigHelper.MAXIMUM_PLAYERS);
+        mg.setConfigValue(ConfigNode.RANDOM_SPAWNING, true);
 
         // register events and commands
         mg.getEventBus().register(new MinigameListener());
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new WizardListener(), this);
         getCommand("ttt").setExecutor(new CommandManager());
-
-        // copy pre-0.5 folder
-        final File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
-        if (old.exists() && !getDataFolder().exists()) {
-            logWarning("info.plugin.compatibility.rename");
-            try {
-                old.renameTo(getDataFolder());
-            } catch (Exception ex) {
-                logWarning("error.plugin.folder-rename");
-                ex.printStackTrace();
-            }
-        }
 
         // check if config should be overwritten
         if (!new File(getDataFolder(), "config.yml").exists()) {
@@ -280,6 +248,8 @@ public class TTTCore extends JavaPlugin {
     }
 
     private void doCompatibilityActions() {
+        LegacyConfigFolderRenamer.renameLegacyFolder();
+
         LegacyMglibStorageConverter.convertArenaStore();
         LegacyMglibStorageConverter.convertLobbyStore();
     }
