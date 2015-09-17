@@ -41,7 +41,7 @@ public final class Constants {
         public static final ChatColor DESCRIPTION = ChatColor.GREEN;
         public static final ChatColor DETECTIVE = ChatColor.BLUE;
         public static final ChatColor ERROR = ChatColor.RED;
-        public static final ChatColor INFO = ChatColor.DARK_PURPLE;
+        public static final ChatColor INFO = ChatColor.DARK_AQUA;
         public static final ChatColor INNOCENT = ChatColor.DARK_GREEN;
         public static final ChatColor SPECIAL = ChatColor.LIGHT_PURPLE;
         public static final ChatColor TRAITOR = ChatColor.DARK_RED;
