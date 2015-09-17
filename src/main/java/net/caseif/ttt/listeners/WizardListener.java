@@ -25,6 +25,7 @@ package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.helper.LocationHelper;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -100,10 +101,7 @@ public class WizardListener implements Listener {
                                         .get(event.getPlayer().getUniqueId())[Stage.WIZARD_FIRST_BOUND])
                                         .getWorld().get()
                         )) {
-                            Location3D spawn = new Location3D(event.getPlayer().getWorld().getName(),
-                                    event.getPlayer().getLocation().getX(),
-                                    event.getPlayer().getLocation().getY(),
-                                    event.getPlayer().getLocation().getZ());
+                            Location3D spawn = LocationHelper.convert(event.getPlayer().getLocation());
                             Object[] info = WIZARD_INFO.get(event.getPlayer().getUniqueId());
                             TTTCore.mg.createArena((String) info[Stage.WIZARD_ID], (String) info[Stage.WIZARD_NAME],
                                     spawn, new Boundary((Location3D) info[Stage.WIZARD_FIRST_BOUND],

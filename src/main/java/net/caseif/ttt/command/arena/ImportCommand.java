@@ -27,9 +27,9 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.helper.FileHelper;
+import net.caseif.ttt.util.helper.LocationHelper;
 
 import net.caseif.flint.util.physical.Boundary;
-import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -66,7 +66,7 @@ public class ImportCommand extends SubcommandHandler {
                             Location l = w.getSpawnLocation();
                             TTTCore.mg.createArena(
                                     worldName,
-                                    new Location3D(worldName, l.getBlockX(), l.getBlockY(), l.getBlockZ()),
+                                    LocationHelper.convert(l),
                                     Boundary.INFINITE
                             );
                             TTTCore.locale.getLocalizable("info.personal.arena.import.success")

@@ -33,6 +33,7 @@ import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.helper.InventoryHelper;
 import net.caseif.ttt.util.helper.KarmaHelper;
+import net.caseif.ttt.util.helper.LocationHelper;
 import net.caseif.ttt.util.helper.NmsHelper;
 
 import com.google.common.base.Optional;
@@ -363,8 +364,8 @@ public class PlayerListener implements Listener {
                     } else {
                         return;
                     }
-                    Location3D l1 = new Location3D(block.getX(), block.getY(), block.getZ());
-                    Location3D l2 = block2 != null ? new Location3D(block2.getX(), block2.getY(), block2.getZ()) : null;
+                    Location3D l1 = LocationHelper.convert(block.getLocation());
+                    Location3D l2 = block2 != null ? LocationHelper.convert(block2.getLocation()) : null;
                     for (Body b : TTTCore.bodies) {
                         if (b.getLocation().equals(l1) || b.getLocation().equals(l2)) {
                             event.setCancelled(true);
@@ -448,7 +449,7 @@ public class PlayerListener implements Listener {
             TTTCore.bodies.add(
                     new Body(
                             ch.getRound(),
-                            new Location3D(block.getX(), block.getY(), block.getZ()),
+                            LocationHelper.convert(block.getLocation()),
                             ch.getUniqueId(),
                             killer.isPresent() ? killer.get().getUniqueId() : null,
                             ch.getMetadata().has(Role.DETECTIVE)
