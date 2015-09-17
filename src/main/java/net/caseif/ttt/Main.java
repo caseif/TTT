@@ -90,6 +90,10 @@ public class Main extends JavaPlugin {
 	public static List<UUID> testers = new ArrayList<UUID>();
 	public static List<UUID> translators = new ArrayList<UUID>();
 
+	public static final String MGLIB_ERROR_MESSAGE = "This version of TTT requires MGLib version " + MIN_MGLIB_VERSION +
+			" or higher. You can download and install it from http://dev.bukkit.org/bukkit-plugins/mglib/. " +
+			"Note that TTT will not function without it!";
+
 	@Override
 	public void onEnable() {
 		log = this.getLogger();
@@ -110,9 +114,7 @@ public class Main extends JavaPlugin {
 		if (!Bukkit.getPluginManager().isPluginEnabled("MGLib") || !compatibleMethod ||
 				!Minigame.isMGLibCompatible(MIN_MGLIB_VERSION)) {
 			MGLIB = false;
-			Main.log.info("This version of TTT requires MGLib version " + MIN_MGLIB_VERSION +
-					" or higher. You can download and install it from http://dev.bukkit.org/bukkit-plugins/mglib/. " +
-					"Note that TTT will not function without it!");
+			Main.log.info(MGLIB_ERROR_MESSAGE);
 			getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
 			getCommand("ttt").setExecutor(new SpecialCommandManager());
 			return;

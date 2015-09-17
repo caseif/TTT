@@ -24,7 +24,8 @@
 package net.caseif.ttt.listeners;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
+
+import net.caseif.ttt.Main;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,7 +36,7 @@ public class SpecialPlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		if (e.getPlayer().hasPermission("ttt.build.warn")) {
-			e.getPlayer().sendMessage(getMessage("error.plugin.mglib", ERROR_COLOR));
+			e.getPlayer().sendMessage(ERROR_COLOR + Main.MGLIB_ERROR_MESSAGE);
 		}
 	}
 

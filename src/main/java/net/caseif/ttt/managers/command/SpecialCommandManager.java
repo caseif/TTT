@@ -24,8 +24,8 @@
 package net.caseif.ttt.managers.command;
 
 import static net.caseif.ttt.util.Constants.ERROR_COLOR;
-import static net.caseif.ttt.util.Constants.MIN_MGLIB_VERSION;
-import static net.caseif.ttt.util.MiscUtil.getMessage;
+
+import net.caseif.ttt.Main;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,10 +37,10 @@ public class SpecialCommandManager implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (label.equalsIgnoreCase("ttt")) {
 			if (sender.hasPermission("ttt.build.warn")) {
-				sender.sendMessage(getMessage("error.plugin.mglib", ERROR_COLOR, MIN_MGLIB_VERSION));
+				sender.sendMessage(ERROR_COLOR + Main.MGLIB_ERROR_MESSAGE);
 			}
 			else {
-				sender.sendMessage(getMessage("error.plugin.disabled", ERROR_COLOR));
+				sender.sendMessage(ERROR_COLOR + "TTT is currently disabled!");
 			}
 			return true;
 		}
