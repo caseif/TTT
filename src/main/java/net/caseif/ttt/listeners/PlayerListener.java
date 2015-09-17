@@ -36,6 +36,7 @@ import net.caseif.ttt.util.helper.KarmaHelper;
 import net.caseif.ttt.util.helper.NmsHelper;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.Bukkit;
@@ -60,6 +61,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -73,6 +75,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class PlayerListener implements Listener {
+
+    private final ImmutableList<String> disabledCommands = ImmutableList.of("kit", "msg", "pm", "r", "me");
 
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -424,27 +428,21 @@ public class PlayerListener implements Listener {
             ItemStack ti = new ItemStack(Material.WOOL, 1);
             ItemMeta tiMeta = ti.getItemMeta();
             short durability;
-            String name;
-            String lore;
+            String roleId = "";
             if (ch.getMetadata().has(Role.DETECTIVE)) {
                 durability = 11;
-                name = TTTCore.locale.getLocalizable("fragment.detective")
-                        .withPrefix(Color.DETECTIVE.toString()).localize();
-                lore = TTTCore.locale.getLocalizable("item.id.detective").localize();
+                roleId = "detective";
             } else if (!MiscUtil.isTraitor(ch)) {
                 durability = 5;
-                name = TTTCore.locale.getLocalizable("fragment.innocent")
-                        .withPrefix(Color.INNOCENT.toString()).localize();
-                lore = TTTCore.locale.getLocalizable("item.id.innocent").localize();
+                roleId = "innocent";
             } else {
                 durability = 14;
-                name = TTTCore.locale.getLocalizable("fragment.traitor")
-                        .withPrefix(Color.TRAITOR.toString()).localize();
-                lore = TTTCore.locale.getLocalizable("item.id.traitor").localize();
+                roleId = "traitor";
             }
             ti.setDurability(durability);
-            tiMeta.setDisplayName(name);
-            tiMeta.setLore(Collections.singletonList(lore));
+            tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment." + roleId)
+                    .withPrefix(Color.DETECTIVE.toString()).localize());
+            tiMeta.setLore(Collections.singletonList(TTTCore.locale.getLocalizable("item.id." + roleId).localize()));
             ti.setItemMeta(tiMeta);
             chest.getInventory().addItem(id, ti);
             TTTCore.bodies.add(
@@ -459,6 +457,18 @@ public class PlayerListener implements Listener {
                             System.currentTimeMillis()
                     )
             );
+        }
+    }
+
+    @EventHandler
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        String label = event.getMessage().split(" ")[0].substring(1);
+        if (disabledCommands.contains(label)) {
+            if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
+                event.setCancelled(true);
+                TTTCore.locale.getLocalizable("error.round.disabled-command").withPrefix(Color.ERROR.toString())
+                        .sendTo(event.getPlayer());
+            }
         }
     }
 
