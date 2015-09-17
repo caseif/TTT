@@ -21,32 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util.compatibility;
+package net.caseif.ttt.util.helper;
 
-import net.caseif.ttt.TTTCore;
-
+import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.Bukkit;
-
-import java.io.File;
+import org.bukkit.Location;
+import org.bukkit.WorldCreator;
 
 /**
- * Static utility class for maintaining compatibility with the old data folder.
+ * Static utility class for location-related functionality.
+ *
+ * <p>Disclaimer: copy-pasted directly from Steel.</p>
  *
  * @author Max Roncacé
  */
-public class LegacyConfigFolderRenamer {
+public class LocationHelper {
 
-    public static void renameLegacyFolder() {
-        final File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
-        if (old.exists() && !TTTCore.getInstance().getDataFolder().exists()) {
-            TTTCore.getInstance().logWarning("info.plugin.compatibility.rename");
-            try {
-                old.renameTo(TTTCore.getInstance().getDataFolder());
-            } catch (Exception ex) {
-                TTTCore.getInstance().logWarning("error.plugin.folder-rename");
-                ex.printStackTrace();
-            }
-        }
+    public static Location3D convert(Location location) {
+        return new Location3D(location.getWorld().getName(), location.getX(), location.getY(), location.getZ());
+    }
+
+    public static Location convert(Location3D location) {
+        return new Location(location.getWorld().isPresent()
+                ? Bukkit.createWorld(new WorldCreator(location.getWorld().get()))
+                : null,
+                location.getX(), location.getY(), location.getZ());
     }
 
 }

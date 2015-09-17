@@ -110,8 +110,8 @@ public class WizardListener implements Listener {
                                             (Location3D) info[Stage.WIZARD_SECOND_BOUND]));
                             TTTCore.locale.getLocalizable("info.personal.arena.create.success")
                                     .withPrefix(Color.INFO.toString()).withReplacements(Color.USAGE + "/ttt join "
-                                    + ((String) info[Stage.WIZARD_ID]).toLowerCase() + Color.INFO).
-                                    sendTo(event.getPlayer());
+                                    + ((String) info[Stage.WIZARD_ID]).toLowerCase() + Color.INFO)
+                                    .sendTo(event.getPlayer());
                             WIZARDS.remove(event.getPlayer().getUniqueId());
                             WIZARD_INFO.remove(event.getPlayer().getUniqueId());
                         } else {
