@@ -1,7 +1,7 @@
 name: TTT
 version: 0.8.0-SNAPSHOT
 main: net.caseif.ttt.TTTCore
-author: Maxim Roncacé
+author: Max Roncace
 website: http://dev.bukkit.org/bukkit-plugins/ttt
 description: A Bukkit minigame based off the Garry's Mod gamemode Trouble In Terrorist Town.
 softdepend: [Steel]

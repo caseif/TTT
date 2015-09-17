@@ -23,17 +23,13 @@
  */
 package net.caseif.ttt.command.arena;
 
-import static net.caseif.ttt.util.MiscUtil.isInt;
+import static net.caseif.ttt.listeners.WizardListener.WIZARDS;
+import static net.caseif.ttt.listeners.WizardListener.WIZARD_INFO;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.helper.FileHelper;
 
-import net.caseif.flint.util.physical.Boundary;
-import net.caseif.flint.util.physical.Location3D;
-import org.bukkit.Bukkit;
-import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -45,50 +41,25 @@ public class CreateArenaCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
-        //TODO: get corners (probably need a wizard for that :P)
         if (assertPermission()) {
-            String w;
-            int x;
-            int y;
-            int z;
-            if (args.length == 2) { // use sender's location
-                if (sender instanceof Player) {
-                    w = ((Player) sender).getWorld().getName();
-                    x = ((Player) sender).getLocation().getBlockX();
-                    y = ((Player) sender).getLocation().getBlockY();
-                    z = ((Player) sender).getLocation().getBlockZ();
+            if (sender instanceof Player) {
+                if (!WIZARDS.containsKey(((Player) sender).getUniqueId())) {
+                    WIZARDS.put(((Player) sender).getUniqueId(), 0);
+                    WIZARD_INFO.put(((Player) sender).getUniqueId(), new Object[4]);
+                    TTTCore.locale.getLocalizable("info.personal.arena.create.welcome")
+                            .withPrefix(Color.INFO.toString()).sendTo(sender);
+                    TTTCore.locale.getLocalizable("info.personal.arena.create.exit-note")
+                            .withPrefix(Color.INFO.toString()).withReplacements(Color.USAGE
+                            + TTTCore.locale.getLocalizable("info.personal.arena.create.cancel-keyword")
+                            .localizeFor(sender) + Color.INFO).sendTo(sender);
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR.toString())
-                            .sendTo(sender);
-                    return;
-                }
-            } else if (args.length == 6) { // use 3 provided coords and world
-                if (isInt(args[2]) && isInt(args[3]) && isInt(args[4])
-                        && FileHelper.isWorld(args[5])) {
-                    x = Integer.parseInt(args[2]);
-                    y = Integer.parseInt(args[3]);
-                    z = Integer.parseInt(args[4]);
-                    w = args[5];
-                } else {
-                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
-                            .sendTo(sender);
-                    sendUsage();
-                    return;
+                    TTTCore.locale.getLocalizable("error.arena.create.already")
+                            .withPrefix(Color.ERROR.toString()).sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
-                        .sendTo(sender);
-                sendUsage();
-                return;
-            }
-            if (TTTCore.mg.getArena(args[1]).isPresent()) {
-                TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("message.error.general.in-game").withPrefix(Color.ERROR.toString())
                         .sendTo(sender);
             }
-            TTTCore.mg.createArena(args[1], new Location3D(Bukkit.createWorld(new WorldCreator(w)).getName(), x, y, z),
-                    Boundary.INFINITE);
-            TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(Color.INFO.toString())
-                    .withReplacements(args[1]).sendTo(sender);
         }
     }
 }

@@ -30,6 +30,7 @@ import net.caseif.ttt.command.SpecialCommandManager;
 import net.caseif.ttt.listeners.MinigameListener;
 import net.caseif.ttt.listeners.PlayerListener;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
+import net.caseif.ttt.listeners.WizardListener;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
@@ -128,9 +129,10 @@ public class TTTCore extends JavaPlugin {
         cm.setEntityTargetingEnabled(false);
         cm.setDefaultLocale(Config.LOCALE);*/
 
-        // register events, commands, and the plugin variable
+        // register events and commands
         mg.getEventBus().register(new MinigameListener());
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new WizardListener(), this);
         getCommand("ttt").setExecutor(new CommandManager());
 
         // copy pre-0.5 folder
