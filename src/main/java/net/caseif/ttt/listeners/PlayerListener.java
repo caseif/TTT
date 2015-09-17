@@ -41,6 +41,7 @@ import com.google.common.collect.ImmutableList;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -389,11 +390,13 @@ public class PlayerListener implements Listener {
                     ? TTTCore.mg.getChallenger(event.getEntity().getKiller().getUniqueId())
                     : Optional.<Challenger>absent();
             event.setDeathMessage("");
+            event.getDrops().clear();
+            Location loc = pl.getLocation(); // sending the packet resets the location
             NmsHelper.sendRespawnPacket(pl);
+            pl.teleport(loc);
             ch.setSpectating(true);
             //ch.setPrefix(Config.SB_MIA_PREFIX); //TODO
             pl.setHealth(pl.getMaxHealth());
-            ch.setSpectating(true);
             if (ScoreboardManager.get(ch.getRound()).isPresent()) {
                 ScoreboardManager.get(ch.getRound()).get().update(ch);
             }
@@ -402,7 +405,7 @@ public class PlayerListener implements Listener {
                 KarmaHelper.applyKillKarma(killer.get(), ch);
                 ch.getMetadata().set("killer", killer.get().getUniqueId());
             }
-            Block block = pl.getLocation().getBlock();
+            Block block = loc.getBlock();
             //TttPluginCore.mg.getRollbackManager().logBlockChange(block, ch.getArena()); //TODO (probably Flint 1.1)
             BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
             boolean trapped = false;
