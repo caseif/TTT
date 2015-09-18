@@ -51,8 +51,8 @@ public final class Constants {
     // lifecycle stages
     public static class Stage {
         public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
-        public static final LifecycleStage PREPARING = new LifecycleStage("preparing", ConfigHelper.SETUP_TIME);
-        public static final LifecycleStage PLAYING = new LifecycleStage("playing", ConfigHelper.TIME_LIMIT);
+        public static final LifecycleStage PREPARING = new LifecycleStage("preparing", ConfigHelper.PREPTIME_SECONDS);
+        public static final LifecycleStage PLAYING = new LifecycleStage("playing", ConfigHelper.ROUNDTIME_SECONDS);
     }
 
     public static class Role {

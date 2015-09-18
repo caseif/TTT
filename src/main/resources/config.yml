@@ -5,9 +5,9 @@
 # See http://ttt.badking.net/config-and-commands/convars#TOC-Karma
 # for more detailed descriptions of certain config settings.
 
-###################
-# Round Structure #
-###################
+##################
+# Round Settings #
+##################
 
 # How long should the plugin wait before starting a new round once enough players have joined?
 preptime-seconds: 60
@@ -185,8 +185,8 @@ sb-mia-prefix: §7
 sb-dead-prefix: §m
 
 # Setting this to true will cause TTT to use the sidebar to display the karma scoreboard, as opposed to the player list.
-# We highly recommend you leave this false, as it violently murdered our testing server the last time we tested it.
-# The backend has since been rewritten, but we haven't retested this display mode.
+# We highly recommend you leave this false, as it nearly crashed our testing server the last time we tested it.
+# The backend has since been rewritten (twice), but we haven't retested this display mode.
 #
 # We disclaim all responsibility for damages and/or frustration caused by this "feature."
 sb-use-sidebar: false

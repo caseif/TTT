@@ -340,7 +340,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (!ConfigHelper.KARMA_PERSISTENCE) {
+        if (!ConfigHelper.KARMA_PERSIST) {
             KarmaHelper.resetKarma(event.getPlayer().getUniqueId());
         }
     }

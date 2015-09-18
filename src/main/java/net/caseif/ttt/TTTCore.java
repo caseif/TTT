@@ -161,7 +161,7 @@ public class TTTCore extends JavaPlugin {
         File invDir = new File(this.getDataFolder() + File.separator + "inventories");
         invDir.mkdir();
 
-        maxKarma = ConfigHelper.MAX_KARMA;
+        maxKarma = ConfigHelper.KARMA_MAX;
 
         if (ConfigHelper.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
             logWarning("error.plugin.title-support");

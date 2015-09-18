@@ -41,7 +41,7 @@ public class RoleHelper {
 
     public static void assignRoles(Round round) {
         int players = round.getChallengers().size();
-        int tLimit = MiscUtil.clamp((int) (players * ConfigHelper.TRAITOR_RATIO), 1, players - 1);
+        int tLimit = MiscUtil.clamp((int) (players * ConfigHelper.TRAITOR_PCT), 1, players - 1);
         Team iTeam = round.getOrCreateTeam(Role.INNOCENT);
         Team tTeam = round.getOrCreateTeam(Role.TRAITOR);
         for (Challenger ch : round.getChallengers()) {
@@ -52,8 +52,8 @@ public class RoleHelper {
         for (int i = 0; i < tLimit; i++) {
             tTeam.addChallenger(tList.get(i));
         }
-        int dLimit = (int) (players * ConfigHelper.DETECTIVE_RATIO);
-        if (players >= ConfigHelper.MINIMUM_PLAYERS_FOR_DETECTIVE && dLimit == 0) {
+        int dLimit = (int) (players * ConfigHelper.DETECTIVE_PCT);
+        if (players >= ConfigHelper.DETECTIVE_MIN_PLAYERS && dLimit == 0) {
             dLimit = 1;
         }
         List<Challenger> dList = Lists.newArrayList(iTeam.getChallengers());

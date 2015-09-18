@@ -105,10 +105,7 @@ public class MinigameListener {
                     .withPrefix(Color.INFO.toString()).withReplacements(event.getChallenger().getName(),
                             Color.ARENA + event.getChallenger().getRound().getArena().getName() + Color.INFO));
 
-            if (event.getRound().getChallengers().size() == 0) {
-                event.getRound().getMetadata().set("ending", true); //TODO: temp fix
-                event.getRound().end();
-            } else if (event.getRound().getLifecycleStage() == Stage.PREPARING
+            if (event.getRound().getLifecycleStage() == Stage.PREPARING
                     && event.getRound().getChallengers().size() <= 1) {
                 event.getRound().setLifecycleStage(Stage.WAITING);
                 MiscUtil.broadcast(event.getRound(),
@@ -171,7 +168,7 @@ public class MinigameListener {
                 TitleHelper.sendStatusTitle(pl, Role.TRAITOR);
             }
 
-            if (ConfigHelper.DAMAGE_REDUCTION) {
+            if (ConfigHelper.KARMA_DAMAGE_REDUCTION) {
                 KarmaHelper.applyDamageReduction(ch);
                 double reduc = KarmaHelper.getDamageReduction(ch);
                 String percentage = reduc < 1 ? (reduc * 100) + "%" : TTTCore.locale.getLocalizable("fragment.full")
