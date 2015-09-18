@@ -46,15 +46,15 @@ public class LeaveCommand extends SubcommandHandler {
                 if (ch.isPresent()) {
                     String roundName = ch.get().getRound().getArena().getName();
                     ch.get().removeFromRound();
-                    TTTCore.locale.getLocalizable("info.personal.arena.leave.success").withPrefix(Color.INFO.toString())
+                    TTTCore.locale.getLocalizable("info.personal.arena.leave.success").withPrefix(Color.INFO)
                             .withReplacements(Color.ARENA + roundName + Color.INFO).sendTo(sender);
                 } else {
-                    TTTCore.locale.getLocalizable("error.round.outside").withPrefix(Color.ERROR.toString())
+                    TTTCore.locale.getLocalizable("error.round.outside").withPrefix(Color.ERROR)
                             .sendTo(sender);
                 }
             }
         } else {
-            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR.toString()).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR).sendTo(sender);
         }
     }
 }

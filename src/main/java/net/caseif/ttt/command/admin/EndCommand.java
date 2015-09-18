@@ -52,7 +52,7 @@ public class EndCommand extends SubcommandHandler {
                                 arena.get().getRound().get().getMetadata().set("t-victory", true);
                             } else if (!args[2].equalsIgnoreCase("i")) {
                                 TTTCore.locale.getLocalizable("error.command.invalid-args")
-                                        .withPrefix(Color.ERROR.toString()).sendTo(sender);
+                                        .withPrefix(Color.ERROR).sendTo(sender);
                                 return;
                             }
                         }
@@ -60,16 +60,16 @@ public class EndCommand extends SubcommandHandler {
                         arena.get().getRound().get().getMetadata().set("ending", true); //TODO: temp fix
                     } else {
                         TTTCore.locale.getLocalizable("error.arena.no-round")
-                        .withPrefix(Color.ERROR.toString()).withReplacements(Color.ARENA + arenaName + Color.ERROR)
+                        .withPrefix(Color.ERROR).withReplacements(Color.ARENA + arenaName + Color.ERROR)
                                 .sendTo(sender);
                     }
                 } else {
                     TTTCore.locale.getLocalizable("error.arena.dne")
-                            .withPrefix(Color.ERROR.toString()).withReplacements(Color.ARENA + arenaName + Color.ERROR)
+                            .withPrefix(Color.ERROR).withReplacements(Color.ARENA + arenaName + Color.ERROR)
                             .sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
                         .sendTo(sender);
                 sendUsage();
             }

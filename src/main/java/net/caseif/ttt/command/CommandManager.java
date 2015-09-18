@@ -101,7 +101,7 @@ public class CommandManager implements CommandExecutor {
                     new HelpCommand(sender, args).handle();
                 } else {
                     TTTCore.locale.getLocalizable("error.command.invalid-args")
-                            .withPrefix(Color.ERROR.toString()).sendTo(sender);
+                            .withPrefix(Color.ERROR).sendTo(sender);
                 }
             } else {
                 new DefaultCommand(sender, args).handle();

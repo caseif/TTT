@@ -96,12 +96,6 @@ public final class ConfigHelper {
     public static final boolean KARMA_DEBUG;
 
     // Scoreboard settings
-    public static final String SB_I_INNOCENT_PREFIX;
-    public static final String SB_I_TRAITOR_PREFIX;
-    public static final String SB_I_DETECTIVE_PREFIX;
-    public static final String SB_T_INNOCENT_PREFIX;
-    public static final String SB_T_TRAITOR_PREFIX;
-    public static final String SB_T_DETECTIVE_PREFIX;
     public static final String SB_ALIVE_PREFIX;
     public static final String SB_MIA_PREFIX;
     public static final String SB_DEAD_PREFIX;
@@ -162,12 +156,6 @@ public final class ConfigHelper {
         KARMA_DEBUG = getBoolean("karma-debug");
 
         // Scoreboard settings
-        SB_I_INNOCENT_PREFIX = getString("sb-i-innocent-prefix");
-        SB_I_TRAITOR_PREFIX = getString("sb-i-traitor-prefix");
-        SB_I_DETECTIVE_PREFIX = getString("sb-i-detective-prefix");
-        SB_T_INNOCENT_PREFIX = getString("sb-t-innocent-prefix");
-        SB_T_TRAITOR_PREFIX = getString("sb-t-traitor-prefix");
-        SB_T_DETECTIVE_PREFIX = getString("sb-t-detective-prefix");
         SB_ALIVE_PREFIX = getString("sb-alive-prefix");
         SB_MIA_PREFIX = getString("sb-mia-prefix");
         SB_DEAD_PREFIX = getString("sb-dead-prefix");

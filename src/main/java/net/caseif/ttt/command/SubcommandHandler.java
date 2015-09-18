@@ -49,7 +49,7 @@ public abstract class SubcommandHandler {
      */
     public boolean assertPermission() {
         if (perm != null && !sender.hasPermission(perm)) {
-            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR.toString())
+            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR)
                     .sendTo(sender);
             return false;
         }
@@ -66,7 +66,7 @@ public abstract class SubcommandHandler {
     }
 
     public void sendUsage() {
-        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO.toString()).withReplacements(getUsage())
+        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO).withReplacements(getUsage())
                 .sendTo(sender);
     }
 }

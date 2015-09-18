@@ -115,7 +115,7 @@ public class PlayerListener implements Listener {
                                 inv.setContents(chestInv.getContents());
                                 event.getPlayer().openInventory(inv);
                                 TTTCore.locale.getLocalizable("info.personal.status.discreet-search")
-                                        .withPrefix(Color.INFO.toString()).sendTo(event.getPlayer());
+                                        .withPrefix(Color.INFO).sendTo(event.getPlayer());
                                 break;
                             }
                         }
@@ -221,17 +221,17 @@ public class PlayerListener implements Listener {
                                                     ch.getMetadata().set("tracking", killer.getName());
                                                 }
                                                 TTTCore.locale.getLocalizable("info.personal.status.collect-dna")
-                                                        .withPrefix(Color.INFO.toString())
+                                                        .withPrefix(Color.INFO)
                                                         .withReplacements(Bukkit.getPlayer(TTTCore.bodies.get(index)
                                                                 .getPlayer()).getName())
                                                         .sendTo(event.getPlayer());
                                             } else {
                                                 TTTCore.locale.getLocalizable("error.round.killer-left")
-                                                        .withPrefix(Color.ERROR.toString()).sendTo(event.getPlayer());
+                                                        .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                                             }
                                         } else {
                                             TTTCore.locale.getLocalizable("error.round.killer-left")
-                                                    .withPrefix(Color.ERROR.toString()).sendTo(event.getPlayer());
+                                                    .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                                         }
                                     }
                                     return;
@@ -264,7 +264,7 @@ public class PlayerListener implements Listener {
                                     event.getPlayer().launchProjectile(Arrow.class);
                                 } else {
                                     TTTCore.locale.getLocalizable("info.personal.status.no-ammo")
-                                            .withPrefix(Color.ERROR.toString()).sendTo(event.getPlayer());
+                                            .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                                 }
                             }
                         }
@@ -333,7 +333,7 @@ public class PlayerListener implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
             event.setCancelled(true);
-            TTTCore.locale.getLocalizable("info.personal.status.no-drop").withPrefix(Color.ERROR.toString())
+            TTTCore.locale.getLocalizable("info.personal.status.no-drop").withPrefix(Color.ERROR)
                     .sendTo(event.getPlayer());
         }
     }
@@ -468,7 +468,7 @@ public class PlayerListener implements Listener {
             }
             ti.setDurability(durability);
             tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment." + roleId)
-                    .withPrefix(Color.DETECTIVE.toString()).localize());
+                    .withPrefix(Color.DETECTIVE).localize());
             tiMeta.setLore(Collections.singletonList(TTTCore.locale.getLocalizable("item.id." + roleId).localize()));
             ti.setItemMeta(tiMeta);
             chest.getInventory().addItem(id, ti);
@@ -493,7 +493,7 @@ public class PlayerListener implements Listener {
         if (disabledCommands.contains(label)) {
             if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
                 event.setCancelled(true);
-                TTTCore.locale.getLocalizable("error.round.disabled-command").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("error.round.disabled-command").withPrefix(Color.ERROR)
                         .sendTo(event.getPlayer());
             }
         }

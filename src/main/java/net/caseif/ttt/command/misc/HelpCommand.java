@@ -79,18 +79,18 @@ public class HelpCommand extends SubcommandHandler {
                     if (sender.hasPermission((String) info[1])) {
                         sender.sendMessage(Color.INFO + "/ttt " + cmd + " "
                                 + Color.DESCRIPTION + ((Localizable) info[0]).localizeFor(sender));
-                        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO.toString())
+                        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO)
                                 .withReplacements(CommandManager.getUsage(cmd)).sendTo(sender);
                     } else {
-                        TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR.toString())
+                        TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR)
                                 .sendTo(sender);
                     }
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
+                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR)
                             .sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("info.help.available-cmds").withPrefix(Color.SPECIAL.toString())
+                TTTCore.locale.getLocalizable("info.help.available-cmds").withPrefix(Color.SPECIAL)
                         .sendTo(sender);
                 sender.sendMessage("");
                 for (String cmd : commands.keySet()) {

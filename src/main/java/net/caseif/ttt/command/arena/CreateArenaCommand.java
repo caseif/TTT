@@ -47,17 +47,17 @@ public class CreateArenaCommand extends SubcommandHandler {
                     WIZARDS.put(((Player) sender).getUniqueId(), 0);
                     WIZARD_INFO.put(((Player) sender).getUniqueId(), new Object[4]);
                     TTTCore.locale.getLocalizable("info.personal.arena.create.welcome")
-                            .withPrefix(Color.INFO.toString()).sendTo(sender);
+                            .withPrefix(Color.INFO).sendTo(sender);
                     TTTCore.locale.getLocalizable("info.personal.arena.create.exit-note")
-                            .withPrefix(Color.INFO.toString()).withReplacements(Color.USAGE
+                            .withPrefix(Color.INFO).withReplacements(Color.USAGE
                             + TTTCore.locale.getLocalizable("info.personal.arena.create.cancel-keyword")
                             .localizeFor(sender) + Color.INFO).sendTo(sender);
                 } else {
                     TTTCore.locale.getLocalizable("error.arena.create.already")
-                            .withPrefix(Color.ERROR.toString()).sendTo(sender);
+                            .withPrefix(Color.ERROR).sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("message.error.general.in-game").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("message.error.general.in-game").withPrefix(Color.ERROR)
                         .sendTo(sender);
             }
         }

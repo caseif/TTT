@@ -43,9 +43,9 @@ public class RemoveArenaCommand extends SubcommandHandler {
                 try {
                     TTTCore.mg.removeArena(name);
                     TTTCore.locale.getLocalizable("info.personal.arena.remove.success")
-                            .withPrefix(Color.INFO.toString()).withReplacements(name).sendTo(sender);
+                            .withPrefix(Color.INFO).withReplacements(name).sendTo(sender);
                 } catch (IllegalArgumentException ex) {
-                    TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString()).sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
                 }
             }
         }

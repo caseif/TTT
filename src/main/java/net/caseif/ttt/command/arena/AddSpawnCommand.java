@@ -56,8 +56,7 @@ public class AddSpawnCommand extends SubcommandHandler {
                     y = ((Player) sender).getLocation().getBlockY();
                     z = ((Player) sender).getLocation().getBlockZ();
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR.toString())
-                            .sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR).sendTo(sender);
                     return;
                 }
             } else if (args.length == 5) { // use 3 provided coords
@@ -66,14 +65,12 @@ public class AddSpawnCommand extends SubcommandHandler {
                     y = Integer.parseInt(args[3]);
                     z = Integer.parseInt(args[4]);
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
-                            .sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR).sendTo(sender);
                     sendUsage();
                     return;
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
-                        .sendTo(sender);
+                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR).sendTo(sender);
                 sendUsage();
                 return;
             }
@@ -83,14 +80,14 @@ public class AddSpawnCommand extends SubcommandHandler {
                     arena.get().addSpawnPoint(new Location3D(x, y, z));
                 } else {
                     if (!arena.get().getWorld().equals(w.getName())) {
-                        TTTCore.locale.getLocalizable("error.arena.invalid-location").withPrefix(Color.ERROR.toString())
+                        TTTCore.locale.getLocalizable("error.arena.invalid-location").withPrefix(Color.ERROR)
                                 .sendTo(sender);
                         return;
                     }
                     arena.get().addSpawnPoint(new Location3D(w.getName(), x, y, z));
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString()).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
             }
         }
     }

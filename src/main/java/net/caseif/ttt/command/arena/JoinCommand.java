@@ -54,7 +54,7 @@ public class JoinCommand extends SubcommandHandler {
 
                     Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
                     if (!arena.isPresent()) {
-                        TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString())
+                        TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR)
                                 .sendTo(sender);
                         return;
                     }
@@ -64,20 +64,19 @@ public class JoinCommand extends SubcommandHandler {
                             : arena.get().createRound();
 
                     if (round.getLifecycleStage() == Stage.PLAYING && !ConfigHelper.ALLOW_JOIN_AS_SPECTATOR) {
-                        TTTCore.locale.getLocalizable("error.round.in-progress").withPrefix(Color.ERROR.toString())
-                                .sendTo(sender);
+                        TTTCore.locale.getLocalizable("error.round.in-progress").withPrefix(Color.ERROR).sendTo(sender);
                     }
                     try {
                         round.addChallenger(((Player) sender).getUniqueId());
                     } catch (RoundJoinException ex) {
                         switch (ex.getReason()) {
                             case ALREADY_ENTERED: {
-                                TTTCore.locale.getLocalizable("error.round.inside").withPrefix(Color.ERROR.toString())
+                                TTTCore.locale.getLocalizable("error.round.inside").withPrefix(Color.ERROR)
                                         .sendTo(sender);
                                 break;
                             }
                             case FULL: {
-                                TTTCore.locale.getLocalizable("error.round.full").withPrefix(Color.ERROR.toString())
+                                TTTCore.locale.getLocalizable("error.round.full").withPrefix(Color.ERROR)
                                         .sendTo(sender);
                                 break;
                             }
@@ -85,8 +84,8 @@ public class JoinCommand extends SubcommandHandler {
                                 throw new RuntimeException(ex); // sender is notified of internal error
                             }
                             case OFFLINE: {
-                                TTTCore.locale.getLocalizable("error.round.player-offline")
-                                        .withPrefix(Color.ERROR.toString()).sendTo(sender);
+                                TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR)
+                                        .sendTo(sender);
                                 break;
                             }
                             default: {
@@ -96,13 +95,12 @@ public class JoinCommand extends SubcommandHandler {
                         }
                     }
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
-                            .sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR).sendTo(sender);
                     sendUsage();
                 }
             }
         } else {
-            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR.toString()).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR).sendTo(sender);
         }
     }
 }

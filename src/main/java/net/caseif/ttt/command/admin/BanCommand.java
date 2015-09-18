@@ -55,7 +55,7 @@ public class BanCommand extends SubcommandHandler {
                     if (isInt(args[2])) {
                         time = Integer.parseInt(args[2]);
                     } else {
-                        TTTCore.locale.getLocalizable("error.admin.ban.invalid-time").withPrefix(Color.ERROR.toString())
+                        TTTCore.locale.getLocalizable("error.admin.ban.invalid-time").withPrefix(Color.ERROR)
                                 .sendTo(sender);
                         return;
                     }
@@ -72,7 +72,7 @@ public class BanCommand extends SubcommandHandler {
                         } catch (UUIDFetcher.UUIDException ignored) {
                         }
                         if (uuid == null) {
-                            TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR.toString())
+                            TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR)
                                     .sendTo(sender);
                             return;
                         }
@@ -81,31 +81,31 @@ public class BanCommand extends SubcommandHandler {
                     if (time == -1) {
                         if (pl != null) {
                             TTTCore.locale.getLocalizable("info.personal.ban.perm")
-                                    .withPrefix(Color.ERROR.toString()).sendTo(pl);
+                                    .withPrefix(Color.ERROR).sendTo(pl);
                         }
                         TTTCore.locale.getLocalizable("info.personal.ban.other.perm")
-                                .withPrefix(Color.INFO.toString()).withReplacements(name).sendTo(sender);
+                                .withPrefix(Color.INFO).withReplacements(name).sendTo(sender);
                     } else {
                         if (pl != null) {
                             TTTCore.locale.getLocalizable("info.personal.ban.temp")
-                                    .withPrefix(Color.ERROR.toString())
+                                    .withPrefix(Color.ERROR)
                                     .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
                                             .localizeFor(pl))
                                     .sendTo(pl);
                         }
                         TTTCore.locale.getLocalizable("info.personal.ban.other.temp")
-                                .withPrefix(Color.ERROR.toString())
+                                .withPrefix(Color.ERROR)
                                 .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
                                         .localizeFor(sender))
                                 .sendTo(sender);
                     }
                 } catch (InvalidConfigurationException | IOException ex) {
-                    TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(Color.ERROR.toString())
+                    TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(Color.ERROR)
                             .sendTo(sender);
                     ex.printStackTrace();
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
                         .sendTo(sender);
                 sendUsage();
             }

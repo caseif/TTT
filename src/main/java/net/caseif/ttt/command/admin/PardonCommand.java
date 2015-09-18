@@ -59,7 +59,7 @@ public class PardonCommand extends SubcommandHandler {
                     } catch (UUIDFetcher.UUIDException ignored) {
                     }
                     if (uuid == null) {
-                        TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR.toString())
+                        TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR)
                                 .sendTo(sender);
                         return;
                     }
@@ -67,22 +67,22 @@ public class PardonCommand extends SubcommandHandler {
                 try {
                     if (BanHelper.pardon(uuid)) {
                         if (pl != null) {
-                            TTTCore.locale.getLocalizable("info.personal.pardon").withPrefix(Color.INFO.toString())
+                            TTTCore.locale.getLocalizable("info.personal.pardon").withPrefix(Color.INFO)
                                     .sendTo(pl);
                         }
                         TTTCore.locale.getLocalizable("info.personal.pardon.other")
-                                .withPrefix(Color.INFO.toString()).withReplacements(name).sendTo(sender);
+                                .withPrefix(Color.INFO).withReplacements(name).sendTo(sender);
                     } else {
-                        TTTCore.locale.getLocalizable("error.plugin.pardon.absent").withPrefix(Color.ERROR.toString())
+                        TTTCore.locale.getLocalizable("error.plugin.pardon.absent").withPrefix(Color.ERROR)
                                 .withReplacements(name).sendTo(sender);
                     }
                 } catch (InvalidConfigurationException | IOException ex) {
                     ex.printStackTrace();
-                    TTTCore.locale.getLocalizable("error.plugin.pardon").withPrefix(Color.ERROR.toString())
+                    TTTCore.locale.getLocalizable("error.plugin.pardon").withPrefix(Color.ERROR)
                             .sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
                         .sendTo(sender);
                 sendUsage();
             }

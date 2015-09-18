@@ -152,28 +152,8 @@ karma-debug: false
 
 # TTT uses Minecraft's scoreboard system to display player karma and status.
 # This section allows you to configure the formatting used to denote various states.
-# Please note that team states (innocent/traitor/detective) are displayed before life states (alive/mia/dead).
-# Also note that TTT divides innocents and traitors into separate scoreboards.
-# This way, traitors can be shown a separate prefix from innocents.
+# Please note that team prefixes (innocent/traitor/detective) are displayed before life prefixes (alive/mia/dead).
 # Protip: ALT+21 is the Windows shortcut for a section symbol (§). :)
-
-# The prefix for innocents as seen by innocents.
-sb-i-innocent-prefix:
-
-# The prefix for traitors as seen by innocents.
-sb-i-traitor-prefix:
-
-# The prefix for detectives as seen by innocents.
-sb-i-detective-prefix: §9
-
-# The prefix for innocents as seen by traitors.
-sb-t-innocent-prefix:
-
-# The prefix for traitors as seen by traitors.
-sb-t-traitor-prefix: §4
-
-# The prefix for detectives as seen by traitors.
-sb-t-detective-prefix: §1
 
 # The prefix for alive players.
 sb-alive-prefix:

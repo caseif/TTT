@@ -49,7 +49,7 @@ public final class TitleHelper {
             role = role.toLowerCase();
             String title = TTTCore.locale.getLocalizable("info.personal.status.role." + role + ".title")
                     .localizeFor(player);
-            ChatColor color;
+            String color;
             switch (role) {
                 case Constants.Role.INNOCENT: {
                     color = Constants.Color.INNOCENT;
@@ -65,9 +65,9 @@ public final class TitleHelper {
                 }
             }
             if (ConfigHelper.SMALL_STATUS_TITLES) {
-                TitleUtil.sendTitle(player, "", ChatColor.RESET, title, color);
+                TitleUtil.sendTitle(player, "", ChatColor.RESET, title, ChatColor.getByChar(color.charAt(1)));
             } else {
-                TitleUtil.sendTitle(player, title, color);
+                TitleUtil.sendTitle(player, title, ChatColor.getByChar(color.charAt(1)));
             }
         }
     }
@@ -77,14 +77,17 @@ public final class TitleHelper {
             checkNotNull(round, "Round cannot be null!");
             Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.end."
                     + (traitorVictory ? Constants.Role.TRAITOR : Constants.Role.INNOCENT) + ".min");
-            ChatColor color = traitorVictory ? Constants.Color.TRAITOR : Constants.Color.INNOCENT;
+            ChatColor color = ChatColor.getByChar(
+                    (traitorVictory ? Constants.Color.TRAITOR : Constants.Color.INNOCENT).charAt(1)
+            );
             for (Challenger ch : round.getChallengers()) {
                 Player pl = Bukkit.getPlayer(ch.getUniqueId());
                 if (ConfigHelper.SMALL_VICTORY_TITLES) {
                     TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), "", ChatColor.RESET, loc.localizeFor(pl),
                             color);
                 } else {
-                    TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), loc.localizeFor(pl), color);
+                    TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), loc.localizeFor(pl),
+                            color);
                 }
             }
         }

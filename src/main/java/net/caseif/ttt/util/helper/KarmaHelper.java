@@ -149,11 +149,11 @@ public class KarmaHelper {
                 BanHelper.ban(p.getUniqueId(), ConfigHelper.KARMA_LOW_BAN_MINUTES);
                 if (ConfigHelper.KARMA_LOW_BAN_MINUTES < 0) {
                     TTTCore.locale.getLocalizable("info.personal.ban.perm.karma")
-                            .withPrefix(Constants.Color.INFO.toString())
+                            .withPrefix(Constants.Color.INFO)
                             .withReplacements(ConfigHelper.KARMA_LOW_AUTOKICK + "").sendTo(p);
                 } else {
                     TTTCore.locale.getLocalizable("info.personal.ban.temp.karma")
-                            .withPrefix(Constants.Color.INFO.toString())
+                            .withPrefix(Constants.Color.INFO)
                             .withReplacements(ConfigHelper.KARMA_LOW_BAN_MINUTES + "",
                                     ConfigHelper.KARMA_LOW_AUTOKICK + "").sendTo(p);
                 }
@@ -163,7 +163,7 @@ public class KarmaHelper {
                         .withPrefix(Constants.Color.ERROR + "").withReplacements(player.getName()).localize());
             }
         } else {
-            TTTCore.locale.getLocalizable("info.personal.kick.karma").withPrefix(Constants.Color.INFO.toString())
+            TTTCore.locale.getLocalizable("info.personal.kick.karma").withPrefix(Constants.Color.INFO)
                     .withReplacements(ConfigHelper.KARMA_LOW_AUTOKICK + "").sendTo(p);
         }
     }

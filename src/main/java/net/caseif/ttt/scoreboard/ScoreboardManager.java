@@ -26,6 +26,7 @@ package net.caseif.ttt.scoreboard;
 import static net.caseif.ttt.util.MiscUtil.fromNullableString;
 
 import net.caseif.ttt.util.Constants.AliveStatus;
+import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.helper.ConfigHelper;
@@ -72,16 +73,6 @@ public class ScoreboardManager {
 
     private Map<TeamKey, Team> teams = new HashMap<>();
 
-    private static final ImmutableMap<String, String> I_ROLE_PREFIXES = ImmutableMap.<String, String>builder()
-            .put(Role.INNOCENT, ConfigHelper.SB_I_INNOCENT_PREFIX)
-            .put(Role.TRAITOR, ConfigHelper.SB_I_TRAITOR_PREFIX)
-            .put(Role.DETECTIVE, ConfigHelper.SB_I_DETECTIVE_PREFIX)
-            .build();
-    private static final ImmutableMap<String, String> T_ROLE_PREFIXES = ImmutableMap.<String, String>builder()
-            .put(Role.INNOCENT, ConfigHelper.SB_T_INNOCENT_PREFIX)
-            .put(Role.TRAITOR, ConfigHelper.SB_T_TRAITOR_PREFIX)
-            .put(Role.DETECTIVE, ConfigHelper.SB_T_DETECTIVE_PREFIX)
-            .build();
     private static final ImmutableMap<String, String> ALIVE_PREFIXES = ImmutableMap.<String, String>builder()
             .put(AliveStatus.ALIVE, ConfigHelper.SB_ALIVE_PREFIX)
             .put(AliveStatus.MIA, ConfigHelper.SB_MIA_PREFIX)
@@ -112,7 +103,7 @@ public class ScoreboardManager {
                 for (String alive : aliveStatuses) {
                     Team team = sb.registerNewTeam(role.charAt(0) + "" + alive.charAt(0));
                     String rolePrefix
-                            = fromNullableString((traitorBoard ? T_ROLE_PREFIXES : I_ROLE_PREFIXES).get(role));
+                            = role.equals(Role.DETECTIVE) ? Color.DETECTIVE : (traitorBoard ? Color.TRAITOR : "");
                     String alivePrefix = fromNullableString(ALIVE_PREFIXES.get(alive));
                     team.setPrefix(rolePrefix + alivePrefix);
                     teams.put(new TeamKey(traitorBoard, role, alive), team);

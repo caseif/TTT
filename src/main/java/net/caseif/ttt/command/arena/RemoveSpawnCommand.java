@@ -44,7 +44,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
     public void handle() {
         if (assertPermission()) {
             if (!TTTCore.mg.getArena(args[1]).isPresent()) {
-                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR.toString()).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
                 sendUsage();
                 return;
             }
@@ -59,7 +59,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                     y = ((Player) sender).getLocation().getBlockY();
                     z = ((Player) sender).getLocation().getBlockZ();
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR.toString())
+                    TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR)
                             .sendTo(sender);
                     return;
                 }
@@ -67,7 +67,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                 if (isInt(args[2])) {
                     index = Integer.parseInt(args[2]);
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
+                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR)
                             .sendTo(sender);
                     sendUsage();
                     return;
@@ -78,13 +78,13 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                     y = Integer.parseInt(args[3]);
                     z = Integer.parseInt(args[4]);
                 } else {
-                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
+                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR)
                             .sendTo(sender);
                     sendUsage();
                     return;
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR)
                         .sendTo(sender);
                 sendUsage();
                 return;
@@ -96,7 +96,7 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                     arena.removeSpawnPoint(new Location3D(x, y, z));
                 }
             } catch (IllegalArgumentException ex) {
-                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR)
                         .sendTo(sender);
             }
         }

@@ -52,23 +52,23 @@ public class StartCommand extends SubcommandHandler {
                             round.setLifecycleStage(Constants.Stage.PLAYING);
                             round.setTime(0);
                             TTTCore.locale.getLocalizable("info.personal.arena.set-stage.playing.success")
-                                    .withPrefix(Color.INFO.toString())
+                                    .withPrefix(Color.INFO)
                                     .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
                         } else {
                             TTTCore.locale.getLocalizable("error.arena.too-few-players")
-                                    .withPrefix(Color.ERROR.toString())
+                                    .withPrefix(Color.ERROR)
                                     .sendTo(sender);
                         }
                     } else {
-                        TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR.toString())
+                        TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR)
                                 .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
                     }
                 } else {
-                    TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR.toString())
+                    TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR)
                             .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
                         .sendTo(sender);
                 sendUsage();
             }

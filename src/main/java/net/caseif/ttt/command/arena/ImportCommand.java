@@ -61,7 +61,7 @@ public class ImportCommand extends SubcommandHandler {
                             if (TTTCore.mg.getArena(worldName).isPresent()) {
                                 //TODO: replace this message with something more accurate
                                 TTTCore.locale.getLocalizable("error.arena.already-exists")
-                                        .withPrefix(Color.ERROR.toString()).sendTo(sender);
+                                        .withPrefix(Color.ERROR).sendTo(sender);
                             }
                             Location l = w.getSpawnLocation();
                             TTTCore.mg.createArena(
@@ -70,16 +70,16 @@ public class ImportCommand extends SubcommandHandler {
                                     Boundary.INFINITE
                             );
                             TTTCore.locale.getLocalizable("info.personal.arena.import.success")
-                                    .withPrefix(Color.INFO.toString()).sendTo(sender);
+                                    .withPrefix(Color.INFO).sendTo(sender);
                             return;
                         }
                     }
                 }
                 // this executes only if something goes wrong loading the world
-                TTTCore.locale.getLocalizable("error.plugin.world-load").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("error.plugin.world-load").withPrefix(Color.ERROR)
                         .sendTo(sender);
             } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
                         .sendTo(sender);
                 sendUsage();
             }

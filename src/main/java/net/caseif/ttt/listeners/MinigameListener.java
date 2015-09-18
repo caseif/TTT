@@ -85,7 +85,7 @@ public class MinigameListener {
         }
 
         MiscUtil.broadcast(event.getRound(),
-                TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO.toString())
+                TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO)
                 .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl)));
     }
 
@@ -102,7 +102,7 @@ public class MinigameListener {
 
         if (!event.getRound().getMetadata().has("ending")) { //TODO: temp fix
             MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
-                    .withPrefix(Color.INFO.toString()).withReplacements(event.getChallenger().getName(),
+                    .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
                             Color.ARENA + event.getChallenger().getRound().getArena().getName() + Color.INFO));
 
             if (event.getRound().getLifecycleStage() == Stage.PREPARING
@@ -110,7 +110,7 @@ public class MinigameListener {
                 event.getRound().setLifecycleStage(Stage.WAITING);
                 MiscUtil.broadcast(event.getRound(),
                         TTTCore.locale.getLocalizable("info.global.round.status.starting.stopped")
-                                .withPrefix(Color.ERROR.toString()));
+                                .withPrefix(Color.ERROR));
             }
         }
     }
@@ -119,7 +119,7 @@ public class MinigameListener {
     public void onRoundPrepare(RoundChangeLifecycleStageEvent event) {
         if (event.getStageAfter() == Stage.PREPARING) {
             MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
-                    .withPrefix(Color.INFO.toString()));
+                    .withPrefix(Color.INFO));
             ScoreboardManager.getOrCreate(event.getRound());
         } else if (event.getStageAfter() == Stage.PLAYING) {
             startRound(event.getRound());
@@ -143,19 +143,19 @@ public class MinigameListener {
             if (ch.getTeam().get().getId().equals(Role.INNOCENT)) {
                 if (ch.getMetadata().has(Role.DETECTIVE)) {
                     TTTCore.locale.getLocalizable("info.personal.status.role.detective")
-                            .withPrefix(Color.DETECTIVE.toString()).sendTo(pl);
+                            .withPrefix(Color.DETECTIVE).sendTo(pl);
                     TitleHelper.sendStatusTitle(pl, Role.DETECTIVE);
                 } else {
                     TTTCore.locale.getLocalizable("info.personal.status.role.innocent")
-                            .withPrefix(Color.INNOCENT.toString()).sendTo(pl);
+                            .withPrefix(Color.INNOCENT).sendTo(pl);
                     TitleHelper.sendStatusTitle(pl, Role.INNOCENT);
                 }
             } else if (ch.getTeam().get().getId().equals(Role.TRAITOR)) {
                 if (ch.getTeam().get().getChallengers().size() > 1) {
                     TTTCore.locale.getLocalizable("info.personal.status.role.traitor")
-                            .withPrefix(Color.TRAITOR.toString()).sendTo(pl);
+                            .withPrefix(Color.TRAITOR).sendTo(pl);
                     TTTCore.locale.getLocalizable("info.personal.status.role.traitor.allies")
-                            .withPrefix(Color.TRAITOR.toString()).sendTo(pl);
+                            .withPrefix(Color.TRAITOR).sendTo(pl);
                     for (Challenger traitor : ch.getTeam().get().getChallengers()) {
                         if (traitor != ch) { // they aren't their own ally
                             pl.sendMessage(Color.TRAITOR + "- " + traitor.getName());
@@ -163,7 +163,7 @@ public class MinigameListener {
                     }
                 } else {
                     TTTCore.locale.getLocalizable("info.personal.status.role.traitor.alone")
-                            .withPrefix(Color.TRAITOR.toString()).sendTo(pl);
+                            .withPrefix(Color.TRAITOR).sendTo(pl);
                 }
                 TitleHelper.sendStatusTitle(pl, Role.TRAITOR);
             }
@@ -172,14 +172,14 @@ public class MinigameListener {
                 KarmaHelper.applyDamageReduction(ch);
                 double reduc = KarmaHelper.getDamageReduction(ch);
                 String percentage = reduc < 1 ? (reduc * 100) + "%" : TTTCore.locale.getLocalizable("fragment.full")
-                        .withPrefix(Color.INFO.toString()).localizeFor(pl);
+                        .withPrefix(Color.INFO).localizeFor(pl);
                 TTTCore.locale.getLocalizable("info.personal.status.karma-damage")
-                        .withPrefix(Color.INFO.toString()).withReplacements(KarmaHelper.getKarma(ch) + "", percentage)
+                        .withPrefix(Color.INFO).withReplacements(KarmaHelper.getKarma(ch) + "", percentage)
                         .sendTo(pl);
             }
         }
         MiscUtil.broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
-                .withPrefix(Color.INFO.toString()));
+                .withPrefix(Color.INFO));
     }
 
     @SuppressWarnings({"deprecation"})
@@ -191,7 +191,7 @@ public class MinigameListener {
                     Player pl = Bukkit.getPlayer(ch.getUniqueId());
                     assert pl != null;
                     TTTCore.locale.getLocalizable("info.global.round.status.starting.time")
-                            .withPrefix(Color.INFO.toString())
+                            .withPrefix(Color.INFO)
                             .withReplacements(
                                     TTTCore.locale.getLocalizable("fragment.seconds")
                                             .withReplacements(event.getRound().getRemainingTime() + "").localizeFor(pl))
@@ -228,7 +228,7 @@ public class MinigameListener {
                             tracker.setCompassTarget(killer.getLocation());
                         } else {
                             TTTCore.locale.getLocalizable("error.round.trackee-left")
-                                    .withPrefix(Color.INFO.toString()).sendTo(tracker);
+                                    .withPrefix(Color.INFO).sendTo(tracker);
                             ch.getMetadata().remove("tracking");
                             tracker.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
                         }
@@ -258,7 +258,7 @@ public class MinigameListener {
                 for (Challenger ch : r.getChallengers()) {
                     Player pl = Bukkit.getPlayer(ch.getUniqueId());
                     TTTCore.locale.getLocalizable("info.global.round.status.time.remaining")
-                            .withPrefix(Color.INFO.toString())
+                            .withPrefix(Color.INFO)
                             .withReplacements(TTTCore.locale
                                     .getLocalizable(rTime < 60 ? "fragment.seconds" : "fragment.minutes")
                                     .withReplacements(Long.toString(rTime / 60)).localizeFor(pl))
@@ -296,7 +296,7 @@ public class MinigameListener {
 
         boolean tVic = event.getRound().getMetadata().has("t-victory");
 
-        String color = (tVic ? Color.TRAITOR : Color.INNOCENT).toString();
+        String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
         TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
                 .withPrefix(color)
                 .withReplacements(Color.ARENA + event.getRound().getArena().getName() + color).broadcast();

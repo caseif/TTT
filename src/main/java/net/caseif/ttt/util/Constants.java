@@ -37,15 +37,15 @@ public final class Constants {
 
     // message colors
     public static class Color {
-        public static final ChatColor ARENA = ChatColor.ITALIC;
-        public static final ChatColor DESCRIPTION = ChatColor.GREEN;
-        public static final ChatColor DETECTIVE = ChatColor.BLUE;
-        public static final ChatColor ERROR = ChatColor.RED;
-        public static final ChatColor INFO = ChatColor.DARK_AQUA;
-        public static final ChatColor INNOCENT = ChatColor.DARK_GREEN;
-        public static final ChatColor SPECIAL = ChatColor.LIGHT_PURPLE;
-        public static final ChatColor TRAITOR = ChatColor.DARK_RED;
-        public static final ChatColor USAGE = ChatColor.GOLD;
+        public static final String ARENA = ChatColor.ITALIC.toString();
+        public static final String DESCRIPTION = ChatColor.GREEN.toString();
+        public static final String DETECTIVE = ChatColor.BLUE.toString();
+        public static final String ERROR = ChatColor.RED.toString();
+        public static final String INFO = ChatColor.DARK_AQUA.toString();
+        public static final String INNOCENT = ChatColor.DARK_GREEN.toString();
+        public static final String SPECIAL = ChatColor.LIGHT_PURPLE.toString();
+        public static final String TRAITOR = ChatColor.DARK_RED.toString();
+        public static final String USAGE = ChatColor.GOLD.toString();
     }
 
     // lifecycle stages

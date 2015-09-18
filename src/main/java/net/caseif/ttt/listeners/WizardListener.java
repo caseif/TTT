@@ -63,7 +63,7 @@ public class WizardListener implements Listener {
                 event.setCancelled(true);
                 WIZARDS.remove(event.getPlayer().getUniqueId());
                 WIZARD_INFO.remove(event.getPlayer().getUniqueId());
-                TTTCore.locale.getLocalizable("info.personal.arena.create.cancelled").withPrefix(Color.ERROR.toString())
+                TTTCore.locale.getLocalizable("info.personal.arena.create.cancelled").withPrefix(Color.ERROR)
                         .sendTo(event.getPlayer());
                 return;
             }
@@ -75,22 +75,22 @@ public class WizardListener implements Listener {
                             increment(event.getPlayer());
                             WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_ID] = event.getMessage();
                             TTTCore.locale.getLocalizable("info.personal.arena.create.id")
-                                    .withPrefix(Color.INFO.toString())
+                                    .withPrefix(Color.INFO)
                                     .withReplacements(Color.USAGE + event.getMessage().toLowerCase() + Color.INFO)
                                     .sendTo(event.getPlayer());
                         } else {
                             TTTCore.locale.getLocalizable("error.arena.create.invalid-id")
-                                    .withPrefix(Color.ERROR.toString()).sendTo(event.getPlayer());
+                                    .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                         }
                     } else {
                         TTTCore.locale.getLocalizable("error.arena.create.id-already-exists")
-                                .withPrefix(Color.ERROR.toString()).sendTo(event.getPlayer());
+                                .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                     }
                     break;
                 case Stage.WIZARD_NAME:
                     increment(event.getPlayer());
                     WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_NAME] = event.getMessage();
-                    TTTCore.locale.getLocalizable("info.personal.arena.create.name").withPrefix(Color.INFO.toString())
+                    TTTCore.locale.getLocalizable("info.personal.arena.create.name").withPrefix(Color.INFO)
                             .withReplacements(Color.USAGE + event.getMessage() + Color.INFO).sendTo(event.getPlayer());
                     break;
                 case Stage.WIZARD_SPAWN_POINT:
@@ -107,14 +107,14 @@ public class WizardListener implements Listener {
                                     spawn, new Boundary((Location3D) info[Stage.WIZARD_FIRST_BOUND],
                                             (Location3D) info[Stage.WIZARD_SECOND_BOUND]));
                             TTTCore.locale.getLocalizable("info.personal.arena.create.success")
-                                    .withPrefix(Color.INFO.toString()).withReplacements(Color.USAGE + "/ttt join "
+                                    .withPrefix(Color.INFO).withReplacements(Color.USAGE + "/ttt join "
                                     + ((String) info[Stage.WIZARD_ID]).toLowerCase() + Color.INFO)
                                     .sendTo(event.getPlayer());
                             WIZARDS.remove(event.getPlayer().getUniqueId());
                             WIZARD_INFO.remove(event.getPlayer().getUniqueId());
                         } else {
                             TTTCore.locale.getLocalizable("error.arena.create.bad-spawn")
-                                    .withPrefix(Color.ERROR.toString()).sendTo(event.getPlayer());
+                                    .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                         }
                         break;
                     }
@@ -139,7 +139,7 @@ public class WizardListener implements Listener {
                         WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_FIRST_BOUND]
                                 = new Location3D(c.getWorld().getName(), c.getX(), 0, c.getZ());
                         TTTCore.locale.getLocalizable("info.personal.arena.create.bound-1")
-                                .withPrefix(Color.INFO.toString())
+                                .withPrefix(Color.INFO)
                                 .withReplacements(Color.USAGE + "(x=" + c.getX() + ", z=" + c.getZ() + ")" + Color.INFO)
                                 .sendTo(event.getPlayer());
                         break;
@@ -153,7 +153,7 @@ public class WizardListener implements Listener {
                                     = new Location3D(c.getWorld().getName(), c.getX(), c.getWorld().getMaxHeight(),
                                     c.getZ());
                             TTTCore.locale.getLocalizable("info.personal.arena.create.bound-2")
-                                    .withPrefix(Color.INFO.toString())
+                                    .withPrefix(Color.INFO)
                                     .withReplacements(Color.USAGE + "(x=" + c.getX() + ", z=" + c.getZ() + ")"
                                             + Color.INFO, Color.USAGE
                                             + TTTCore.locale.getLocalizable("info.personal.arena.create.ok-keyword")
@@ -161,7 +161,7 @@ public class WizardListener implements Listener {
                                     .sendTo(event.getPlayer());
                         } else {
                             TTTCore.locale.getLocalizable("error.arena.create.bad-bound")
-                                    .withPrefix(Color.ERROR.toString()).sendTo(event.getPlayer());
+                                    .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                         }
                         break;
                     default:
