@@ -44,6 +44,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Arrow;
@@ -71,6 +72,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,6 +82,9 @@ import java.util.List;
 public class PlayerListener implements Listener {
 
     private final ImmutableList<String> disabledCommands = ImmutableList.of("kit", "msg", "pm", "r", "me");
+
+    private static Field fieldRbHelper;
+    private static Method logBlockChange;
 
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -412,6 +419,25 @@ public class PlayerListener implements Listener {
             //TTTCore.mg.getRollbackManager().logBlockChange(block, ch.getArena()); //TODO (probably Flint 1.1)
             //TODO: Add check for doors and such
             //TODO: move this code to another method
+            try {
+                //TODO: temporary hack (I'm still a terrible person for even writing this)
+                if (fieldRbHelper == null) {
+                    fieldRbHelper = ch.getRound().getArena().getClass().getDeclaredField("rbHelper");
+                    fieldRbHelper.setAccessible(true);
+                }
+                Object rbHelper = fieldRbHelper.get(ch.getRound().getArena());
+                if (logBlockChange == null) {
+                    logBlockChange
+                            = rbHelper.getClass().getDeclaredMethod("logBlockChange", Location.class, BlockState.class);
+                    logBlockChange.setAccessible(true);
+                }
+                logBlockChange.invoke(rbHelper, loc, loc.getBlock().getState());
+
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchFieldException
+                    | NoSuchMethodException ex) {
+                TTTCore.log.severe("Failed to log body for rollback");
+                ex.printStackTrace();
+            }
             block.setType(((loc.getBlockX() + loc.getBlockY()) % 2 == 0) ? Material.TRAPPED_CHEST : Material.CHEST);
             Chest chest = (Chest) block.getState();
 
