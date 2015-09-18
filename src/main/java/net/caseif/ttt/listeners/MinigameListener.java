@@ -80,10 +80,13 @@ public class MinigameListener {
 
         pl.setGameMode(GameMode.SURVIVAL);
 
-        TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO.toString())
-                .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl),
-                        Color.ARENA + event.getRound().getArena().getName() + Color.INFO)
-                .broadcast();
+        if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
+            event.getChallenger().setSpectating(true);
+        }
+
+        MiscUtil.broadcast(event.getRound(),
+                TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO.toString())
+                .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl)));
     }
 
     @Subscribe
