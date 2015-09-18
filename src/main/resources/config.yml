@@ -21,6 +21,9 @@ minimum-players: 3
 # How many players are allowed to enter a given round? (Set to -1 for no limit.)
 maximum-players: 32
 
+# Should players be permitted to join rounds in progress as spectators?
+allow-join-as-spectator: true
+
 ##############################
 # Traitor/Detective Settings #
 ##############################

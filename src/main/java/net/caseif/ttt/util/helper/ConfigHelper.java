@@ -54,6 +54,7 @@ public final class ConfigHelper {
     public static final int MAXIMUM_PLAYERS;
     public static final double TRAITOR_RATIO;
     public static final int MINIMUM_PLAYERS_FOR_DETECTIVE;
+    public static final boolean ALLOW_JOIN_AS_SPECTATOR;
     public static final int SCANNER_CHARGE_TIME;
     public static final int CROWBAR_DAMAGE;
     public static final boolean GUNS_OUTSIDE_ARENAS;
@@ -106,6 +107,7 @@ public final class ConfigHelper {
         SETUP_TIME = getInt("preptime-seconds");
         MINIMUM_PLAYERS = getInt("minimum-players");
         MAXIMUM_PLAYERS = getInt("maximum-players");
+        ALLOW_JOIN_AS_SPECTATOR = getBoolean("allow-join-as-spectator");
         TRAITOR_RATIO = getDouble("traitor-pct");
         DETECTIVE_RATIO = getDouble("detective-pct");
         MINIMUM_PLAYERS_FOR_DETECTIVE = getInt("minimum-players-for-detective");
