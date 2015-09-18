@@ -44,7 +44,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Arrow;
@@ -386,9 +385,7 @@ public class PlayerListener implements Listener {
         Optional<Challenger> chOpt = TTTCore.mg.getChallenger(pl.getUniqueId());
         if (chOpt.isPresent()) {
             Challenger ch = chOpt.get();
-            Optional<Challenger> killer = event.getEntity().getKiller() != null
-                    ? TTTCore.mg.getChallenger(event.getEntity().getKiller().getUniqueId())
-                    : Optional.<Challenger>absent();
+
             event.setDeathMessage("");
             event.getDrops().clear();
             Location loc = pl.getLocation(); // sending the packet resets the location
@@ -397,28 +394,27 @@ public class PlayerListener implements Listener {
             ch.setSpectating(true);
             //ch.setPrefix(Config.SB_MIA_PREFIX); //TODO
             pl.setHealth(pl.getMaxHealth());
+
             if (ScoreboardManager.get(ch.getRound()).isPresent()) {
                 ScoreboardManager.get(ch.getRound()).get().update(ch);
             }
+
+            Optional<Challenger> killer = event.getEntity().getKiller() != null
+                    ? TTTCore.mg.getChallenger(event.getEntity().getKiller().getUniqueId())
+                    : Optional.<Challenger>absent();
             if (killer.isPresent()) {
                 // set killer's karma
                 KarmaHelper.applyKillKarma(killer.get(), ch);
                 ch.getMetadata().set("killer", killer.get().getUniqueId());
             }
+
             Block block = loc.getBlock();
-            //TttPluginCore.mg.getRollbackManager().logBlockChange(block, ch.getArena()); //TODO (probably Flint 1.1)
-            BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
-            boolean trapped = false;
-            for (BlockFace bf : faces) {
-                if (block.getRelative(bf).getType() == Material.CHEST) {
-                    trapped = true;
-                    break;
-                }
-            }
+            //TTTCore.mg.getRollbackManager().logBlockChange(block, ch.getArena()); //TODO (probably Flint 1.1)
             //TODO: Add check for doors and such
             //TODO: move this code to another method
-            block.setType(trapped ? Material.TRAPPED_CHEST : Material.CHEST);
+            block.setType(((loc.getBlockX() + loc.getBlockY()) % 2 == 0) ? Material.TRAPPED_CHEST : Material.CHEST);
             Chest chest = (Chest) block.getState();
+
             // player identifier
             ItemStack id = new ItemStack(Material.PAPER, 1);
             ItemMeta idMeta = id.getItemMeta();
@@ -428,6 +424,7 @@ public class PlayerListener implements Listener {
             idLore.add(ch.getName());
             idMeta.setLore(idLore);
             id.setItemMeta(idMeta);
+
             // role identifier
             ItemStack ti = new ItemStack(Material.WOOL, 1);
             ItemMeta tiMeta = ti.getItemMeta();

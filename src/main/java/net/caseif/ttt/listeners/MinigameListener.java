@@ -34,6 +34,7 @@ import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.helper.ConfigHelper;
 import net.caseif.ttt.util.helper.InventoryHelper;
 import net.caseif.ttt.util.helper.KarmaHelper;
+import net.caseif.ttt.util.helper.LocationHelper;
 import net.caseif.ttt.util.helper.RoleHelper;
 import net.caseif.ttt.util.helper.TitleHelper;
 
@@ -48,6 +49,7 @@ import net.caseif.flint.event.round.challenger.ChallengerJoinRoundEvent;
 import net.caseif.flint.event.round.challenger.ChallengerLeaveRoundEvent;
 import net.caseif.flint.round.Round;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -75,7 +77,8 @@ public class MinigameListener {
         }
 
         Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
-        assert pl != null;
+
+        pl.setGameMode(GameMode.SURVIVAL);
 
         TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO.toString())
                 .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl),
@@ -91,12 +94,25 @@ public class MinigameListener {
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setDisplayName(event.getChallenger().getName());
         KarmaHelper.saveKarma(event.getChallenger());
-        //TODO: determine whether the round is ending (I'll probably tackle this in Flint 1.1)
-        MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
-                .withPrefix(Color.INFO.toString()).withReplacements(event.getChallenger().getName(),
-                        Color.ARENA + event.getChallenger().getRound().getArena().getName() + Color.INFO));
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
-                .setCompassTarget(Bukkit.getWorlds().get(0).getSpawnLocation());
+                .setCompassTarget(LocationHelper.convert(event.getReturnLocation()).getWorld().getSpawnLocation());
+
+        if (!event.getRound().getMetadata().has("ending")) { //TODO: temp fix
+            MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
+                    .withPrefix(Color.INFO.toString()).withReplacements(event.getChallenger().getName(),
+                            Color.ARENA + event.getChallenger().getRound().getArena().getName() + Color.INFO));
+
+            if (event.getRound().getChallengers().size() == 0) {
+                event.getRound().getMetadata().set("ending", true); //TODO: temp fix
+                event.getRound().end();
+            } else if (event.getRound().getLifecycleStage() == Stage.PREPARING
+                    && event.getRound().getChallengers().size() <= 1) {
+                event.getRound().setLifecycleStage(Stage.WAITING);
+                MiscUtil.broadcast(event.getRound(),
+                        TTTCore.locale.getLocalizable("info.global.round.status.starting.stopped")
+                                .withPrefix(Color.ERROR.toString()));
+            }
+        }
     }
 
     @Subscribe
@@ -178,8 +194,8 @@ public class MinigameListener {
                             .withPrefix(Color.INFO.toString())
                             .withReplacements(
                                     TTTCore.locale.getLocalizable("fragment.seconds")
-                                    .withReplacements(event.getRound().getRemainingTime() + "").localizeFor(pl))
-                                            .sendTo(pl);
+                                            .withReplacements(event.getRound().getRemainingTime() + "").localizeFor(pl))
+                            .sendTo(pl);
                 }
             }
         } else if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
@@ -231,6 +247,7 @@ public class MinigameListener {
             }
             if (!(tLeft && iLeft)) {
                 event.getRound().getMetadata().set("t-victory", tLeft);
+                event.getRound().getMetadata().set("ending", true); //TODO: temp fix
                 event.getRound().end();
                 return;
             }

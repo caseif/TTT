@@ -31,6 +31,7 @@ import net.caseif.ttt.listeners.MinigameListener;
 import net.caseif.ttt.listeners.PlayerListener;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
 import net.caseif.ttt.listeners.WizardListener;
+import net.caseif.ttt.listeners.WorldListener;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
@@ -113,6 +114,7 @@ public class TTTCore extends JavaPlugin {
         mg.getEventBus().register(new MinigameListener());
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new WizardListener(), this);
+        getServer().getPluginManager().registerEvents(new WorldListener(), this);
         getCommand("ttt").setExecutor(new CommandManager());
 
         // check if config should be overwritten
