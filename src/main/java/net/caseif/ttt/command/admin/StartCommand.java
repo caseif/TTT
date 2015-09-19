@@ -25,8 +25,8 @@ package net.caseif.ttt.command.admin;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.SubcommandHandler;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.Stage;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;
@@ -48,8 +48,13 @@ public class StartCommand extends SubcommandHandler {
                 if (arena.isPresent()) {
                     if (arena.get().getRound().isPresent()) {
                         Round round = arena.get().getRound().get();
+                        if (round.getLifecycleStage() == Stage.PLAYING) {
+                            TTTCore.locale.getLocalizable("error.round.started").withPrefix(Color.ERROR)
+                                    .sendTo(sender);
+                            return;
+                        }
                         if (round.getChallengers().size() > 1) {
-                            round.setLifecycleStage(Constants.Stage.PLAYING);
+                            round.setLifecycleStage(Stage.PLAYING);
                             round.setTime(0);
                             TTTCore.locale.getLocalizable("info.personal.arena.set-stage.playing.success")
                                     .withPrefix(Color.INFO)

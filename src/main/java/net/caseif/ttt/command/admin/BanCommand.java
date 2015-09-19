@@ -89,14 +89,18 @@ public class BanCommand extends SubcommandHandler {
                         if (pl != null) {
                             TTTCore.locale.getLocalizable("info.personal.ban.temp")
                                     .withPrefix(Color.ERROR)
-                                    .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
+                                    .withReplacements(TTTCore.locale.getLocalizable("fragment.minutes"
+                                            + (time == 1 ? ".singular" : "")).withReplacements(time + "")
                                             .localizeFor(pl))
                                     .sendTo(pl);
                         }
                         TTTCore.locale.getLocalizable("info.personal.ban.other.temp")
-                                .withPrefix(Color.ERROR)
-                                .withReplacements(time + TTTCore.locale.getLocalizable("fragment.minutes")
-                                        .localizeFor(sender))
+                                .withPrefix(Color.INFO)
+                                .withReplacements(pl != null ? pl.getName() : name,
+                                        TTTCore.locale.getLocalizable("fragment.minutes"
+                                                + (time == 1 ? ".singular" : "")).withReplacements(time + "")
+                                                .localizeFor(sender)
+                                )
                                 .sendTo(sender);
                     }
                 } catch (InvalidConfigurationException | IOException ex) {
