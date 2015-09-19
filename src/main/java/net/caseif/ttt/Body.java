@@ -34,14 +34,16 @@ public class Body {
     private final Round round;
     private final Location3D location;
     private final UUID player;
+    private final String name;
     private final UUID killer;
     private final String role;
     private final long time;
 
-    public Body(Round round, Location3D location, UUID player, UUID killer, String role, long time) {
+    public Body(Round round, Location3D location, UUID player, String name, UUID killer, String role, long time) {
         this.round = round;
         this.location = location;
         this.player = player;
+        this.name = name;
         this.killer = killer;
         this.role = role;
         this.time = time;
@@ -57,6 +59,10 @@ public class Body {
 
     public UUID getPlayer() {
         return player;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Optional<UUID> getKiller() {

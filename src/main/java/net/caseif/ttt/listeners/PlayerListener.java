@@ -101,6 +101,7 @@ public class PlayerListener implements Listener {
                 }
                 // handle body checking
                 Location3D clicked = new Location3D(
+                        event.getClickedBlock().getWorld().getName(),
                         event.getClickedBlock().getX(),
                         event.getClickedBlock().getY(),
                         event.getClickedBlock().getZ());
@@ -141,47 +142,18 @@ public class PlayerListener implements Listener {
                                 Optional<Challenger> bodyPlayer
                                         = TTTCore.mg.getChallenger(TTTCore.bodies.get(index).getPlayer());
                                 //TODO: make this DRYer
+                                String color = "";
                                 switch (b.getRole()) {
                                     case Role.INNOCENT: {
-                                        for (Challenger c : b.getRound().getChallengers()) {
-                                            Player pl = Bukkit.getPlayer(c.getUniqueId());
-                                            pl.sendMessage(Color.INNOCENT
-                                                    + TTTCore.locale
-                                                    .getLocalizable("info.global.round.event.body-find")
-                                                    .withReplacements(event.getPlayer().getName(),
-                                                            b.getPlayer().toString()).localizeFor(pl) + " "
-                                                    + TTTCore.locale
-                                                    .getLocalizable("info.global.round.event.body-find.innocent")
-                                                    .localizeFor(pl));
-                                        }
+                                        color = Color.INNOCENT;
                                         break;
                                     }
                                     case Role.TRAITOR: {
-                                        for (Challenger c : b.getRound().getChallengers()) {
-                                            Player pl = Bukkit.getPlayer(c.getUniqueId());
-                                            pl.sendMessage(Color.TRAITOR
-                                                    + TTTCore.locale
-                                                    .getLocalizable("info.global.round.event.body-find")
-                                                    .withReplacements(event.getPlayer().getName(),
-                                                            b.getPlayer().toString()).localizeFor(pl) + " "
-                                                    + TTTCore.locale
-                                                    .getLocalizable("info.global.round.event.body-find.traitor")
-                                                    .localizeFor(pl));
-                                        }
+                                        color = Color.TRAITOR;
                                         break;
                                     }
                                     case Role.DETECTIVE: {
-                                        for (Challenger c : b.getRound().getChallengers()) {
-                                            Player pl = Bukkit.getPlayer(c.getUniqueId());
-                                            pl.sendMessage(Color.DETECTIVE
-                                                    + TTTCore.locale
-                                                    .getLocalizable("info.global.round.event.body-find")
-                                                    .withReplacements(event.getPlayer().getName(),
-                                                            b.getPlayer().toString()).localizeFor(pl) + " "
-                                                    + TTTCore.locale
-                                                    .getLocalizable("info.global.round.event.body-find.detective")
-                                                    .localizeFor(pl));
-                                        }
+                                        color = Color.DETECTIVE;
                                         break;
                                     }
                                     default: {
@@ -191,6 +163,17 @@ public class PlayerListener implements Listener {
                                                 + "Report this immediately.");
                                     }
                                 }
+                                for (Challenger c : b.getRound().getChallengers()) {
+                                    Player pl = Bukkit.getPlayer(c.getUniqueId());
+                                    pl.sendMessage(color
+                                            + TTTCore.locale.getLocalizable("info.global.round.event.body-find")
+                                            .withReplacements(event.getPlayer().getName(),
+                                                    b.getName()).localizeFor(pl) + " "
+                                            + TTTCore.locale
+                                            .getLocalizable("info.global.round.event.body-find." + b.getRole())
+                                            .localizeFor(pl));
+                                }
+
                                 TTTCore.foundBodies.add(TTTCore.bodies.get(index));
                                 if (bodyPlayer.isPresent()
                                         && bodyPlayer.get().getRound().equals(TTTCore.bodies.get(index).getRound())) {
@@ -477,6 +460,7 @@ public class PlayerListener implements Listener {
                             ch.getRound(),
                             LocationHelper.convert(block.getLocation()),
                             ch.getUniqueId(),
+                            ch.getName(),
                             killer.isPresent() ? killer.get().getUniqueId() : null,
                             ch.getMetadata().has(Role.DETECTIVE)
                                     ? Role.DETECTIVE
