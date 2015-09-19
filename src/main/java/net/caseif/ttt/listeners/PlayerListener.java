@@ -72,6 +72,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -79,6 +80,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
@@ -199,27 +201,25 @@ public class PlayerListener implements Listener {
                                     Body body = TTTCore.bodies.get(index);
                                     if (body.getKiller().isPresent()) {
                                         Player killer = Bukkit.getPlayer(body.getKiller().get());
-                                        if (killer != null) {
-                                            if (TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()) {
-                                                if (!TTTCore.mg.getChallenger(killer.getUniqueId()).get()
-                                                        .isSpectating()) {
-                                                    ch.getMetadata().set("tracking", killer.getName());
-                                                }
-                                                TTTCore.locale.getLocalizable("info.personal.status.collect-dna")
-                                                        .withPrefix(Color.INFO)
-                                                        .withReplacements(Bukkit.getPlayer(TTTCore.bodies.get(index)
-                                                                .getPlayer()).getName())
-                                                        .sendTo(event.getPlayer());
-                                            } else {
-                                                TTTCore.locale.getLocalizable("error.round.killer-left")
-                                                        .withPrefix(Color.ERROR).sendTo(event.getPlayer());
+                                        if (killer != null
+                                                && TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()) {
+                                            if (!TTTCore.mg.getChallenger(killer.getUniqueId()).get()
+                                                    .isSpectating()) {
+                                                ch.getMetadata().set("tracking", body.getKiller().get());
                                             }
+                                            TTTCore.locale.getLocalizable("info.personal.status.collect-dna")
+                                                    .withPrefix(Color.INFO)
+                                                    .withReplacements(Bukkit.getPlayer(TTTCore.bodies.get(index)
+                                                            .getPlayer()).getName())
+                                                    .sendTo(event.getPlayer());
                                         } else {
                                             TTTCore.locale.getLocalizable("error.round.killer-left")
                                                     .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                                         }
+                                    } else {
+                                        TTTCore.locale.getLocalizable("error.personal.status.no-dna")
+                                                .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                                     }
-                                    return;
                                 }
                             }
                         }
@@ -227,6 +227,7 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+
         // guns
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             if (event.getPlayer().getItemInHand() != null) {
@@ -380,6 +381,23 @@ public class PlayerListener implements Listener {
 
             event.setDeathMessage("");
             event.getDrops().clear();
+
+            Optional<Challenger> killer = Optional.absent();
+            if (event.getEntity().getKiller() != null) {
+                UUID uuid = null;
+                if (event.getEntity().getType() == EntityType.PLAYER) {
+                    uuid = event.getEntity().getKiller().getUniqueId();
+                } else if (event.getEntity().getKiller() instanceof Projectile) {
+                    ProjectileSource shooter = ((Projectile) event.getEntity()).getShooter();
+                    if (shooter instanceof Player) {
+                        uuid = ((Player) shooter).getUniqueId();
+                    }
+                }
+                if (uuid != null) {
+                    killer = TTTCore.mg.getChallenger(uuid);
+                }
+            }
+
             Location loc = pl.getLocation(); // sending the packet resets the location
             NmsHelper.sendRespawnPacket(pl);
             pl.teleport(loc);
@@ -391,9 +409,6 @@ public class PlayerListener implements Listener {
                 ScoreboardManager.get(ch.getRound()).get().update(ch);
             }
 
-            Optional<Challenger> killer = event.getEntity().getKiller() != null
-                    ? TTTCore.mg.getChallenger(event.getEntity().getKiller().getUniqueId())
-                    : Optional.<Challenger>absent();
             if (killer.isPresent()) {
                 // set killer's karma
                 KarmaHelper.applyKillKarma(killer.get(), ch);

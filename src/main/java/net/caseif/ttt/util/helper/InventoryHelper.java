@@ -24,7 +24,8 @@
 package net.caseif.ttt.util.helper;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.Role;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
@@ -48,19 +49,19 @@ public class InventoryHelper {
     static {
         ITEM_CROWBAR = new ItemStack(ConfigHelper.CROWBAR_ITEM, 1);
         ItemMeta cbMeta = ITEM_CROWBAR.getItemMeta();
-        cbMeta.setDisplayName(Constants.Color.INFO + TTTCore.locale.getLocalizable("item.crowbar.name").localize());
+        cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.crowbar.name").localize());
         ITEM_CROWBAR.setItemMeta(cbMeta);
 
         ITEM_GUN = new ItemStack(ConfigHelper.GUN_ITEM, 1);
         ItemMeta gunMeta = ITEM_GUN.getItemMeta();
-        gunMeta.setDisplayName(Constants.Color.INFO + TTTCore.locale.getLocalizable("item.gun.name").localize());
+        gunMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.gun.name").localize());
         ITEM_GUN.setItemMeta(gunMeta);
 
         ITEM_AMMO = new ItemStack(Material.ARROW, ConfigHelper.INITIAL_AMMO);
 
         ITEM_DNA_SCANNER = new ItemStack(Material.COMPASS, 1);
         ItemMeta dnaMeta = ITEM_DNA_SCANNER.getItemMeta();
-        dnaMeta.setDisplayName(Constants.Color.INFO + TTTCore.locale.getLocalizable("item.dna-scanner.name").localize());
+        dnaMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.dna-scanner.name").localize());
         ITEM_DNA_SCANNER.setItemMeta(dnaMeta);
     }
 
@@ -85,7 +86,7 @@ public class InventoryHelper {
             Player pl = Bukkit.getPlayer(ch.getUniqueId());
             assert pl != null;
             pl.getInventory().addItem(ITEM_CROWBAR, ITEM_GUN, ITEM_AMMO);
-            if (ch.getMetadata().has(Constants.Role.DETECTIVE)) {
+            if (ch.getMetadata().has(Role.DETECTIVE)) {
                 pl.getInventory().addItem(ITEM_DNA_SCANNER);
             }
         }
