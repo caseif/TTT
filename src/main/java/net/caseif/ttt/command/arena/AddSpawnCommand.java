@@ -76,16 +76,21 @@ public class AddSpawnCommand extends SubcommandHandler {
             }
             Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
             if (arena.isPresent()) {
-                if (w == null) {
-                    arena.get().addSpawnPoint(new Location3D(x, y, z));
-                } else {
-                    if (!arena.get().getWorld().equals(w.getName())) {
-                        TTTCore.locale.getLocalizable("error.arena.invalid-location").withPrefix(Color.ERROR)
-                                .sendTo(sender);
-                        return;
-                    }
-                    arena.get().addSpawnPoint(new Location3D(w.getName(), x, y, z));
+                Location3D loc = new Location3D(w != null ? w.getName() : null, x, y, z);
+                if (w != null && !arena.get().getWorld().equals(w.getName())) {
+                    TTTCore.locale.getLocalizable("error.arena.invalid-location").withPrefix(Color.ERROR)
+                            .sendTo(sender);
+                    return;
                 }
+                if (!arena.get().getBoundary().contains(loc)) {
+                    TTTCore.locale.getLocalizable("error.arena.create.bad-spawn").withPrefix(Color.ERROR)
+                            .sendTo(sender);
+                    return;
+                }
+                arena.get().addSpawnPoint(loc);
+                TTTCore.locale.getLocalizable("info.personal.arena.addspawn").withPrefix(Color.INFO)
+                        .withReplacements("(" + x + ", " + y + ", " + z + ")", arena.get().getName())
+                        .sendTo(sender);
             } else {
                 TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
             }

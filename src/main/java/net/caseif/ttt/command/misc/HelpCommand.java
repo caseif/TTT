@@ -56,7 +56,6 @@ public class HelpCommand extends SubcommandHandler {
         //registerCommand("slay", Main.locale.getLocalizable("info.help.admin.slay"), "ttt.admin.slay");
         //registerCommand("respawn", Main.locale.getLocalizable("info.help.admin.respawn"), "ttt.admin.respawn");
 
-        registerCommand("setexit", TTTCore.locale.getLocalizable("info.help.setexit"), "ttt.setexit");
         registerCommand("help", TTTCore.locale.getLocalizable("info.help.help"), "ttt.help");
     }
 

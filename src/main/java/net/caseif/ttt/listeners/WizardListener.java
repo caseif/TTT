@@ -98,25 +98,27 @@ public class WizardListener implements Listener {
                     if (event.getMessage().equalsIgnoreCase(
                             TTTCore.locale.getLocalizable("info.personal.arena.create.ok-keyword")
                                     .localizeFor(event.getPlayer()))) {
-                        if (event.getPlayer().getWorld().getName().equals(((Location3D) WIZARD_INFO
+                        Object[] info = WIZARD_INFO.get(event.getPlayer().getUniqueId());
+                        Boundary boundary = new Boundary((Location3D) info[Stage.WIZARD_FIRST_BOUND],
+                                (Location3D) info[Stage.WIZARD_SECOND_BOUND]);
+                        Location3D spawn = LocationHelper.convert(event.getPlayer().getLocation());
+
+                        if (!event.getPlayer().getWorld().getName().equals(((Location3D) WIZARD_INFO
                                         .get(event.getPlayer().getUniqueId())[Stage.WIZARD_FIRST_BOUND])
                                         .getWorld().get()
-                        )) {
-                            Location3D spawn = LocationHelper.convert(event.getPlayer().getLocation());
-                            Object[] info = WIZARD_INFO.get(event.getPlayer().getUniqueId());
-                            TTTCore.mg.createArena((String) info[Stage.WIZARD_ID], (String) info[Stage.WIZARD_NAME],
-                                    spawn, new Boundary((Location3D) info[Stage.WIZARD_FIRST_BOUND],
-                                            (Location3D) info[Stage.WIZARD_SECOND_BOUND]));
-                            TTTCore.locale.getLocalizable("info.personal.arena.create.success")
-                                    .withPrefix(Color.INFO).withReplacements(Color.USAGE + "/ttt join "
-                                    + ((String) info[Stage.WIZARD_ID]).toLowerCase() + Color.INFO)
+                        )
+                                && boundary.contains(spawn)) {
+                            TTTCore.locale.getLocalizable("error.arena.create.bad-spawn").withPrefix(Color.ERROR)
                                     .sendTo(event.getPlayer());
-                            WIZARDS.remove(event.getPlayer().getUniqueId());
-                            WIZARD_INFO.remove(event.getPlayer().getUniqueId());
-                        } else {
-                            TTTCore.locale.getLocalizable("error.arena.create.bad-spawn")
-                                    .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                         }
+                        TTTCore.mg.createArena((String) info[Stage.WIZARD_ID], (String) info[Stage.WIZARD_NAME], spawn,
+                                boundary);
+                        TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(Color.INFO)
+                                .withReplacements(Color.USAGE + "/ttt join "
+                                        + ((String) info[Stage.WIZARD_ID]).toLowerCase() + Color.INFO)
+                                .sendTo(event.getPlayer());
+                        WIZARDS.remove(event.getPlayer().getUniqueId());
+                        WIZARD_INFO.remove(event.getPlayer().getUniqueId());
                         break;
                     }
                     // fall-through is intentional
