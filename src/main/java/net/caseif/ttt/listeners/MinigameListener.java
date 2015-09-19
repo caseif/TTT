@@ -80,13 +80,16 @@ public class MinigameListener {
 
         pl.setGameMode(GameMode.SURVIVAL);
 
-        if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
-            event.getChallenger().setSpectating(true);
-        }
-
         MiscUtil.broadcast(event.getRound(),
                 TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO)
-                .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl)));
+                        .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl)));
+
+        if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
+            event.getChallenger().setSpectating(true);
+        } else if (event.getRound().getLifecycleStage() == Stage.WAITING
+                && event.getRound().getChallengers().size() >= ConfigHelper.MINIMUM_PLAYERS) {
+            event.getRound().nextLifecycleStage();
+        }
     }
 
     @Subscribe
@@ -294,13 +297,15 @@ public class MinigameListener {
 
         KarmaHelper.allocateKarma(event.getRound());
 
-        boolean tVic = event.getRound().getMetadata().has("t-victory");
+        if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
+            boolean tVic = event.getRound().getMetadata().has("t-victory");
 
-        String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
-        TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
-                .withPrefix(color)
-                .withReplacements(Color.ARENA + event.getRound().getArena().getName() + color).broadcast();
-        TitleHelper.sendVictoryTitle(event.getRound(), tVic);
+            String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
+            TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
+                    .withPrefix(color)
+                    .withReplacements(Color.ARENA + event.getRound().getArena().getName() + color).broadcast();
+            TitleHelper.sendVictoryTitle(event.getRound(), tVic);
+        }
 
         for (Entity ent : Bukkit.getWorld(event.getRound().getArena().getWorld()).getEntities()) {
             if (ent.getType() == EntityType.ARROW) {

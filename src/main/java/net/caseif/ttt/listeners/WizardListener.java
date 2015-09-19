@@ -127,6 +127,7 @@ public class WizardListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    @SuppressWarnings("fallthrough")
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (WIZARDS.containsKey(event.getPlayer().getUniqueId())) {
