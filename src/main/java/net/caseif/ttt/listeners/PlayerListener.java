@@ -40,6 +40,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.util.physical.Location3D;
+import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -105,7 +106,8 @@ public class PlayerListener implements Listener {
                         event.getClickedBlock().getX(),
                         event.getClickedBlock().getY(),
                         event.getClickedBlock().getZ());
-                if (event.getClickedBlock().getType() == Material.CHEST) {
+                if (event.getClickedBlock().getType() == Material.CHEST
+                        || event.getClickedBlock().getType() == Material.TRAPPED_CHEST) {
                     if (ch.isSpectating()) {
                         event.setCancelled(true);
                         for (Body b : TTTCore.bodies) {
@@ -163,15 +165,15 @@ public class PlayerListener implements Listener {
                                                 + "Report this immediately.");
                                     }
                                 }
+                                Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.body-find")
+                                        .withPrefix(color);
+                                Localizable roleMsg = TTTCore.locale
+                                        .getLocalizable("info.global.round.event.body-find." + b.getRole());
                                 for (Challenger c : b.getRound().getChallengers()) {
                                     Player pl = Bukkit.getPlayer(c.getUniqueId());
-                                    pl.sendMessage(color
-                                            + TTTCore.locale.getLocalizable("info.global.round.event.body-find")
-                                            .withReplacements(event.getPlayer().getName(),
-                                                    b.getName()).localizeFor(pl) + " "
-                                            + TTTCore.locale
-                                            .getLocalizable("info.global.round.event.body-find." + b.getRole())
-                                            .localizeFor(pl));
+                                    pl.sendMessage(loc.withReplacements(event.getPlayer().getName(),
+                                            b.getName()).localizeFor(pl) + " "
+                                            + roleMsg.localizeFor(pl));
                                 }
 
                                 TTTCore.foundBodies.add(TTTCore.bodies.get(index));
