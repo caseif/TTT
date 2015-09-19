@@ -65,7 +65,7 @@ public class StartCommand extends SubcommandHandler {
                     }
                 } else {
                     TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR)
-                            .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
+                            .withReplacements(Color.ARENA + arenaName + Color.INFO).sendTo(sender);
                 }
             } else {
                 TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)

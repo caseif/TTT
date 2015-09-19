@@ -56,8 +56,8 @@ public class EndCommand extends SubcommandHandler {
                                 return;
                             }
                         }
-                        arena.get().getRound().get().end();
                         arena.get().getRound().get().getMetadata().set("ending", true); //TODO: temp fix
+                        arena.get().getRound().get().end();
                     } else {
                         TTTCore.locale.getLocalizable("error.arena.no-round")
                         .withPrefix(Color.ERROR).withReplacements(Color.ARENA + arenaName + Color.ERROR)
