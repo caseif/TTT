@@ -102,8 +102,9 @@ public class ScoreboardManager {
             for (String role : roles) {
                 for (String alive : aliveStatuses) {
                     Team team = sb.registerNewTeam(role.charAt(0) + "" + alive.charAt(0));
-                    String rolePrefix
-                            = role.equals(Role.DETECTIVE) ? Color.DETECTIVE : (traitorBoard ? Color.TRAITOR : "");
+                    String rolePrefix = role.equals(Role.DETECTIVE)
+                            ? Color.DETECTIVE
+                            : (role.equals(Role.TRAITOR) && traitorBoard ? Color.TRAITOR : "");
                     String alivePrefix = fromNullableString(ALIVE_PREFIXES.get(alive));
                     team.setPrefix(rolePrefix + alivePrefix);
                     teams.put(new TeamKey(traitorBoard, role, alive), team);
