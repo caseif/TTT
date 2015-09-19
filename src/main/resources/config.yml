@@ -73,9 +73,6 @@ gun-item: IRON_BARDING
 
 # How much damage should crowbars do at full karma (in half-hearts)?
 crowbar-damage: 6
-  
-# Should guns be functional outside of arenas?
-guns-outside-arenas: false
 
 # Should ammunition (arrows) be required to use guns?
 require-ammo-for-guns: true

@@ -239,7 +239,7 @@ public class PlayerListener implements Listener {
                                     && !TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().isSpectating()
                                     && (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().getRound()
                                     .getLifecycleStage() == Stage.PLAYING)
-                                    || ConfigHelper.GUNS_OUTSIDE_ARENAS)) {
+                            )) {
                                 event.setCancelled(true);
                                 if (event.getPlayer().getInventory().contains(Material.ARROW)
                                         || !ConfigHelper.REQUIRE_AMMO_FOR_GUNS) {

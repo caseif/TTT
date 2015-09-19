@@ -72,7 +72,6 @@ public final class ConfigHelper {
     public static final Material CROWBAR_ITEM;
     public static final Material GUN_ITEM;
     public static final int CROWBAR_DAMAGE;
-    public static final boolean GUNS_OUTSIDE_ARENAS;
     public static final boolean REQUIRE_AMMO_FOR_GUNS;
     public static final int INITIAL_AMMO;
 
@@ -132,7 +131,6 @@ public final class ConfigHelper {
         CROWBAR_ITEM = getMaterial("crowbar-item", Material.IRON_SWORD);
         GUN_ITEM = getMaterial("gun-item", Material.IRON_BARDING);
         CROWBAR_DAMAGE = getInt("crowbar-damage");
-        GUNS_OUTSIDE_ARENAS = getBoolean("guns-outside-arenas");
         REQUIRE_AMMO_FOR_GUNS = getBoolean("require-ammo-for-guns");
         INITIAL_AMMO = getInt("initial-ammo");
 
