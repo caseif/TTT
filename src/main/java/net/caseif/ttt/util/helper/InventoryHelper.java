@@ -53,14 +53,14 @@ public class InventoryHelper {
 
         ITEM_GUN = new ItemStack(ConfigHelper.GUN_ITEM, 1);
         ItemMeta gunMeta = ITEM_GUN.getItemMeta();
-        cbMeta.setDisplayName(Constants.Color.INFO + TTTCore.locale.getLocalizable("item.gun.name").localize());
+        gunMeta.setDisplayName(Constants.Color.INFO + TTTCore.locale.getLocalizable("item.gun.name").localize());
         ITEM_GUN.setItemMeta(gunMeta);
 
         ITEM_AMMO = new ItemStack(Material.ARROW, ConfigHelper.INITIAL_AMMO);
 
         ITEM_DNA_SCANNER = new ItemStack(Material.COMPASS, 1);
         ItemMeta dnaMeta = ITEM_DNA_SCANNER.getItemMeta();
-        cbMeta.setDisplayName(Constants.Color.INFO + TTTCore.locale.getLocalizable("item.dna-scanner.name").localize());
+        dnaMeta.setDisplayName(Constants.Color.INFO + TTTCore.locale.getLocalizable("item.dna-scanner.name").localize());
         ITEM_DNA_SCANNER.setItemMeta(dnaMeta);
     }
 
