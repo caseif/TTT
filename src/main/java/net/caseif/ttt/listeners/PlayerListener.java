@@ -265,12 +265,13 @@ public class PlayerListener implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         if (event.getEntityType() == EntityType.PLAYER) {
             Optional<Challenger> victim = TTTCore.mg.getChallenger(event.getEntity().getUniqueId());
-            if (victim.isPresent() && victim.get().getRound().getLifecycleStage() != Stage.PLAYING) {
-                if (event.getCause() == DamageCause.VOID) {
-                    Bukkit.getPlayer(victim.get().getUniqueId());
-                } else {
-                    event.setCancelled(true);
-                }
+            if (victim.isPresent() && victim.get().getRound().getLifecycleStage() != Stage.PLAYING
+                    && event.getCause() == DamageCause.VOID) {
+                event.setCancelled(true);
+                Bukkit.getPlayer(victim.get().getUniqueId()).teleport(
+                        LocationHelper.convert(victim.get().getRound().getArena().getSpawnPoints().get(0))
+                );
+                return;
             }
             if (event instanceof EntityDamageByEntityEvent) {
                 EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent) event;
@@ -280,10 +281,11 @@ public class PlayerListener implements Listener {
                     Player damager = ed.getDamager().getType() == EntityType.PLAYER
                             ? (Player) ed.getDamager()
                             : (Player) ((Projectile) ed.getDamager()).getShooter();
-                    if (TTTCore.mg.getChallenger(damager.getUniqueId()).isPresent()) {
-                        Challenger mgDamager = TTTCore.mg.getChallenger(damager.getUniqueId()).get();
-                        if (mgDamager.getRound().getLifecycleStage() != Stage.PLAYING
-                                || !victim.isPresent()) {
+                    Optional<Challenger> damagerCh = TTTCore.mg.getChallenger(damager.getUniqueId());
+                    if (damagerCh.isPresent()) {
+                        if (damagerCh.get().getRound().getLifecycleStage() != Stage.PLAYING
+                                || !victim.isPresent()
+                                || damagerCh.get().isSpectating()) {
                             event.setCancelled(true);
                             return;
                         }
@@ -298,11 +300,11 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                        Optional<Double> reduc = mgDamager.getMetadata().get("damageRed");
+                        Optional<Double> reduc = damagerCh.get().getMetadata().get("damageRed");
                         if (reduc.isPresent()) {
                             event.setDamage((int) (event.getDamage() * reduc.get()));
                         }
-                        KarmaHelper.applyDamageKarma(mgDamager, victim.get(), event.getDamage());
+                        KarmaHelper.applyDamageKarma(damagerCh.get(), victim.get(), event.getDamage());
                     }
                 }
             }
