@@ -87,6 +87,7 @@ public class TTTCore extends JavaPlugin {
     public void onEnable() {
         log = this.getLogger();
         kLog = Logger.getLogger("TTT Karma Debug");
+        kLog.setParent(log);
         plugin = this;
         locale = new LocaleManager(this);
 

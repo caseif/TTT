@@ -44,6 +44,8 @@ import java.util.UUID;
  */
 public class KarmaHelper {
 
+    private static final int BASE_KARMA = 1000;
+
     private static HashMap<UUID, Integer> playerKarma = new HashMap<>();
 
     public static void saveKarma(Round round) {
@@ -101,11 +103,11 @@ public class KarmaHelper {
             addKarma(challenger, ConfigHelper.KARMA_ROUND_INCREMENT);
             if (!challenger.getMetadata().has("hasTeamKilled")) {
                 int karmaHeal = ConfigHelper.KARMA_CLEAN_BONUS;
-                if (getKarma(challenger) > 1000) {
-                    if ((ConfigHelper.KARMA_MAX - 1000) > 0) {
+                if (getKarma(challenger) > BASE_KARMA) {
+                    if ((ConfigHelper.KARMA_MAX - BASE_KARMA) > 0) {
                         karmaHeal = (int) Math.round(
-                                ConfigHelper.KARMA_CLEAN_BONUS * Math.pow(.5, (getKarma(challenger) - 1000.0)
-                                                / ((double) (ConfigHelper.KARMA_MAX - 1000)
+                                ConfigHelper.KARMA_CLEAN_BONUS * Math.pow(.5, (getKarma(challenger) - BASE_KARMA)
+                                                / ((double) (ConfigHelper.KARMA_MAX - BASE_KARMA)
                                                 * ConfigHelper.KARMA_CLEAN_HALF)
                                 )
                         );
@@ -173,7 +175,7 @@ public class KarmaHelper {
     }
 
     public static void applyDamageReduction(Challenger challenger) {
-        int baseKarma = getKarma(challenger) - 1000;
+        int baseKarma = getKarma(challenger) - BASE_KARMA;
         double damageRed =
                 ConfigHelper.KARMA_STRICT
                         ? (-2e-6 * Math.pow(baseKarma, 2)) + (7e-4 * baseKarma) + (1)
@@ -190,10 +192,8 @@ public class KarmaHelper {
 
     public static void applyKarma(Challenger challenger) {
         int karma = getKarma(challenger.getUniqueId());
-        challenger.getMetadata().set("karma",
-                playerKarma.get(challenger.getUniqueId()));
-        challenger.getMetadata().set("displayKarma",
-                playerKarma.get(challenger.getUniqueId()));
+        challenger.getMetadata().set("karma", karma);
+        challenger.getMetadata().set("displayKarma", karma);
     }
 
     public static void resetKarma(UUID uuid) {
@@ -218,8 +218,8 @@ public class KarmaHelper {
         }
 
         if (ConfigHelper.KARMA_DEBUG) {
-            TTTCore.kLog.info("[TTT Karma Debug] " + challenger.getName() + ": +" + amount + ". "
-                    + "New value: " + challenger.getMetadata().get("karma"));
+            TTTCore.kLog.info("[TTT Karma Debug] " + challenger.getName() + ": " + (amount > 0 ? "+" : "") + amount
+                    + ". " + "New value: " + challenger.getMetadata().get("karma").get());
         }
     }
 

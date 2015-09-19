@@ -100,11 +100,11 @@ public class MinigameListener {
         );
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setDisplayName(event.getChallenger().getName());
-        KarmaHelper.saveKarma(event.getChallenger());
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setCompassTarget(LocationHelper.convert(event.getReturnLocation()).getWorld().getSpawnLocation());
 
         if (!event.getRound().getMetadata().has("ending")) { //TODO: temp fix
+            KarmaHelper.saveKarma(event.getChallenger());
             MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                     .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
                             Color.ARENA + event.getChallenger().getRound().getArena().getName() + Color.INFO));
@@ -299,6 +299,7 @@ public class MinigameListener {
         removeFoundBodies.clear();
 
         KarmaHelper.allocateKarma(event.getRound());
+        KarmaHelper.saveKarma(event.getRound());
 
         if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
             boolean tVic = event.getRound().getMetadata().has("t-victory");
