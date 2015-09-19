@@ -98,7 +98,7 @@ public final class ConfigHelper {
     public static final String SB_ALIVE_PREFIX;
     public static final String SB_MIA_PREFIX;
     public static final String SB_DEAD_PREFIX;
-    public static final boolean SB_USE_SIDEBAR;
+    public static final boolean SB_USE_PLAYER_LIST;
 
     // Plugin settings
     public static final boolean VERBOSE_LOGGING;
@@ -157,7 +157,7 @@ public final class ConfigHelper {
         SB_ALIVE_PREFIX = getString("sb-alive-prefix");
         SB_MIA_PREFIX = getString("sb-mia-prefix");
         SB_DEAD_PREFIX = getString("sb-dead-prefix");
-        SB_USE_SIDEBAR = getBoolean("sb-use-sidebar");
+        SB_USE_PLAYER_LIST = getBoolean("sb-use-player-list");
 
         // Plugin settings
         VERBOSE_LOGGING = getBoolean("verbose-logging");

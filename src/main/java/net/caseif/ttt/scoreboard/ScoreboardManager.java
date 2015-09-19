@@ -87,11 +87,11 @@ public class ScoreboardManager {
 
         iObj = innocent.registerNewObjective("p", "dummy");
         iObj.setDisplayName("Players");
-        iObj.setDisplaySlot(ConfigHelper.SB_USE_SIDEBAR ? DisplaySlot.SIDEBAR : DisplaySlot.PLAYER_LIST);
+        iObj.setDisplaySlot(ConfigHelper.SB_USE_PLAYER_LIST ? DisplaySlot.PLAYER_LIST : DisplaySlot.SIDEBAR);
 
         tObj = traitor.registerNewObjective("p", "dummy");
         tObj.setDisplayName("Players");
-        tObj.setDisplaySlot(ConfigHelper.SB_USE_SIDEBAR ? DisplaySlot.SIDEBAR : DisplaySlot.PLAYER_LIST);
+        tObj.setDisplaySlot(ConfigHelper.SB_USE_PLAYER_LIST ? DisplaySlot.PLAYER_LIST : DisplaySlot.SIDEBAR);
 
         String[] roles = {Role.INNOCENT, Role.TRAITOR, Role.DETECTIVE};
         String[] aliveStatuses = {AliveStatus.ALIVE, AliveStatus.MIA, AliveStatus.CONFIRMED_DEAD};
