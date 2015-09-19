@@ -61,6 +61,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -497,6 +498,13 @@ public class PlayerListener implements Listener {
                 TTTCore.locale.getLocalizable("error.round.disabled-command").withPrefix(Color.ERROR)
                         .sendTo(event.getPlayer());
             }
+        }
+    }
+
+    @EventHandler
+    public void onFoodLevelChange(FoodLevelChangeEvent event) {
+        if (TTTCore.mg.getChallenger(event.getEntity().getUniqueId()).isPresent()) {
+            event.setCancelled(true);
         }
     }
 
