@@ -48,6 +48,7 @@ import net.caseif.flint.event.round.RoundTimerTickEvent;
 import net.caseif.flint.event.round.challenger.ChallengerJoinRoundEvent;
 import net.caseif.flint.event.round.challenger.ChallengerLeaveRoundEvent;
 import net.caseif.flint.round.Round;
+import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -188,88 +189,88 @@ public class MinigameListener {
     @SuppressWarnings({"deprecation"})
     @Subscribe
     public void onRoundTick(RoundTimerTickEvent event) {
-        if (event.getRound().getLifecycleStage() == Stage.PREPARING) {
-            if ((event.getRound().getRemainingTime() % 10) == 0 && event.getRound().getRemainingTime() > 0) {
-                for (Challenger ch : event.getRound().getChallengers()) {
-                    Player pl = Bukkit.getPlayer(ch.getUniqueId());
-                    assert pl != null;
-                    TTTCore.locale.getLocalizable("info.global.round.status.starting.time")
-                            .withPrefix(Color.INFO)
-                            .withReplacements(
-                                    TTTCore.locale.getLocalizable("fragment.seconds")
-                                            .withReplacements(event.getRound().getRemainingTime() + "").localizeFor(pl))
-                            .sendTo(pl);
-                }
-            }
-        } else if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
-            // check if game is over
-            boolean iLeft = false;
-            boolean tLeft = false;
-            for (Challenger ch : event.getRound().getChallengers()) {
-                if (!tLeft || !iLeft) {
-                    if (!ch.isSpectating()) {
-                        if (!iLeft && !MiscUtil.isTraitor(ch)) {
-                            iLeft = true;
-                        }
-                        if (!tLeft && MiscUtil.isTraitor(ch)) {
-                            tLeft = true;
-                        }
-                    }
-                } else {
-                    break;
-                }
-
-                // manage DNA Scanners every n seconds
-                if (ch.getMetadata().has(Role.DETECTIVE)
-                        && ch.getRound().getTime() % ConfigHelper.SCANNER_CHARGE_TIME == 0) {
-                    Player tracker = TTTCore.getInstance().getServer().getPlayer(ch.getName());
-                    if (ch.getMetadata().has("tracking")) {
-                        Player killer = TTTCore.getInstance().getServer()
-                                .getPlayer(ch.getMetadata().<UUID>get("tracking").get());
-                        if (killer != null
-                                && TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()) {
-                            tracker.setCompassTarget(killer.getLocation());
-                        } else {
-                            TTTCore.locale.getLocalizable("error.round.trackee-left")
-                                    .withPrefix(Color.INFO).sendTo(tracker);
-                            ch.getMetadata().remove("tracking");
-                            tracker.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
-                        }
-                    } else {
-                        Random r = new Random();
-                        tracker.setCompassTarget(
-                                new Location(
-                                        tracker.getWorld(),
-                                        tracker.getLocation().getX() + r.nextInt(10) - 5,
-                                        tracker.getLocation().getY(),
-                                        tracker.getLocation().getZ() + r.nextInt(10) - 5
-                                )
-                        );
-                    }
-                }
-            }
-            if (!(tLeft && iLeft)) {
-                event.getRound().getMetadata().set("t-victory", tLeft);
-                event.getRound().getMetadata().set("ending", true); //TODO: temp fix
-                event.getRound().end();
-                return;
-            }
-
-            Round r = event.getRound();
+        Round r = event.getRound();
+        if (r.getLifecycleStage() != Stage.WAITING) {
             long rTime = r.getRemainingTime();
-            if ((rTime % 60 == 0 && rTime >= 60) || (rTime % 10 == 0 && rTime > 10 && rTime < 60)) {
+            Localizable loc = null;
+            Localizable time = null;
+            if (rTime >= 60 && rTime % 60 == 0) {
+                time = TTTCore.locale.getLocalizable("fragment.minutes" + (rTime / 60 == 1 ? ".singular" : ""))
+                        .withReplacements(Long.toString(rTime / 60));
+                ;
+            } else if (rTime > 0 && rTime <= 30 && rTime % 10 == 0) {
+                time = TTTCore.locale.getLocalizable("fragment.seconds" + (rTime == 1 ? ".singular" : ""))
+                        .withReplacements(Long.toString(rTime));
+            }
+            if (time != null) {
+                loc = TTTCore.locale.getLocalizable(
+                        r.getLifecycleStage() == Stage.PREPARING
+                                ? "info.global.round.status.starting.time"
+                                : "info.global.round.status.time.remaining"
+                ).withPrefix(Color.INFO);
+
                 for (Challenger ch : r.getChallengers()) {
                     Player pl = Bukkit.getPlayer(ch.getUniqueId());
-                    TTTCore.locale.getLocalizable("info.global.round.status.time.remaining")
-                            .withPrefix(Color.INFO)
-                            .withReplacements(TTTCore.locale
-                                    .getLocalizable(rTime < 60 ? "fragment.seconds" : "fragment.minutes")
-                                    .withReplacements(Long.toString(rTime / 60)).localizeFor(pl))
-                            .sendTo(pl);
+                    loc.withReplacements(time.localizeFor(pl)).sendTo(pl);
                 }
             }
 
-            ScoreboardManager.getOrCreate(event.getRound());
+            if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
+                // check if game is over
+                boolean iLeft = false;
+                boolean tLeft = false;
+                for (Challenger ch : event.getRound().getChallengers()) {
+                    if (!tLeft || !iLeft) {
+                        if (!ch.isSpectating()) {
+                            if (!iLeft && !MiscUtil.isTraitor(ch)) {
+                                iLeft = true;
+                            }
+                            if (!tLeft && MiscUtil.isTraitor(ch)) {
+                                tLeft = true;
+                            }
+                        }
+                    } else {
+                        break;
+                    }
+
+                    // manage DNA Scanners every n seconds
+                    if (ch.getMetadata().has(Role.DETECTIVE)
+                            && ch.getRound().getTime() % ConfigHelper.SCANNER_CHARGE_TIME == 0) {
+                        Player tracker = TTTCore.getInstance().getServer().getPlayer(ch.getName());
+                        if (ch.getMetadata().has("tracking")) {
+                            Player killer = TTTCore.getInstance().getServer()
+                                    .getPlayer(ch.getMetadata().<UUID>get("tracking").get());
+                            if (killer != null
+                                    && TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()) {
+                                tracker.setCompassTarget(killer.getLocation());
+                            } else {
+                                TTTCore.locale.getLocalizable("error.round.trackee-left")
+                                        .withPrefix(Color.INFO).sendTo(tracker);
+                                ch.getMetadata().remove("tracking");
+                                tracker.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
+                            }
+                        } else {
+                            Random rand = new Random();
+                            tracker.setCompassTarget(
+                                    new Location(
+                                            tracker.getWorld(),
+                                            tracker.getLocation().getX() + rand.nextInt(10) - 5,
+                                            tracker.getLocation().getY(),
+                                            tracker.getLocation().getZ() + rand.nextInt(10) - 5
+                                    )
+                            );
+                        }
+                    }
+                }
+                if (!(tLeft && iLeft)) {
+                    event.getRound().getMetadata().set("t-victory", tLeft);
+                    event.getRound().getMetadata().set("ending", true); //TODO: temp fix
+                    event.getRound().end();
+                    return;
+                }
+
+                ScoreboardManager.getOrCreate(event.getRound());
+            }
         }
     }
 
