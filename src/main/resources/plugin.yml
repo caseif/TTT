@@ -27,6 +27,9 @@ commands:
     removespawn:
       description: Removes the sender's or a specified location or an index as a spawn from the specified arena.
       usage: /ttt removespawn [arena name] {index}|{[x] [y] [z]}
+    listspawns:
+      description: Lists the spawn points of a given arena.
+      usage: /ttt listspawns [arena name]
     join:
       description: Adds player to a specified game of TTT.
       usage: /ttt join [map name]
@@ -125,10 +128,13 @@ permissions:
       description: Allows player to remove arenas from the plugin's registry.
       default: op
   ttt.arena.addspawn:
-    description: Allows player to add spawns to an arena.
+    description: Allows player to add spawn points to an arena.
     default: op
   ttt.arena.removespawn:
-    description: Allows player to remove spawns from an arena.
+    description: Allows player to remove spawn points from an arena.
+    default: op
+  ttt.arena.listspawns:
+    description: Allows player to list an arena's spawn point.
     default: op
   ttt.arena.join:
     description: Allows player to join TTT rounds.
@@ -136,10 +142,6 @@ permissions:
   ttt.arena.leave:
     description: Allows player to leave TTT rounds.
     default: true
-
-  ttt.setexit:
-    description: Sets the spawn upon round exit to the sender's current location.
-    default: op
 
   ttt.help:
     description: Allows use of /ttt help.
@@ -186,8 +188,3 @@ permissions:
     default: false
     children:
       ttt.arena.leave: true
-  ttt.setspawn:
-    description: Sets the spawn upon round exit to the sender's current location. (deprecated)
-    default: false
-    children:
-      ttt.setexit: true

@@ -236,11 +236,9 @@ public class PlayerListener implements Listener {
                     if (event.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null) {
                         if (event.getPlayer().getItemInHand().getItemMeta().getDisplayName()
                                 .endsWith(TTTCore.locale.getLocalizable("item.gun.name").localize())) {
-                            if ((TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()
-                                    && !TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().isSpectating()
-                                    && (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get().getRound()
-                                    .getLifecycleStage() == Stage.PLAYING)
-                            )) {
+                            Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
+                            if (ch.isPresent() && !ch.get().isSpectating()
+                                    && (ch.get().getRound().getLifecycleStage() == Stage.PLAYING)) {
                                 event.setCancelled(true);
                                 if (event.getPlayer().getInventory().contains(Material.ARROW)
                                         || !ConfigHelper.REQUIRE_AMMO_FOR_GUNS) {

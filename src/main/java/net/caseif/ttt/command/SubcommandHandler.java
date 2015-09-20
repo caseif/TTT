@@ -38,6 +38,9 @@ public abstract class SubcommandHandler {
         this.sender = sender;
         this.args = args;
         this.perm = perm;
+        if (args[0].length() <= 2 && !args[0].equals("?")) {
+            TTTCore.locale.getLocalizable("error.command.shorthand").withPrefix(Color.ERROR).sendTo(sender);
+        }
     }
 
     public abstract void handle();

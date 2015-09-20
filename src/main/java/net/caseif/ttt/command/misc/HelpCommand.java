@@ -46,6 +46,8 @@ public class HelpCommand extends SubcommandHandler {
         registerCommand("addspawn", TTTCore.locale.getLocalizable("info.help.arena.addspawn"), "ttt.arena.addspawn");
         registerCommand("removespawn", TTTCore.locale.getLocalizable("info.help.arena.removespawn"),
                 "ttt.arena.removespawn");
+        registerCommand("listspawns", TTTCore.locale.getLocalizable("info.help.arena.listspawns"),
+                "ttt.arena.listspawns");
 
         registerCommand("prepare", TTTCore.locale.getLocalizable("info.help.admin.prepare"), "ttt.admin.prepare");
         registerCommand("start", TTTCore.locale.getLocalizable("info.help.admin.start"), "ttt.admin.start");

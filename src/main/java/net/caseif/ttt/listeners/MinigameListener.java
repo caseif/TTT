@@ -338,8 +338,12 @@ public class MinigameListener {
     @Subscribe
     public void onPlayerClickLobbySign(PlayerClickLobbySignEvent event) {
         Player player = Bukkit.getPlayer(event.getPlayer());
-        // lazy way of doing this, but it works
-        new JoinCommand(player, new String[]{"join", event.getLobbySign().getArena().getId()}).handle();
+        if (player.hasPermission("ttt.lobby.use")) {
+            // lazy way of doing this, but it works
+            new JoinCommand(player, new String[]{"join", event.getLobbySign().getArena().getId()}).handle();
+        } else {
+            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR).sendTo(player);
+        }
     }
 
 }
