@@ -41,10 +41,12 @@ public class ListArenasCommand extends SubcommandHandler {
         if (assertPermission()) {
             TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
             for (Arena arena : TTTCore.mg.getArenas()) {
-                sender.sendMessage(Color.USAGE + arena.getId() + ": "
-                        + Color.DESCRIPTION + (arena.getRound().isPresent()
+                sender.sendMessage("    " + Color.USAGE + arena.getId() + ": "
+                        + Color.DESCRIPTION + TTTCore.locale.getLocalizable("fragment.stage."
+                        + (arena.getRound().isPresent()
                         ? arena.getRound().get().getLifecycleStage().getId()
-                        : "WAITING"));
+                        : "waiting"))
+                        .localizeFor(sender));
             }
         }
     }
