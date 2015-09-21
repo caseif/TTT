@@ -247,7 +247,7 @@ public class MinigameListener {
                                 tracker.setCompassTarget(killer.getLocation());
                             } else {
                                 TTTCore.locale.getLocalizable("error.round.trackee-left")
-                                        .withPrefix(Color.INFO).sendTo(tracker);
+                                        .withPrefix(Color.ERROR).sendTo(tracker);
                                 ch.getMetadata().remove("tracking");
                                 tracker.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
                             }

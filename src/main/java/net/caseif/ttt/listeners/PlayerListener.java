@@ -203,11 +203,10 @@ public class PlayerListener implements Listener {
                                     if (body.getKiller().isPresent()) {
                                         Player killer = Bukkit.getPlayer(body.getKiller().get());
                                         if (killer != null
-                                                && TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()) {
-                                            if (!TTTCore.mg.getChallenger(killer.getUniqueId()).get()
-                                                    .isSpectating()) {
-                                                ch.getMetadata().set("tracking", body.getKiller().get());
-                                            }
+                                                && TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()
+                                                && !TTTCore.mg.getChallenger(killer.getUniqueId()).get()
+                                                .isSpectating()) {
+                                            ch.getMetadata().set("tracking", body.getKiller().get());
                                             TTTCore.locale.getLocalizable("info.personal.status.collect-dna")
                                                     .withPrefix(Color.INFO)
                                                     .withReplacements(TTTCore.bodies.get(index).getName())
