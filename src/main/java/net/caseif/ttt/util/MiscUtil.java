@@ -31,6 +31,8 @@ import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class MiscUtil {
 
     /**
@@ -84,6 +86,22 @@ public class MiscUtil {
 
     public static int clamp(int val, int min, int max) {
         return Math.max(min, Math.min(max, val));
+    }
+
+    public static String prettyList(List<?> list) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            sb.append(list.get(i).toString());
+            if (i < list.size() - 2) {
+                sb.append(", ");
+            } else if (i == list.size() - 2) {
+                if (list.size() > 2) {
+                    sb.append(",");
+                }
+                sb.append(" and ");
+            }
+        }
+        return sb.toString();
     }
 
 }
