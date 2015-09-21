@@ -70,22 +70,21 @@ public class CommandManager implements CommandExecutor {
             if (args.length > 0) {
                 final String subCmd = args[0];
                 // arena commands
-                if (subCmd.equalsIgnoreCase("import") || subCmd.equalsIgnoreCase("i")) {
+                if (subCmd.equalsIgnoreCase("import")) {
                     new ImportCommand(sender, args).handle();
-                } else if (subCmd.equalsIgnoreCase("join") || subCmd.equalsIgnoreCase("j")) {
+                } else if (subCmd.equalsIgnoreCase("join")) {
                     new JoinCommand(sender, args).handle();
-                } else if (subCmd.equalsIgnoreCase("leave") || subCmd.equalsIgnoreCase("l")
-                        || subCmd.equalsIgnoreCase("quit") || subCmd.equalsIgnoreCase("q")) {
+                } else if (subCmd.equalsIgnoreCase("leave")) {
                     new LeaveCommand(sender, args).handle();
-                } else if (subCmd.equalsIgnoreCase("carena") || subCmd.equalsIgnoreCase("ca")) {
+                } else if (subCmd.equalsIgnoreCase("carena")) {
                     new CreateArenaCommand(sender, args).handle();
-                } else if (subCmd.equalsIgnoreCase("rarena") || subCmd.equalsIgnoreCase("ra")) {
+                } else if (subCmd.equalsIgnoreCase("rarena")) {
                     new RemoveArenaCommand(sender, args).handle();
                 } else if (subCmd.equalsIgnoreCase("listarenas")) {
                     new ListArenasCommand(sender, args).handle();
-                } else if (subCmd.equalsIgnoreCase("addspawn") || subCmd.equalsIgnoreCase("as")) {
+                } else if (subCmd.equalsIgnoreCase("addspawn")) {
                     new AddSpawnCommand(sender, args).handle();
-                } else if (subCmd.equalsIgnoreCase("removespawn") || subCmd.equalsIgnoreCase("rs")) {
+                } else if (subCmd.equalsIgnoreCase("removespawn")) {
                     new RemoveSpawnCommand(sender, args).handle();
                 } else if (subCmd.equalsIgnoreCase("listspawns")) {
                     new ListSpawnsCommand(sender, args).handle();
