@@ -57,7 +57,7 @@ public class CreateArenaCommand extends SubcommandHandler {
                             .withPrefix(Color.ERROR).sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("message.error.general.in-game").withPrefix(Color.ERROR)
+                TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR)
                         .sendTo(sender);
             }
         }

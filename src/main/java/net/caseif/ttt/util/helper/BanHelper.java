@@ -118,7 +118,8 @@ public final class BanHelper {
                         sec = sec.length() == 1 ? "0" + sec : sec;
                         //TODO: localize time/date (UGH)
                         loc = TTTCore.locale.getLocalizable("info.personal.ban.temp.until").withReplacements(
-                                hour + ":" + min + ":" + sec, month + "/" + day + "/" + year + ".");
+                                hour + ":" + min + ":" + sec, month + "/" + day + "/" + year + " "
+                                        + cal.getTimeZone().getDisplayName() + ".");
                     }
                     loc.withPrefix(Constants.Color.ERROR);
                     loc.sendTo(Bukkit.getPlayer(uuid));

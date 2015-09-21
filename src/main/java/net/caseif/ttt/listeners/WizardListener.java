@@ -88,12 +88,6 @@ public class WizardListener implements Listener {
                                 .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                     }
                     break;
-                case Stage.WIZARD_NAME:
-                    increment(event.getPlayer());
-                    WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_NAME] = event.getMessage();
-                    TTTCore.locale.getLocalizable("info.personal.arena.create.name").withPrefix(Color.INFO)
-                            .withReplacements(Color.USAGE + event.getMessage() + Color.INFO).sendTo(event.getPlayer());
-                    break;
                 case Stage.WIZARD_SPAWN_POINT:
                     if (event.getMessage().equalsIgnoreCase(
                             TTTCore.locale.getLocalizable("info.personal.arena.create.ok-keyword")
@@ -111,7 +105,7 @@ public class WizardListener implements Listener {
                             TTTCore.locale.getLocalizable("error.arena.create.bad-spawn").withPrefix(Color.ERROR)
                                     .sendTo(event.getPlayer());
                         }
-                        TTTCore.mg.createArena((String) info[Stage.WIZARD_ID], (String) info[Stage.WIZARD_NAME], spawn,
+                        TTTCore.mg.createArena((String) info[Stage.WIZARD_ID], spawn,
                                 boundary);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(Color.INFO)
                                 .withReplacements(Color.USAGE + "/ttt join "
@@ -190,10 +184,9 @@ public class WizardListener implements Listener {
 
     private class Stage {
         public static final int WIZARD_ID = 0;
-        public static final int WIZARD_NAME = 1;
-        public static final int WIZARD_FIRST_BOUND = 2;
-        public static final int WIZARD_SECOND_BOUND = 3;
-        public static final int WIZARD_SPAWN_POINT = 4;
+        public static final int WIZARD_FIRST_BOUND = 1;
+        public static final int WIZARD_SECOND_BOUND = 2;
+        public static final int WIZARD_SPAWN_POINT = 3;
     }
 
 }

@@ -90,11 +90,15 @@ public class RemoveSpawnCommand extends SubcommandHandler {
                 if (index != Integer.MAX_VALUE) {
                     arena.removeSpawnPoint(index);
                     TTTCore.locale.getLocalizable("info.personal.arena.removespawn.index").withPrefix(Color.INFO)
-                            .withReplacements(index + "", arena.getName()).sendTo(sender);
+                            .withReplacements(Color.DESCRIPTION + index + Color.INFO,
+                                    Color.ARENA + arena.getName() + Color.INFO)
+                            .sendTo(sender);
                 } else {
                     arena.removeSpawnPoint(new Location3D(arena.getWorld(), x, y, z));
                     TTTCore.locale.getLocalizable("info.personal.arena.removespawn.coords").withPrefix(Color.INFO)
-                            .withReplacements("(" + x + ", " + y + ", " + z + ")", arena.getName()).sendTo(sender);
+                            .withReplacements(Color.DESCRIPTION + "(" + x + ", " + y + ", " + z + ")" + Color.INFO,
+                                    Color.ARENA + arena.getName() + Color.INFO)
+                            .sendTo(sender);
                 }
             } catch (IllegalArgumentException ex) {
                 TTTCore.locale.getLocalizable("error.arena.removespawn.missing").withPrefix(Color.ERROR).sendTo(sender);

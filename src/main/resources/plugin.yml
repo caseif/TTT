@@ -10,14 +10,14 @@ commands:
   ttt:
     description: The plugin's primary command.
     usage: /ttt [subcommand]
-    # all below keys are useless, but are there for reference
+    ## all below keys are useless, but are there for reference
     # arena-related commands
     import:
       description: Imports a TTT map from a specified folder in the server's root directory.
       usage: /ttt import [folder name]
     carena:
-      description: Creates a new arena for use with TTT at the sender's or a specified location.
-      usage: /ttt carena [arena name] {[x] [y] [z] [world]}
+      description: Initiates the arena creation wizard.
+      usage: /ttt carena
     rarena:
       description: Removes the given arena from TTT's registry.
       usage: /ttt rarena [arena name]

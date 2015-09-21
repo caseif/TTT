@@ -210,15 +210,14 @@ public class PlayerListener implements Listener {
                                             }
                                             TTTCore.locale.getLocalizable("info.personal.status.collect-dna")
                                                     .withPrefix(Color.INFO)
-                                                    .withReplacements(Bukkit.getPlayer(TTTCore.bodies.get(index)
-                                                            .getPlayer()).getName())
+                                                    .withReplacements(TTTCore.bodies.get(index).getName())
                                                     .sendTo(event.getPlayer());
                                         } else {
                                             TTTCore.locale.getLocalizable("error.round.killer-left")
                                                     .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                                         }
                                     } else {
-                                        TTTCore.locale.getLocalizable("error.personal.status.no-dna")
+                                        TTTCore.locale.getLocalizable("info.personal.status.no-dna")
                                                 .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                                     }
                                 }
