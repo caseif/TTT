@@ -61,7 +61,7 @@ repositories {
 ext {
     bukkit = 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
     flint = 'net.caseif.flint:flint:1.0'
-    rosetta = 'net.caseif.rosetta:rosetta:1.0.0'
+    rosetta = 'net.caseif.rosetta:rosetta:1.0.1'
     crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.1'
     updater = 'net.gravitydevelopment.updater:updater:2.3'
     metrics = 'org.mcstats.bukkit:metrics:R7'
@@ -101,6 +101,17 @@ shadowJar {
         include dependency(metrics)
     }
     classifier = ''
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.java
+    from sourceSets.main.resources
+    classifier = 'sources'
+}
+
+artifacts {
+    archives shadowJar
+    archives sourceJar
 }
 
 // License header formatting
