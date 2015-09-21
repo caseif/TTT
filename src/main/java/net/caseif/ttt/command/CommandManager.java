@@ -35,6 +35,7 @@ import net.caseif.ttt.command.arena.CreateArenaCommand;
 import net.caseif.ttt.command.arena.ImportCommand;
 import net.caseif.ttt.command.arena.JoinCommand;
 import net.caseif.ttt.command.arena.LeaveCommand;
+import net.caseif.ttt.command.arena.ListArenasCommand;
 import net.caseif.ttt.command.arena.ListSpawnsCommand;
 import net.caseif.ttt.command.arena.RemoveArenaCommand;
 import net.caseif.ttt.command.arena.RemoveSpawnCommand;
@@ -80,6 +81,8 @@ public class CommandManager implements CommandExecutor {
                     new CreateArenaCommand(sender, args).handle();
                 } else if (subCmd.equalsIgnoreCase("rarena") || subCmd.equalsIgnoreCase("ra")) {
                     new RemoveArenaCommand(sender, args).handle();
+                } else if (subCmd.equalsIgnoreCase("listarenas")) {
+                    new ListArenasCommand(sender, args).handle();
                 } else if (subCmd.equalsIgnoreCase("addspawn") || subCmd.equalsIgnoreCase("as")) {
                     new AddSpawnCommand(sender, args).handle();
                 } else if (subCmd.equalsIgnoreCase("removespawn") || subCmd.equalsIgnoreCase("rs")) {

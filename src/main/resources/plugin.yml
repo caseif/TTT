@@ -21,6 +21,9 @@ commands:
     rarena:
       description: Removes the given arena from TTT's registry.
       usage: /ttt rarena [arena name]
+    listarenas:
+      description: Lists available arenas.
+      usage: /ttt listarenas
     addspawn:
       description: Adds the sender's or a specified location as a spawn to a specified arena.
       usage: /ttt addspawn [arena name] {[x] [y] [z]}
@@ -127,6 +130,9 @@ permissions:
   ttt.arena.remove:
       description: Allows player to remove arenas from the plugin's registry.
       default: op
+  ttt.arena.list:
+      description: Allows player to view a list of available arenas.
+      default: true
   ttt.arena.addspawn:
     description: Allows player to add spawn points to an arena.
     default: op
