@@ -82,26 +82,27 @@ public class WizardListener implements Listener {
             }
             event.setCancelled(true);
             switch (stage) {
-                case Stage.WIZARD_ID:
+                case Stage.WIZARD_ID: {
                     if (!TTTCore.mg.getArena(event.getMessage()).isPresent()) {
-                        if (!event.getMessage().contains(".")) {
+                        if (event.getMessage().contains(".") || event.getMessage().contains(" ")) {
                             increment(event.getPlayer());
-                            WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_ID] = event.getMessage();
-                            event.getPlayer().sendMessage(DIVIDER);
-                            TTTCore.locale.getLocalizable("info.personal.arena.create.id")
-                                    .withPrefix(Color.INFO)
-                                    .withReplacements(Color.USAGE + event.getMessage().toLowerCase() + Color.INFO)
-                                    .sendTo(event.getPlayer());
-                        } else {
                             TTTCore.locale.getLocalizable("error.arena.create.invalid-id")
                                     .withPrefix(Color.ERROR).sendTo(event.getPlayer());
+                            break;
                         }
+                        WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_ID] = event.getMessage();
+                        event.getPlayer().sendMessage(DIVIDER);
+                        TTTCore.locale.getLocalizable("info.personal.arena.create.id")
+                                .withPrefix(Color.INFO)
+                                .withReplacements(Color.USAGE + event.getMessage().toLowerCase() + Color.INFO)
+                                .sendTo(event.getPlayer());
                     } else {
                         TTTCore.locale.getLocalizable("error.arena.create.id-already-exists")
                                 .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                     }
                     break;
-                case Stage.WIZARD_SPAWN_POINT:
+                }
+                case Stage.WIZARD_SPAWN_POINT: {
                     if (event.getMessage().equalsIgnoreCase(
                             TTTCore.locale.getLocalizable("info.personal.arena.create.ok-keyword")
                                     .localizeFor(event.getPlayer()))) {
@@ -111,11 +112,12 @@ public class WizardListener implements Listener {
                         Location3D spawn = LocationHelper.convert(event.getPlayer().getLocation());
 
                         if (!event.getPlayer().getWorld().getName().equals(((Location3D) WIZARD_INFO
-                                        .get(event.getPlayer().getUniqueId())[Stage.WIZARD_FIRST_BOUND])
-                                        .getWorld().get())
+                                .get(event.getPlayer().getUniqueId())[Stage.WIZARD_FIRST_BOUND])
+                                .getWorld().get())
                                 || !boundary.contains(spawn)) {
                             TTTCore.locale.getLocalizable("error.arena.create.bad-spawn").withPrefix(Color.ERROR)
                                     .sendTo(event.getPlayer());
+                            break;
                         }
                         TTTCore.mg.createArena((String) info[Stage.WIZARD_ID], spawn,
                                 boundary);
@@ -129,9 +131,11 @@ public class WizardListener implements Listener {
                         break;
                     }
                     // fall-through is intentional
-                default:
+                }
+                default: {
                     event.setCancelled(false);
                     break;
+                }
             }
         }
     }
