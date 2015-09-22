@@ -50,6 +50,17 @@ import java.util.UUID;
  */
 public class WizardListener implements Listener {
 
+    private static final String DIVIDER;
+
+    static {
+        final int dividerLength = 36;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < dividerLength; i++) {
+            sb.append("-");
+        }
+        DIVIDER = sb.toString();
+    }
+
     public static BiMap<UUID, Integer> WIZARDS = HashBiMap.create();
     public static BiMap<UUID, Object[]> WIZARD_INFO = HashBiMap.create();
 
@@ -64,6 +75,7 @@ public class WizardListener implements Listener {
                 event.setCancelled(true);
                 WIZARDS.remove(event.getPlayer().getUniqueId());
                 WIZARD_INFO.remove(event.getPlayer().getUniqueId());
+                event.getPlayer().sendMessage(DIVIDER);
                 TTTCore.locale.getLocalizable("info.personal.arena.create.cancelled").withPrefix(Color.ERROR)
                         .sendTo(event.getPlayer());
                 return;
@@ -75,6 +87,7 @@ public class WizardListener implements Listener {
                         if (!event.getMessage().contains(".")) {
                             increment(event.getPlayer());
                             WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_ID] = event.getMessage();
+                            event.getPlayer().sendMessage(DIVIDER);
                             TTTCore.locale.getLocalizable("info.personal.arena.create.id")
                                     .withPrefix(Color.INFO)
                                     .withReplacements(Color.USAGE + event.getMessage().toLowerCase() + Color.INFO)
@@ -99,14 +112,14 @@ public class WizardListener implements Listener {
 
                         if (!event.getPlayer().getWorld().getName().equals(((Location3D) WIZARD_INFO
                                         .get(event.getPlayer().getUniqueId())[Stage.WIZARD_FIRST_BOUND])
-                                        .getWorld().get()
-                        )
-                                && boundary.contains(spawn)) {
+                                        .getWorld().get())
+                                || !boundary.contains(spawn)) {
                             TTTCore.locale.getLocalizable("error.arena.create.bad-spawn").withPrefix(Color.ERROR)
                                     .sendTo(event.getPlayer());
                         }
                         TTTCore.mg.createArena((String) info[Stage.WIZARD_ID], spawn,
                                 boundary);
+                        event.getPlayer().sendMessage(DIVIDER);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(Color.INFO)
                                 .withReplacements(Color.USAGE + "/ttt join "
                                         + ((String) info[Stage.WIZARD_ID]).toLowerCase() + Color.INFO)
@@ -136,6 +149,7 @@ public class WizardListener implements Listener {
                         increment(event.getPlayer());
                         WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_FIRST_BOUND]
                                 = new Location3D(c.getWorld().getName(), c.getX(), 0, c.getZ());
+                        event.getPlayer().sendMessage(DIVIDER);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.bound-1")
                                 .withPrefix(Color.INFO)
                                 .withReplacements(Color.USAGE + "(x=" + c.getX() + ", z=" + c.getZ() + ")" + Color.INFO)
@@ -150,6 +164,7 @@ public class WizardListener implements Listener {
                             WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_SECOND_BOUND]
                                     = new Location3D(c.getWorld().getName(), c.getX(), c.getWorld().getMaxHeight(),
                                     c.getZ());
+                            event.getPlayer().sendMessage(DIVIDER);
                             TTTCore.locale.getLocalizable("info.personal.arena.create.bound-2")
                                     .withPrefix(Color.INFO)
                                     .withReplacements(Color.USAGE + "(x=" + c.getX() + ", z=" + c.getZ() + ")"
