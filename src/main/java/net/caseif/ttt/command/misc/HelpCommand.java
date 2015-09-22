@@ -81,8 +81,9 @@ public class HelpCommand extends SubcommandHandler {
                     if (sender.hasPermission((String) info[1])) {
                         sender.sendMessage(Color.INFO + "/ttt " + cmd + " "
                                 + Color.DESCRIPTION + ((Localizable) info[0]).localizeFor(sender));
-                        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO)
-                                .withReplacements(CommandManager.getUsage(cmd)).sendTo(sender);
+                        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO + "    ")
+                                .withReplacements(Color.USAGE + CommandManager.getUsage(cmd) + Color.INFO)
+                                .sendTo(sender);
                     } else {
                         TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR)
                                 .sendTo(sender);
@@ -92,17 +93,17 @@ public class HelpCommand extends SubcommandHandler {
                             .sendTo(sender);
                 }
             } else {
+                sender.sendMessage("");
                 TTTCore.locale.getLocalizable("info.help.available-cmds").withPrefix(Color.SPECIAL)
                         .sendTo(sender);
-                sender.sendMessage("");
                 for (String cmd : commands.keySet()) {
                     Object[] info = commands.get(cmd);
                     if (sender.hasPermission((String) info[1])) {
                         sender.sendMessage(Color.INFO + "/ttt " + cmd + " "
                                 + Color.DESCRIPTION + ((Localizable) info[0]).localizeFor(sender));
-                        sender.sendMessage(Color.INFO + "    "
-                                + TTTCore.locale.getLocalizable("fragment.usage")
-                                .withReplacements(Color.USAGE + CommandManager.getUsage(cmd)).localizeFor(sender));
+                        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO + "    ")
+                                .withReplacements(Color.USAGE + CommandManager.getUsage(cmd) + Color.INFO)
+                                .sendTo(sender);
                     }
                 }
             }

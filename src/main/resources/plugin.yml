@@ -35,17 +35,17 @@ commands:
       usage: /ttt listspawns [arena name]
     join:
       description: Adds player to a specified game of TTT.
-      usage: /ttt join [map name]
+      usage: /ttt join [arena name]
     leave:
       description: Removes player from their current round.
       usage: /ttt leave
     # administrative commands
     prepare:
       description: Forces a round to enter its preparation stage.
-      usage: /ttt prepare [arena name] {preparation time}
+      usage: /ttt prepare [arena name]
     start:
       description: Forces a round to enter its playing stage.
-      usage: /ttt start [arena name] {playing time}
+      usage: /ttt start [arena name]
     end:
       description: Forces a round to end.
       usage: /ttt end [arena name] {victor (t/i)}
