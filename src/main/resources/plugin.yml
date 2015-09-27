@@ -34,7 +34,7 @@ commands:
       description: Lists the spawn points of a given arena.
       usage: /ttt listspawns [arena name]
     join:
-      description: Adds player to a specified game of TTT.
+      description: Adds player to a specified TTT round.
       usage: /ttt join [arena name]
     leave:
       description: Removes player from their current round.
@@ -50,7 +50,7 @@ commands:
       description: Forces a round to end.
       usage: /ttt end [arena name] {victor (t/i)}
     kick:
-      description: Kicks a player from their given TTT round.
+      description: Kicks a player from their current round.
       usage: /ttt kick [player name]
     ban:
       description: Bans a player from joining TTT rounds.
@@ -59,11 +59,8 @@ commands:
       description: Unbans a player from joining TTT rounds.
       usage: /ttt pardon [player name] {minutes}
     # general commands
-    setexit:
-      description: Sets the location to teleport players to upon round end.
-      usage: /ttt setexit {true/false}
     help:
-      description: Displays available commands to the sender.
+      description: Displays descriptions and usages of commands available to the sender.
       usage: /ttt help
 
 permissions:
