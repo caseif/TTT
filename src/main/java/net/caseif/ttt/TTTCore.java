@@ -67,6 +67,8 @@ import java.util.logging.Logger;
  */
 public class TTTCore extends JavaPlugin {
 
+    private static final String CODENAME = "Chad";
+
     public static boolean STEEL = true;
     public static Minigame mg;
 
@@ -184,6 +186,10 @@ public class TTTCore extends JavaPlugin {
 
     public static TTTCore getInstance() {
         return plugin;
+    }
+
+    public static String getCodename() {
+        return CODENAME;
     }
 
     public void createFile(String s) {
