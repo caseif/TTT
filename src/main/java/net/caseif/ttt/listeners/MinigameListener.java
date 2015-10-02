@@ -222,13 +222,12 @@ public class MinigameListener {
                 boolean iLeft = false;
                 boolean tLeft = false;
                 for (Challenger ch : event.getRound().getChallengers()) {
-                    if (!tLeft || !iLeft) {
+                    if (!(tLeft && iLeft)) {
                         if (!ch.isSpectating()) {
-                            if (!iLeft && !MiscUtil.isTraitor(ch)) {
-                                iLeft = true;
-                            }
-                            if (!tLeft && MiscUtil.isTraitor(ch)) {
+                            if (MiscUtil.isTraitor(ch)) {
                                 tLeft = true;
+                            } else {
+                                iLeft = true;
                             }
                         }
                     } else {
@@ -265,7 +264,9 @@ public class MinigameListener {
                     }
                 }
                 if (!(tLeft && iLeft)) {
-                    event.getRound().getMetadata().set("t-victory", tLeft);
+                    if (tLeft) {
+                        event.getRound().getMetadata().set("t-victory", true);
+                    }
                     event.getRound().getMetadata().set("ending", true); //TODO: temp fix
                     event.getRound().end();
                     return;
