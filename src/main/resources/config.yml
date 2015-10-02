@@ -49,14 +49,17 @@ scanner-charge-time: 7.5
 # This will not do anything on Minecraft versions prior to 1.8.
 send-titles: true
 
-# If true, status titles (event.g. "You are a traitor!") will be sent as subtitles. If false, normal titles will be
-# sent. Setting this to true may cause the title to be obstructed by the chat box.
-small-status-titles: false
+# If true, status titles (event.g. "You are a traitor!") will be sent as full-sized titles.
+# If false (default), subtitles will be sent.
+# Setting this to true may cause the title to obstruct the player's screen.
+large-status-titles: false
 
-# If true, victory titles (event.g. "The traitors won!") will be sent as subtitles. If false, normal titles will be
-# sent. Setting this to false may cause the title to not fit on the screen for certain locales (such as de_DE).
-# Setting this to true may cause the title to be obstructed by the chat box.
-small-victory-titles: true
+
+# If true, status titles (event.g. "The traitors won!") will be sent as full-sized titles.
+# If false (default), subtitles will be sent.
+# Setting this to true may cause the title to obstruct the player's screen and additionally may
+# cause the title to not fit on the screen for certain locales (such as de_DE).
+large-victory-titles: false
 
 ###################
 # Weapon Settings #

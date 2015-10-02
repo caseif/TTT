@@ -65,8 +65,8 @@ public final class ConfigHelper {
 
     // Title settings
     public static final boolean SEND_TITLES;
-    public static final boolean SMALL_STATUS_TITLES;
-    public static final boolean SMALL_VICTORY_TITLES;
+    public static final boolean LARGE_STATUS_TITLES;
+    public static final boolean LARGE_VICTORY_TITLES;
 
     // Weapon settings
     public static final Material CROWBAR_ITEM;
@@ -124,8 +124,8 @@ public final class ConfigHelper {
 
         // Title settings
         SEND_TITLES = getBoolean("send-titles");
-        SMALL_STATUS_TITLES = getBoolean("small-status-titles");
-        SMALL_VICTORY_TITLES = getBoolean("small-victory-titles");
+        LARGE_STATUS_TITLES = getBoolean("large-status-titles");
+        LARGE_VICTORY_TITLES = getBoolean("large-victory-titles");
 
         // Weapon settings
         CROWBAR_ITEM = getMaterial("crowbar-item", Material.IRON_SWORD);

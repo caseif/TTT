@@ -64,10 +64,10 @@ public final class TitleHelper {
                     break;
                 }
             }
-            if (ConfigHelper.SMALL_STATUS_TITLES) {
-                TitleUtil.sendTitle(player, "", ChatColor.RESET, title, ChatColor.getByChar(color.charAt(1)));
-            } else {
+            if (ConfigHelper.LARGE_STATUS_TITLES) {
                 TitleUtil.sendTitle(player, title, ChatColor.getByChar(color.charAt(1)));
+            } else {
+                TitleUtil.sendTitle(player, "", ChatColor.RESET, title, ChatColor.getByChar(color.charAt(1)));
             }
         }
     }
@@ -82,11 +82,11 @@ public final class TitleHelper {
             );
             for (Challenger ch : round.getChallengers()) {
                 Player pl = Bukkit.getPlayer(ch.getUniqueId());
-                if (ConfigHelper.SMALL_VICTORY_TITLES) {
-                    TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), "", ChatColor.RESET, loc.localizeFor(pl),
+                if (ConfigHelper.LARGE_VICTORY_TITLES) {
+                    TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), loc.localizeFor(pl),
                             color);
                 } else {
-                    TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), loc.localizeFor(pl),
+                    TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), "", ChatColor.RESET, loc.localizeFor(pl),
                             color);
                 }
             }
