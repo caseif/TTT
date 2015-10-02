@@ -247,7 +247,7 @@ public class ScoreboardManager {
             return true;
         }
 
-        if (score.getScore() != ch.getMetadata().<Integer>get("displayKarma").get()) {
+        if (score.getScore() != ch.getMetadata().<Integer>get("displayKarma").or(0)) {
             return true;
         }
 
