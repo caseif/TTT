@@ -66,6 +66,11 @@ public class MinigameListener {
 
     @Subscribe
     public void onPlayerJoinRound(ChallengerJoinRoundEvent event) {
+        if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
+            event.getChallenger().setSpectating(true);
+            event.getChallenger().getMetadata().set(Constants.PlayerTag.PURE_SPECTATOR, true);
+        }
+
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setHealth(Bukkit.getPlayer(event.getChallenger().getUniqueId()).getMaxHealth());
 
@@ -76,15 +81,10 @@ public class MinigameListener {
             ScoreboardManager.get(event.getRound()).get().assignScoreboard(event.getChallenger());
         }
 
-        Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
-
-        if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
-            event.getChallenger().setSpectating(true);
-            event.getChallenger().getMetadata().set(Constants.PlayerTag.PURE_SPECTATOR, true);
-
-            KarmaHelper.applyKarma(event.getChallenger());
-        } else {
+        if (!event.getChallenger().getMetadata().has(Constants.PlayerTag.PURE_SPECTATOR)) {
+            Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
             pl.setGameMode(GameMode.SURVIVAL);
+            KarmaHelper.applyKarma(event.getChallenger());
 
             MiscUtil.broadcast(event.getRound(),
                     TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO)

@@ -415,12 +415,13 @@ public class PlayerListener implements Listener {
             }
 
             Block block = loc.getBlock();
-            while (block.getType() != Material.AIR && block.getType() != Material.WATER && block.getType() != Material.LAVA
-                    && block.getType() != Material.STATIONARY_WATER && block.getType() != Material.STATIONARY_LAVA) {
+            while (block.getType() != Material.AIR && block.getType() != Material.WATER
+                    && block.getType() != Material.LAVA && block.getType() != Material.STATIONARY_WATER
+                    && block.getType() != Material.STATIONARY_LAVA) {
                 block = loc.add(0, 1, 0).getBlock();
             }
             //TTTCore.mg.getRollbackManager().logBlockChange(block, ch.getArena()); //TODO (probably Flint 1.1)
-            //TODO: Add check for doors and such
+            //TODO: Add check for doors and such (sort of implemented as of 0.8)
             //TODO: move this code to another method
             try {
                 //TODO: temporary hack (I'm still a terrible person for even writing this)

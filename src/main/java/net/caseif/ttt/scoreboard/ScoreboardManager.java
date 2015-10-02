@@ -25,6 +25,7 @@ package net.caseif.ttt.scoreboard;
 
 import static net.caseif.ttt.util.MiscUtil.fromNullableString;
 
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.AliveStatus;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
@@ -146,57 +147,59 @@ public class ScoreboardManager {
 
     @SuppressWarnings("deprecation")
     public void update(Challenger challenger) {
-        if (ENTRY_SUPPORT) {
-            innocent.resetScores(challenger.getName());
-            traitor.resetScores(challenger.getName());
-        } else {
-            innocent.resetScores(Bukkit.getPlayer(challenger.getUniqueId()));
-            traitor.resetScores(Bukkit.getPlayer(challenger.getUniqueId()));
-        }
+        if (!challenger.getMetadata().has(Constants.PlayerTag.PURE_SPECTATOR)) {
+            if (ENTRY_SUPPORT) {
+                innocent.resetScores(challenger.getName());
+                traitor.resetScores(challenger.getName());
+            } else {
+                innocent.resetScores(Bukkit.getPlayer(challenger.getUniqueId()));
+                traitor.resetScores(Bukkit.getPlayer(challenger.getUniqueId()));
+            }
 
-        if (innocent.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId())) != null) {
-            innocent.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId()))
-                    .removePlayer(Bukkit.getPlayer(challenger.getUniqueId()));
-        }
-        if (traitor.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId())) != null) {
-            traitor.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId()))
-                    .removePlayer(Bukkit.getPlayer(challenger.getUniqueId()));
-        }
+            if (innocent.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId())) != null) {
+                innocent.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId()))
+                        .removePlayer(Bukkit.getPlayer(challenger.getUniqueId()));
+            }
+            if (traitor.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId())) != null) {
+                traitor.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId()))
+                        .removePlayer(Bukkit.getPlayer(challenger.getUniqueId()));
+            }
 
-        String role = MiscUtil.isTraitor(challenger)
-                ? Role.TRAITOR
-                : (challenger.getMetadata().has(Role.DETECTIVE) ? Role.DETECTIVE : Role.INNOCENT);
-        String aliveStatus = challenger.isSpectating()
-                ? (challenger.getMetadata().has("bodyFound") ? AliveStatus.CONFIRMED_DEAD : AliveStatus.MIA)
-                : AliveStatus.ALIVE;
-        int matches = 0;
-        for (Map.Entry<TeamKey, Team> e : teams.entrySet()) {
-            if (e.getKey().getRole().equals(role) && e.getKey().getAliveStatus().equals(aliveStatus)) {
-                if (ENTRY_SUPPORT) {
-                    e.getValue().addEntry(challenger.getName());
-                } else {
-                    e.getValue().addPlayer(Bukkit.getPlayer(challenger.getUniqueId()));
-                }
-                matches++;
-                if (matches == 2) {
-                    break;
+            String role = MiscUtil.isTraitor(challenger)
+                    ? Role.TRAITOR
+                    : (challenger.getMetadata().has(Role.DETECTIVE) ? Role.DETECTIVE : Role.INNOCENT);
+            String aliveStatus = challenger.isSpectating()
+                    ? (challenger.getMetadata().has("bodyFound") ? AliveStatus.CONFIRMED_DEAD : AliveStatus.MIA)
+                    : AliveStatus.ALIVE;
+            int matches = 0;
+            for (Map.Entry<TeamKey, Team> e : teams.entrySet()) {
+                if (e.getKey().getRole().equals(role) && e.getKey().getAliveStatus().equals(aliveStatus)) {
+                    if (ENTRY_SUPPORT) {
+                        e.getValue().addEntry(challenger.getName());
+                    } else {
+                        e.getValue().addPlayer(Bukkit.getPlayer(challenger.getUniqueId()));
+                    }
+                    matches++;
+                    if (matches == 2) {
+                        break;
+                    }
                 }
             }
-        }
 
-        Score score1;
-        Score score2;
-        if (ENTRY_SUPPORT) {
-            score1 = iObj.getScore(challenger.getName());
-            score2 = tObj.getScore(challenger.getName());
-        } else {
-            score1 = iObj.getScore(Bukkit.getPlayer(challenger.getUniqueId()));
-            score2 = tObj.getScore(Bukkit.getPlayer(challenger.getUniqueId()));
-        }
+            Score score1;
+            Score score2;
+            if (ENTRY_SUPPORT) {
+                score1 = iObj.getScore(challenger.getName());
+                score2 = tObj.getScore(challenger.getName());
+            } else {
+                score1 = iObj.getScore(Bukkit.getPlayer(challenger.getUniqueId()));
+                score2 = tObj.getScore(Bukkit.getPlayer(challenger.getUniqueId()));
+            }
 
-        int displayKarma = challenger.getMetadata().<Integer>get("displayKarma").get();
-        score1.setScore(displayKarma);
-        score2.setScore(displayKarma);
+            int displayKarma = challenger.getMetadata().<Integer>get("displayKarma").get();
+            score1.setScore(displayKarma);
+            score2.setScore(displayKarma);
+        }
     }
 
     public void assignScoreboards() {
