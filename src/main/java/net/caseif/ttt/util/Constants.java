@@ -74,4 +74,8 @@ public final class Constants {
         public static final String TRANSLATOR = "translator";
     }
 
+    public static class PlayerTag {
+        public static final String PURE_SPECTATOR = "pureSpectator";
+    }
+
 }

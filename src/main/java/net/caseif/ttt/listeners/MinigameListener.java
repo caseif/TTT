@@ -27,6 +27,7 @@ import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.arena.JoinCommand;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.Constants.Stage;
@@ -68,8 +69,6 @@ public class MinigameListener {
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setHealth(Bukkit.getPlayer(event.getChallenger().getUniqueId()).getMaxHealth());
 
-        KarmaHelper.applyKarma(event.getChallenger());
-
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
                 .setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 
@@ -79,17 +78,22 @@ public class MinigameListener {
 
         Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
 
-        pl.setGameMode(GameMode.SURVIVAL);
-
-        MiscUtil.broadcast(event.getRound(),
-                TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO)
-                        .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl)));
-
         if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
             event.getChallenger().setSpectating(true);
-        } else if (event.getRound().getLifecycleStage() == Stage.WAITING
-                && event.getRound().getChallengers().size() >= ConfigHelper.MINIMUM_PLAYERS) {
-            event.getRound().nextLifecycleStage();
+            event.getChallenger().getMetadata().set(Constants.PlayerTag.PURE_SPECTATOR, true);
+
+            KarmaHelper.applyKarma(event.getChallenger());
+        } else {
+            pl.setGameMode(GameMode.SURVIVAL);
+
+            MiscUtil.broadcast(event.getRound(),
+                    TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO)
+                            .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl)));
+
+            if (event.getRound().getLifecycleStage() == Stage.WAITING
+                    && event.getRound().getChallengers().size() >= ConfigHelper.MINIMUM_PLAYERS) {
+                event.getRound().nextLifecycleStage();
+            }
         }
     }
 
@@ -104,17 +108,19 @@ public class MinigameListener {
                 .setCompassTarget(LocationHelper.convert(event.getReturnLocation()).getWorld().getSpawnLocation());
 
         if (!event.getRound().getMetadata().has("ending")) { //TODO: temp fix
-            KarmaHelper.saveKarma(event.getChallenger());
-            MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
-                    .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
-                            Color.ARENA + event.getChallenger().getRound().getArena().getName() + Color.INFO));
+            if (event.getChallenger().getMetadata().has(Constants.PlayerTag.PURE_SPECTATOR)) {
+                KarmaHelper.saveKarma(event.getChallenger());
+                MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
+                        .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
+                                Color.ARENA + event.getChallenger().getRound().getArena().getName() + Color.INFO));
 
-            if (event.getRound().getLifecycleStage() == Stage.PREPARING
-                    && event.getRound().getChallengers().size() <= 1) {
-                event.getRound().setLifecycleStage(Stage.WAITING);
-                MiscUtil.broadcast(event.getRound(),
-                        TTTCore.locale.getLocalizable("info.global.round.status.starting.stopped")
-                                .withPrefix(Color.ERROR));
+                if (event.getRound().getLifecycleStage() == Stage.PREPARING
+                        && event.getRound().getChallengers().size() <= 1) {
+                    event.getRound().setLifecycleStage(Stage.WAITING);
+                    MiscUtil.broadcast(event.getRound(),
+                            TTTCore.locale.getLocalizable("info.global.round.status.starting.stopped")
+                                    .withPrefix(Color.ERROR));
+                }
             }
         }
     }
@@ -161,7 +167,7 @@ public class MinigameListener {
                     TTTCore.locale.getLocalizable("info.personal.status.role.traitor.allies")
                             .withPrefix(Color.TRAITOR).sendTo(pl);
                     for (Challenger traitor : ch.getTeam().get().getChallengers()) {
-                        if (traitor != ch) { // they aren't their own ally
+                        if (traitor != ch) { // don't list them as an ally to themselves
                             pl.sendMessage(Color.TRAITOR + "- " + traitor.getName());
                         }
                     }
@@ -194,7 +200,7 @@ public class MinigameListener {
         Round r = event.getRound();
         if (r.getLifecycleStage() != Stage.WAITING) {
             long rTime = r.getRemainingTime();
-            Localizable loc = null;
+            Localizable loc;
             Localizable time = null;
             if (rTime >= 60 && rTime % 60 == 0) {
                 time = TTTCore.locale.getLocalizable("fragment.minutes" + (rTime / 60 == 1 ? ".singular" : ""))
