@@ -80,7 +80,7 @@ public class WorldListener implements Listener {
 
     @EventHandler
     public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
-        if (event.getTarget().getType() == EntityType.PLAYER
+        if (event.getTarget() != null && event.getTarget().getType() == EntityType.PLAYER
                 && TTTCore.mg.getChallenger(event.getTarget().getUniqueId()).isPresent()) {
             event.setCancelled(true);
         }
