@@ -13,7 +13,7 @@ defaultTasks 'clean', 'licenseFormat', 'build', 'shadowJar'
 
 // Project information
 group = 'net.amigocraft.ttt'
-version = '0.8.0-rc2'
+version = '0.8.0-SNAPSHOT'
 
 // Extended project information
 ext.projectName = 'ttt'
