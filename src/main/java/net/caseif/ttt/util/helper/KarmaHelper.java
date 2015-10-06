@@ -191,7 +191,7 @@ public class KarmaHelper {
     }
 
     public static void applyKarma(Challenger challenger) {
-        int karma = getKarma(challenger.getUniqueId());
+        int karma = Math.max(getKarma(challenger.getUniqueId()), ConfigHelper.KARMA_LOW_AUTOKICK);
         challenger.getMetadata().set("karma", karma);
         challenger.getMetadata().set("displayKarma", karma);
     }
