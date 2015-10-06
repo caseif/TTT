@@ -242,10 +242,21 @@ public class ScoreboardManager {
     private boolean needsUpdate(Challenger ch, Objective obj) {
         Player pl = Bukkit.getPlayer(ch.getUniqueId());
 
-        Score score = ENTRY_SUPPORT ? obj.getScore(ch.getName()) : obj.getScore(pl);
-        if (score == null) {
+        Set<Score> scores = ENTRY_SUPPORT
+                ? obj.getScoreboard().getScores(ch.getName())
+                : obj.getScoreboard().getScores(pl);
+        boolean found = false;
+        for (Score score : scores) {
+            if (score.getObjective() == obj) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
             return true;
         }
+
+        Score score = ENTRY_SUPPORT ? obj.getScore(ch.getName()) : obj.getScore(pl);
 
         if (score.getScore() != ch.getMetadata().<Integer>get("displayKarma").or(0)) {
             return true;

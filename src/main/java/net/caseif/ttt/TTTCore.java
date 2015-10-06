@@ -103,7 +103,7 @@ public class TTTCore extends JavaPlugin {
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
 
-        // register plugin with MGLib
+        // register plugin with Flint
         mg = FlintCore.registerPlugin(getName());
 
         doCompatibilityActions();
