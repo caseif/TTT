@@ -112,7 +112,7 @@ public class MinigameListener {
                 .setCompassTarget(LocationHelper.convert(event.getReturnLocation()).getWorld().getSpawnLocation());
 
         if (!event.getRound().getMetadata().has("ending")) { //TODO: temp fix
-            if (event.getChallenger().getMetadata().has(Constants.PlayerTag.PURE_SPECTATOR)) {
+            if (!event.getChallenger().getMetadata().has(Constants.PlayerTag.PURE_SPECTATOR)) {
                 KarmaHelper.saveKarma(event.getChallenger());
                 MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                         .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
