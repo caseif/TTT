@@ -215,6 +215,7 @@ public class ScoreboardManager {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private ImmutableSet<Team> getValidTeams(Challenger ch) {
         String role = MiscUtil.isTraitor(ch)
                 ? Role.TRAITOR
@@ -246,6 +247,7 @@ public class ScoreboardManager {
     private boolean needsUpdate(Challenger ch, Objective obj) {
         Player pl = Bukkit.getPlayer(ch.getUniqueId());
 
+        @SuppressWarnings("deprecation")
         Set<Score> scores = ENTRY_SUPPORT
                 ? obj.getScoreboard().getScores(ch.getName())
                 : obj.getScoreboard().getScores(pl);
@@ -260,6 +262,7 @@ public class ScoreboardManager {
             return true;
         }
 
+        @SuppressWarnings("deprecation")
         Score score = ENTRY_SUPPORT ? obj.getScore(ch.getName()) : obj.getScore(pl);
 
         if (score.getScore() != ch.getMetadata().<Integer>get("displayKarma").or(0)) {
