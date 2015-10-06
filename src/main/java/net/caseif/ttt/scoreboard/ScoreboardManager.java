@@ -31,6 +31,7 @@ import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.helper.ConfigHelper;
+import net.caseif.ttt.util.helper.KarmaHelper;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.BiMap;
@@ -204,6 +205,9 @@ public class ScoreboardManager {
                     score2 = tObj.getScore(Bukkit.getPlayer(challenger.getUniqueId()));
                 }
 
+                if (!challenger.getMetadata().has("displayKarma")) {
+                    KarmaHelper.applyKarma(challenger);
+                }
                 int displayKarma = challenger.getMetadata().<Integer>get("displayKarma").get();
                 score1.setScore(displayKarma);
                 score2.setScore(displayKarma);
@@ -281,7 +285,6 @@ public class ScoreboardManager {
 
     public void assignScoreboard(Challenger ch) {
         Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(MiscUtil.isTraitor(ch) ? traitor : innocent);
-        update(ch);
     }
 
 }

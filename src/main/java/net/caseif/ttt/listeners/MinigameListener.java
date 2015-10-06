@@ -82,6 +82,10 @@ public class MinigameListener {
         }
 
         if (!event.getChallenger().getMetadata().has(Constants.PlayerTag.PURE_SPECTATOR)) {
+            if (ScoreboardManager.get(event.getRound()).isPresent()) {
+                ScoreboardManager.get(event.getRound()).get().update(event.getChallenger());
+            }
+
             Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
             pl.setGameMode(GameMode.SURVIVAL);
             KarmaHelper.applyKarma(event.getChallenger());
