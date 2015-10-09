@@ -65,6 +65,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -508,6 +509,16 @@ public class PlayerListener implements Listener {
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
         if (TTTCore.mg.getChallenger(event.getEntity().getUniqueId()).isPresent()) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
+        Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
+        if (ch.isPresent()) {
+            if (ch.get().isSpectating()) {
+                event.setMessage("[DEAD]" + event.getMessage()); //TODO: possibly find a way to localize this
+            }
         }
     }
 
