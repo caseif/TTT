@@ -447,7 +447,7 @@ public class PlayerListener implements Listener {
             Chest chest = (Chest) block.getState();
 
             // player identifier
-            ItemStack id = new ItemStack(Material.PAPER, 1);
+            ItemStack id = new ItemStack(TTTCore.HALLOWEEN ? Material.JACK_O_LANTERN : Material.PAPER, 1);
             ItemMeta idMeta = id.getItemMeta();
             idMeta.setDisplayName(TTTCore.locale.getLocalizable("item.id.name").localize());
             List<String> idLore = new ArrayList<>();

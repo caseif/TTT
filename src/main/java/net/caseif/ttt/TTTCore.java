@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -84,6 +85,13 @@ public class TTTCore extends JavaPlugin {
     public static int maxKarma = 1000;
 
     public static ContributorListHelper clh;
+
+    public static final boolean HALLOWEEN;
+
+    static {
+        Calendar cal = Calendar.getInstance();
+        HALLOWEEN = cal.get(Calendar.MONTH) == Calendar.OCTOBER && cal.get(Calendar.DAY_OF_MONTH) == 8;
+    }
 
     @Override
     public void onEnable() {
