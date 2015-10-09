@@ -65,7 +65,7 @@ import java.util.UUID;
 public class MinigameListener {
 
     @Subscribe
-    public void onPlayerJoinRound(ChallengerJoinRoundEvent event) {
+    public void onChallengerJoinRound(ChallengerJoinRoundEvent event) {
         if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
             event.getChallenger().setSpectating(true);
             event.getChallenger().getMetadata().set(Constants.PlayerTag.PURE_SPECTATOR, true);
@@ -102,14 +102,15 @@ public class MinigameListener {
     }
 
     @Subscribe
-    public void onPlayerLeaveRound(ChallengerLeaveRoundEvent event) {
-        Bukkit.getPlayer(event.getChallenger().getUniqueId()).setScoreboard(
+    public void onChallengerLeaveRound(ChallengerLeaveRoundEvent event) {
+        Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
+        pl.setScoreboard(
                 TTTCore.getInstance().getServer().getScoreboardManager().getNewScoreboard()
         );
-        Bukkit.getPlayer(event.getChallenger().getUniqueId())
-                .setDisplayName(event.getChallenger().getName());
-        Bukkit.getPlayer(event.getChallenger().getUniqueId())
-                .setCompassTarget(LocationHelper.convert(event.getReturnLocation()).getWorld().getSpawnLocation());
+
+        pl.setDisplayName(event.getChallenger().getName());
+        pl.setCompassTarget(LocationHelper.convert(event.getReturnLocation()).getWorld().getSpawnLocation());
+        pl.setHealth(pl.getMaxHealth());
 
         if (!event.getRound().getMetadata().has("ending")) { //TODO: temp fix
             if (!event.getChallenger().getMetadata().has(Constants.PlayerTag.PURE_SPECTATOR)) {
