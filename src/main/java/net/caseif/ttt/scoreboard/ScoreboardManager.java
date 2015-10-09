@@ -53,6 +53,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+//TODO: this is kind of a clusterf--- of a system and really needs to be rewritten from scratch at some point
 public class ScoreboardManager {
 
     //TODO: drop support for Bukkit 1.7.2 in the next major version (0.9)
@@ -227,11 +228,7 @@ public class ScoreboardManager {
         Set<Team> teams = new HashSet<>();
         for (Map.Entry<TeamKey, Team> e : this.teams.entrySet()) {
             if (e.getKey().getRole().equals(role) && e.getKey().getAliveStatus().equals(aliveStatus)) {
-                if (ENTRY_SUPPORT) {
-                    e.getValue().addEntry(ch.getName());
-                } else {
-                    e.getValue().addPlayer(Bukkit.getPlayer(ch.getUniqueId()));
-                }
+                teams.add(e.getValue());
                 if (teams.size() == 2) {
                     break;
                 }

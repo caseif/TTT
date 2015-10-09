@@ -144,6 +144,9 @@ public class MinigameListener {
     @SuppressWarnings("deprecation")
     public void startRound(Round round) {
         RoleHelper.assignRoles(round);
+        for (Challenger ch : round.getChallengers()) {
+            ScoreboardManager.getOrCreate(round).update(ch);
+        }
         InventoryHelper.distributeItems(round);
         ScoreboardManager.getOrCreate(round).assignScoreboards();
 
