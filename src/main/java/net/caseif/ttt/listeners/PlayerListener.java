@@ -512,12 +512,18 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
         if (ch.isPresent()) {
             if (ch.get().isSpectating()) {
-                event.setMessage("[DEAD]" + event.getMessage()); //TODO: possibly find a way to localize this
+                Localizable dead = TTTCore.locale.getLocalizable("fragment.dead");
+                for (Player pl : event.getRecipients()) {
+                    pl.sendMessage("[" + dead.localizeFor(pl).toUpperCase() + "]"
+                            + "<" + event.getPlayer().getDisplayName() + "> "
+                            + event.getMessage());
+                }
+                event.getRecipients().clear();
             }
         }
     }

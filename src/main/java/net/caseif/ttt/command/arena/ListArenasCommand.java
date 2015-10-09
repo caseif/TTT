@@ -46,7 +46,7 @@ public class ListArenasCommand extends SubcommandHandler {
                         + (arena.getRound().isPresent()
                         ? arena.getRound().get().getLifecycleStage().getId()
                         : "waiting"))
-                        .localizeFor(sender));
+                        .localizeFor(sender).toUpperCase());
             }
         }
     }
