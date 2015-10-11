@@ -90,7 +90,7 @@ public class TTTCore extends JavaPlugin {
 
     static {
         Calendar cal = Calendar.getInstance();
-        HALLOWEEN = cal.get(Calendar.MONTH) == Calendar.OCTOBER && cal.get(Calendar.DAY_OF_MONTH) == 8;
+        HALLOWEEN = cal.get(Calendar.MONTH) == Calendar.OCTOBER && cal.get(Calendar.DAY_OF_MONTH) == 31;
     }
 
     @Override
