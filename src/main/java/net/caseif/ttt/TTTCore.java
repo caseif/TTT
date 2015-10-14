@@ -68,7 +68,7 @@ import java.util.logging.Logger;
  */
 public class TTTCore extends JavaPlugin {
 
-    private static final String CODENAME = "Chad";
+    private static final String CODENAME = "Alicia";
 
     public static boolean STEEL = true;
     public static Minigame mg;
