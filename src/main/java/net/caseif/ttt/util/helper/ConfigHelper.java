@@ -25,7 +25,7 @@ package net.caseif.ttt.util.helper;
 
 import static net.caseif.ttt.util.MiscUtil.isDouble;
 
-import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.TTTBootstrap;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -190,7 +190,7 @@ public final class ConfigHelper {
     }
 
     public static String getString(String key) {
-        String value = TTTCore.getInstance().getConfig().getString(key);
+        String value = TTTBootstrap.INSTANCE.getConfig().getString(key);
         if (value != null) {
             if (value.contains("Â§")) { // fix encoding mistakes on Windoofs
                 value = value.replace("Â§", "§");
@@ -201,15 +201,15 @@ public final class ConfigHelper {
     }
 
     public static boolean getBoolean(String key) {
-        return TTTCore.getInstance().getConfig().getBoolean(key);
+        return TTTBootstrap.INSTANCE.getConfig().getBoolean(key);
     }
 
     public static int getInt(String key) {
-        return TTTCore.getInstance().getConfig().getInt(key);
+        return TTTBootstrap.INSTANCE.getConfig().getInt(key);
     }
 
     public static double getDouble(String key) {
-        return TTTCore.getInstance().getConfig().getDouble(key);
+        return TTTBootstrap.INSTANCE.getConfig().getDouble(key);
     }
 
     public static Material getMaterial(String key) {
@@ -217,7 +217,7 @@ public final class ConfigHelper {
     }
 
     public static Material getMaterial(String key, Material fallback) {
-        Material m = Material.getMaterial(TTTCore.getInstance().getConfig().getString(key));
+        Material m = Material.getMaterial(TTTBootstrap.INSTANCE.getConfig().getString(key));
         return m != null ? m : fallback;
     }
 
@@ -236,8 +236,8 @@ public final class ConfigHelper {
 
     public static void addMissingKeys() throws InvalidConfigurationException, IOException {
         BufferedReader stockConfig
-                = new BufferedReader(new InputStreamReader(TTTCore.class.getResourceAsStream("/config.yml")));
-        File userConfigFile = new File(TTTCore.getInstance().getDataFolder(), "config.yml");
+                = new BufferedReader(new InputStreamReader(TTTBootstrap.class.getResourceAsStream("/config.yml")));
+        File userConfigFile = new File(TTTBootstrap.INSTANCE.getDataFolder(), "config.yml");
         YamlConfiguration userConfig = new YamlConfiguration();
         userConfig.load(userConfigFile);
         StringBuilder sb = new StringBuilder();

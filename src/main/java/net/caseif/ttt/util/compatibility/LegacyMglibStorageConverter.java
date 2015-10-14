@@ -49,7 +49,7 @@ import java.util.ArrayList;
 public class LegacyMglibStorageConverter {
 
     public static void convertArenaStore() {
-        File arenaStore = new File(TTTCore.getInstance().getDataFolder(), "arenas.yml");
+        File arenaStore = new File(TTTCore.getPlugin().getDataFolder(), "arenas.yml");
         if (arenaStore.exists()) {
             TTTCore.log.info("Converting legacy arena store - please wait");
             try {
@@ -111,7 +111,7 @@ public class LegacyMglibStorageConverter {
                 }
                 TTTCore.log.info("Successfully converted " + count + " legacy arenas");
                 try {
-                    Files.move(arenaStore, new File(TTTCore.getInstance().getDataFolder(), "arenas.yml.old"));
+                    Files.move(arenaStore, new File(TTTCore.getPlugin().getDataFolder(), "arenas.yml.old"));
                 } catch (IOException ex) {
                     TTTCore.log.severe("Failed to rename old arenas.yml file - you may need to do this manually");
                     ex.printStackTrace();
@@ -124,7 +124,7 @@ public class LegacyMglibStorageConverter {
     }
 
     public static void convertLobbyStore() {
-        File arenaStore = new File(TTTCore.getInstance().getDataFolder(), "lobbies.yml");
+        File arenaStore = new File(TTTCore.getPlugin().getDataFolder(), "lobbies.yml");
         if (arenaStore.exists()) {
             TTTCore.log.info("Converting legacy lobby sign store - please wait");
             try {
@@ -186,7 +186,7 @@ public class LegacyMglibStorageConverter {
                 }
                 TTTCore.log.info("Successfully converted " + count + " legacy lobby signs");
                 try {
-                    Files.move(arenaStore, new File(TTTCore.getInstance().getDataFolder(), "lobbies.yml.old"));
+                    Files.move(arenaStore, new File(TTTCore.getPlugin().getDataFolder(), "lobbies.yml.old"));
                 } catch (IOException ex) {
                     TTTCore.log.severe("Failed to rename old lobbies.yml file - you may need to do this manually");
                     ex.printStackTrace();

@@ -39,9 +39,9 @@ public class DefaultCommand extends SubcommandHandler {
     @Override
     public void handle() {
         TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(Color.SPECIAL)
-                .withReplacements(TTTCore.getInstance().getDescription().getVersion()
+                .withReplacements(TTTCore.getPlugin().getDescription().getVersion()
                                 + " \"" + TTTCore.getCodename() + "\"",
-                        MiscUtil.prettyList(TTTCore.getInstance().getDescription().getAuthors()))
+                        MiscUtil.prettyList(TTTCore.getPlugin().getDescription().getAuthors()))
                 .sendTo(sender);
         TTTCore.locale.getLocalizable("info.command.usage.help").withPrefix(Color.INFO).sendTo(sender);
     }

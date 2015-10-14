@@ -117,7 +117,7 @@ public class PlayerListener implements Listener {
                         for (Body b : TTTCore.bodies) {
                             if (b.getLocation().equals(clicked)) {
                                 Inventory chestInv = ((Chest) event.getClickedBlock().getState()).getInventory();
-                                Inventory inv = TTTCore.getInstance().getServer().createInventory(chestInv.getHolder(),
+                                Inventory inv = TTTCore.getPlugin().getServer().createInventory(chestInv.getHolder(),
                                         chestInv.getSize());
                                 inv.setContents(chestInv.getContents());
                                 event.getPlayer().openInventory(inv);

@@ -38,10 +38,10 @@ public class LegacyConfigFolderRenamer {
 
     public static void renameLegacyFolder() {
         final File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");
-        if (old.exists() && !TTTCore.getInstance().getDataFolder().exists()) {
+        if (old.exists() && !TTTCore.getPlugin().getDataFolder().exists()) {
             TTTCore.getInstance().logWarning("info.plugin.compatibility.rename");
             try {
-                old.renameTo(TTTCore.getInstance().getDataFolder());
+                old.renameTo(TTTCore.getPlugin().getDataFolder());
             } catch (Exception ex) {
                 TTTCore.getInstance().logWarning("error.plugin.folder-rename");
                 ex.printStackTrace();

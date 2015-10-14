@@ -26,10 +26,8 @@ package net.caseif.ttt;
 import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.command.CommandManager;
-import net.caseif.ttt.command.SpecialCommandManager;
 import net.caseif.ttt.listeners.MinigameListener;
 import net.caseif.ttt.listeners.PlayerListener;
-import net.caseif.ttt.listeners.SpecialPlayerListener;
 import net.caseif.ttt.listeners.WizardListener;
 import net.caseif.ttt.listeners.WorldListener;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
@@ -48,11 +46,9 @@ import net.caseif.rosetta.LocaleManager;
 import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -66,16 +62,17 @@ import java.util.logging.Logger;
  * @author Maxim Roncacé
  * @version 0.8.0
  */
-public class TTTCore extends JavaPlugin {
+public class TTTCore {
+
+    private static TTTCore INSTANCE;
 
     private static final String CODENAME = "Chad";
 
-    public static boolean STEEL = true;
     public static Minigame mg;
 
     public static Logger log;
     public static Logger kLog;
-    private static TTTCore plugin;
+    private static JavaPlugin plugin;
     public static LocaleManager locale;
 
     //TODO: associate bodies with rounds
@@ -93,26 +90,30 @@ public class TTTCore extends JavaPlugin {
         HALLOWEEN = cal.get(Calendar.MONTH) == Calendar.OCTOBER && cal.get(Calendar.DAY_OF_MONTH) == 31;
     }
 
-    @Override
-    public void onEnable() {
-        log = this.getLogger();
+    TTTCore(JavaPlugin plugin, LocaleManager localeManager) {
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Cannot initialize singleton class TTTCore more than once");
+        }
+        INSTANCE = this;
+
+        TTTCore.plugin = plugin;
+        TTTCore.locale = localeManager;
+    }
+
+    public void initialize() {
+        log = plugin.getLogger();
         kLog = Logger.getLogger("TTT Karma Debug");
         kLog.setParent(log);
-        plugin = this;
-        locale = new LocaleManager(this);
 
-        if (!Bukkit.getPluginManager().isPluginEnabled("Steel") || FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
-            STEEL = false;
-            logInfo("error.plugin.flint", MIN_FLINT_VERSION + "");
-            getServer().getPluginManager().registerEvents(new SpecialPlayerListener(), this);
-            getCommand("ttt").setExecutor(new SpecialCommandManager());
+        if (FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
+            TTTBootstrap.INSTANCE.fail();
             return;
         }
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
 
         // register plugin with Flint
-        mg = FlintCore.registerPlugin(getName());
+        mg = FlintCore.registerPlugin(plugin.getName());
 
         doCompatibilityActions();
 
@@ -123,14 +124,14 @@ public class TTTCore extends JavaPlugin {
 
         // register events and commands
         mg.getEventBus().register(new MinigameListener());
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new WizardListener(), this);
-        getServer().getPluginManager().registerEvents(new WorldListener(), this);
-        getCommand("ttt").setExecutor(new CommandManager());
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), plugin);
+        Bukkit.getPluginManager().registerEvents(new WizardListener(), plugin);
+        Bukkit.getPluginManager().registerEvents(new WorldListener(), plugin);
+        plugin.getCommand("ttt").setExecutor(new CommandManager());
 
         // check if config should be overwritten
-        if (!new File(getDataFolder(), "config.yml").exists()) {
-            saveDefaultConfig();
+        if (!new File(plugin.getDataFolder(), "config.yml").exists()) {
+            plugin.saveDefaultConfig();
         } else {
             try {
                 ConfigHelper.addMissingKeys();
@@ -143,33 +144,7 @@ public class TTTCore extends JavaPlugin {
         createFile("karma.yml");
         createFile("bans.yml");
 
-        // autoupdate
-        if (ConfigHelper.ENABLE_AUTO_UPDATE) {
-            new Updater(this, 52474, this.getFile(), Updater.UpdateType.DEFAULT, true);
-        }
-
-        // submit metrics
-        if (ConfigHelper.ENABLE_METRICS) {
-            try {
-                Metrics metrics = new Metrics(this);
-                Metrics.Graph graph = metrics.createGraph("Steel Version");
-                graph.addPlotter(new Metrics.Plotter(
-                        Bukkit.getPluginManager().getPlugin("Steel").getDescription().getVersion()
-                ) {
-                    public int getValue() {
-                        return 1;
-                    }
-                });
-                metrics.addGraph(graph);
-                metrics.start();
-            } catch (IOException ex) {
-                if (ConfigHelper.VERBOSE_LOGGING) {
-                    logWarning("error.plugin.mcstats");
-                }
-            }
-        }
-
-        File invDir = new File(this.getDataFolder() + File.separator + "inventories");
+        File invDir = new File(plugin.getDataFolder() + File.separator + "inventories");
         invDir.mkdir();
 
         maxKarma = ConfigHelper.KARMA_MAX;
@@ -179,20 +154,21 @@ public class TTTCore extends JavaPlugin {
         }
     }
 
-    @Override
-    public void onDisable() {
-        if (STEEL) {
-            // uninitialize static variables so as not to cause memory leaks when reloading
-            ScoreboardManager.uninitialize();
-            if (ConfigHelper.VERBOSE_LOGGING) {
-                logInfo("info.plugin.disable", this.toString());
-            }
+    public void deinitialize() {
+        // uninitialize static variables so as not to cause memory leaks when reloading
+        ScoreboardManager.uninitialize();
+        if (ConfigHelper.VERBOSE_LOGGING) {
+            logInfo("info.plugin.disable", this.toString());
         }
         locale = null;
         plugin = null;
     }
 
     public static TTTCore getInstance() {
+        return INSTANCE;
+    }
+
+    public static JavaPlugin getPlugin() {
         return plugin;
     }
 

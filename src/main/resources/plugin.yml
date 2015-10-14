@@ -1,6 +1,6 @@
 name: TTT
-version: 0.8.0
-main: net.caseif.ttt.TTTCore
+version: 0.8.1
+main: net.caseif.ttt.TTTBootstrap
 author: Max Roncace
 website: http://dev.bukkit.org/bukkit-plugins/ttt
 description: A Bukkit minigame based off the Garry's Mod gamemode Trouble In Terrorist Town.

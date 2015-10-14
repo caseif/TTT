@@ -105,7 +105,7 @@ public class MinigameListener {
     public void onChallengerLeaveRound(ChallengerLeaveRoundEvent event) {
         Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
         pl.setScoreboard(
-                TTTCore.getInstance().getServer().getScoreboardManager().getNewScoreboard()
+                TTTCore.getPlugin().getServer().getScoreboardManager().getNewScoreboard()
         );
 
         pl.setDisplayName(event.getChallenger().getName());
@@ -152,7 +152,7 @@ public class MinigameListener {
 
         for (Challenger ch : round.getChallengers()) {
             assert ch.getTeam().isPresent();
-            Player pl = TTTCore.getInstance().getServer().getPlayer(ch.getUniqueId());
+            Player pl = TTTCore.getPlugin().getServer().getPlayer(ch.getUniqueId());
             assert pl != null;
 
             pl.setHealth(pl.getMaxHealth());
@@ -251,9 +251,9 @@ public class MinigameListener {
                     // manage DNA Scanners every n seconds
                     if (ch.getMetadata().has(Role.DETECTIVE)
                             && ch.getRound().getTime() % ConfigHelper.SCANNER_CHARGE_TIME == 0) {
-                        Player tracker = TTTCore.getInstance().getServer().getPlayer(ch.getName());
+                        Player tracker = TTTCore.getPlugin().getServer().getPlayer(ch.getName());
                         if (ch.getMetadata().has("tracking")) {
-                            Player killer = TTTCore.getInstance().getServer()
+                            Player killer = TTTCore.getPlugin().getServer()
                                     .getPlayer(ch.getMetadata().<UUID>get("tracking").get());
                             if (killer != null
                                     && TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()) {

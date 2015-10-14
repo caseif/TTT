@@ -57,7 +57,7 @@ public class CommandManager implements CommandExecutor {
      * @return the usage for the given subcommand, or null if not specified
      */
     public static String getUsage(String subcommand) {
-        Object map = TTTCore.getInstance().getDescription().getCommands()
+        Object map = TTTCore.getPlugin().getDescription().getCommands()
                 .get("ttt").get(subcommand);
         if (map instanceof Map) {
             return ((Map) map).get("usage").toString();
