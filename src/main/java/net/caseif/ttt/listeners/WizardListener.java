@@ -85,11 +85,11 @@ public class WizardListener implements Listener {
                 case Stage.WIZARD_ID: {
                     if (!TTTCore.mg.getArena(event.getMessage()).isPresent()) {
                         if (event.getMessage().contains(".") || event.getMessage().contains(" ")) {
-                            increment(event.getPlayer());
                             TTTCore.locale.getLocalizable("error.arena.create.invalid-id")
                                     .withPrefix(Color.ERROR).sendTo(event.getPlayer());
                             break;
                         }
+                        increment(event.getPlayer());
                         WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_ID] = event.getMessage();
                         event.getPlayer().sendMessage(DIVIDER);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.id")
