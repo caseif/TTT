@@ -12,7 +12,7 @@ plugins {
 defaultTasks 'clean', 'licenseFormat', 'build', 'shadowJar'
 
 // Project information
-group = 'net.amigocraft.ttt'
+group = 'net.caseif.ttt'
 version = '0.8.4-SNAPSHOT'
 
 // Extended project information
