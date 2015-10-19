@@ -64,7 +64,7 @@ public class WizardListener implements Listener {
     public static BiMap<UUID, Integer> WIZARDS = HashBiMap.create();
     public static BiMap<UUID, Object[]> WIZARD_INFO = HashBiMap.create();
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("fallthrough")
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         if (WIZARDS.containsKey(event.getPlayer().getUniqueId())) {

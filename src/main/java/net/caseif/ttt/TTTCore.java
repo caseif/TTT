@@ -43,7 +43,6 @@ import net.caseif.flint.FlintCore;
 import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.minigame.Minigame;
 import net.caseif.rosetta.LocaleManager;
-import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -158,7 +157,7 @@ public class TTTCore {
         // uninitialize static variables so as not to cause memory leaks when reloading
         ScoreboardManager.uninitialize();
         if (ConfigHelper.VERBOSE_LOGGING) {
-            logInfo("info.plugin.disable", this.toString());
+            logInfo("info.plugin.disable", plugin.toString());
         }
         locale = null;
         plugin = null;
