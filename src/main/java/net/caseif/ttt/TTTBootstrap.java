@@ -40,6 +40,9 @@ import java.io.IOException;
 
 public class TTTBootstrap extends JavaPlugin {
 
+    private static final int CURSEFORGE_PROJECT_ID = 52474;
+    private static final int STEEL_CURSEFORGE_PROJECT_ID = 95203;
+
     public static TTTBootstrap INSTANCE;
 
     public static LocaleManager locale;
@@ -51,10 +54,11 @@ public class TTTBootstrap extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        STEEL = Bukkit.getPluginManager().isPluginEnabled("Steel");
         locale = new LocaleManager(this);
         initializeUpdater();
         initializeMetrics();
-        if (!Bukkit.getPluginManager().isPluginEnabled("Steel")) {
+        if (!STEEL) {
             fail();
             return;
         }
@@ -74,7 +78,6 @@ public class TTTBootstrap extends JavaPlugin {
     }
 
     public void fail() {
-        STEEL = false;
         getLogger().warning(locale.getLocalizable("error.plugin.flint")
                 .withReplacements(MIN_FLINT_VERSION + "").localize());
         Bukkit.getPluginManager().registerEvents(new SpecialPlayerListener(), this);
@@ -105,7 +108,43 @@ public class TTTBootstrap extends JavaPlugin {
 
     private void initializeUpdater() {
         if (ConfigHelper.ENABLE_AUTO_UPDATE) {
-            new Updater(this, 52474, getFile(), Updater.UpdateType.DEFAULT, true);
+            new Updater(this, CURSEFORGE_PROJECT_ID, getFile(), Updater.UpdateType.DEFAULT,
+                    new TTTUpdateCallback(), true);
+
+            if (!STEEL) {
+                new Updater(this, STEEL_CURSEFORGE_PROJECT_ID, getFile(), Updater.UpdateType.DEFAULT,
+                        new SteelUpdateCallback(), true);
+            }
+        }
+    }
+
+    private class SteelUpdateCallback implements Updater.UpdateCallback {
+        @Override
+        public void onFinish(Updater updater) {
+            if (updater.getResult() == Updater.UpdateResult.SUCCESS) {
+            getLogger().info(locale.getLocalizable("info.plugin.installed-steel").localize());
+        } else if (updater.getResult() == Updater.UpdateResult.FAIL_APIKEY
+                    || updater.getResult() == Updater.UpdateResult.FAIL_BADID
+                    || updater.getResult() == Updater.UpdateResult.FAIL_DBO
+                    || updater.getResult() == Updater.UpdateResult.FAIL_DOWNLOAD
+                    || updater.getResult() == Updater.UpdateResult.FAIL_NOVERSION) {
+                getLogger().info(locale.getLocalizable("error.plugin.update-fail").localize());
+            }
+        }
+    }
+
+    private class TTTUpdateCallback implements Updater.UpdateCallback {
+        @Override
+        public void onFinish(Updater updater) {
+            if (updater.getResult() == Updater.UpdateResult.SUCCESS) {
+                getLogger().info(locale.getLocalizable("info.plugin.updated").localize());
+            } else if (updater.getResult() == Updater.UpdateResult.FAIL_APIKEY
+                    || updater.getResult() == Updater.UpdateResult.FAIL_BADID
+                    || updater.getResult() == Updater.UpdateResult.FAIL_DBO
+                    || updater.getResult() == Updater.UpdateResult.FAIL_DOWNLOAD
+                    || updater.getResult() == Updater.UpdateResult.FAIL_NOVERSION) {
+                getLogger().info(locale.getLocalizable("error.plugin.update-fail").localize());
+            }
         }
     }
 
