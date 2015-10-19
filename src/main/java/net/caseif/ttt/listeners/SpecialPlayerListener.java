@@ -25,7 +25,7 @@ package net.caseif.ttt.listeners;
 
 import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 
-import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.TTTBootstrap;
 import net.caseif.ttt.util.Constants.Color;
 
 import org.bukkit.event.EventHandler;
@@ -37,7 +37,7 @@ public class SpecialPlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (event.getPlayer().hasPermission("ttt.build.warn")) {
-            TTTCore.locale.getLocalizable("error.plugin.flint").withPrefix(Color.ERROR)
+            TTTBootstrap.locale.getLocalizable("error.plugin.flint").withPrefix(Color.ERROR)
                     .withReplacements(MIN_FLINT_VERSION + "").sendTo(event.getPlayer());
         }
     }

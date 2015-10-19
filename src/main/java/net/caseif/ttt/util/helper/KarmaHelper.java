@@ -56,7 +56,7 @@ public class KarmaHelper {
 
     public static void saveKarma(Challenger challenger) {
         playerKarma.put(challenger.getUniqueId(), getKarma(challenger));
-        File karmaFile = new File(TTTCore.getInstance().getDataFolder(), "karma.yml");
+        File karmaFile = new File(TTTCore.getPlugin().getDataFolder(), "karma.yml");
         try {
             if (karmaFile.exists()) {
                 YamlConfiguration karmaYaml = new YamlConfiguration();
@@ -70,7 +70,7 @@ public class KarmaHelper {
     }
 
     private static void loadKarma(UUID uuid) throws InvalidConfigurationException, IOException {
-        File karmaFile = new File(TTTCore.getInstance().getDataFolder(), "karma.yml");
+        File karmaFile = new File(TTTCore.getPlugin().getDataFolder(), "karma.yml");
         if (!karmaFile.exists()) {
             TTTCore.getInstance().createFile("karma.yml");
         }
@@ -143,7 +143,7 @@ public class KarmaHelper {
 
     private static void handleKick(Challenger player) {
         @SuppressWarnings("deprecation")
-        Player p = TTTCore.getInstance().getServer().getPlayer(player.getName());
+        Player p = TTTCore.getPlugin().getServer().getPlayer(player.getName());
         assert p != null;
         player.removeFromRound();
         if (ConfigHelper.KARMA_LOW_BAN) {

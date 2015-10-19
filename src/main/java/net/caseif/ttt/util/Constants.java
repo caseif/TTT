@@ -23,6 +23,7 @@
  */
 package net.caseif.ttt.util;
 
+import net.caseif.ttt.TTTBootstrap;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.helper.ConfigHelper;
 
@@ -42,11 +43,15 @@ public final class Constants {
         public static final String DESCRIPTION = ChatColor.GREEN.toString();
         public static final String DETECTIVE = ChatColor.BLUE.toString();
         public static final String ERROR = ChatColor.RED.toString();
-        public static final String INFO = (TTTCore.HALLOWEEN ? ChatColor.GOLD : ChatColor.DARK_AQUA).toString();
+        public static final String INFO = (TTTBootstrap.STEEL && TTTCore.HALLOWEEN
+                ? ChatColor.GOLD
+                : ChatColor.DARK_AQUA).toString();
         public static final String INNOCENT = ChatColor.DARK_GREEN.toString();
         public static final String SPECIAL = ChatColor.LIGHT_PURPLE.toString();
         public static final String TRAITOR = ChatColor.DARK_RED.toString();
-        public static final String USAGE = (TTTCore.HALLOWEEN ? ChatColor.DARK_AQUA : ChatColor.GOLD).toString();
+        public static final String USAGE = (TTTBootstrap.STEEL && TTTCore.HALLOWEEN
+                ? ChatColor.DARK_AQUA
+                : ChatColor.GOLD).toString();
     }
 
     // lifecycle stages

@@ -52,7 +52,7 @@ public final class BanHelper {
      * @return whether the player was successfully banned
      */
     public static void ban(UUID player, int minutes) throws InvalidConfigurationException, IOException {
-        File f = new File(TTTCore.getInstance().getDataFolder(), "bans.yml");
+        File f = new File(TTTCore.getPlugin().getDataFolder(), "bans.yml");
         YamlConfiguration y = new YamlConfiguration();
         Player p = Bukkit.getPlayer(player);
         y.load(f);
@@ -68,7 +68,7 @@ public final class BanHelper {
     }
 
     public static boolean pardon(UUID uuid) throws InvalidConfigurationException, IOException {
-        File f = new File(TTTCore.getInstance().getDataFolder(), "bans.yml");
+        File f = new File(TTTCore.getPlugin().getDataFolder(), "bans.yml");
         YamlConfiguration y = new YamlConfiguration();
         Player p = Bukkit.getPlayer(uuid);
         y.load(f);
@@ -93,7 +93,7 @@ public final class BanHelper {
      * @return Whether the UUID is banend from using TTT
      */
     public static boolean checkBan(UUID uuid) {
-        File f = new File(TTTCore.getInstance().getDataFolder(), "bans.yml");
+        File f = new File(TTTCore.getPlugin().getDataFolder(), "bans.yml");
         YamlConfiguration y = new YamlConfiguration();
         try {
             y.load(f);
