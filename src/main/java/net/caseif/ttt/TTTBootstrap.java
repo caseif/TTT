@@ -112,7 +112,8 @@ public class TTTBootstrap extends JavaPlugin {
                     new TTTUpdateCallback(), true);
 
             if (!STEEL) {
-                new Updater(this, STEEL_CURSEFORGE_PROJECT_ID, getFile(), Updater.UpdateType.DEFAULT,
+                new Updater(this, STEEL_CURSEFORGE_PROJECT_ID, new File(getDataFolder().getParentFile(), "Steel.jar"),
+                        Updater.UpdateType.DEFAULT,
                         new SteelUpdateCallback(), true);
             }
         }
