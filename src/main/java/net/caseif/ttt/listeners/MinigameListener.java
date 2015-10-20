@@ -339,7 +339,7 @@ public class MinigameListener {
 
     @Subscribe
     public void onStageChange(RoundChangeLifecycleStageEvent event) {
-        if (event.getStageBefore() == Stage.PLAYING && event.getStageAfter() == Stage.PREPARING) {
+        if (event.getStageBefore() == Stage.PREPARING && event.getStageAfter() == Stage.WAITING) {
             ScoreboardManager.getOrCreate(event.getRound()).unregister();
             for (Challenger ch : event.getRound().getChallengers()) {
                 Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
