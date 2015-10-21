@@ -80,8 +80,10 @@ public final class Constants {
         public static final String TRANSLATOR = "translator";
     }
 
-    public static class PlayerTag {
+    public static class MetadataTag {
         public static final String PURE_SPECTATOR = "pureSpectator";
+        public static final String BODY_LIST = "bodies";
+        public static final String BODY_FOUND = "bodyFound";
     }
 
 }

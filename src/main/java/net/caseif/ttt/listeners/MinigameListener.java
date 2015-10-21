@@ -23,7 +23,6 @@
  */
 package net.caseif.ttt.listeners;
 
-import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.arena.JoinCommand;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
@@ -58,8 +57,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -69,7 +66,7 @@ public class MinigameListener {
     public void onChallengerJoinRound(ChallengerJoinRoundEvent event) {
         if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
             event.getChallenger().setSpectating(true);
-            event.getChallenger().getMetadata().set(Constants.PlayerTag.PURE_SPECTATOR, true);
+            event.getChallenger().getMetadata().set(Constants.MetadataTag.PURE_SPECTATOR, true);
         }
 
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
@@ -82,7 +79,7 @@ public class MinigameListener {
             ScoreboardManager.get(event.getRound()).get().assignScoreboard(event.getChallenger());
         }
 
-        if (!event.getChallenger().getMetadata().has(Constants.PlayerTag.PURE_SPECTATOR)) {
+        if (!event.getChallenger().getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
             if (ScoreboardManager.get(event.getRound()).isPresent()) {
                 ScoreboardManager.get(event.getRound()).get().update(event.getChallenger());
             }
@@ -114,7 +111,7 @@ public class MinigameListener {
         pl.setHealth(pl.getMaxHealth());
 
         if (!event.getRound().getMetadata().has("ending")) { //TODO: temp fix
-            if (!event.getChallenger().getMetadata().has(Constants.PlayerTag.PURE_SPECTATOR)) {
+            if (!event.getChallenger().getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
                 KarmaHelper.saveKarma(event.getChallenger());
                 MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                         .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
@@ -294,26 +291,6 @@ public class MinigameListener {
 
     @Subscribe
     public void onRoundEnd(RoundEndEvent event) {
-        List<Body> removeBodies = new ArrayList<>();
-        List<Body> removeFoundBodies = new ArrayList<>();
-        for (Body b : TTTCore.bodies) {
-            removeBodies.add(b);
-            if (TTTCore.foundBodies.contains(b)) {
-                removeFoundBodies.add(b);
-            }
-        }
-
-        for (Body b : removeBodies) {
-            TTTCore.bodies.remove(b);
-        }
-
-        for (Body b : removeFoundBodies) {
-            TTTCore.foundBodies.remove(b);
-        }
-
-        removeBodies.clear();
-        removeFoundBodies.clear();
-
         KarmaHelper.allocateKarma(event.getRound());
         KarmaHelper.saveKarma(event.getRound());
 

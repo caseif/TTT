@@ -50,9 +50,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -73,10 +71,6 @@ public class TTTCore {
     public static Logger kLog;
     private static JavaPlugin plugin;
     public static LocaleManager locale;
-
-    //TODO: associate bodies with rounds
-    public static List<Body> bodies = new ArrayList<>();
-    public static List<Body> foundBodies = new ArrayList<>();
 
     public static int maxKarma = 1000;
 

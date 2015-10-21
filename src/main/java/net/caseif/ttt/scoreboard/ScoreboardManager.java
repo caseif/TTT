@@ -161,7 +161,7 @@ public class ScoreboardManager {
     @SuppressWarnings("deprecation")
     public void update(Challenger challenger) {
         if (needsUpdate(challenger)) {
-            if (!challenger.getMetadata().has(Constants.PlayerTag.PURE_SPECTATOR)) {
+            if (!challenger.getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
                 if (ENTRY_SUPPORT) {
                     innocent.resetScores(challenger.getName());
                     traitor.resetScores(challenger.getName());

@@ -23,6 +23,7 @@
  */
 package net.caseif.ttt;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import net.caseif.flint.round.Round;
 import net.caseif.flint.util.physical.Location3D;
@@ -38,6 +39,8 @@ public class Body {
     private final UUID killer;
     private final String role;
     private final long time;
+
+    private boolean found;
 
     public Body(Round round, Location3D location, UUID player, String name, UUID killer, String role, long time) {
         this.round = round;
@@ -75,6 +78,19 @@ public class Body {
 
     public long getTime() {
         return time;
+    }
+
+    public boolean isFound() {
+        return found;
+    }
+
+    public void  setFound() {
+        found = true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(round, location, player, name, killer, role, time);
     }
 
 }

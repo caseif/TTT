@@ -123,8 +123,8 @@ public class TTTBootstrap extends JavaPlugin {
         @Override
         public void onFinish(Updater updater) {
             if (updater.getResult() == Updater.UpdateResult.SUCCESS) {
-            getLogger().info(locale.getLocalizable("info.plugin.installed-steel").localize());
-        } else if (updater.getResult() == Updater.UpdateResult.FAIL_APIKEY
+                getLogger().info(locale.getLocalizable("info.plugin.installed-steel").localize());
+            } else if (updater.getResult() == Updater.UpdateResult.FAIL_APIKEY
                     || updater.getResult() == Updater.UpdateResult.FAIL_BADID
                     || updater.getResult() == Updater.UpdateResult.FAIL_DBO
                     || updater.getResult() == Updater.UpdateResult.FAIL_DOWNLOAD

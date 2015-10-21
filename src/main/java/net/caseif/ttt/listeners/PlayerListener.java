@@ -27,11 +27,12 @@ import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.helper.ConfigHelper;
-import net.caseif.ttt.util.helper.InventoryHelper;
+import net.caseif.ttt.util.helper.InteractHelper;
 import net.caseif.ttt.util.helper.KarmaHelper;
 import net.caseif.ttt.util.helper.LocationHelper;
 import net.caseif.ttt.util.helper.NmsHelper;
@@ -48,7 +49,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -71,7 +71,6 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.projectiles.ProjectileSource;
@@ -93,7 +92,6 @@ public class PlayerListener implements Listener {
 
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGHEST)
-    //TODO: fix the crazy nesting in this method
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) { // check if player is in TTT round
             Challenger ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).get();
@@ -104,158 +102,12 @@ public class PlayerListener implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                // handle body checking
-                Location3D clicked = new Location3D(
-                        event.getClickedBlock().getWorld().getName(),
-                        event.getClickedBlock().getX(),
-                        event.getClickedBlock().getY(),
-                        event.getClickedBlock().getZ());
-                if (event.getClickedBlock().getType() == Material.CHEST
-                        || event.getClickedBlock().getType() == Material.TRAPPED_CHEST) {
-                    if (ch.isSpectating()) {
-                        event.setCancelled(true);
-                        for (Body b : TTTCore.bodies) {
-                            if (b.getLocation().equals(clicked)) {
-                                Inventory chestInv = ((Chest) event.getClickedBlock().getState()).getInventory();
-                                Inventory inv = TTTCore.getPlugin().getServer().createInventory(chestInv.getHolder(),
-                                        chestInv.getSize());
-                                inv.setContents(chestInv.getContents());
-                                event.getPlayer().openInventory(inv);
-                                TTTCore.locale.getLocalizable("info.personal.status.discreet-search")
-                                        .withPrefix(Color.INFO).sendTo(event.getPlayer());
-                                break;
-                            }
-                        }
-                    } else {
-                        int index = -1;
-                        for (int i = 0; i < TTTCore.bodies.size(); i++) {
-                            if (TTTCore.bodies.get(i).getLocation()
-                                    .equals(clicked)) {
-                                index = i;
-                                break;
-                            }
-                        }
-                        if (index != -1) {
-                            boolean found = false;
-                            for (Body b : TTTCore.foundBodies) {
-                                if (b.getLocation().equals(clicked)) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (!found) { // it's a new body
-                                Body b = TTTCore.bodies.get(index);
-                                Optional<Challenger> bodyPlayer
-                                        = TTTCore.mg.getChallenger(TTTCore.bodies.get(index).getPlayer());
-                                //TODO: make this DRYer
-                                String color = "";
-                                switch (b.getRole()) {
-                                    case Role.INNOCENT: {
-                                        color = Color.INNOCENT;
-                                        break;
-                                    }
-                                    case Role.TRAITOR: {
-                                        color = Color.TRAITOR;
-                                        break;
-                                    }
-                                    case Role.DETECTIVE: {
-                                        color = Color.DETECTIVE;
-                                        break;
-                                    }
-                                    default: {
-                                        event.getPlayer().sendMessage("Something's gone terribly wrong inside the TTT "
-                                                + "plugin. Please notify an admin."); // eh, may as well tell the player
-                                        throw new AssertionError("Failed to determine role of found body. "
-                                                + "Report this immediately.");
-                                    }
-                                }
-                                Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.body-find")
-                                        .withPrefix(color);
-                                Localizable roleMsg = TTTCore.locale
-                                        .getLocalizable("info.global.round.event.body-find." + b.getRole());
-                                for (Challenger c : b.getRound().getChallengers()) {
-                                    Player pl = Bukkit.getPlayer(c.getUniqueId());
-                                    pl.sendMessage(loc.withReplacements(event.getPlayer().getName(),
-                                            b.getName()).localizeFor(pl) + " "
-                                            + roleMsg.localizeFor(pl));
-                                }
 
-                                TTTCore.foundBodies.add(TTTCore.bodies.get(index));
-                                if (bodyPlayer.isPresent()
-                                        && bodyPlayer.get().getRound().equals(TTTCore.bodies.get(index).getRound())) {
-                                    //TODO: no Flint equivalent for this
-                                    //bodyPlayer.setPrefix(Config.SB_ALIVE_PREFIX);
-                                    bodyPlayer.get().getMetadata().set("bodyFound", true);
-                                    if (ScoreboardManager.get(bodyPlayer.get().getRound()).isPresent()) {
-                                        ScoreboardManager.get(bodyPlayer.get().getRound()).get()
-                                                .update(bodyPlayer.get());
-                                    }
-                                }
-                            }
-                            if (ch.getMetadata().has(Role.DETECTIVE)) { // handle DNA scanning
-                                if (event.getPlayer().getItemInHand() != null
-                                        && event.getPlayer().getItemInHand().getType() == Material.COMPASS
-                                        && event.getPlayer().getItemInHand().getItemMeta() != null
-                                        && event.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null
-                                        && event.getPlayer().getItemInHand().getItemMeta().getDisplayName().endsWith(
-                                        TTTCore.locale.getLocalizable("item.dna-scanner.name").localize())) {
-                                    event.setCancelled(true);
-                                    Body body = TTTCore.bodies.get(index);
-                                    if (body.getKiller().isPresent()) {
-                                        Player killer = Bukkit.getPlayer(body.getKiller().get());
-                                        if (killer != null
-                                                && TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()
-                                                && !TTTCore.mg.getChallenger(killer.getUniqueId()).get()
-                                                .isSpectating()) {
-                                            ch.getMetadata().set("tracking", body.getKiller().get());
-                                            TTTCore.locale.getLocalizable("info.personal.status.collect-dna")
-                                                    .withPrefix(Color.INFO)
-                                                    .withReplacements(TTTCore.bodies.get(index).getName())
-                                                    .sendTo(event.getPlayer());
-                                        } else {
-                                            TTTCore.locale.getLocalizable("error.round.killer-left")
-                                                    .withPrefix(Color.ERROR).sendTo(event.getPlayer());
-                                        }
-                                    } else {
-                                        TTTCore.locale.getLocalizable("info.personal.status.no-dna")
-                                                .withPrefix(Color.ERROR).sendTo(event.getPlayer());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                InteractHelper.handleEvent(event, ch);
             }
         }
 
-        // guns
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
-            if (event.getPlayer().getItemInHand() != null) {
-                if (event.getPlayer().getItemInHand().getItemMeta() != null) {
-                    if (event.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null) {
-                        if (event.getPlayer().getItemInHand().getItemMeta().getDisplayName()
-                                .endsWith(TTTCore.locale.getLocalizable("item.gun.name").localize())) {
-                            Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
-                            if (ch.isPresent() && !ch.get().isSpectating()
-                                    && (ch.get().getRound().getLifecycleStage() == Stage.PLAYING)) {
-                                event.setCancelled(true);
-                                if (event.getPlayer().getInventory().contains(Material.ARROW)
-                                        || !ConfigHelper.REQUIRE_AMMO_FOR_GUNS) {
-                                    if (ConfigHelper.REQUIRE_AMMO_FOR_GUNS) {
-                                        InventoryHelper.removeArrow(event.getPlayer().getInventory());
-                                        event.getPlayer().updateInventory();
-                                    }
-                                    event.getPlayer().launchProjectile(Arrow.class);
-                                } else {
-                                    TTTCore.locale.getLocalizable("info.personal.status.no-ammo")
-                                            .withPrefix(Color.ERROR).sendTo(event.getPlayer());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        InteractHelper.handleGun(event);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -270,6 +122,7 @@ public class PlayerListener implements Listener {
                 );
                 return;
             }
+
             if (event instanceof EntityDamageByEntityEvent) {
                 EntityDamageByEntityEvent ed = (EntityDamageByEntityEvent) event;
                 if (ed.getDamager().getType() == EntityType.PLAYER
@@ -345,7 +198,8 @@ public class PlayerListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         for (HumanEntity he : event.getViewers()) {
             Player p = (Player) he;
-            if (TTTCore.mg.getChallenger(p.getUniqueId()).isPresent()) {
+            Optional<Challenger> ch = TTTCore.mg.getChallenger(p.getUniqueId());
+            if (ch.isPresent()) {
                 if (event.getInventory().getType() == InventoryType.CHEST) {
                     Block block;
                     Block block2 = null;
@@ -359,7 +213,7 @@ public class PlayerListener implements Listener {
                     }
                     Location3D l1 = LocationHelper.convert(block.getLocation());
                     Location3D l2 = block2 != null ? LocationHelper.convert(block2.getLocation()) : null;
-                    for (Body b : TTTCore.bodies) {
+                    for (Body b : ch.get().getRound().getMetadata().<List<Body>>get(MetadataTag.BODY_LIST).get()) {
                         if (b.getLocation().equals(l1) || b.getLocation().equals(l2)) {
                             event.setCancelled(true);
                             return;
@@ -477,7 +331,11 @@ public class PlayerListener implements Listener {
             tiMeta.setLore(Collections.singletonList(TTTCore.locale.getLocalizable("item.id." + roleId).localize()));
             ti.setItemMeta(tiMeta);
             chest.getInventory().addItem(id, ti);
-            TTTCore.bodies.add(
+            List<Body> bodies = ch.getRound().getMetadata().<List<Body>>get(MetadataTag.BODY_LIST).orNull();
+            if (bodies == null) {
+                bodies = new ArrayList<>();
+            }
+            bodies.add(
                     new Body(
                             ch.getRound(),
                             LocationHelper.convert(block.getLocation()),
@@ -490,6 +348,7 @@ public class PlayerListener implements Listener {
                             System.currentTimeMillis()
                     )
             );
+            ch.getRound().getMetadata().set(MetadataTag.BODY_LIST, bodies);
         }
     }
 
