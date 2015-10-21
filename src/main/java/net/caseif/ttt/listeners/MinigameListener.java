@@ -42,6 +42,7 @@ import net.caseif.ttt.util.helper.TitleHelper;
 import com.google.common.base.Optional;
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.challenger.Team;
 import net.caseif.flint.event.lobby.PlayerClickLobbySignEvent;
 import net.caseif.flint.event.round.RoundChangeLifecycleStageEvent;
 import net.caseif.flint.event.round.RoundEndEvent;
@@ -339,13 +340,14 @@ public class MinigameListener {
 
     @Subscribe
     public void onStageChange(RoundChangeLifecycleStageEvent event) {
-        if (event.getStageBefore() == Stage.PLAYING && event.getStageAfter() == Stage.PREPARING) {
+        if (event.getStageBefore() == Stage.PREPARING && event.getStageAfter() == Stage.WAITING) {
             ScoreboardManager.getOrCreate(event.getRound()).unregister();
             for (Challenger ch : event.getRound().getChallengers()) {
                 Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-                if (ch.getTeam().isPresent()) {
-                    ch.getTeam().get().removeChallenger(ch);
-                }
+            }
+
+            for (Team team : event.getRound().getTeams()) {
+                event.getRound().removeTeam(team);
             }
         }
     }
