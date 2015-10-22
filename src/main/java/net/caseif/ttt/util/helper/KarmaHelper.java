@@ -26,7 +26,8 @@ package net.caseif.ttt.util.helper;
 import static net.caseif.ttt.util.MiscUtil.isTraitor;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.MetadataTag;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
@@ -101,12 +102,12 @@ public class KarmaHelper {
     public static void allocateKarma(Round round) {
         for (Challenger challenger : round.getChallengers()) {
             addKarma(challenger, ConfigHelper.KARMA_ROUND_INCREMENT);
-            if (!challenger.getMetadata().has("hasTeamKilled")) {
+            if (!challenger.getMetadata().has(MetadataTag.TEAM_KILLED)) {
                 int karmaHeal = ConfigHelper.KARMA_CLEAN_BONUS;
                 if (getKarma(challenger) > BASE_KARMA) {
                     if ((ConfigHelper.KARMA_MAX - BASE_KARMA) > 0) {
                         karmaHeal = (int) Math.round(
-                                ConfigHelper.KARMA_CLEAN_BONUS * Math.pow(.5, (getKarma(challenger) - BASE_KARMA)
+                                ConfigHelper.KARMA_CLEAN_BONUS * Math.pow((1 / 2), (getKarma(challenger) - BASE_KARMA)
                                                 / ((double) (ConfigHelper.KARMA_MAX - BASE_KARMA)
                                                 * ConfigHelper.KARMA_CLEAN_HALF)
                                 )
@@ -151,49 +152,60 @@ public class KarmaHelper {
                 BanHelper.ban(p.getUniqueId(), ConfigHelper.KARMA_LOW_BAN_MINUTES);
                 if (ConfigHelper.KARMA_LOW_BAN_MINUTES < 0) {
                     TTTCore.locale.getLocalizable("info.personal.ban.perm.karma")
-                            .withPrefix(Constants.Color.INFO)
+                            .withPrefix(Color.INFO)
                             .withReplacements(ConfigHelper.KARMA_LOW_AUTOKICK + "").sendTo(p);
                 } else {
                     TTTCore.locale.getLocalizable("info.personal.ban.temp.karma")
-                            .withPrefix(Constants.Color.INFO)
+                            .withPrefix(Color.INFO)
                             .withReplacements(ConfigHelper.KARMA_LOW_BAN_MINUTES + "",
                                     ConfigHelper.KARMA_LOW_AUTOKICK + "").sendTo(p);
                 }
             } catch (InvalidConfigurationException | IOException ex) {
                 ex.printStackTrace();
                 TTTCore.log.severe(TTTCore.locale.getLocalizable("error.plugin.ban")
-                        .withPrefix(Constants.Color.ERROR + "").withReplacements(player.getName()).localize());
+                        .withPrefix(Color.ERROR + "").withReplacements(player.getName()).localize());
             }
         } else {
-            TTTCore.locale.getLocalizable("info.personal.kick.karma").withPrefix(Constants.Color.INFO)
+            TTTCore.locale.getLocalizable("info.personal.kick.karma").withPrefix(Color.INFO)
                     .withReplacements(ConfigHelper.KARMA_LOW_AUTOKICK + "").sendTo(p);
         }
     }
 
     public static int getKarma(Challenger mp) {
-        return mp.getMetadata().has("karma") ? mp.getMetadata().<Integer>get("karma").get() : 0;
+        return mp.getMetadata().has(MetadataTag.KARMA) ? mp.getMetadata().<Integer>get(MetadataTag.KARMA).get() : 0;
     }
 
     public static void applyDamageReduction(Challenger challenger) {
         int baseKarma = getKarma(challenger) - BASE_KARMA;
-        double damageRed =
-                ConfigHelper.KARMA_STRICT
-                        ? (-2e-6 * Math.pow(baseKarma, 2)) + (7e-4 * baseKarma) + (1)
-                        : (-2.5e-6 * Math.pow(baseKarma, 2)) + (1);
-        if (damageRed <= 0) {
-            damageRed = 0.01;
+
+        final double a = -2e-6;
+        final double b = 7e-4;
+        final double strictA = -2.5e-6;
+        final double minDamageRed = 0.01;
+
+        double damageRed;
+        if (ConfigHelper.KARMA_STRICT) {
+            damageRed = (a * Math.pow(baseKarma, 2)) + (b * baseKarma) + (1);
         }
-        challenger.getMetadata().set("damageRed", damageRed);
+        else {
+            damageRed = (strictA * Math.pow(baseKarma, 2)) + (1);
+        }
+        if (damageRed <= 0) {
+            damageRed = minDamageRed;
+        }
+        challenger.getMetadata().set(MetadataTag.DAMAGE_REDUCTION, damageRed);
     }
 
     public static double getDamageReduction(Challenger challenger) {
-        return challenger.getMetadata().has("damageRed") ? challenger.getMetadata().<Double>get("damageRed").get() : 1;
+        return challenger.getMetadata().has(MetadataTag.DAMAGE_REDUCTION)
+                ? challenger.getMetadata().<Double>get(MetadataTag.DAMAGE_REDUCTION).get()
+                : 1;
     }
 
     public static void applyKarma(Challenger challenger) {
         int karma = Math.max(getKarma(challenger.getUniqueId()), ConfigHelper.KARMA_LOW_AUTOKICK);
-        challenger.getMetadata().set("karma", karma);
-        challenger.getMetadata().set("displayKarma", karma);
+        challenger.getMetadata().set(MetadataTag.KARMA, karma);
+        challenger.getMetadata().set(MetadataTag.DISPLAY_KARMA, karma);
     }
 
     public static void resetKarma(UUID uuid) {
@@ -211,7 +223,7 @@ public class KarmaHelper {
             karma = TTTCore.maxKarma;
         }
 
-        challenger.getMetadata().set("karma", karma);
+        challenger.getMetadata().set(MetadataTag.KARMA, karma);
 
         if (karma < ConfigHelper.KARMA_LOW_AUTOKICK) {
             handleKick(challenger);
@@ -219,13 +231,13 @@ public class KarmaHelper {
 
         if (ConfigHelper.KARMA_DEBUG) {
             TTTCore.kLog.info("[TTT Karma Debug] " + challenger.getName() + ": " + (amount > 0 ? "+" : "") + amount
-                    + ". " + "New value: " + challenger.getMetadata().get("karma").get());
+                    + ". " + "New value: " + karma);
         }
     }
 
     private static void subtractKarma(Challenger challenger, int amount) {
         addKarma(challenger, -amount);
-        challenger.getMetadata().set("hasTeamKilled", true);
+        challenger.getMetadata().set(MetadataTag.TEAM_KILLED, true);
     }
 
 }

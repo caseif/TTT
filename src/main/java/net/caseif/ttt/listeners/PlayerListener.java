@@ -150,7 +150,7 @@ public class PlayerListener implements Listener {
                                 }
                             }
                         }
-                        Optional<Double> reduc = damagerCh.get().getMetadata().get("damageRed");
+                        Optional<Double> reduc = damagerCh.get().getMetadata().get(MetadataTag.DAMAGE_REDUCTION);
                         if (reduc.isPresent()) {
                             event.setDamage((int) (event.getDamage() * reduc.get()));
                         }

@@ -25,9 +25,9 @@ package net.caseif.ttt.scoreboard;
 
 import static net.caseif.ttt.util.MiscUtil.fromNullableString;
 
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.AliveStatus;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.MiscUtil;
 import net.caseif.ttt.util.helper.ConfigHelper;
@@ -147,7 +147,7 @@ public class ScoreboardManager {
     @SuppressWarnings("deprecation")
     public void update(Challenger challenger) {
         if (needsUpdate(challenger)) {
-            if (!challenger.getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
+            if (!challenger.getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
                 innocent.resetScores(challenger.getName());
                 traitor.resetScores(challenger.getName());
 
@@ -167,10 +167,10 @@ public class ScoreboardManager {
                 score1 = iObj.getScore(challenger.getName());
                 score2 = tObj.getScore(challenger.getName());
 
-                if (!challenger.getMetadata().has("displayKarma")) {
+                if (!challenger.getMetadata().has(MetadataTag.DISPLAY_KARMA)) {
                     KarmaHelper.applyKarma(challenger);
                 }
-                int displayKarma = challenger.getMetadata().<Integer>get("displayKarma").get();
+                int displayKarma = challenger.getMetadata().<Integer>get(MetadataTag.DISPLAY_KARMA).get();
                 score1.setScore(displayKarma);
                 score2.setScore(displayKarma);
             }
@@ -183,7 +183,10 @@ public class ScoreboardManager {
                 ? Role.TRAITOR
                 : (ch.getMetadata().has(Role.DETECTIVE) ? Role.DETECTIVE : Role.INNOCENT);
         String aliveStatus = ch.isSpectating()
-                ? (ch.getMetadata().has("bodyFound") ? AliveStatus.CONFIRMED_DEAD : AliveStatus.MIA)
+                ?
+                (ch.getMetadata().has(MetadataTag.BODY_FOUND)
+                        ? AliveStatus.CONFIRMED_DEAD
+                        : AliveStatus.MIA)
                 : AliveStatus.ALIVE;
 
         Set<Team> teams = new HashSet<>();
@@ -203,8 +206,6 @@ public class ScoreboardManager {
     }
 
     private boolean needsUpdate(Challenger ch, Objective obj) {
-        Player pl = Bukkit.getPlayer(ch.getUniqueId());
-
         @SuppressWarnings("deprecation")
         Set<Score> scores = obj.getScoreboard().getScores(ch.getName());
         boolean found = false;
@@ -221,7 +222,7 @@ public class ScoreboardManager {
         @SuppressWarnings("deprecation")
         Score score = obj.getScore(ch.getName());
 
-        if (score.getScore() != ch.getMetadata().<Integer>get("displayKarma").or(0)) {
+        if (score.getScore() != ch.getMetadata().<Integer>get(MetadataTag.DISPLAY_KARMA).or(0)) {
             return true;
         }
 

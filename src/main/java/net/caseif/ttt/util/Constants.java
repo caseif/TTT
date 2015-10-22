@@ -82,8 +82,14 @@ public final class Constants {
 
     public static class MetadataTag {
         public static final String PURE_SPECTATOR = "pureSpectator";
+
         public static final String BODY_LIST = "bodies";
         public static final String BODY_FOUND = "bodyFound";
+
+        public static final String KARMA = "karma";
+        public static final String DISPLAY_KARMA = "displayKarma";
+        public static final String DAMAGE_REDUCTION = "damageRed";
+        public static final String TEAM_KILLED = "hasTeamKilled";
     }
 
 }
