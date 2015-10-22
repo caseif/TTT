@@ -56,23 +56,9 @@ import java.util.Set;
 //TODO: this is kind of a clusterf--- of a system and really needs to be rewritten from scratch at some point
 public class ScoreboardManager {
 
-    //TODO: drop support for Bukkit 1.7.2 in the next major version (0.9)
-    public static final boolean ENTRY_SUPPORT;
-
-    //TODO: make this private and abstract mutation of it
     private static HashMap<String, ScoreboardManager> sbManagers = new HashMap<>();
 
     private static org.bukkit.scoreboard.ScoreboardManager manager = Bukkit.getScoreboardManager();
-
-    static {
-        boolean support = false;
-        try {
-            Scoreboard.class.getMethod("getEntries");
-            support = true;
-        } catch (NoSuchMethodException ignored) {
-        }
-        ENTRY_SUPPORT = support;
-    }
 
     private Scoreboard innocent;
     private Scoreboard traitor;
@@ -162,49 +148,24 @@ public class ScoreboardManager {
     public void update(Challenger challenger) {
         if (needsUpdate(challenger)) {
             if (!challenger.getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
-                if (ENTRY_SUPPORT) {
-                    innocent.resetScores(challenger.getName());
-                    traitor.resetScores(challenger.getName());
-                } else {
-                    innocent.resetScores(Bukkit.getPlayer(challenger.getUniqueId()));
-                    traitor.resetScores(Bukkit.getPlayer(challenger.getUniqueId()));
-                }
+                innocent.resetScores(challenger.getName());
+                traitor.resetScores(challenger.getName());
 
-                if (ENTRY_SUPPORT) {
-                    if (innocent.getEntryTeam(challenger.getName()) != null) {
-                        innocent.getEntryTeam(challenger.getName()).removeEntry(challenger.getName());
-                    }
-                    if (traitor.getEntryTeam(challenger.getName()) != null) {
-                        traitor.getEntryTeam(challenger.getName()).removeEntry(challenger.getName());
-                    }
-                } else {
-                    if (innocent.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId())) != null) {
-                        innocent.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId()))
-                                .removePlayer(Bukkit.getPlayer(challenger.getUniqueId()));
-                    }
-                    if (traitor.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId())) != null) {
-                        traitor.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId()))
-                                .removePlayer(Bukkit.getPlayer(challenger.getUniqueId()));
-                    }
+                if (innocent.getEntryTeam(challenger.getName()) != null) {
+                    innocent.getEntryTeam(challenger.getName()).removeEntry(challenger.getName());
+                }
+                if (traitor.getEntryTeam(challenger.getName()) != null) {
+                    traitor.getEntryTeam(challenger.getName()).removeEntry(challenger.getName());
                 }
 
                 for (Team team : getValidTeams(challenger)) {
-                    if (ENTRY_SUPPORT) {
-                        team.addEntry(challenger.getName());
-                    } else {
-                        team.addPlayer(Bukkit.getPlayer(challenger.getUniqueId()));
-                    }
+                    team.addEntry(challenger.getName());
                 }
 
                 Score score1;
                 Score score2;
-                if (ENTRY_SUPPORT) {
-                    score1 = iObj.getScore(challenger.getName());
-                    score2 = tObj.getScore(challenger.getName());
-                } else {
-                    score1 = iObj.getScore(Bukkit.getPlayer(challenger.getUniqueId()));
-                    score2 = tObj.getScore(Bukkit.getPlayer(challenger.getUniqueId()));
-                }
+                score1 = iObj.getScore(challenger.getName());
+                score2 = tObj.getScore(challenger.getName());
 
                 if (!challenger.getMetadata().has("displayKarma")) {
                     KarmaHelper.applyKarma(challenger);
@@ -245,9 +206,7 @@ public class ScoreboardManager {
         Player pl = Bukkit.getPlayer(ch.getUniqueId());
 
         @SuppressWarnings("deprecation")
-        Set<Score> scores = ENTRY_SUPPORT
-                ? obj.getScoreboard().getScores(ch.getName())
-                : obj.getScoreboard().getScores(pl);
+        Set<Score> scores = obj.getScoreboard().getScores(ch.getName());
         boolean found = false;
         for (Score score : scores) {
             if (score.getObjective() == obj) {
@@ -260,17 +219,15 @@ public class ScoreboardManager {
         }
 
         @SuppressWarnings("deprecation")
-        Score score = ENTRY_SUPPORT ? obj.getScore(ch.getName()) : obj.getScore(pl);
+        Score score = obj.getScore(ch.getName());
 
         if (score.getScore() != ch.getMetadata().<Integer>get("displayKarma").or(0)) {
             return true;
         }
 
-        if (ENTRY_SUPPORT) {
-            for (Team team : getValidTeams(ch)) {
-                if (!team.getEntries().contains(ch.getName())) {
-                    return true;
-                }
+        for (Team team : getValidTeams(ch)) {
+            if (!team.getEntries().contains(ch.getName())) {
+                return true;
             }
         }
 
