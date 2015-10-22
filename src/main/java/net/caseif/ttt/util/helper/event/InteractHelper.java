@@ -71,8 +71,8 @@ public class InteractHelper {
         if (bodies == null) {
             return;
         }
-        for (Body b : bodies) {
-            if (!b.getLocation().equals(clicked)) {
+        for (Body body : bodies) {
+            if (!body.getLocation().equals(clicked)) {
                 continue;
             }
 
@@ -84,7 +84,7 @@ public class InteractHelper {
                         && event.getPlayer().getItemInHand().getItemMeta().getDisplayName().endsWith(
                         TTTCore.locale.getLocalizable("item.dna-scanner.name").localize())) {
                     event.setCancelled(true);
-                    doDnaCheck(b, opener, event.getPlayer());
+                    doDnaCheck(body, opener, event.getPlayer());
                     return;
                 }
             }
@@ -92,17 +92,17 @@ public class InteractHelper {
             if (opener.isSpectating() || event.getPlayer().isSneaking()) {
                 event.setCancelled(true);
                 Inventory chestInv = ((Chest) event.getClickedBlock().getState()).getInventory();
-                Inventory inv = TTTCore.getPlugin().getServer().createInventory(chestInv.getHolder(),
-                        chestInv.getSize());
+                Inventory inv
+                        = TTTCore.getPlugin().getServer().createInventory(chestInv.getHolder(), chestInv.getSize());
                 inv.setContents(chestInv.getContents());
                 event.getPlayer().openInventory(inv);
-                TTTCore.locale.getLocalizable("info.personal.status.discreet-search")
-                        .withPrefix(Color.INFO).sendTo(event.getPlayer());
+                TTTCore.locale.getLocalizable("info.personal.status.discreet-search").withPrefix(Color.INFO)
+                        .sendTo(event.getPlayer());
                 return;
-            } else {
-                Optional<Challenger> bodyPlayer = TTTCore.mg.getChallenger(b.getPlayer());
-                String color = "";
-                switch (b.getRole()) {
+            } else if (!body.isFound()) {
+                Optional<Challenger> bodyPlayer = TTTCore.mg.getChallenger(body.getPlayer());
+                String color;
+                switch (body.getRole()) {
                     case Role.INNOCENT: {
                         color = Color.INNOCENT;
                         break;
@@ -122,23 +122,20 @@ public class InteractHelper {
                                 + "Report this immediately.");
                     }
                 }
-                Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.body-find")
-                        .withPrefix(color);
-                Localizable roleMsg = TTTCore.locale
-                        .getLocalizable("info.global.round.event.body-find." + b.getRole());
-                for (Challenger c : b.getRound().getChallengers()) {
+                Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.body-find").withPrefix(color);
+                Localizable roleMsg
+                        = TTTCore.locale.getLocalizable("info.global.round.event.body-find." + body.getRole());
+                for (Challenger c : body.getRound().getChallengers()) {
                     Player pl = Bukkit.getPlayer(c.getUniqueId());
                     pl.sendMessage(loc.withReplacements(event.getPlayer().getName(),
-                            b.getName()).localizeFor(pl) + " "
-                            + roleMsg.localizeFor(pl));
+                            body.getName()).localizeFor(pl) + " " + roleMsg.localizeFor(pl));
                 }
 
-                b.setFound();
-                if (bodyPlayer.isPresent() && bodyPlayer.get().getRound().equals(b.getRound())) {
+                body.setFound();
+                if (bodyPlayer.isPresent() && bodyPlayer.get().getRound() == body.getRound()) {
                     bodyPlayer.get().getMetadata().set(MetadataTag.BODY_FOUND, true);
                     if (ScoreboardManager.get(bodyPlayer.get().getRound()).isPresent()) {
-                        ScoreboardManager.get(bodyPlayer.get().getRound()).get()
-                                .update(bodyPlayer.get());
+                        ScoreboardManager.get(bodyPlayer.get().getRound()).get().update(bodyPlayer.get());
                     }
                 }
             }
