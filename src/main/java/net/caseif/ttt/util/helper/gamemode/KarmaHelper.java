@@ -187,8 +187,7 @@ public class KarmaHelper {
         double damageRed;
         if (ConfigHelper.KARMA_STRICT) {
             damageRed = (a * Math.pow(baseKarma, 2)) + (b * baseKarma) + (1);
-        }
-        else {
+        } else {
             damageRed = (strictA * Math.pow(baseKarma, 2)) + (1);
         }
         if (damageRed <= 0) {

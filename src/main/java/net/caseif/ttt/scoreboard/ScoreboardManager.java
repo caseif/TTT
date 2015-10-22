@@ -29,9 +29,9 @@ import net.caseif.ttt.util.Constants.AliveStatus;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
 import net.caseif.ttt.util.helper.platform.ConfigHelper;
-import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.BiMap;

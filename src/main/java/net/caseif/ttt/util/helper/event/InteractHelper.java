@@ -49,7 +49,7 @@ import org.bukkit.inventory.Inventory;
 import java.util.List;
 
 /**
- * Static-utility class for body-related functionality.
+ * Static-utility class for player interact-related functionality.
  *
  * @author Max Roncace
  */

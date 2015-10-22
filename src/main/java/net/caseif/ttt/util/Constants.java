@@ -85,6 +85,7 @@ public final class Constants {
 
         public static final String BODY_LIST = "bodies";
         public static final String BODY_FOUND = "bodyFound";
+        public static final String KILLER = "killer";
 
         public static final String KARMA = "karma";
         public static final String DISPLAY_KARMA = "displayKarma";
