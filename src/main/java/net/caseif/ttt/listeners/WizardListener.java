@@ -25,7 +25,7 @@ package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.helper.LocationHelper;
+import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

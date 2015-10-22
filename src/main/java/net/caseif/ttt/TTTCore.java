@@ -34,8 +34,8 @@ import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
-import net.caseif.ttt.util.helper.ConfigHelper;
-import net.caseif.ttt.util.helper.ContributorListHelper;
+import net.caseif.ttt.util.helper.platform.ConfigHelper;
+import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 
 import com.google.common.collect.ImmutableSet;
 import net.caseif.crosstitles.TitleUtil;

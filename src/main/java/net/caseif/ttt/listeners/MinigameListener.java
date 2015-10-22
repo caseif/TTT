@@ -30,13 +30,13 @@ import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.Constants.Stage;
-import net.caseif.ttt.util.MiscUtil;
-import net.caseif.ttt.util.helper.ConfigHelper;
-import net.caseif.ttt.util.helper.InventoryHelper;
-import net.caseif.ttt.util.helper.KarmaHelper;
-import net.caseif.ttt.util.helper.LocationHelper;
-import net.caseif.ttt.util.helper.RoleHelper;
-import net.caseif.ttt.util.helper.TitleHelper;
+import net.caseif.ttt.util.helper.misc.MiscHelper;
+import net.caseif.ttt.util.helper.platform.ConfigHelper;
+import net.caseif.ttt.util.helper.platform.InventoryHelper;
+import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
+import net.caseif.ttt.util.helper.platform.LocationHelper;
+import net.caseif.ttt.util.helper.gamemode.RoleHelper;
+import net.caseif.ttt.util.helper.platform.TitleHelper;
 
 import com.google.common.base.Optional;
 import com.google.common.eventbus.Subscribe;
@@ -88,7 +88,7 @@ public class MinigameListener {
             pl.setGameMode(GameMode.SURVIVAL);
             KarmaHelper.applyKarma(event.getChallenger());
 
-            MiscUtil.broadcast(event.getRound(),
+            MiscHelper.broadcast(event.getRound(),
                     TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO)
                             .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl)));
 
@@ -113,14 +113,14 @@ public class MinigameListener {
         if (!event.getRound().getMetadata().has("ending")) { //TODO: temp fix
             if (!event.getChallenger().getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
                 KarmaHelper.saveKarma(event.getChallenger());
-                MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
+                MiscHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                         .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
                                 Color.ARENA + event.getChallenger().getRound().getArena().getName() + Color.INFO));
 
                 if (event.getRound().getLifecycleStage() == Stage.PREPARING
                         && event.getRound().getChallengers().size() <= 1) {
                     event.getRound().setLifecycleStage(Stage.WAITING);
-                    MiscUtil.broadcast(event.getRound(),
+                    MiscHelper.broadcast(event.getRound(),
                             TTTCore.locale.getLocalizable("info.global.round.status.starting.stopped")
                                     .withPrefix(Color.ERROR));
                 }
@@ -131,7 +131,7 @@ public class MinigameListener {
     @Subscribe
     public void onRoundPrepare(RoundChangeLifecycleStageEvent event) {
         if (event.getStageAfter() == Stage.PREPARING) {
-            MiscUtil.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
+            MiscHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
                     .withPrefix(Color.INFO));
             ScoreboardManager.getOrCreate(event.getRound());
         } else if (event.getStageAfter() == Stage.PLAYING) {
@@ -196,7 +196,7 @@ public class MinigameListener {
                         .sendTo(pl);
             }
         }
-        MiscUtil.broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
+        MiscHelper.broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
                 .withPrefix(Color.INFO));
     }
 
@@ -236,7 +236,7 @@ public class MinigameListener {
                 for (Challenger ch : event.getRound().getChallengers()) {
                     if (!(tLeft && iLeft)) {
                         if (!ch.isSpectating()) {
-                            if (MiscUtil.isTraitor(ch)) {
+                            if (MiscHelper.isTraitor(ch)) {
                                 tLeft = true;
                             } else {
                                 iLeft = true;

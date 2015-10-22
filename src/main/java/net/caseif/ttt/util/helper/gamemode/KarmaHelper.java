@@ -21,13 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util.helper;
+package net.caseif.ttt.util.helper.gamemode;
 
-import static net.caseif.ttt.util.MiscUtil.isTraitor;
+import static net.caseif.ttt.util.helper.misc.MiscHelper.isTraitor;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
+import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;

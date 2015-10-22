@@ -27,7 +27,7 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.UUIDFetcher;
-import net.caseif.ttt.util.helper.BanHelper;
+import net.caseif.ttt.util.helper.gamemode.BanHelper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

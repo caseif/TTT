@@ -30,12 +30,12 @@ import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.Constants.Stage;
-import net.caseif.ttt.util.MiscUtil;
-import net.caseif.ttt.util.helper.ConfigHelper;
-import net.caseif.ttt.util.helper.InteractHelper;
-import net.caseif.ttt.util.helper.KarmaHelper;
-import net.caseif.ttt.util.helper.LocationHelper;
-import net.caseif.ttt.util.helper.NmsHelper;
+import net.caseif.ttt.util.helper.misc.MiscHelper;
+import net.caseif.ttt.util.helper.platform.ConfigHelper;
+import net.caseif.ttt.util.helper.event.InteractHelper;
+import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
+import net.caseif.ttt.util.helper.platform.LocationHelper;
+import net.caseif.ttt.util.helper.platform.NmsHelper;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -318,7 +318,7 @@ public class PlayerListener implements Listener {
             if (ch.getMetadata().has(Role.DETECTIVE)) {
                 durability = 11;
                 roleId = "detective";
-            } else if (!MiscUtil.isTraitor(ch)) {
+            } else if (!MiscHelper.isTraitor(ch)) {
                 durability = 5;
                 roleId = "innocent";
             } else {

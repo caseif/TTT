@@ -26,8 +26,8 @@ package net.caseif.ttt.command.arena;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.helper.FileHelper;
-import net.caseif.ttt.util.helper.LocationHelper;
+import net.caseif.ttt.util.helper.misc.FileHelper;
+import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import net.caseif.flint.util.physical.Boundary;
 import org.bukkit.Bukkit;

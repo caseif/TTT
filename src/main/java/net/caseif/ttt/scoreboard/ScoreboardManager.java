@@ -23,15 +23,15 @@
  */
 package net.caseif.ttt.scoreboard;
 
-import static net.caseif.ttt.util.MiscUtil.fromNullableString;
+import static net.caseif.ttt.util.helper.misc.MiscHelper.fromNullableString;
 
 import net.caseif.ttt.util.Constants.AliveStatus;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.MiscUtil;
-import net.caseif.ttt.util.helper.ConfigHelper;
-import net.caseif.ttt.util.helper.KarmaHelper;
+import net.caseif.ttt.util.helper.misc.MiscHelper;
+import net.caseif.ttt.util.helper.platform.ConfigHelper;
+import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.BiMap;
@@ -110,7 +110,7 @@ public class ScoreboardManager {
         for (Challenger ch : round.getChallengers()) {
             Player pl = Bukkit.getPlayer(ch.getUniqueId());
             update(ch);
-            pl.setScoreboard(MiscUtil.isTraitor(ch) ? traitor : innocent);
+            pl.setScoreboard(MiscHelper.isTraitor(ch) ? traitor : innocent);
         }
 
         sbManagers.put(round.getArena().getId(), this);
@@ -179,7 +179,7 @@ public class ScoreboardManager {
 
     @SuppressWarnings("deprecation")
     private ImmutableSet<Team> getValidTeams(Challenger ch) {
-        String role = MiscUtil.isTraitor(ch)
+        String role = MiscHelper.isTraitor(ch)
                 ? Role.TRAITOR
                 : (ch.getMetadata().has(Role.DETECTIVE) ? Role.DETECTIVE : Role.INNOCENT);
         String aliveStatus = ch.isSpectating()
@@ -242,7 +242,7 @@ public class ScoreboardManager {
     }
 
     public void assignScoreboard(Challenger ch) {
-        Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(MiscUtil.isTraitor(ch) ? traitor : innocent);
+        Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(MiscHelper.isTraitor(ch) ? traitor : innocent);
     }
 
 }

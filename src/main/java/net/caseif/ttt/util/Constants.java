@@ -25,7 +25,7 @@ package net.caseif.ttt.util;
 
 import net.caseif.ttt.TTTBootstrap;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.helper.ConfigHelper;
+import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import net.caseif.flint.round.LifecycleStage;
 import org.bukkit.ChatColor;

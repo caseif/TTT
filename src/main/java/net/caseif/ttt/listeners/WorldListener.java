@@ -24,7 +24,7 @@
 package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.helper.LocationHelper;
+import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import net.caseif.flint.arena.Arena;
 import org.bukkit.entity.EntityType;

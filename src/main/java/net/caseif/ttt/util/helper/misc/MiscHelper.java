@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util;
+package net.caseif.ttt.util.helper.misc;
 
 import net.caseif.ttt.util.Constants.Role;
 
@@ -33,7 +33,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class MiscUtil {
+//TODO: organize these methods into other helper classes
+public class MiscHelper {
 
     /**
      * Determines whether a given {@link Challenger challenger} is marked as a

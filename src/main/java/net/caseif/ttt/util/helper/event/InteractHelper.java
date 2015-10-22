@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util.helper;
+package net.caseif.ttt.util.helper.event;
 
 import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
@@ -30,6 +30,8 @@ import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.helper.platform.ConfigHelper;
+import net.caseif.ttt.util.helper.platform.InventoryHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;

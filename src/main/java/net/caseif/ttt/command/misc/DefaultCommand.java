@@ -26,7 +26,7 @@ package net.caseif.ttt.command.misc;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.MiscUtil;
+import net.caseif.ttt.util.helper.misc.MiscHelper;
 
 import org.bukkit.command.CommandSender;
 
@@ -41,7 +41,7 @@ public class DefaultCommand extends SubcommandHandler {
         TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(Color.SPECIAL)
                 .withReplacements(TTTCore.getPlugin().getDescription().getVersion()
                                 + " \"" + TTTCore.getCodename() + "\"",
-                        MiscUtil.prettyList(TTTCore.getPlugin().getDescription().getAuthors()))
+                        MiscHelper.prettyList(TTTCore.getPlugin().getDescription().getAuthors()))
                 .sendTo(sender);
         TTTCore.locale.getLocalizable("info.command.usage.help").withPrefix(Color.INFO).sendTo(sender);
     }

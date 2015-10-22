@@ -27,7 +27,7 @@ import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.command.SpecialCommandManager;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
-import net.caseif.ttt.util.helper.ConfigHelper;
+import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import net.caseif.rosetta.LocaleManager;
 import net.gravitydevelopment.updater.Updater;

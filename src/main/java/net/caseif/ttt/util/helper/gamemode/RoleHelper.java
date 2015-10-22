@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util.helper;
+package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.MiscUtil;
+import net.caseif.ttt.util.helper.misc.MiscHelper;
+import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import com.google.common.collect.Lists;
 import net.caseif.flint.challenger.Challenger;
@@ -41,7 +42,7 @@ public class RoleHelper {
 
     public static void assignRoles(Round round) {
         int players = round.getChallengers().size();
-        int tLimit = MiscUtil.clamp((int) (players * ConfigHelper.TRAITOR_PCT), 1, players - 1);
+        int tLimit = MiscHelper.clamp((int) (players * ConfigHelper.TRAITOR_PCT), 1, players - 1);
         Team iTeam = round.getOrCreateTeam(Role.INNOCENT);
         Team tTeam = round.getOrCreateTeam(Role.TRAITOR);
         for (Challenger ch : round.getChallengers()) {

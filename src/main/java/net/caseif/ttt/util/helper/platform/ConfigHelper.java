@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util.helper;
+package net.caseif.ttt.util.helper.platform;
 
-import static net.caseif.ttt.util.MiscUtil.isDouble;
+import static net.caseif.ttt.util.helper.misc.MiscHelper.isDouble;
 
 import net.caseif.ttt.TTTBootstrap;
+import net.caseif.ttt.util.helper.misc.FileHelper;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
