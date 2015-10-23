@@ -38,17 +38,20 @@ public class Body {
     private final String name;
     private final UUID killer;
     private final String role;
+    private final long deathTime;
     private final long expiry;
 
     private boolean found;
 
-    public Body(Round round, Location3D location, UUID player, String name, UUID killer, String role, long expireTime) {
+    public Body(Round round, Location3D location, UUID player, String name, UUID killer, String role, long deathTime,
+                long expireTime) {
         this.round = round;
         this.location = location;
         this.player = player;
         this.name = name;
         this.killer = killer;
         this.role = role;
+        this.deathTime = deathTime;
         this.expiry = expireTime;
     }
 
@@ -74,6 +77,10 @@ public class Body {
 
     public String getRole() {
         return role;
+    }
+
+    public long getDeathTime() {
+        return deathTime;
     }
 
     public long getExpiry() {

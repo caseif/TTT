@@ -215,46 +215,69 @@ public class InteractHelper {
         Inventory inv = Bukkit.createInventory(player, size);
 
         // player identifier
-        ItemStack id = new ItemStack(TTTCore.HALLOWEEN ? Material.JACK_O_LANTERN : Material.PAPER, 1);
-        ItemMeta idMeta = id.getItemMeta();
-        idMeta.setDisplayName(TTTCore.locale.getLocalizable("item.id.name").localizeFor(player));
-        List<String> idLore = new ArrayList<>();
-        idLore.add(TTTCore.locale.getLocalizable("corpse.of").withReplacements(body.getName()).localizeFor(player));
-        idLore.add(body.getName());
-        idMeta.setLore(idLore);
-        id.setItemMeta(idMeta);
+        {
+            ItemStack id = new ItemStack(TTTCore.HALLOWEEN ? Material.JACK_O_LANTERN : Material.PAPER, 1);
+            ItemMeta idMeta = id.getItemMeta();
+            idMeta.setDisplayName(TTTCore.locale.getLocalizable("item.id.name").localizeFor(player));
+            List<String> idLore = new ArrayList<>();
+            idLore.add(TTTCore.locale.getLocalizable("corpse.of").withReplacements(body.getName()).localizeFor(player));
+            idLore.add(body.getName());
+            idMeta.setLore(idLore);
+            id.setItemMeta(idMeta);
+            inv.addItem(id);
+        }
 
         // role identifier
-        ItemStack roleId = new ItemStack(Material.WOOL, 1);
-        ItemMeta roleIdMeta = roleId.getItemMeta();
-        short durability;
-        String roleStr = body.getRole();
-        switch (body.getRole()) {
-            case Role.DETECTIVE: {
-                durability = 11;
-                break;
+        {
+            ItemStack roleId = new ItemStack(Material.WOOL, 1);
+            ItemMeta roleIdMeta = roleId.getItemMeta();
+            short durability;
+            String roleStr = body.getRole();
+            switch (body.getRole()) {
+                case Role.DETECTIVE: {
+                    durability = 11;
+                    break;
+                }
+                case Role.INNOCENT: {
+                    durability = 5;
+                    break;
+                }
+                case Role.TRAITOR: {
+                    durability = 14;
+                    break;
+                }
+                default: {
+                    throw new AssertionError();
+                }
             }
-            case Role.INNOCENT: {
-                durability = 5;
-                break;
-            }
-            case Role.TRAITOR: {
-                durability = 14;
-                break;
-            }
-            default: {
-                throw new AssertionError();
-            }
+            roleId.setDurability(durability);
+            roleIdMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment." + roleStr).withPrefix(Color.DETECTIVE)
+                    .localizeFor(player));
+            roleIdMeta.setLore(Collections.singletonList(
+                    TTTCore.locale.getLocalizable("item.id." + roleStr).localizeFor(player)
+            ));
+            roleId.setItemMeta(roleIdMeta);
+            inv.addItem(roleId);
         }
-        roleId.setDurability(durability);
-        roleIdMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment." + roleStr)
-                .withPrefix(Color.DETECTIVE).localizeFor(player));
-        roleIdMeta.setLore(Collections.singletonList(
-                TTTCore.locale.getLocalizable("item.id." + roleStr).localizeFor(player)
-        ));
-        roleId.setItemMeta(roleIdMeta);
-        inv.addItem(id, roleId);
 
+        // death clock
+        {
+            ItemStack clock = new ItemStack(Material.WATCH, 1);
+            ItemMeta clockMeta = clock.getItemMeta();
+            long deathSeconds = System.currentTimeMillis() - body.getDeathTime();
+            NumberFormat nf = NumberFormat.getInstance();
+            nf.setMinimumIntegerDigits(2);
+            String deathTime = nf.format(deathSeconds / 60) + ":" + nf.format(deathSeconds % 60);
+            clockMeta.setDisplayName(deathTime);
+            clockMeta.setLore(MiscHelper.formatLore(
+                    TTTCore.locale.getLocalizable("item.deathclock.desc").withReplacements(deathTime)
+                            .withReplacements(deathTime).localizeFor(player),
+                    32
+            ));
+            inv.addItem(clock);
+        }
+
+        // DNA sample
         if (body.getExpiry() > System.currentTimeMillis()) { // still has DNA
             long decaySeconds = body.getExpiry() - System.currentTimeMillis();
             NumberFormat nf = NumberFormat.getInstance();

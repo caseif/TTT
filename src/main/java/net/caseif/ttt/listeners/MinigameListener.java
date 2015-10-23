@@ -26,8 +26,8 @@ package net.caseif.ttt.listeners;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.arena.JoinCommand;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
@@ -66,7 +66,7 @@ public class MinigameListener {
     public void onChallengerJoinRound(ChallengerJoinRoundEvent event) {
         if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
             event.getChallenger().setSpectating(true);
-            event.getChallenger().getMetadata().set(Constants.MetadataTag.PURE_SPECTATOR, true);
+            event.getChallenger().getMetadata().set(MetadataTag.PURE_SPECTATOR, true);
         }
 
         Bukkit.getPlayer(event.getChallenger().getUniqueId())
@@ -79,7 +79,7 @@ public class MinigameListener {
             ScoreboardManager.get(event.getRound()).get().assignScoreboard(event.getChallenger());
         }
 
-        if (!event.getChallenger().getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
+        if (!event.getChallenger().getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
             if (ScoreboardManager.get(event.getRound()).isPresent()) {
                 ScoreboardManager.get(event.getRound()).get().update(event.getChallenger());
             }
@@ -106,12 +106,16 @@ public class MinigameListener {
                 TTTCore.getPlugin().getServer().getScoreboardManager().getNewScoreboard()
         );
 
+        if (event.getChallenger().getMetadata().has(MetadataTag.SEARCHING_BODY)) {
+            pl.closeInventory();
+        }
+
         pl.setDisplayName(event.getChallenger().getName());
         pl.setCompassTarget(LocationHelper.convert(event.getReturnLocation()).getWorld().getSpawnLocation());
         pl.setHealth(pl.getMaxHealth());
 
         if (!event.getRound().getMetadata().has("ending")) { //TODO: temp fix
-            if (!event.getChallenger().getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
+            if (!event.getChallenger().getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
                 KarmaHelper.saveKarma(event.getChallenger());
                 MiscHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                         .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
