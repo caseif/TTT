@@ -57,7 +57,7 @@ public class RoleHelper {
         }
 
         int dLimit = (int) (players * ConfigHelper.DETECTIVE_PCT);
-        dLimit = MiscHelper.clamp(dLimit, 1, players - 1);
+        dLimit = MiscHelper.clamp(dLimit, 1, iTeam.getChallengers().size());
         if (players >= ConfigHelper.DETECTIVE_MIN_PLAYERS && dLimit == 0) {
             dLimit = 1;
         }
