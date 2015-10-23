@@ -167,6 +167,7 @@ public class DeathHelper {
                 ch.getMetadata().has(Role.DETECTIVE)
                         ? Role.DETECTIVE
                         : (ch.getTeam().isPresent() ? ch.getTeam().get().getId() : null),
+                System.currentTimeMillis(),
                 expiry
         ));
         ch.getRound().getMetadata().set(MetadataTag.BODY_LIST, bodies);
