@@ -31,7 +31,6 @@ import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.BiMap;
@@ -69,9 +68,9 @@ public class ScoreboardManager {
     private BiMap<TeamKey, Team> teams = HashBiMap.create();
 
     private static final ImmutableMap<String, String> ALIVE_PREFIXES = ImmutableMap.<String, String>builder()
-            .put(AliveStatus.ALIVE, ConfigHelper.SB_ALIVE_PREFIX)
-            .put(AliveStatus.MIA, ConfigHelper.SB_MIA_PREFIX)
-            .put(AliveStatus.CONFIRMED_DEAD, ConfigHelper.SB_DEAD_PREFIX)
+            .put(AliveStatus.ALIVE, "")
+            .put(AliveStatus.MIA, "§7")
+            .put(AliveStatus.CONFIRMED_DEAD, "§m")
             .build();
 
     @SuppressWarnings("deprecation")
@@ -82,11 +81,11 @@ public class ScoreboardManager {
 
         iObj = innocent.registerNewObjective("p", "dummy");
         iObj.setDisplayName("Players");
-        iObj.setDisplaySlot(ConfigHelper.SB_USE_PLAYER_LIST ? DisplaySlot.PLAYER_LIST : DisplaySlot.SIDEBAR);
+        iObj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         tObj = traitor.registerNewObjective("p", "dummy");
         tObj.setDisplayName("Players");
-        tObj.setDisplaySlot(ConfigHelper.SB_USE_PLAYER_LIST ? DisplaySlot.PLAYER_LIST : DisplaySlot.SIDEBAR);
+        tObj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         String[] roles = {Role.INNOCENT, Role.TRAITOR, Role.DETECTIVE};
         String[] aliveStatuses = {AliveStatus.ALIVE, AliveStatus.MIA, AliveStatus.CONFIRMED_DEAD};

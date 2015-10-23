@@ -83,7 +83,7 @@ crowbar-item: IRON_SWORD
 gun-item: IRON_BARDING
 
 # The amount of damage (in half-hearts) each hit with a crowbar should do.
-crowbar-damage: 6
+crowbar-damage: 3
 
 # Whether ammunition is required to use guns.
 require-ammo-for-guns: true
@@ -158,28 +158,6 @@ karma-round-to-one: true
 
 # Whether karma changes should be logged to the console. Note that this will typically cause massive log spam.
 karma-debug: false
-
-#######################
-# Scoreboard Settings #
-#######################
-
-# TTT uses Minecraft's scoreboard system to display player karma and status.
-# This section allows you to configure the formatting used to denote various states.
-# Please note that team prefixes (innocent/traitor/detective) are displayed before life prefixes (alive/mia/dead).
-# Protip: ALT+21 is the Windows shortcut for a section symbol (§). :)
-
-# The prefix for alive players.
-sb-alive-prefix:
-
-# The prefix for missing-in-action players.
-sb-mia-prefix: §7
-
-# The prefix for confirmed dead players.
-sb-dead-prefix: §m
-
-# Setting this to true will cause TTT to use the player list to display the karma scoreboard, as opposed to the sidebar.
-# Enable this if you're having issues with the scoreboard system.
-sb-use-player-list: false
 
 ###################
 # Plugin Settings #

@@ -95,12 +95,6 @@ public final class ConfigHelper {
     public static final boolean KARMA_ROUND_TO_ONE;
     public static final boolean KARMA_DEBUG;
 
-    // Scoreboard settings
-    public static final String SB_ALIVE_PREFIX;
-    public static final String SB_MIA_PREFIX;
-    public static final String SB_DEAD_PREFIX;
-    public static final boolean SB_USE_PLAYER_LIST;
-
     // Plugin settings
     public static final boolean VERBOSE_LOGGING;
     public static final String LOCALE;
@@ -153,12 +147,6 @@ public final class ConfigHelper {
         KARMA_DAMAGE_REDUCTION = getBoolean("karma-damage-reduction");
         KARMA_ROUND_TO_ONE = getBoolean("karma-round-to-one");
         KARMA_DEBUG = getBoolean("karma-debug");
-
-        // Scoreboard settings
-        SB_ALIVE_PREFIX = getString("sb-alive-prefix");
-        SB_MIA_PREFIX = getString("sb-mia-prefix");
-        SB_DEAD_PREFIX = getString("sb-dead-prefix");
-        SB_USE_PLAYER_LIST = getBoolean("sb-use-player-list");
 
         // Plugin settings
         VERBOSE_LOGGING = getBoolean("verbose-logging");
