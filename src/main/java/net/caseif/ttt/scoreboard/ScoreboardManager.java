@@ -55,9 +55,21 @@ import java.util.Set;
 //TODO: this is kind of a clusterf--- of a system and really needs to be rewritten from scratch at some point
 public class ScoreboardManager {
 
+    public static final boolean SECONDARY_ENTRY_SUPPORT;
+
     private static HashMap<String, ScoreboardManager> sbManagers = new HashMap<>();
 
     private static org.bukkit.scoreboard.ScoreboardManager manager = Bukkit.getScoreboardManager();
+
+    static {
+        boolean support = false;
+        try {
+            Scoreboard.class.getMethod("getEntryTeam", String.class);
+            support = true;
+        } catch (NoSuchMethodException ignored) {
+        }
+        SECONDARY_ENTRY_SUPPORT = support;
+    }
 
     private Scoreboard innocent;
     private Scoreboard traitor;
@@ -150,28 +162,38 @@ public class ScoreboardManager {
                 innocent.resetScores(challenger.getName());
                 traitor.resetScores(challenger.getName());
 
-                if (innocent.getEntryTeam(challenger.getName()) != null) {
-                    innocent.getEntryTeam(challenger.getName()).removeEntry(challenger.getName());
-                }
-                if (traitor.getEntryTeam(challenger.getName()) != null) {
-                    traitor.getEntryTeam(challenger.getName()).removeEntry(challenger.getName());
+                if (SECONDARY_ENTRY_SUPPORT) {
+                    if (innocent.getEntryTeam(challenger.getName()) != null) {
+                        innocent.getEntryTeam(challenger.getName()).removeEntry(challenger.getName());
+                    }
+                    if (traitor.getEntryTeam(challenger.getName()) != null) {
+                        traitor.getEntryTeam(challenger.getName()).removeEntry(challenger.getName());
+                    }
+                } else {
+                    if (innocent.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId())) != null) {
+                        innocent.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId()))
+                                .removePlayer(Bukkit.getPlayer(challenger.getUniqueId()));
+                    }
+                    if (traitor.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId())) != null) {
+                        traitor.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId()))
+                                .removePlayer(Bukkit.getPlayer(challenger.getUniqueId()));
+                    }
                 }
 
                 for (Team team : getValidTeams(challenger)) {
-                    team.addEntry(challenger.getName());
+                    if (SECONDARY_ENTRY_SUPPORT) {
+                        team.addEntry(challenger.getName());
+                    } else {
+                        team.addPlayer(Bukkit.getPlayer(challenger.getUniqueId()));
+                    }
                 }
-
-                Score score1;
-                Score score2;
-                score1 = iObj.getScore(challenger.getName());
-                score2 = tObj.getScore(challenger.getName());
 
                 if (!challenger.getMetadata().has(MetadataTag.DISPLAY_KARMA)) {
                     KarmaHelper.applyKarma(challenger);
                 }
                 int displayKarma = challenger.getMetadata().<Integer>get(MetadataTag.DISPLAY_KARMA).get();
-                score1.setScore(displayKarma);
-                score2.setScore(displayKarma);
+                iObj.getScore(challenger.getName()).setScore(displayKarma);
+                tObj.getScore(challenger.getName()).setScore(displayKarma);
             }
         }
     }
@@ -225,9 +247,11 @@ public class ScoreboardManager {
             return true;
         }
 
-        for (Team team : getValidTeams(ch)) {
-            if (!team.getEntries().contains(ch.getName())) {
-                return true;
+        if (SECONDARY_ENTRY_SUPPORT) {
+            for (Team team : getValidTeams(ch)) {
+                if (!team.getEntries().contains(ch.getName())) {
+                    return true;
+                }
             }
         }
 
