@@ -57,7 +57,8 @@ import java.util.Set;
 public class ScoreboardManager {
 
     //TODO: drop support for Bukkit 1.7.2 in the next major version (0.9)
-    public static final boolean ENTRY_SUPPORT;
+    public static final boolean PRIMARY_ENTRY_SUPPORT;
+    public static final boolean SECONDARY_ENTRY_SUPPORT;
 
     //TODO: make this private and abstract mutation of it
     private static HashMap<String, ScoreboardManager> sbManagers = new HashMap<>();
@@ -65,13 +66,25 @@ public class ScoreboardManager {
     private static org.bukkit.scoreboard.ScoreboardManager manager = Bukkit.getScoreboardManager();
 
     static {
-        boolean support = false;
-        try {
-            Scoreboard.class.getMethod("getEntries");
-            support = true;
-        } catch (NoSuchMethodException ignored) {
+        {
+            boolean support = false;
+            try {
+                Scoreboard.class.getMethod("getEntries");
+                support = true;
+            } catch (NoSuchMethodException ignored) {
+            }
+            PRIMARY_ENTRY_SUPPORT = support;
         }
-        ENTRY_SUPPORT = support;
+
+        {
+            boolean support = false;
+            try {
+                Scoreboard.class.getMethod("getEntryTeam", String.class);
+                support = true;
+            } catch (NoSuchMethodException ignored) {
+            }
+            SECONDARY_ENTRY_SUPPORT = support;
+        }
     }
 
     private Scoreboard innocent;
@@ -162,7 +175,7 @@ public class ScoreboardManager {
     public void update(Challenger challenger) {
         if (needsUpdate(challenger)) {
             if (!challenger.getMetadata().has(Constants.PlayerTag.PURE_SPECTATOR)) {
-                if (ENTRY_SUPPORT) {
+                if (PRIMARY_ENTRY_SUPPORT) {
                     innocent.resetScores(challenger.getName());
                     traitor.resetScores(challenger.getName());
                 } else {
@@ -170,7 +183,7 @@ public class ScoreboardManager {
                     traitor.resetScores(Bukkit.getPlayer(challenger.getUniqueId()));
                 }
 
-                if (ENTRY_SUPPORT) {
+                if (SECONDARY_ENTRY_SUPPORT) {
                     if (innocent.getEntryTeam(challenger.getName()) != null) {
                         innocent.getEntryTeam(challenger.getName()).removeEntry(challenger.getName());
                     }
@@ -189,7 +202,7 @@ public class ScoreboardManager {
                 }
 
                 for (Team team : getValidTeams(challenger)) {
-                    if (ENTRY_SUPPORT) {
+                    if (SECONDARY_ENTRY_SUPPORT) {
                         team.addEntry(challenger.getName());
                     } else {
                         team.addPlayer(Bukkit.getPlayer(challenger.getUniqueId()));
@@ -198,7 +211,7 @@ public class ScoreboardManager {
 
                 Score score1;
                 Score score2;
-                if (ENTRY_SUPPORT) {
+                if (PRIMARY_ENTRY_SUPPORT) {
                     score1 = iObj.getScore(challenger.getName());
                     score2 = tObj.getScore(challenger.getName());
                 } else {
@@ -245,7 +258,7 @@ public class ScoreboardManager {
         Player pl = Bukkit.getPlayer(ch.getUniqueId());
 
         @SuppressWarnings("deprecation")
-        Set<Score> scores = ENTRY_SUPPORT
+        Set<Score> scores = PRIMARY_ENTRY_SUPPORT
                 ? obj.getScoreboard().getScores(ch.getName())
                 : obj.getScoreboard().getScores(pl);
         boolean found = false;
@@ -260,13 +273,13 @@ public class ScoreboardManager {
         }
 
         @SuppressWarnings("deprecation")
-        Score score = ENTRY_SUPPORT ? obj.getScore(ch.getName()) : obj.getScore(pl);
+        Score score = PRIMARY_ENTRY_SUPPORT ? obj.getScore(ch.getName()) : obj.getScore(pl);
 
         if (score.getScore() != ch.getMetadata().<Integer>get("displayKarma").or(0)) {
             return true;
         }
 
-        if (ENTRY_SUPPORT) {
+        if (SECONDARY_ENTRY_SUPPORT) {
             for (Team team : getValidTeams(ch)) {
                 if (!team.getEntries().contains(ch.getName())) {
                     return true;
