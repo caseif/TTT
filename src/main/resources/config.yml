@@ -43,11 +43,11 @@ detective-min-players: 10
 scanner-charge-time: 7.5
 
 # Maximum range in meters within which a DNA sample of the killer is planted on the corpse of the victim.
-ttt-killer-dna-range: 10
+killer-dna-range: 10
 
 # The time in seconds DNA samples last for when the killer is 0 meters from the victim.
 # When the killer is further, the time will be decreased.
-ttt-killer-dna-basetime: 100
+killer-dna-basetime: 100
 
 ##################
 # Title Settings #

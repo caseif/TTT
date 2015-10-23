@@ -38,18 +38,18 @@ public class Body {
     private final String name;
     private final UUID killer;
     private final String role;
-    private final long time;
+    private final long expiry;
 
     private boolean found;
 
-    public Body(Round round, Location3D location, UUID player, String name, UUID killer, String role, long time) {
+    public Body(Round round, Location3D location, UUID player, String name, UUID killer, String role, long expireTime) {
         this.round = round;
         this.location = location;
         this.player = player;
         this.name = name;
         this.killer = killer;
         this.role = role;
-        this.time = time;
+        this.expiry = expireTime;
     }
 
     public Round getRound() {
@@ -76,8 +76,8 @@ public class Body {
         return role;
     }
 
-    public long getTime() {
-        return time;
+    public long getExpiry() {
+        return expiry;
     }
 
     public boolean isFound() {
@@ -90,7 +90,7 @@ public class Body {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(round, location, player, name, killer, role, time);
+        return Objects.hashCode(round, location, player, name, killer, role, expiry);
     }
 
 }

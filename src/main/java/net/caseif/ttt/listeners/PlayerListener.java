@@ -23,7 +23,6 @@
  */
 package net.caseif.ttt.listeners;
 
-import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
@@ -37,13 +36,9 @@ import net.caseif.ttt.util.helper.platform.LocationHelper;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import net.caseif.flint.challenger.Challenger;
-import net.caseif.flint.util.physical.Location3D;
 import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -59,15 +54,13 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.List;
 
 public class PlayerListener implements Listener {
 
@@ -183,28 +176,17 @@ public class PlayerListener implements Listener {
         for (HumanEntity he : event.getViewers()) {
             Player p = (Player) he;
             Optional<Challenger> ch = TTTCore.mg.getChallenger(p.getUniqueId());
-            if (ch.isPresent()) {
-                if (event.getInventory().getType() == InventoryType.CHEST) {
-                    Block block;
-                    Block block2 = null;
-                    if (event.getInventory().getHolder() instanceof Chest) {
-                        block = ((Chest) event.getInventory().getHolder()).getBlock();
-                    } else if (event.getInventory().getHolder() instanceof DoubleChest) {
-                        block = ((Chest) ((DoubleChest) event.getInventory().getHolder()).getLeftSide()).getBlock();
-                        block2 = ((Chest) ((DoubleChest) event.getInventory().getHolder()).getRightSide()).getBlock();
-                    } else {
-                        return;
-                    }
-                    Location3D l1 = LocationHelper.convert(block.getLocation());
-                    Location3D l2 = block2 != null ? LocationHelper.convert(block2.getLocation()) : null;
-                    for (Body b : ch.get().getRound().getMetadata().<List<Body>>get(MetadataTag.BODY_LIST).get()) {
-                        if (b.getLocation().equals(l1) || b.getLocation().equals(l2)) {
-                            event.setCancelled(true);
-                            return;
-                        }
-                    }
-                }
+            if (ch.isPresent() && ch.get().getMetadata().has(MetadataTag.SEARCHING_BODY)) {
+                event.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onInventoryClose(InventoryCloseEvent event) {
+        Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
+        if (ch.isPresent() && ch.get().getMetadata().has(MetadataTag.SEARCHING_BODY)) {
+            ch.get().getMetadata().remove(MetadataTag.SEARCHING_BODY);
         }
     }
 

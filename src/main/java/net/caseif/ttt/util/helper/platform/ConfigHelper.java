@@ -63,6 +63,8 @@ public final class ConfigHelper {
     public static final double DETECTIVE_PCT;
     public static final int DETECTIVE_MIN_PLAYERS;
     public static final int SCANNER_CHARGE_TIME;
+    public static final int KILLER_DNA_RANGE;
+    public static final int KILLER_DNA_BASETIME;
 
     // Title settings
     public static final boolean SEND_TITLES;
@@ -116,6 +118,8 @@ public final class ConfigHelper {
         DETECTIVE_PCT = getDouble("detective-pct");
         DETECTIVE_MIN_PLAYERS = getInt("minimum-players-for-detective");
         SCANNER_CHARGE_TIME = getInt("scanner-charge-time");
+        KILLER_DNA_RANGE = getInt("killer-dna-range");
+        KILLER_DNA_BASETIME = getInt("killer-dna-basetime");
 
         // Title settings
         SEND_TITLES = getBoolean("send-titles");

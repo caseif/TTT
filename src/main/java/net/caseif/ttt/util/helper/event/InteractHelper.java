@@ -30,6 +30,7 @@ import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.helper.misc.MiscHelper;
 import net.caseif.ttt.util.helper.platform.ConfigHelper;
 import net.caseif.ttt.util.helper.platform.InventoryHelper;
 
@@ -45,7 +46,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -89,13 +95,9 @@ public class InteractHelper {
                 }
             }
 
+            searchBody(body, event.getPlayer(), ((Chest) event.getClickedBlock().getState()).getInventory().getSize());
+
             if (opener.isSpectating() || event.getPlayer().isSneaking()) {
-                event.setCancelled(true);
-                Inventory chestInv = ((Chest) event.getClickedBlock().getState()).getInventory();
-                Inventory inv
-                        = TTTCore.getPlugin().getServer().createInventory(chestInv.getHolder(), chestInv.getSize());
-                inv.setContents(chestInv.getContents());
-                event.getPlayer().openInventory(inv);
                 TTTCore.locale.getLocalizable("info.personal.status.discreet-search").withPrefix(Color.INFO)
                         .sendTo(event.getPlayer());
                 return;
@@ -118,8 +120,7 @@ public class InteractHelper {
                     default: {
                         event.getPlayer().sendMessage("Something's gone terribly wrong inside the TTT "
                                 + "plugin. Please notify an admin."); // eh, may as well tell the player
-                        throw new AssertionError("Failed to determine role of found body. "
-                                + "Report this immediately.");
+                        throw new AssertionError("Failed to determine role of found body. Report this immediately.");
                     }
                 }
                 Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.body-find").withPrefix(color);
@@ -143,23 +144,35 @@ public class InteractHelper {
     }
 
     public static void doDnaCheck(Body body, Challenger ch, Player pl) {
-        if (body.getKiller().isPresent()) {
-            Player killer = Bukkit.getPlayer(body.getKiller().get());
-            if (killer != null
-                    && TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()
-                    && !TTTCore.mg.getChallenger(killer.getUniqueId()).get()
-                    .isSpectating()) {
-                ch.getMetadata().set("tracking", body.getKiller().get());
-                TTTCore.locale.getLocalizable("info.personal.status.collect-dna")
-                        .withPrefix(Color.INFO)
-                        .withReplacements(body.getName())
-                        .sendTo(pl);
-            } else {
-                TTTCore.locale.getLocalizable("error.round.killer-left")
-                        .withPrefix(Color.ERROR).sendTo(pl);
-            }
-        } else {
+        if (!body.isFound()) {
+            TTTCore.locale.getLocalizable("info.personal.status.dna-id")
+                    .withPrefix(Color.ERROR).sendTo(pl);
+            return;
+        }
+
+        if (!body.getKiller().isPresent() || body.getExpiry() == -1) {
             TTTCore.locale.getLocalizable("info.personal.status.no-dna")
+                    .withPrefix(Color.ERROR).sendTo(pl);
+            return;
+        }
+
+        if (System.currentTimeMillis() > body.getExpiry()) {
+            TTTCore.locale.getLocalizable("info.personal.status.dna-decayed")
+                    .withPrefix(Color.ERROR).sendTo(pl);
+            return;
+        }
+
+        Player killer = Bukkit.getPlayer(body.getKiller().get());
+        if (killer != null
+                && TTTCore.mg.getChallenger(killer.getUniqueId()).isPresent()
+                && !TTTCore.mg.getChallenger(killer.getUniqueId()).get().isSpectating()) {
+            ch.getMetadata().set("tracking", body.getKiller().get());
+            TTTCore.locale.getLocalizable("info.personal.status.collect-dna")
+                    .withPrefix(Color.INFO)
+                    .withReplacements(body.getName())
+                    .sendTo(pl);
+        } else {
+            TTTCore.locale.getLocalizable("error.round.killer-left")
                     .withPrefix(Color.ERROR).sendTo(pl);
         }
     }
@@ -196,6 +209,69 @@ public class InteractHelper {
                         .withPrefix(Color.ERROR).sendTo(event.getPlayer());
             }
         }
+    }
+
+    private static void searchBody(Body body, Player player, int size) {
+        Inventory inv = Bukkit.createInventory(player, size);
+
+        // player identifier
+        ItemStack id = new ItemStack(TTTCore.HALLOWEEN ? Material.JACK_O_LANTERN : Material.PAPER, 1);
+        ItemMeta idMeta = id.getItemMeta();
+        idMeta.setDisplayName(TTTCore.locale.getLocalizable("item.id.name").localizeFor(player));
+        List<String> idLore = new ArrayList<>();
+        idLore.add(TTTCore.locale.getLocalizable("corpse.of").withReplacements(body.getName()).localizeFor(player));
+        idLore.add(body.getName());
+        idMeta.setLore(idLore);
+        id.setItemMeta(idMeta);
+
+        // role identifier
+        ItemStack roleId = new ItemStack(Material.WOOL, 1);
+        ItemMeta roleIdMeta = roleId.getItemMeta();
+        short durability;
+        String roleStr = body.getRole();
+        switch (body.getRole()) {
+            case Role.DETECTIVE: {
+                durability = 11;
+                break;
+            }
+            case Role.INNOCENT: {
+                durability = 5;
+                break;
+            }
+            case Role.TRAITOR: {
+                durability = 14;
+                break;
+            }
+            default: {
+                throw new AssertionError();
+            }
+        }
+        roleId.setDurability(durability);
+        roleIdMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment." + roleStr)
+                .withPrefix(Color.DETECTIVE).localizeFor(player));
+        roleIdMeta.setLore(Collections.singletonList(
+                TTTCore.locale.getLocalizable("item.id." + roleStr).localizeFor(player)
+        ));
+        roleId.setItemMeta(roleIdMeta);
+        inv.addItem(id, roleId);
+
+        if (body.getExpiry() > System.currentTimeMillis()) { // still has DNA
+            long decaySeconds = body.getExpiry() - System.currentTimeMillis();
+            NumberFormat nf = NumberFormat.getInstance();
+            nf.setMinimumIntegerDigits(2);
+            String decayTime = nf.format(decaySeconds / 60) + ":" + nf.format(decaySeconds % 60);
+            ItemStack dna = new ItemStack(Material.LEASH, 1);
+            ItemMeta dnaMeta = dna.getItemMeta();
+            dnaMeta.setDisplayName(TTTCore.locale.getLocalizable("item.dna").localizeFor(player));
+            dnaMeta.setLore(MiscHelper.formatLore(
+                    TTTCore.locale.getLocalizable("item.dna.desc").withReplacements(decayTime).localizeFor(player),
+                    32
+            ));
+            inv.addItem(dna);
+        }
+
+        player.openInventory(inv);
+        TTTCore.mg.getChallenger(player.getUniqueId()).get().getMetadata().set(MetadataTag.SEARCHING_BODY, true);
     }
 
 }

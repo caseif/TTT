@@ -26,35 +26,31 @@ package net.caseif.ttt.util.helper.event;
 import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
-import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
-import net.caseif.ttt.util.helper.misc.MiscHelper;
+import net.caseif.ttt.util.helper.platform.ConfigHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.NmsHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -139,39 +135,6 @@ public class DeathHelper {
         loc.getBlock().setType(((loc.getBlockX() + loc.getBlockY()) % 2 == 0)
                 ? Material.TRAPPED_CHEST
                 : Material.CHEST);
-        Chest chest = (Chest) loc.getBlock().getState();
-
-        // player identifier
-        ItemStack id = new ItemStack(TTTCore.HALLOWEEN ? Material.JACK_O_LANTERN : Material.PAPER, 1);
-        ItemMeta idMeta = id.getItemMeta();
-        idMeta.setDisplayName(TTTCore.locale.getLocalizable("item.id.name").localize());
-        List<String> idLore = new ArrayList<>();
-        idLore.add(TTTCore.locale.getLocalizable("corpse.of").withReplacements(ch.getName()).localize());
-        idLore.add(ch.getName());
-        idMeta.setLore(idLore);
-        id.setItemMeta(idMeta);
-
-        // role identifier
-        ItemStack ti = new ItemStack(Material.WOOL, 1);
-        ItemMeta tiMeta = ti.getItemMeta();
-        short durability;
-        String roleId = "";
-        if (ch.getMetadata().has(Role.DETECTIVE)) {
-            durability = 11;
-            roleId = Role.DETECTIVE;
-        } else if (!MiscHelper.isTraitor(ch)) {
-            durability = 5;
-            roleId = Role.INNOCENT;
-        } else {
-            durability = 14;
-            roleId = Role.TRAITOR;
-        }
-        ti.setDurability(durability);
-        tiMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment." + roleId)
-                .withPrefix(Color.DETECTIVE).localize());
-        tiMeta.setLore(Collections.singletonList(TTTCore.locale.getLocalizable("item.id." + roleId).localize()));
-        ti.setItemMeta(tiMeta);
-        chest.getInventory().addItem(id, ti);
 
         storeBody(loc, ch, killer);
     }
@@ -181,19 +144,31 @@ public class DeathHelper {
         if (bodies == null) {
             bodies = new ArrayList<>();
         }
-        bodies.add(
-                new Body(
-                        ch.getRound(),
-                        LocationHelper.convert(loc),
-                        ch.getUniqueId(),
-                        ch.getName(),
-                        killer.getUniqueId(),
-                        ch.getMetadata().has(Role.DETECTIVE)
-                                ? Role.DETECTIVE
-                                : (ch.getTeam().isPresent() ? ch.getTeam().get().getId() : null),
-                        System.currentTimeMillis()
-                )
-        );
+
+        long expiry = -1;
+        if (killer != null) {
+            double dist = event.getEntity().getLocation().toVector()
+                    .distance(Bukkit.getPlayer(killer.getUniqueId()).getLocation().toVector());
+            if (dist <= ConfigHelper.KILLER_DNA_RANGE) {
+                final double a = 3.6e-4;
+                int decayTime = ConfigHelper.KILLER_DNA_BASETIME - (int) Math.floor(a * Math.pow(dist, 2));
+                if (decayTime > 0) {
+                    expiry = System.currentTimeMillis() + decayTime;
+                }
+            }
+        }
+
+        bodies.add(new Body(
+                ch.getRound(),
+                LocationHelper.convert(loc),
+                ch.getUniqueId(),
+                ch.getName(),
+                killer != null ? killer.getUniqueId() : null,
+                ch.getMetadata().has(Role.DETECTIVE)
+                        ? Role.DETECTIVE
+                        : (ch.getTeam().isPresent() ? ch.getTeam().get().getId() : null),
+                expiry
+        ));
         ch.getRound().getMetadata().set(MetadataTag.BODY_LIST, bodies);
     }
 
@@ -214,8 +189,7 @@ public class DeathHelper {
             }
             logBlockChange.invoke(rbHelper, loc, loc.getBlock().getState());
 
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchFieldException
-                | NoSuchMethodException ex) {
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException ex) {
             TTTCore.log.severe("Failed to log body for rollback");
             ex.printStackTrace();
         }

@@ -31,6 +31,7 @@ import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO: organize these methods into other helper classes
@@ -103,6 +104,19 @@ public class MiscHelper {
             }
         }
         return sb.toString();
+    }
+
+    public static List<String> formatLore(String str, int lineLength) {
+        List<String> list = new ArrayList<>();
+        String current = "";
+        for (String s : str.split(" ")) {
+            if (current.length() + s.trim().length() + 1 > lineLength) {
+                list.add(current);
+                current = "";
+            }
+            current += " " + s.trim();
+        }
+        return list;
     }
 
 }
