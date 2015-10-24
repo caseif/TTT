@@ -42,7 +42,7 @@ import org.bukkit.entity.Player;
 public final class TitleHelper {
 
     public static void sendStatusTitle(Player player, String role) {
-        if (ConfigHelper.SEND_TITLES && TitleUtil.areTitlesSupported()) {
+        if (TTTCore.config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
             if (player == null) {
                 throw new IllegalArgumentException("Player cannot be null!");
             }
@@ -64,7 +64,7 @@ public final class TitleHelper {
                     break;
                 }
             }
-            if (ConfigHelper.LARGE_STATUS_TITLES) {
+            if (TTTCore.config.LARGE_STATUS_TITLES) {
                 TitleUtil.sendTitle(player, title, ChatColor.getByChar(color.charAt(1)));
             } else {
                 TitleUtil.sendTitle(player, "", ChatColor.RESET, title, ChatColor.getByChar(color.charAt(1)));
@@ -73,7 +73,7 @@ public final class TitleHelper {
     }
 
     public static void sendVictoryTitle(Round round, boolean traitorVictory) {
-        if (ConfigHelper.SEND_TITLES && TitleUtil.areTitlesSupported()) {
+        if (TTTCore.config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
             checkNotNull(round, "Round cannot be null!");
             Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.end."
                     + (traitorVictory ? Constants.Role.TRAITOR : Constants.Role.INNOCENT) + ".min");
@@ -82,7 +82,7 @@ public final class TitleHelper {
             );
             for (Challenger ch : round.getChallengers()) {
                 Player pl = Bukkit.getPlayer(ch.getUniqueId());
-                if (ConfigHelper.LARGE_VICTORY_TITLES) {
+                if (TTTCore.config.LARGE_VICTORY_TITLES) {
                     TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), loc.localizeFor(pl),
                             color);
                 } else {

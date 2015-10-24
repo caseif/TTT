@@ -51,61 +51,86 @@ import java.util.Set;
  */
 public final class ConfigHelper {
 
-    // Round structure
-    public static final int PREPTIME_SECONDS;
-    public static final int ROUNDTIME_SECONDS;
-    public static final int MINIMUM_PLAYERS;
-    public static final int MAXIMUM_PLAYERS;
-    public static final boolean ALLOW_JOIN_AS_SPECTATOR;
-
-    // Traitor/Detective settings
-    public static final double TRAITOR_PCT;
-    public static final double DETECTIVE_PCT;
-    public static final int DETECTIVE_MIN_PLAYERS;
-    public static final int SCANNER_CHARGE_TIME;
-    public static final int KILLER_DNA_RANGE;
-    public static final int KILLER_DNA_BASETIME;
-
-    // Title settings
-    public static final boolean SEND_TITLES;
-    public static final boolean LARGE_STATUS_TITLES;
-    public static final boolean LARGE_VICTORY_TITLES;
-
-    // Weapon settings
-    public static final Material CROWBAR_ITEM;
-    public static final Material GUN_ITEM;
-    public static final int CROWBAR_DAMAGE;
-    public static final boolean REQUIRE_AMMO_FOR_GUNS;
-    public static final int INITIAL_AMMO;
-
-    // Karma settings
-    public static final boolean KARMA_STRICT;
-    public static final int KARMA_STARTING;
-    public static final int KARMA_MAX;
-    public static final double KARMA_RATIO;
-    public static final int KARMA_KILL_PENALTY;
-    public static final int KARMA_ROUND_INCREMENT;
-    public static final int KARMA_CLEAN_BONUS;
-    public static final double KARMA_CLEAN_HALF;
-    public static final int KARMA_TRAITORDMG_RATIO;
-    public static final int KARMA_TRAITORKILL_BONUS;
-    public static final int KARMA_LOW_AUTOKICK;
-    public static final boolean KARMA_LOW_BAN;
-    public static final int KARMA_LOW_BAN_MINUTES;
-    public static final boolean KARMA_PERSIST;
-    public static final boolean KARMA_DAMAGE_REDUCTION;
-    public static final boolean KARMA_ROUND_TO_ONE;
-    public static final boolean KARMA_DEBUG;
-
-    // Plugin settings
-    public static final boolean VERBOSE_LOGGING;
-    public static final String LOCALE;
-    public static final boolean ENABLE_AUTO_UPDATE;
-    public static final boolean ENABLE_METRICS;
-
     private static final ImmutableMap<String, String> LEGACY_NODES;
 
+    // Round structure
+    public final int PREPTIME_SECONDS;
+    public final int ROUNDTIME_SECONDS;
+    public final int MINIMUM_PLAYERS;
+    public final int MAXIMUM_PLAYERS;
+    public final boolean ALLOW_JOIN_AS_SPECTATOR;
+
+    // Traitor/Detective settings
+    public final double TRAITOR_PCT;
+    public final double DETECTIVE_PCT;
+    public final int DETECTIVE_MIN_PLAYERS;
+    public final int SCANNER_CHARGE_TIME;
+    public final int KILLER_DNA_RANGE;
+    public final int KILLER_DNA_BASETIME;
+
+    // Title settings
+    public final boolean SEND_TITLES;
+    public final boolean LARGE_STATUS_TITLES;
+    public final boolean LARGE_VICTORY_TITLES;
+
+    // Weapon settings
+    public final Material CROWBAR_ITEM;
+    public final Material GUN_ITEM;
+    public final int CROWBAR_DAMAGE;
+    public final boolean REQUIRE_AMMO_FOR_GUNS;
+    public final int INITIAL_AMMO;
+
+    // Karma settings
+    public final boolean KARMA_STRICT;
+    public final int KARMA_STARTING;
+    public final int KARMA_MAX;
+    public final double KARMA_RATIO;
+    public final int KARMA_KILL_PENALTY;
+    public final int KARMA_ROUND_INCREMENT;
+    public final int KARMA_CLEAN_BONUS;
+    public final double KARMA_CLEAN_HALF;
+    public final int KARMA_TRAITORDMG_RATIO;
+    public final int KARMA_TRAITORKILL_BONUS;
+    public final int KARMA_LOW_AUTOKICK;
+    public final boolean KARMA_LOW_BAN;
+    public final int KARMA_LOW_BAN_MINUTES;
+    public final boolean KARMA_PERSIST;
+    public final boolean KARMA_DAMAGE_REDUCTION;
+    public final boolean KARMA_ROUND_TO_ONE;
+    public final boolean KARMA_DEBUG;
+
+    // Plugin settings
+    public final boolean VERBOSE_LOGGING;
+    public final String LOCALE;
+    public final boolean ENABLE_AUTO_UPDATE;
+    public final boolean ENABLE_METRICS;
+
     static {
+        LEGACY_NODES = ImmutableMap.<String, String>builder()
+                .put("setup-time", "preptime-seconds")
+                .put("time-limit", "roundtime-seconds")
+
+                .put("traitor-ratio", "traitor-pct")
+                .put("detective-ratio", "detective-pct")
+                .put("minimum-players-for-detective", "detective-min-players")
+
+                .put("default-karma", "karma-starting")
+                .put("max-karma", "karma-max")
+                .put("damage-penalty", "karma-ratio")
+                .put("kill-penalty", "karma-kill-penalty")
+                .put("karma-heal", "karma-round-increment")
+                .put("t-damage-reward", "karma-traitordmg-ratio")
+                .put("tbonus", "karma-traitorkill-bonus")
+                .put("karma-kick", "karma-low-autokick")
+                .put("karma-ban", "karma-low-ban")
+                .put("karma-ban-time", "karma-low-ban-minutes")
+                .put("karma-persistance", "karma-persist")
+                .put("damage-reduction", "karma-damage-reduction")
+
+                .build();
+    }
+
+    public ConfigHelper() {
         // Round settings
         PREPTIME_SECONDS = getInt("preptime-seconds");
         ROUNDTIME_SECONDS = getInt("roundtime-seconds");
@@ -157,29 +182,6 @@ public final class ConfigHelper {
         ENABLE_AUTO_UPDATE = getBoolean("enable-auto-update");
         ENABLE_METRICS = getBoolean("enable-metrics");
         LOCALE = getString("locale");
-
-        LEGACY_NODES = ImmutableMap.<String, String>builder()
-                .put("setup-time", "preptime-seconds")
-                .put("time-limit", "roundtime-seconds")
-
-                .put("traitor-ratio", "traitor-pct")
-                .put("detective-ratio", "detective-pct")
-                .put("minimum-players-for-detective", "detective-min-players")
-
-                .put("default-karma", "karma-starting")
-                .put("max-karma", "karma-max")
-                .put("damage-penalty", "karma-ratio")
-                .put("kill-penalty", "karma-kill-penalty")
-                .put("karma-heal", "karma-round-increment")
-                .put("t-damage-reward", "karma-traitordmg-ratio")
-                .put("tbonus", "karma-traitorkill-bonus")
-                .put("karma-kick", "karma-low-autokick")
-                .put("karma-ban", "karma-low-ban")
-                .put("karma-ban-time", "karma-low-ban-minutes")
-                .put("karma-persistance", "karma-persist")
-                .put("damage-reduction", "karma-damage-reduction")
-
-                .build();
     }
 
     public static String getString(String key) {
@@ -203,10 +205,6 @@ public final class ConfigHelper {
 
     public static double getDouble(String key) {
         return TTTBootstrap.INSTANCE.getConfig().getDouble(key);
-    }
-
-    public static Material getMaterial(String key) {
-        return getMaterial(key, null);
     }
 
     public static Material getMaterial(String key, Material fallback) {

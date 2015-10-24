@@ -33,7 +33,6 @@ import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoleHelper;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
 import net.caseif.ttt.util.helper.platform.InventoryHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.TitleHelper;
@@ -93,7 +92,7 @@ public class MinigameListener {
                             .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl)));
 
             if (event.getRound().getLifecycleStage() == Stage.WAITING
-                    && event.getRound().getChallengers().size() >= ConfigHelper.MINIMUM_PLAYERS) {
+                    && event.getRound().getChallengers().size() >= TTTCore.config.MINIMUM_PLAYERS) {
                 event.getRound().nextLifecycleStage();
             }
         }
@@ -188,7 +187,7 @@ public class MinigameListener {
                 TitleHelper.sendStatusTitle(pl, Role.TRAITOR);
             }
 
-            if (ConfigHelper.KARMA_DAMAGE_REDUCTION) {
+            if (TTTCore.config.KARMA_DAMAGE_REDUCTION) {
                 KarmaHelper.applyDamageReduction(ch);
                 double reduc = KarmaHelper.getDamageReduction(ch);
                 String percentage = reduc < 1
@@ -252,7 +251,7 @@ public class MinigameListener {
 
                     // manage DNA Scanners every n seconds
                     if (ch.getMetadata().has(Role.DETECTIVE)
-                            && ch.getRound().getTime() % ConfigHelper.SCANNER_CHARGE_TIME == 0) {
+                            && ch.getRound().getTime() % TTTCore.config.SCANNER_CHARGE_TIME == 0) {
                         Player tracker = TTTCore.getPlugin().getServer().getPlayer(ch.getName());
                         if (ch.getMetadata().has("tracking")) {
                             Player killer = TTTCore.getPlugin().getServer()

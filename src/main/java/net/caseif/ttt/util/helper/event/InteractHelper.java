@@ -31,7 +31,6 @@ import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
 import net.caseif.ttt.util.helper.platform.InventoryHelper;
 
 import com.google.common.base.Optional;
@@ -198,8 +197,8 @@ public class InteractHelper {
 
             event.setCancelled(true);
             if (event.getPlayer().getInventory().contains(Material.ARROW)
-                    || !ConfigHelper.REQUIRE_AMMO_FOR_GUNS) {
-                if (ConfigHelper.REQUIRE_AMMO_FOR_GUNS) {
+                    || !TTTCore.config.REQUIRE_AMMO_FOR_GUNS) {
+                if (TTTCore.config.REQUIRE_AMMO_FOR_GUNS) {
                     InventoryHelper.removeArrow(event.getPlayer().getInventory());
                     event.getPlayer().updateInventory();
                 }

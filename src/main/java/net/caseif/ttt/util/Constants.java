@@ -25,7 +25,6 @@ package net.caseif.ttt.util;
 
 import net.caseif.ttt.TTTBootstrap;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import net.caseif.flint.round.LifecycleStage;
 import org.bukkit.ChatColor;
@@ -57,8 +56,8 @@ public final class Constants {
     // lifecycle stages
     public static class Stage {
         public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
-        public static final LifecycleStage PREPARING = new LifecycleStage("preparing", ConfigHelper.PREPTIME_SECONDS);
-        public static final LifecycleStage PLAYING = new LifecycleStage("playing", ConfigHelper.ROUNDTIME_SECONDS);
+        public static final LifecycleStage PREPARING = new LifecycleStage("preparing", TTTCore.config.PREPTIME_SECONDS);
+        public static final LifecycleStage PLAYING = new LifecycleStage("playing", TTTCore.config.ROUNDTIME_SECONDS);
     }
 
     public static class Role {

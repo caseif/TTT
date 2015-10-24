@@ -25,7 +25,6 @@ package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -76,7 +75,7 @@ public final class BanHelper {
         if (y.contains(uuid.toString())) {
             y.set(uuid.toString(), null);
             y.save(f);
-            if (ConfigHelper.VERBOSE_LOGGING) {
+            if (TTTCore.config.VERBOSE_LOGGING) {
                 TTTCore.log.info(TTTCore.locale.getLocalizable("info.personal.pardon")
                         .withReplacements(p != null ? p.getName() : uuid.toString()).localize());
             }

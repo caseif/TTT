@@ -41,6 +41,7 @@ import net.caseif.ttt.command.arena.RemoveArenaCommand;
 import net.caseif.ttt.command.arena.RemoveSpawnCommand;
 import net.caseif.ttt.command.misc.DefaultCommand;
 import net.caseif.ttt.command.misc.HelpCommand;
+import net.caseif.ttt.command.misc.ReloadCommand;
 import net.caseif.ttt.util.Constants.Color;
 
 import org.bukkit.command.Command;
@@ -102,6 +103,8 @@ public class CommandManager implements CommandExecutor {
                 } else if (subCmd.equalsIgnoreCase("pardon")) {
                     new PardonCommand(sender, args).handle();
                     // misc. commands
+                } else if (subCmd.equalsIgnoreCase("reload")) {
+                    new ReloadCommand(sender, args).handle();
                 } else if (subCmd.equalsIgnoreCase("help") || subCmd.equalsIgnoreCase("?")) {
                     new HelpCommand(sender, args).handle();
                 } else {

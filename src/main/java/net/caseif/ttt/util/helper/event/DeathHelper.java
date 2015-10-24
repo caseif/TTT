@@ -149,9 +149,9 @@ public class DeathHelper {
         if (killer != null) {
             double dist = event.getEntity().getLocation().toVector()
                     .distance(Bukkit.getPlayer(killer.getUniqueId()).getLocation().toVector());
-            if (dist <= ConfigHelper.KILLER_DNA_RANGE) {
+            if (dist <= TTTCore.config.KILLER_DNA_RANGE) {
                 final double a = 3.6e-4;
-                int decayTime = ConfigHelper.KILLER_DNA_BASETIME - (int) Math.floor(a * Math.pow(dist, 2));
+                int decayTime = TTTCore.config.KILLER_DNA_BASETIME - (int) Math.floor(a * Math.pow(dist, 2));
                 if (decayTime > 0) {
                     expiry = System.currentTimeMillis() + decayTime;
                 }

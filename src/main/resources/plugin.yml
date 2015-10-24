@@ -84,6 +84,7 @@ permissions:
       ttt.admin.ban: true
       ttt.setexit: true
       ttt.help: true
+      ttt.reload: true
   ttt.admin.*:
     description: Allows for full use of administrative commands.
     children:
@@ -102,6 +103,9 @@ permissions:
     default: op
   ttt.admin.ban:
     description: Allows player to ban and unban players from joining TTT rounds.
+    default: op
+  ttt.admin.reload:
+    description: Allows player to reload the plugin.
     default: op
 
   ttt.arena:

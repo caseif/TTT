@@ -9,4 +9,5 @@
     <!-- specific suppressions -->
     <suppress checks="Indentation" files="package-info\.java"/>
     <suppress checks="LocalVariableName" files="NmsHelper\.java"/>
+    <suppress checks="MemberName" files="ConfigHelper\.java"/>
 </suppressions>

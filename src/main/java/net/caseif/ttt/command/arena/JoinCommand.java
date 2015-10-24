@@ -28,7 +28,6 @@ import net.caseif.ttt.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.helper.gamemode.BanHelper;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;
@@ -63,7 +62,7 @@ public class JoinCommand extends SubcommandHandler {
                             ? arena.get().getRound().get()
                             : arena.get().createRound();
 
-                    if (round.getLifecycleStage() == Stage.PLAYING && !ConfigHelper.ALLOW_JOIN_AS_SPECTATOR) {
+                    if (round.getLifecycleStage() == Stage.PLAYING && !TTTCore.config.ALLOW_JOIN_AS_SPECTATOR) {
                         TTTCore.locale.getLocalizable("error.round.in-progress").withPrefix(Color.ERROR).sendTo(sender);
                     }
                     try {

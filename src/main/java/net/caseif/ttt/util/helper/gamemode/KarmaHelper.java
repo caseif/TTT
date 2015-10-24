@@ -28,7 +28,6 @@ import static net.caseif.ttt.util.helper.misc.MiscHelper.isTraitor;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
@@ -79,13 +78,13 @@ public class KarmaHelper {
         YamlConfiguration karmaYaml = new YamlConfiguration();
         karmaYaml.load(karmaFile);
         if (karmaYaml.isSet(uuid.toString())) {
-            if (karmaYaml.getInt(uuid.toString()) > ConfigHelper.KARMA_MAX) {
-                playerKarma.put(uuid, ConfigHelper.KARMA_MAX);
+            if (karmaYaml.getInt(uuid.toString()) > TTTCore.config.KARMA_MAX) {
+                playerKarma.put(uuid, TTTCore.config.KARMA_MAX);
             } else {
                 playerKarma.put(uuid, karmaYaml.getInt(uuid.toString()));
             }
         } else {
-            playerKarma.put(uuid, ConfigHelper.KARMA_STARTING);
+            playerKarma.put(uuid, TTTCore.config.KARMA_STARTING);
         }
     }
 
@@ -102,15 +101,15 @@ public class KarmaHelper {
 
     public static void allocateKarma(Round round) {
         for (Challenger challenger : round.getChallengers()) {
-            addKarma(challenger, ConfigHelper.KARMA_ROUND_INCREMENT);
+            addKarma(challenger, TTTCore.config.KARMA_ROUND_INCREMENT);
             if (!challenger.getMetadata().has(MetadataTag.TEAM_KILLED)) {
-                int karmaHeal = ConfigHelper.KARMA_CLEAN_BONUS;
+                int karmaHeal = TTTCore.config.KARMA_CLEAN_BONUS;
                 if (getKarma(challenger) > BASE_KARMA) {
-                    if ((ConfigHelper.KARMA_MAX - BASE_KARMA) > 0) {
+                    if ((TTTCore.config.KARMA_MAX - BASE_KARMA) > 0) {
                         karmaHeal = (int) Math.round(
-                                ConfigHelper.KARMA_CLEAN_BONUS * Math.pow((1 / 2), (getKarma(challenger) - BASE_KARMA)
-                                                / ((double) (ConfigHelper.KARMA_MAX - BASE_KARMA)
-                                                * ConfigHelper.KARMA_CLEAN_HALF)
+                                TTTCore.config.KARMA_CLEAN_BONUS * Math.pow((1 / 2), (getKarma(challenger) - BASE_KARMA)
+                                                / ((double) (TTTCore.config.KARMA_MAX - BASE_KARMA)
+                                                * TTTCore.config.KARMA_CLEAN_HALF)
                                 )
                         );
                     }
@@ -124,11 +123,11 @@ public class KarmaHelper {
         if (damager != null && victim != null) {
             // team damage
             if (isTraitor(damager) == isTraitor(victim)) {
-                int penalty = (int) (getKarma(victim) * (damage * ConfigHelper.KARMA_RATIO));
+                int penalty = (int) (getKarma(victim) * (damage * TTTCore.config.KARMA_RATIO));
                 subtractKarma(damager, penalty);
             } else if (!isTraitor(damager) && isTraitor(victim)) {
                 // innocent damaging traitor
-                int reward = (int) (ConfigHelper.KARMA_MAX * damage * ConfigHelper.KARMA_TRAITORDMG_RATIO);
+                int reward = (int) (TTTCore.config.KARMA_MAX * damage * TTTCore.config.KARMA_TRAITORDMG_RATIO);
                 addKarma(damager, reward);
             }
         }
@@ -136,9 +135,10 @@ public class KarmaHelper {
 
     public static void applyKillKarma(Challenger killer, Challenger victim) {
         if (isTraitor(killer) == isTraitor(killer)) {
-            applyDamageKarma(killer, victim, ConfigHelper.KARMA_KILL_PENALTY);
+            applyDamageKarma(killer, victim, TTTCore.config.KARMA_KILL_PENALTY);
         } else if (!isTraitor(killer)) { // isTraitor(victim) is implied to be true
-            int reward = ConfigHelper.KARMA_TRAITORKILL_BONUS * ConfigHelper.KARMA_TRAITORDMG_RATIO * getKarma(victim);
+            int reward
+                    = TTTCore.config.KARMA_TRAITORKILL_BONUS * TTTCore.config.KARMA_TRAITORDMG_RATIO * getKarma(victim);
             addKarma(killer, reward);
         }
     }
@@ -148,18 +148,18 @@ public class KarmaHelper {
         Player p = TTTCore.getPlugin().getServer().getPlayer(player.getName());
         assert p != null;
         player.removeFromRound();
-        if (ConfigHelper.KARMA_LOW_BAN) {
+        if (TTTCore.config.KARMA_LOW_BAN) {
             try {
-                BanHelper.ban(p.getUniqueId(), ConfigHelper.KARMA_LOW_BAN_MINUTES);
-                if (ConfigHelper.KARMA_LOW_BAN_MINUTES < 0) {
+                BanHelper.ban(p.getUniqueId(), TTTCore.config.KARMA_LOW_BAN_MINUTES);
+                if (TTTCore.config.KARMA_LOW_BAN_MINUTES < 0) {
                     TTTCore.locale.getLocalizable("info.personal.ban.perm.karma")
                             .withPrefix(Color.INFO)
-                            .withReplacements(ConfigHelper.KARMA_LOW_AUTOKICK + "").sendTo(p);
+                            .withReplacements(TTTCore.config.KARMA_LOW_AUTOKICK + "").sendTo(p);
                 } else {
                     TTTCore.locale.getLocalizable("info.personal.ban.temp.karma")
                             .withPrefix(Color.INFO)
-                            .withReplacements(ConfigHelper.KARMA_LOW_BAN_MINUTES + "",
-                                    ConfigHelper.KARMA_LOW_AUTOKICK + "").sendTo(p);
+                            .withReplacements(TTTCore.config.KARMA_LOW_BAN_MINUTES + "",
+                                    TTTCore.config.KARMA_LOW_AUTOKICK + "").sendTo(p);
                 }
             } catch (InvalidConfigurationException | IOException ex) {
                 ex.printStackTrace();
@@ -168,7 +168,7 @@ public class KarmaHelper {
             }
         } else {
             TTTCore.locale.getLocalizable("info.personal.kick.karma").withPrefix(Color.INFO)
-                    .withReplacements(ConfigHelper.KARMA_LOW_AUTOKICK + "").sendTo(p);
+                    .withReplacements(TTTCore.config.KARMA_LOW_AUTOKICK + "").sendTo(p);
         }
     }
 
@@ -185,7 +185,7 @@ public class KarmaHelper {
         final double minDamageRed = 0.01;
 
         double damageRed;
-        if (ConfigHelper.KARMA_STRICT) {
+        if (TTTCore.config.KARMA_STRICT) {
             damageRed = (a * Math.pow(baseKarma, 2)) + (b * baseKarma) + (1);
         } else {
             damageRed = (strictA * Math.pow(baseKarma, 2)) + (1);
@@ -203,7 +203,7 @@ public class KarmaHelper {
     }
 
     public static void applyKarma(Challenger challenger) {
-        int karma = Math.max(getKarma(challenger.getUniqueId()), ConfigHelper.KARMA_LOW_AUTOKICK);
+        int karma = Math.max(getKarma(challenger.getUniqueId()), TTTCore.config.KARMA_LOW_AUTOKICK);
         challenger.getMetadata().set(MetadataTag.KARMA, karma);
         challenger.getMetadata().set(MetadataTag.DISPLAY_KARMA, karma);
     }
@@ -214,22 +214,22 @@ public class KarmaHelper {
 
     private static void addKarma(Challenger challenger, int amount) {
         int karma = getKarma(challenger);
-        if (amount == 0 && ConfigHelper.KARMA_ROUND_TO_ONE) {
+        if (amount == 0 && TTTCore.config.KARMA_ROUND_TO_ONE) {
             amount = 1;
         }
-        if (karma + amount < TTTCore.maxKarma) {
+        if (karma + amount < TTTCore.config.KARMA_MAX) {
             karma += amount;
-        } else if (karma < TTTCore.maxKarma) {
-            karma = TTTCore.maxKarma;
+        } else if (karma < TTTCore.config.KARMA_MAX) {
+            karma = TTTCore.config.KARMA_MAX;
         }
 
         challenger.getMetadata().set(MetadataTag.KARMA, karma);
 
-        if (karma < ConfigHelper.KARMA_LOW_AUTOKICK) {
+        if (karma < TTTCore.config.KARMA_LOW_AUTOKICK) {
             handleKick(challenger);
         }
 
-        if (ConfigHelper.KARMA_DEBUG) {
+        if (TTTCore.config.KARMA_DEBUG) {
             TTTCore.kLog.info("[TTT Karma Debug] " + challenger.getName() + ": " + (amount > 0 ? "+" : "") + amount
                     + ". " + "New value: " + karma);
         }

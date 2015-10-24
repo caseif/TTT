@@ -47,17 +47,17 @@ public class InventoryHelper {
     private static final ItemStack ITEM_DNA_SCANNER;
 
     static {
-        ITEM_CROWBAR = new ItemStack(ConfigHelper.CROWBAR_ITEM, 1);
+        ITEM_CROWBAR = new ItemStack(TTTCore.config.CROWBAR_ITEM, 1);
         ItemMeta cbMeta = ITEM_CROWBAR.getItemMeta();
         cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.crowbar.name").localize());
         ITEM_CROWBAR.setItemMeta(cbMeta);
 
-        ITEM_GUN = new ItemStack(ConfigHelper.GUN_ITEM, 1);
+        ITEM_GUN = new ItemStack(TTTCore.config.GUN_ITEM, 1);
         ItemMeta gunMeta = ITEM_GUN.getItemMeta();
         gunMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.gun.name").localize());
         ITEM_GUN.setItemMeta(gunMeta);
 
-        ITEM_AMMO = new ItemStack(Material.ARROW, ConfigHelper.INITIAL_AMMO);
+        ITEM_AMMO = new ItemStack(Material.ARROW, TTTCore.config.INITIAL_AMMO);
 
         ITEM_DNA_SCANNER = new ItemStack(Material.COMPASS, 1);
         ItemMeta dnaMeta = ITEM_DNA_SCANNER.getItemMeta();

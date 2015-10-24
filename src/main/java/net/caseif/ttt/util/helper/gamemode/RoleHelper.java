@@ -23,9 +23,9 @@
  */
 package net.caseif.ttt.util.helper.gamemode;
 
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import com.google.common.collect.Lists;
 import net.caseif.flint.challenger.Challenger;
@@ -48,7 +48,7 @@ public class RoleHelper {
             iTeam.addChallenger(ch);
         }
 
-        int tLimit = MiscHelper.clamp((int) (players * ConfigHelper.TRAITOR_PCT), 1, players - 1);
+        int tLimit = MiscHelper.clamp((int) (players * TTTCore.config.TRAITOR_PCT), 1, players - 1);
         tLimit = MiscHelper.clamp(tLimit, 1, players - 1);
         List<Challenger> tList = Lists.newArrayList(round.getChallengers());
         Collections.shuffle(tList);
@@ -56,9 +56,9 @@ public class RoleHelper {
             tTeam.addChallenger(tList.get(i));
         }
 
-        int dLimit = (int) (players * ConfigHelper.DETECTIVE_PCT);
+        int dLimit = (int) (players * TTTCore.config.DETECTIVE_PCT);
         dLimit = MiscHelper.clamp(dLimit, 1, iTeam.getChallengers().size());
-        if (players >= ConfigHelper.DETECTIVE_MIN_PLAYERS && dLimit == 0) {
+        if (players >= TTTCore.config.DETECTIVE_MIN_PLAYERS && dLimit == 0) {
             dLimit = 1;
         }
         List<Challenger> dList = Lists.newArrayList(iTeam.getChallengers());

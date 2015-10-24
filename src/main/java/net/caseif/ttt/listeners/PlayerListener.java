@@ -30,7 +30,6 @@ import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.helper.event.DeathHelper;
 import net.caseif.ttt.util.helper.event.InteractHelper;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.base.Optional;
@@ -123,7 +122,7 @@ public class PlayerListener implements Listener {
                                 && damager.getItemInHand().getItemMeta().getDisplayName()
                                 .endsWith(TTTCore.locale.getLocalizable("item.crowbar.name")
                                         .localize())) {
-                            event.setDamage(ConfigHelper.CROWBAR_DAMAGE);
+                            event.setDamage(TTTCore.config.CROWBAR_DAMAGE);
                         }
 
                         Optional<Double> reduc = damagerCh.get().getMetadata().get(MetadataTag.DAMAGE_REDUCTION);
@@ -156,7 +155,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (!ConfigHelper.KARMA_PERSIST) {
+        if (!TTTCore.config.KARMA_PERSIST) {
             KarmaHelper.resetKarma(event.getPlayer().getUniqueId());
         }
     }

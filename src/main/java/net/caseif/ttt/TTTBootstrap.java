@@ -27,7 +27,6 @@ import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.command.SpecialCommandManager;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import net.caseif.rosetta.LocaleManager;
 import net.gravitydevelopment.updater.Updater;
@@ -78,6 +77,7 @@ public class TTTBootstrap extends JavaPlugin {
     }
 
     public void fail() {
+        locale.setDefaultLocale(getConfig().getString("locale"));
         getLogger().warning(locale.getLocalizable("error.plugin.flint")
                 .withReplacements(MIN_FLINT_VERSION + "").localize());
         Bukkit.getPluginManager().registerEvents(new SpecialPlayerListener(), this);
@@ -85,7 +85,7 @@ public class TTTBootstrap extends JavaPlugin {
     }
 
     private void initializeMetrics() {
-        if (ConfigHelper.ENABLE_METRICS) {
+        if (getConfig().getBoolean("enable-metrics")) {
             try {
                 Metrics metrics = new Metrics(this);
                 Metrics.Graph graph = metrics.createGraph("Steel Version");
@@ -99,7 +99,7 @@ public class TTTBootstrap extends JavaPlugin {
                 metrics.addGraph(graph);
                 metrics.start();
             } catch (IOException ex) {
-                if (ConfigHelper.VERBOSE_LOGGING) {
+                if (getConfig().getBoolean("verbose-logging")) {
                     getLogger().warning(locale.getLocalizable("error.plugin.mcstats").localize());
                 }
             }
@@ -107,7 +107,7 @@ public class TTTBootstrap extends JavaPlugin {
     }
 
     private void initializeUpdater() {
-        if (ConfigHelper.ENABLE_AUTO_UPDATE) {
+        if (getConfig().getBoolean("enable-auto-update")) {
             new Updater(this, CURSEFORGE_PROJECT_ID, getFile(), Updater.UpdateType.DEFAULT,
                     new TTTUpdateCallback(), true);
 

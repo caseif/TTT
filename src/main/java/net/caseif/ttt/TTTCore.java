@@ -71,8 +71,7 @@ public class TTTCore {
     public static Logger kLog;
     private static JavaPlugin plugin;
     public static LocaleManager locale;
-
-    public static int maxKarma = 1000;
+    public static ConfigHelper config;
 
     public static ContributorListHelper clh;
 
@@ -98,6 +97,8 @@ public class TTTCore {
         kLog = Logger.getLogger("TTT Karma Debug");
         kLog.setParent(log);
 
+        config = new ConfigHelper();
+
         if (FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
             TTTBootstrap.INSTANCE.fail();
             return;
@@ -108,11 +109,12 @@ public class TTTCore {
         // register plugin with Flint
         mg = FlintCore.registerPlugin(plugin.getName());
 
+        applyConfigOptions();
+
         doCompatibilityActions();
 
         mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
                 ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING));
-        mg.setConfigValue(ConfigNode.MAX_PLAYERS, ConfigHelper.MAXIMUM_PLAYERS);
         mg.setConfigValue(ConfigNode.RANDOM_SPAWNING, true);
 
         // register events and commands
@@ -130,7 +132,7 @@ public class TTTCore {
                 ConfigHelper.addMissingKeys();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                logSevere("Failed to write new config keys!");
+                log.severe("Failed to write new config keys!");
             }
         }
 
@@ -139,10 +141,14 @@ public class TTTCore {
 
         File invDir = new File(plugin.getDataFolder() + File.separator + "inventories");
         invDir.mkdir();
+    }
 
-        maxKarma = ConfigHelper.KARMA_MAX;
+    public void applyConfigOptions() {
+        locale.setDefaultLocale(config.LOCALE);
 
-        if (ConfigHelper.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
+        mg.setConfigValue(ConfigNode.MAX_PLAYERS, TTTCore.config.MAXIMUM_PLAYERS);
+
+        if (TTTCore.config.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
             logWarning("error.plugin.title-support");
         }
     }
@@ -150,7 +156,7 @@ public class TTTCore {
     public void deinitialize() {
         // uninitialize static variables so as not to cause memory leaks when reloading
         ScoreboardManager.uninitialize();
-        if (ConfigHelper.VERBOSE_LOGGING) {
+        if (TTTCore.config.VERBOSE_LOGGING) {
             logInfo("info.plugin.disable", plugin.toString());
         }
         locale = null;
@@ -172,7 +178,7 @@ public class TTTCore {
     public void createFile(String s) {
         File f = new File(TTTCore.plugin.getDataFolder(), s);
         if (!f.exists()) {
-            if (ConfigHelper.VERBOSE_LOGGING) {
+            if (TTTCore.config.VERBOSE_LOGGING) {
                 logInfo("info.plugin.compatibility.creating-file", s);
             }
             try {
