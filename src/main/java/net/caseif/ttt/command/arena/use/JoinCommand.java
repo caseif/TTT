@@ -24,7 +24,7 @@
 package net.caseif.ttt.command.arena.use;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.helper.gamemode.BanHelper;
@@ -36,7 +36,7 @@ import net.caseif.flint.round.Round;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class JoinCommand extends SubcommandHandler {
+public class JoinCommand extends CommandHandler {
 
     public JoinCommand(CommandSender sender, String[] args) {
         super(sender, args, "ttt.use");
@@ -44,62 +44,46 @@ public class JoinCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
-        if (sender instanceof Player) {
-            if (assertPermission()) {
-                if (args.length > 1) {
-                    if (BanHelper.checkBan(((Player) sender).getUniqueId())) {
-                        return;
-                    }
+        if (BanHelper.checkBan(((Player) sender).getUniqueId())) {
+            return;
+        }
 
-                    Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
-                    if (!arena.isPresent()) {
-                        TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR)
-                                .sendTo(sender);
-                        return;
-                    }
+        Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
+        if (!arena.isPresent()) {
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
+            return;
+        }
 
-                    Round round = arena.get().getRound().isPresent()
-                            ? arena.get().getRound().get()
-                            : arena.get().createRound();
+        Round round = arena.get().getRound().isPresent() ? arena.get().getRound().get() : arena.get().createRound();
 
-                    if (round.getLifecycleStage() == Stage.PLAYING && !TTTCore.config.ALLOW_JOIN_AS_SPECTATOR) {
-                        TTTCore.locale.getLocalizable("error.round.in-progress").withPrefix(Color.ERROR).sendTo(sender);
-                    }
-                    try {
-                        round.addChallenger(((Player) sender).getUniqueId());
-                    } catch (RoundJoinException ex) {
-                        switch (ex.getReason()) {
-                            case ALREADY_ENTERED: {
-                                TTTCore.locale.getLocalizable("error.round.inside").withPrefix(Color.ERROR)
-                                        .sendTo(sender);
-                                break;
-                            }
-                            case FULL: {
-                                TTTCore.locale.getLocalizable("error.round.full").withPrefix(Color.ERROR)
-                                        .sendTo(sender);
-                                break;
-                            }
-                            case INTERNAL_ERROR: {
-                                throw new RuntimeException(ex); // sender is notified of internal error
-                            }
-                            case OFFLINE: {
-                                TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR)
-                                        .sendTo(sender);
-                                break;
-                            }
-                            default: {
-                                throw new AssertionError("Failed to determine reaosn for RoundJoinException. "
-                                        + "Report this immediately.");
-                            }
-                        }
-                    }
-                } else {
-                    TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR).sendTo(sender);
-                    sendUsage();
+        if (round.getLifecycleStage() == Stage.PLAYING && !TTTCore.config.ALLOW_JOIN_AS_SPECTATOR) {
+            TTTCore.locale.getLocalizable("error.round.in-progress").withPrefix(Color.ERROR).sendTo(sender);
+        }
+        try {
+            round.addChallenger(((Player) sender).getUniqueId());
+        } catch (RoundJoinException ex) {
+            switch (ex.getReason()) {
+                case ALREADY_ENTERED: {
+                    TTTCore.locale.getLocalizable("error.round.inside").withPrefix(Color.ERROR).sendTo(sender);
+                    break;
+                }
+                case FULL: {
+                    TTTCore.locale.getLocalizable("error.round.full").withPrefix(Color.ERROR).sendTo(sender);
+                    break;
+                }
+                case INTERNAL_ERROR: {
+                    throw new RuntimeException(ex); // sender is notified of internal error
+                }
+                case OFFLINE: {
+                    TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR).sendTo(sender);
+                    break;
+                }
+                default: {
+                    throw new AssertionError("Failed to determine reaosn for RoundJoinException. "
+                            + "Report this immediately.");
                 }
             }
-        } else {
-            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR).sendTo(sender);
         }
     }
+
 }

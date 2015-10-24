@@ -24,7 +24,7 @@
 package net.caseif.ttt.command.admin;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.UUIDFetcher;
 import net.caseif.ttt.util.helper.gamemode.BanHelper;
@@ -37,7 +37,7 @@ import org.bukkit.entity.Player;
 import java.io.IOException;
 import java.util.UUID;
 
-public class PardonCommand extends SubcommandHandler {
+public class PardonCommand extends CommandHandler {
 
     public PardonCommand(CommandSender sender, String[] args) {
         super(sender, args, "ttt.admin");
@@ -45,49 +45,37 @@ public class PardonCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
-        if (assertPermission()) {
-            if (args.length > 1) {
-                String name = args[1];
-                @SuppressWarnings("deprecation")
-                Player pl = Bukkit.getPlayer(name);
-                UUID uuid = null;
-                if (pl != null) {
-                    uuid = pl.getUniqueId();
-                } else {
-                    try {
-                        uuid = UUIDFetcher.getUUIDOf(name);
-                    } catch (UUIDFetcher.UUIDException ignored) {
-                    }
-                    if (uuid == null) {
-                        TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR)
-                                .sendTo(sender);
-                        return;
-                    }
-                }
-                try {
-                    if (BanHelper.pardon(uuid)) {
-                        if (pl != null) {
-                            TTTCore.locale.getLocalizable("info.personal.pardon").withPrefix(Color.INFO)
-                                    .sendTo(pl);
-                        }
-                        TTTCore.locale.getLocalizable("info.personal.pardon.other")
-                                .withPrefix(Color.INFO).withReplacements(name).sendTo(sender);
-                    } else {
-                        TTTCore.locale.getLocalizable("error.plugin.pardon.absent").withPrefix(Color.ERROR)
-                                .withReplacements(name).sendTo(sender);
-                    }
-                } catch (InvalidConfigurationException | IOException ex) {
-                    ex.printStackTrace();
-                    TTTCore.locale.getLocalizable("error.plugin.pardon").withPrefix(Color.ERROR)
-                            .sendTo(sender);
-                }
-            } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
-                        .sendTo(sender);
-                sendUsage();
+        String name = args[1];
+        @SuppressWarnings("deprecation")
+        Player pl = Bukkit.getPlayer(name);
+        UUID uuid = null;
+        if (pl != null) {
+            uuid = pl.getUniqueId();
+        } else {
+            try {
+                uuid = UUIDFetcher.getUUIDOf(name);
+            } catch (UUIDFetcher.UUIDException ignored) {
+            }
+            if (uuid == null) {
+                TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR).sendTo(sender);
+                return;
             }
         }
+        try {
+            if (BanHelper.pardon(uuid)) {
+                if (pl != null) {
+                    TTTCore.locale.getLocalizable("info.personal.pardon").withPrefix(Color.INFO).sendTo(pl);
+                }
+                TTTCore.locale.getLocalizable("info.personal.pardon.other").withPrefix(Color.INFO)
+                        .withReplacements(name).sendTo(sender);
+            } else {
+                TTTCore.locale.getLocalizable("error.plugin.pardon.absent").withPrefix(Color.ERROR)
+                        .withReplacements(name).sendTo(sender);
+            }
+        } catch (InvalidConfigurationException | IOException ex) {
+            ex.printStackTrace();
+            TTTCore.locale.getLocalizable("error.plugin.pardon").withPrefix(Color.ERROR).sendTo(sender);
+        }
     }
-
 
 }

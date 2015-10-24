@@ -25,13 +25,13 @@ package net.caseif.ttt.command.misc;
 
 import net.caseif.ttt.TTTBootstrap;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandHandler;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import org.bukkit.command.CommandSender;
 
-public class ReloadCommand extends SubcommandHandler {
+public class ReloadCommand extends CommandHandler {
 
     public ReloadCommand(CommandSender sender, String[] args) {
         super(sender, args, "ttt.superadmin");

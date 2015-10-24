@@ -24,7 +24,7 @@
 package net.caseif.ttt.command.arena.admin;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.helper.misc.FileHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
@@ -38,7 +38,7 @@ import org.bukkit.command.CommandSender;
 
 import java.io.File;
 
-public class ImportCommand extends SubcommandHandler {
+public class ImportCommand extends CommandHandler {
 
     public ImportCommand(CommandSender sender, String[] args) {
         super(sender, args, "ttt.superadmin");
@@ -46,43 +46,35 @@ public class ImportCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
-        if (assertPermission()) {
-            if (args.length > 1) {
-                String worldName = null;
-                for (File f : Bukkit.getWorldContainer().listFiles()) {
-                    if (f.getName().equalsIgnoreCase(args[1])) {
-                        worldName = f.getName();
-                    }
-                }
-                if (worldName != null) {
-                    if (FileHelper.isWorld(args[1])) {
-                        World w = Bukkit.createWorld(new WorldCreator(worldName));
-                        if (w != null) {
-                            if (TTTCore.mg.getArena(worldName).isPresent()) {
-                                //TODO: replace this message with something more accurate
-                                TTTCore.locale.getLocalizable("error.arena.already-exists")
-                                        .withPrefix(Color.ERROR).sendTo(sender);
-                            }
-                            Location l = w.getSpawnLocation();
-                            TTTCore.mg.createArena(
-                                    worldName,
-                                    LocationHelper.convert(l),
-                                    Boundary.INFINITE
-                            );
-                            TTTCore.locale.getLocalizable("info.personal.arena.import.success")
-                                    .withPrefix(Color.INFO).sendTo(sender);
-                            return;
-                        }
-                    }
-                }
-                // this executes only if something goes wrong loading the world
-                TTTCore.locale.getLocalizable("error.plugin.world-load").withPrefix(Color.ERROR)
-                        .sendTo(sender);
-            } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
-                        .sendTo(sender);
-                sendUsage();
+        String worldName = null;
+        for (File f : Bukkit.getWorldContainer().listFiles()) {
+            if (f.getName().equalsIgnoreCase(args[1])) {
+                worldName = f.getName();
             }
         }
+        if (worldName != null) {
+            if (FileHelper.isWorld(args[1])) {
+                World w = Bukkit.createWorld(new WorldCreator(worldName));
+                if (w != null) {
+                    if (TTTCore.mg.getArena(worldName).isPresent()) {
+                        //TODO: replace this message with something more accurate
+                        TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(Color.ERROR)
+                                .sendTo(sender);
+                    }
+                    Location l = w.getSpawnLocation();
+                    TTTCore.mg.createArena(
+                            worldName,
+                            LocationHelper.convert(l),
+                            Boundary.INFINITE
+                    );
+                    TTTCore.locale.getLocalizable("info.personal.arena.import.success").withPrefix(Color.INFO)
+                            .sendTo(sender);
+                    return;
+                }
+            }
+        }
+        // this executes only if something goes wrong loading the world
+        TTTCore.locale.getLocalizable("error.plugin.world-load").withPrefix(Color.ERROR).sendTo(sender);
     }
+
 }

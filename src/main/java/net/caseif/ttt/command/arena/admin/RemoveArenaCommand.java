@@ -24,12 +24,12 @@
 package net.caseif.ttt.command.arena.admin;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
 import org.bukkit.command.CommandSender;
 
-public class RemoveArenaCommand extends SubcommandHandler {
+public class RemoveArenaCommand extends CommandHandler {
 
     public RemoveArenaCommand(CommandSender sender, String[] args) {
         super(sender, args, "ttt.superadmin");
@@ -37,21 +37,14 @@ public class RemoveArenaCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
-        if (assertPermission()) {
-            if (args.length > 1) {
-                String name = args[1];
-                try {
-                    TTTCore.mg.removeArena(name);
-                    TTTCore.locale.getLocalizable("info.personal.arena.remove.success").withPrefix(Color.INFO)
-                            .withReplacements(Color.ARENA + name + Color.INFO).sendTo(sender);
-                } catch (IllegalArgumentException ex) {
-                    TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
-                }
-            } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
-                        .sendTo(sender);
-                sendUsage();
-            }
+        String name = args[1];
+        try {
+            TTTCore.mg.removeArena(name);
+            TTTCore.locale.getLocalizable("info.personal.arena.remove.success").withPrefix(Color.INFO)
+                    .withReplacements(Color.ARENA + name + Color.INFO).sendTo(sender);
+        } catch (IllegalArgumentException ex) {
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
         }
     }
+
 }

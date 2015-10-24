@@ -24,13 +24,13 @@
 package net.caseif.ttt.command.misc;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
 
 import org.bukkit.command.CommandSender;
 
-public class DefaultCommand extends SubcommandHandler {
+public class DefaultCommand extends CommandHandler {
 
     public DefaultCommand(CommandSender sender, String[] args) {
         super(sender, args, null);

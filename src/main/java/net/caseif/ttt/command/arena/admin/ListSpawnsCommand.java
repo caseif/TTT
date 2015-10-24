@@ -24,7 +24,7 @@
 package net.caseif.ttt.command.arena.admin;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
 import com.google.common.base.Optional;
@@ -34,7 +34,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Map;
 
-public class ListSpawnsCommand extends SubcommandHandler {
+public class ListSpawnsCommand extends CommandHandler {
 
     public ListSpawnsCommand(CommandSender sender, String[] args) {
         super(sender, args, "ttt.superadmin");
@@ -42,26 +42,18 @@ public class ListSpawnsCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
-        if (assertPermission()) {
-            if (args.length < 2) {
-                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR).sendTo(sender);
-                sendUsage();
-                return;
-            }
-            Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
-            if (!arena.isPresent()) {
-                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
-                sendUsage();
-                return;
-            }
-            Map<Integer, Location3D> spawns = arena.get().getSpawnPoints();
-            TTTCore.locale.getLocalizable("info.personal.arena.listspawns").withPrefix(Color.INFO)
-                    .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
-            for (Map.Entry<Integer, Location3D> spawn : spawns.entrySet()) {
-                Location3D l = spawn.getValue();
-                sender.sendMessage(Color.INFO + "    " + spawn.getKey() + ": " + Color.DESCRIPTION
-                        + "(" + l.getX() + ", " + l.getY() + ", " + l.getZ() + ")");
-            }
+        Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
+        if (!arena.isPresent()) {
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
+            return;
+        }
+        Map<Integer, Location3D> spawns = arena.get().getSpawnPoints();
+        TTTCore.locale.getLocalizable("info.personal.arena.listspawns").withPrefix(Color.INFO)
+                .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
+        for (Map.Entry<Integer, Location3D> spawn : spawns.entrySet()) {
+            Location3D l = spawn.getValue();
+            sender.sendMessage(Color.INFO + "    " + spawn.getKey() + ": " + Color.DESCRIPTION
+                    + "(" + l.getX() + ", " + l.getY() + ", " + l.getZ() + ")");
         }
     }
 

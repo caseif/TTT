@@ -24,13 +24,14 @@
 package net.caseif.ttt.command.arena.use;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.Stage;
 
 import net.caseif.flint.arena.Arena;
 import org.bukkit.command.CommandSender;
 
-public class ListArenasCommand extends SubcommandHandler {
+public class ListArenasCommand extends CommandHandler {
 
     public ListArenasCommand(CommandSender sender, String[] args) {
         super(sender, args, "ttt.use");
@@ -38,16 +39,14 @@ public class ListArenasCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
-        if (assertPermission()) {
-            TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
-            for (Arena arena : TTTCore.mg.getArenas()) {
-                sender.sendMessage("    " + Color.USAGE + arena.getId() + ": "
-                        + Color.DESCRIPTION + TTTCore.locale.getLocalizable("fragment.stage."
-                        + (arena.getRound().isPresent()
-                        ? arena.getRound().get().getLifecycleStage().getId()
-                        : "waiting"))
-                        .localizeFor(sender).toUpperCase());
-            }
+        TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
+        for (Arena arena : TTTCore.mg.getArenas()) {
+            sender.sendMessage("    " + Color.USAGE + arena.getId() + ": "
+                    + Color.DESCRIPTION + TTTCore.locale.getLocalizable("fragment.stage."
+                    + (arena.getRound().isPresent()
+                    ? arena.getRound().get().getLifecycleStage().getId()
+                    : Stage.WAITING.getId()))
+                    .localizeFor(sender).toUpperCase());
         }
     }
 

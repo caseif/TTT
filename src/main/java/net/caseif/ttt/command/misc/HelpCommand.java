@@ -24,89 +24,63 @@
 package net.caseif.ttt.command.misc;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.command.CommandHandler;
 import net.caseif.ttt.command.CommandManager;
-import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandRef;
 import net.caseif.ttt.util.Constants.Color;
 
-import net.caseif.rosetta.Localizable;
 import org.bukkit.command.CommandSender;
 
-import java.util.LinkedHashMap;
-
-public class HelpCommand extends SubcommandHandler {
-
-    public static final LinkedHashMap<String, Object[]> commands = new LinkedHashMap<>();
-
-    static {
-        registerCommand("join", TTTCore.locale.getLocalizable("info.help.arena.join"), "ttt.arena.join");
-        registerCommand("leave", TTTCore.locale.getLocalizable("info.help.arena.leave"), "ttt.arena.leave");
-        registerCommand("carena", TTTCore.locale.getLocalizable("info.help.arena.create"), "ttt.arena.create");
-        registerCommand("rarena", TTTCore.locale.getLocalizable("info.help.arena.remove"), "ttt.arena.remove");
-        registerCommand("listarenas", TTTCore.locale.getLocalizable("info.help.arena.list"), "ttt.arena.list");
-        registerCommand("import", TTTCore.locale.getLocalizable("info.help.arena.import"), "ttt.arena.import");
-        registerCommand("addspawn", TTTCore.locale.getLocalizable("info.help.arena.addspawn"), "ttt.arena.addspawn");
-        registerCommand("removespawn", TTTCore.locale.getLocalizable("info.help.arena.removespawn"),
-                "ttt.arena.removespawn");
-        registerCommand("listspawns", TTTCore.locale.getLocalizable("info.help.arena.listspawns"),
-                "ttt.arena.listspawns");
-
-        registerCommand("prepare", TTTCore.locale.getLocalizable("info.help.admin.prepare"), "ttt.admin.prepare");
-        registerCommand("start", TTTCore.locale.getLocalizable("info.help.admin.start"), "ttt.admin.start");
-        registerCommand("end", TTTCore.locale.getLocalizable("info.help.admin.end"), "ttt.admin.end");
-        registerCommand("kick", TTTCore.locale.getLocalizable("info.help.admin.kick"), "ttt.admin.kick");
-        registerCommand("ban", TTTCore.locale.getLocalizable("info.help.admin.ban"), "ttt.admin.ban");
-        registerCommand("pardon", TTTCore.locale.getLocalizable("info.help.admin.pardon"), "ttt.admin.pardon");
-        //registerCommand("slay", Main.locale.getLocalizable("info.help.admin.slay"), "ttt.admin.slay");
-        //registerCommand("respawn", Main.locale.getLocalizable("info.help.admin.respawn"), "ttt.admin.respawn");
-
-        registerCommand("help", TTTCore.locale.getLocalizable("info.help.help"), "ttt.help");
-    }
+public class HelpCommand extends CommandHandler {
 
     public HelpCommand(CommandSender sender, String[] args) {
         super(sender, args, null);
     }
 
-    private static void registerCommand(String cmd, Localizable description, String permission) {
-        commands.put(cmd, new Object[]{description, permission});
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public void handle() {
-        if (assertPermission()) {
-            if (args.length > 1) {
-                String cmd = args[1];
-                Object[] info = commands.get(cmd);
-                if (info != null) {
-                    if (sender.hasPermission((String) info[1])) {
-                        sender.sendMessage(Color.INFO + "/ttt " + cmd + " "
-                                + Color.DESCRIPTION + ((Localizable) info[0]).localizeFor(sender));
-                        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO + "    ")
-                                .withReplacements(Color.USAGE + CommandManager.getUsage(cmd) + Color.INFO)
-                                .sendTo(sender);
-                    } else {
-                        TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR)
-                                .sendTo(sender);
-                    }
-                } else {
-                    TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR)
-                            .sendTo(sender);
-                }
+        if (args.length > 1) {
+            String cmd = args[1];
+
+            if (!CommandManager.commands.containsKey(args[1])) {
+                printInvalidArgsError();
+                return;
+            }
+
+            CommandRef cmdRef = CommandManager.commands.get(args[1]);
+
+            if (sender.hasPermission(cmdRef.getPermission())) {
+                sendDescription(cmdRef);
             } else {
-                sender.sendMessage("");
-                TTTCore.locale.getLocalizable("info.help.available-cmds").withPrefix(Color.SPECIAL)
-                        .sendTo(sender);
-                for (String cmd : commands.keySet()) {
-                    Object[] info = commands.get(cmd);
-                    if (sender.hasPermission((String) info[1])) {
-                        sender.sendMessage(Color.INFO + "/ttt " + cmd + " "
-                                + Color.DESCRIPTION + ((Localizable) info[0]).localizeFor(sender));
-                        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO + "    ")
-                                .withReplacements(Color.USAGE + CommandManager.getUsage(cmd) + Color.INFO)
-                                .sendTo(sender);
-                    }
+                TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR).sendTo(sender);
+            }
+        } else {
+            sender.sendMessage("");
+            TTTCore.locale.getLocalizable("info.help.available-cmds").withPrefix(Color.SPECIAL).sendTo(sender);
+
+            for (String cmd : CommandManager.commands.keySet()) {
+                CommandRef cmdRef = CommandManager.commands.get(cmd);
+
+                if (cmdRef.getPermission() == null || sender.hasPermission(cmdRef.getPermission())) {
+                    sendDescription(cmdRef);
                 }
             }
         }
     }
+
+    private void sendDescription(CommandRef cmdRef) {
+        assert cmdRef != null;
+
+        sender.sendMessage(
+                Color.INFO + "/ttt " + cmdRef.getLabel() + " "
+                        + Color.DESCRIPTION + cmdRef.getDescription().localizeFor(sender)
+        );
+
+        TTTCore.locale.getLocalizable("fragment.usage")
+                .withPrefix(Color.INFO + "    ")
+                .withReplacements(Color.USAGE + cmdRef.getUsage() + Color.INFO)
+                .sendTo(sender);
+    }
+
 }

@@ -27,13 +27,13 @@ import static net.caseif.ttt.listeners.WizardListener.WIZARDS;
 import static net.caseif.ttt.listeners.WizardListener.WIZARD_INFO;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CreateArenaCommand extends SubcommandHandler {
+public class CreateArenaCommand extends CommandHandler {
 
     public CreateArenaCommand(CommandSender sender, String[] args) {
         super(sender, args, "ttt.superadmin");
@@ -41,25 +41,18 @@ public class CreateArenaCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
-        if (assertPermission()) {
-            if (sender instanceof Player) {
-                if (!WIZARDS.containsKey(((Player) sender).getUniqueId())) {
-                    WIZARDS.put(((Player) sender).getUniqueId(), 0);
-                    WIZARD_INFO.put(((Player) sender).getUniqueId(), new Object[4]);
-                    TTTCore.locale.getLocalizable("info.personal.arena.create.welcome")
-                            .withPrefix(Color.INFO).sendTo(sender);
-                    TTTCore.locale.getLocalizable("info.personal.arena.create.exit-note")
-                            .withPrefix(Color.INFO).withReplacements(Color.USAGE
-                            + TTTCore.locale.getLocalizable("info.personal.arena.create.cancel-keyword")
-                            .localizeFor(sender) + Color.INFO).sendTo(sender);
-                } else {
-                    TTTCore.locale.getLocalizable("error.arena.create.already")
-                            .withPrefix(Color.ERROR).sendTo(sender);
-                }
-            } else {
-                TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR)
-                        .sendTo(sender);
-            }
+        if (!WIZARDS.containsKey(((Player) sender).getUniqueId())) {
+            WIZARDS.put(((Player) sender).getUniqueId(), 0);
+            WIZARD_INFO.put(((Player) sender).getUniqueId(), new Object[4]);
+            TTTCore.locale.getLocalizable("info.personal.arena.create.welcome").withPrefix(Color.INFO).sendTo(sender);
+            TTTCore.locale.getLocalizable("info.personal.arena.create.exit-note")
+                    .withPrefix(Color.INFO).withReplacements(Color.USAGE
+                    + TTTCore.locale.getLocalizable("info.personal.arena.create.cancel-keyword").localizeFor(sender)
+                    + Color.INFO).sendTo(sender);
+        } else {
+            TTTCore.locale.getLocalizable("error.arena.create.already")
+                    .withPrefix(Color.ERROR).sendTo(sender);
         }
     }
+
 }

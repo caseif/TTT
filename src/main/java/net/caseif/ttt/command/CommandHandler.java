@@ -28,13 +28,13 @@ import net.caseif.ttt.util.Constants.Color;
 
 import org.bukkit.command.CommandSender;
 
-public abstract class SubcommandHandler {
+public abstract class CommandHandler {
 
     protected CommandSender sender;
     protected String[] args;
     protected String perm;
 
-    public SubcommandHandler(CommandSender sender, String[] args, String perm) {
+    public CommandHandler(CommandSender sender, String[] args, String perm) {
         this.sender = sender;
         this.args = args;
         this.perm = perm;
@@ -42,31 +42,8 @@ public abstract class SubcommandHandler {
 
     public abstract void handle();
 
-    /**
-     * Asserts that the sender has permission to use a subcommand. Sends an error message if not.
-     *
-     * @return whether the sender has permission to use a subcommand
-     */
-    public boolean assertPermission() {
-        if (perm != null && !sender.hasPermission(perm)) {
-            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR)
-                    .sendTo(sender);
-            return false;
-        }
-        return true;
+    protected void printInvalidArgsError() {
+        TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR).sendTo(sender);
     }
 
-    /**
-     * Retrieves the usage for this subcommand from the plugin.yml file.
-     *
-     * @return the usage for this subcommand, or null if not specified
-     */
-    public String getUsage() {
-        return CommandManager.getUsage(args[0]);
-    }
-
-    public void sendUsage() {
-        TTTCore.locale.getLocalizable("fragment.usage").withPrefix(Color.INFO).withReplacements(getUsage())
-                .sendTo(sender);
-    }
 }

@@ -26,7 +26,7 @@ package net.caseif.ttt.command.admin;
 import static net.caseif.ttt.util.helper.misc.MiscHelper.isInt;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.SubcommandHandler;
+import net.caseif.ttt.command.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.UUIDFetcher;
 import net.caseif.ttt.util.helper.gamemode.BanHelper;
@@ -39,7 +39,7 @@ import org.bukkit.entity.Player;
 import java.io.IOException;
 import java.util.UUID;
 
-public class BanCommand extends SubcommandHandler {
+public class BanCommand extends CommandHandler {
 
     public BanCommand(CommandSender sender, String[] args) {
         super(sender, args, "ttt.admin");
@@ -47,74 +47,56 @@ public class BanCommand extends SubcommandHandler {
 
     @Override
     public void handle() {
-        if (assertPermission()) {
-            if (args.length > 1) {
-                String name = args[1];
-                int time = -1;
-                if (args.length > 2) {
-                    if (isInt(args[2])) {
-                        time = Integer.parseInt(args[2]);
-                    } else {
-                        TTTCore.locale.getLocalizable("error.admin.ban.invalid-time").withPrefix(Color.ERROR)
-                                .sendTo(sender);
-                        return;
-                    }
-                }
-                try {
-                    @SuppressWarnings("deprecation")
-                    Player pl = Bukkit.getPlayer(name);
-                    UUID uuid = null;
-                    if (pl != null) {
-                        uuid = pl.getUniqueId();
-                    } else {
-                        try {
-                            uuid = UUIDFetcher.getUUIDOf(name);
-                        } catch (UUIDFetcher.UUIDException ignored) {
-                        }
-                        if (uuid == null) {
-                            TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR)
-                                    .sendTo(sender);
-                            return;
-                        }
-                    }
-                    BanHelper.ban(uuid, time);
-                    if (time == -1) {
-                        if (pl != null) {
-                            TTTCore.locale.getLocalizable("info.personal.ban.perm")
-                                    .withPrefix(Color.ERROR).sendTo(pl);
-                        }
-                        TTTCore.locale.getLocalizable("info.personal.ban.other.perm")
-                                .withPrefix(Color.INFO).withReplacements(name).sendTo(sender);
-                    } else {
-                        if (pl != null) {
-                            TTTCore.locale.getLocalizable("info.personal.ban.temp")
-                                    .withPrefix(Color.ERROR)
-                                    .withReplacements(TTTCore.locale.getLocalizable("fragment.minutes"
-                                            + (time == 1 ? ".singular" : "")).withReplacements(time + "")
-                                            .localizeFor(pl))
-                                    .sendTo(pl);
-                        }
-                        TTTCore.locale.getLocalizable("info.personal.ban.other.temp")
-                                .withPrefix(Color.INFO)
-                                .withReplacements(pl != null ? pl.getName() : name,
-                                        TTTCore.locale.getLocalizable("fragment.minutes"
-                                                + (time == 1 ? ".singular" : "")).withReplacements(time + "")
-                                                .localizeFor(sender)
-                                )
-                                .sendTo(sender);
-                    }
-                } catch (InvalidConfigurationException | IOException ex) {
-                    TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(Color.ERROR)
-                            .sendTo(sender);
-                    ex.printStackTrace();
-                }
+        String name = args[1];
+        int time = -1;
+        if (args.length > 2) {
+            if (isInt(args[2])) {
+                time = Integer.parseInt(args[2]);
             } else {
-                TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
-                        .sendTo(sender);
-                sendUsage();
+                TTTCore.locale.getLocalizable("error.admin.ban.invalid-time").withPrefix(Color.ERROR).sendTo(sender);
+                return;
             }
         }
+        try {
+            @SuppressWarnings("deprecation")
+            Player pl = Bukkit.getPlayer(name);
+            UUID uuid = null;
+            if (pl != null) {
+                uuid = pl.getUniqueId();
+            } else {
+                try {
+                    uuid = UUIDFetcher.getUUIDOf(name);
+                } catch (UUIDFetcher.UUIDException ignored) {
+                }
+                if (uuid == null) {
+                    TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR).sendTo(sender);
+                    return;
+                }
+            }
+            BanHelper.ban(uuid, time);
+            if (time == -1) {
+                if (pl != null) {
+                    TTTCore.locale.getLocalizable("info.personal.ban.perm").withPrefix(Color.ERROR).sendTo(pl);
+                }
+                TTTCore.locale.getLocalizable("info.personal.ban.other.perm").withPrefix(Color.INFO)
+                        .withReplacements(name).sendTo(sender);
+            } else {
+                if (pl != null) {
+                    TTTCore.locale.getLocalizable("info.personal.ban.temp").withPrefix(Color.ERROR)
+                            .withReplacements(TTTCore.locale.getLocalizable("fragment.minutes"
+                                    + (time == 1 ? ".singular" : "")).withReplacements(time + "").localizeFor(pl))
+                            .sendTo(pl);
+                }
+                TTTCore.locale.getLocalizable("info.personal.ban.other.temp").withPrefix(Color.INFO)
+                        .withReplacements(pl != null ? pl.getName() : name,
+                                TTTCore.locale.getLocalizable("fragment.minutes" + (time == 1 ? ".singular" : ""))
+                                        .withReplacements(time + "").localizeFor(sender)
+                        ).sendTo(sender);
+            }
+        } catch (InvalidConfigurationException | IOException ex) {
+            TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(Color.ERROR).sendTo(sender);
+            ex.printStackTrace();
+        }
     }
-
 
 }
