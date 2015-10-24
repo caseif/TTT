@@ -24,7 +24,7 @@
 package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.arena.JoinCommand;
+import net.caseif.ttt.command.arena.use.JoinCommand;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;

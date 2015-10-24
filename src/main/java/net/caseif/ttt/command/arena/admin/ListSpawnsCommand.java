@@ -21,32 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.arena;
+package net.caseif.ttt.command.arena.admin;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.SubcommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
+import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;
+import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.command.CommandSender;
 
-public class ListArenasCommand extends SubcommandHandler {
+import java.util.Map;
 
-    public ListArenasCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.arena.list");
+public class ListSpawnsCommand extends SubcommandHandler {
+
+    public ListSpawnsCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.superadmin");
     }
 
     @Override
     public void handle() {
         if (assertPermission()) {
-            TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
-            for (Arena arena : TTTCore.mg.getArenas()) {
-                sender.sendMessage("    " + Color.USAGE + arena.getId() + ": "
-                        + Color.DESCRIPTION + TTTCore.locale.getLocalizable("fragment.stage."
-                        + (arena.getRound().isPresent()
-                        ? arena.getRound().get().getLifecycleStage().getId()
-                        : "waiting"))
-                        .localizeFor(sender).toUpperCase());
+            if (args.length < 2) {
+                TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR).sendTo(sender);
+                sendUsage();
+                return;
+            }
+            Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
+            if (!arena.isPresent()) {
+                TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
+                sendUsage();
+                return;
+            }
+            Map<Integer, Location3D> spawns = arena.get().getSpawnPoints();
+            TTTCore.locale.getLocalizable("info.personal.arena.listspawns").withPrefix(Color.INFO)
+                    .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
+            for (Map.Entry<Integer, Location3D> spawn : spawns.entrySet()) {
+                Location3D l = spawn.getValue();
+                sender.sendMessage(Color.INFO + "    " + spawn.getKey() + ": " + Color.DESCRIPTION
+                        + "(" + l.getX() + ", " + l.getY() + ", " + l.getZ() + ")");
             }
         }
     }

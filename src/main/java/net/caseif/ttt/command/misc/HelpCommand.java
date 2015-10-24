@@ -63,7 +63,7 @@ public class HelpCommand extends SubcommandHandler {
     }
 
     public HelpCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.help");
+        super(sender, args, null);
     }
 
     private static void registerCommand(String cmd, Localizable description, String permission) {

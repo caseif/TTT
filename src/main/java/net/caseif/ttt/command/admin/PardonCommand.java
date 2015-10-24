@@ -40,7 +40,7 @@ import java.util.UUID;
 public class PardonCommand extends SubcommandHandler {
 
     public PardonCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.admin.ban");
+        super(sender, args, "ttt.admin");
     }
 
     @Override

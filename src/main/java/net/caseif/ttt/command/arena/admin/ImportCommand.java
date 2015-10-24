@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.arena;
+package net.caseif.ttt.command.arena.admin;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.SubcommandHandler;
@@ -41,7 +41,7 @@ import java.io.File;
 public class ImportCommand extends SubcommandHandler {
 
     public ImportCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.arena.import");
+        super(sender, args, "ttt.superadmin");
     }
 
     @Override

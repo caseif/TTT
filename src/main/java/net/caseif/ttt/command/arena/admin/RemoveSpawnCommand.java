@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.arena;
+package net.caseif.ttt.command.arena.admin;
 
 import static net.caseif.ttt.util.helper.misc.MiscHelper.isInt;
 
@@ -37,7 +37,7 @@ import org.bukkit.entity.Player;
 public class RemoveSpawnCommand extends SubcommandHandler {
 
     public RemoveSpawnCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.arena.removespawn");
+        super(sender, args, "ttt.superadmin");
     }
 
     @Override

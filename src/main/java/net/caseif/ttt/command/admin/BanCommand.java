@@ -42,7 +42,7 @@ import java.util.UUID;
 public class BanCommand extends SubcommandHandler {
 
     public BanCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.admin.ban");
+        super(sender, args, "ttt.admin");
     }
 
     @Override

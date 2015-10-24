@@ -68,130 +68,49 @@ permissions:
     description: Allows for full control and manipulation of the plugin.
     default: op
     children:
-      ttt.admin.*: true
-      ttt.arena.*: true
-      ttt.lobby.*: true
-      ttt.build.warn: true
+      ttt.use: true
+      ttt.admin: true
+      ttt.lobby: true
+
+  ttt.use:
+    description: Allows basic (user-level) use of the plugin.
+    default: true
 
   ttt.admin:
-    description: Allows for full use of administrative commands.
+    description: Allows for basic administrative use of the plugin (e.g. manipulating rounds and lobby signs, but not arenas).
     default: op
     children:
-      ttt.admin.prepare: true
-      ttt.admin.start: true
-      ttt.admin.end: true
-      ttt.admin.kick: true
-      ttt.admin.ban: true
-      ttt.setexit: true
-      ttt.help: true
-      ttt.reload: true
-  ttt.admin.*:
-    description: Allows for full use of administrative commands.
+      ttt.use: true
+      ttt.lobby: true
+
+  ttt.superadmin:
+    description: Allows for full administrative use of the plugin.
+    default: op
     children:
       ttt.admin: true
-  ttt.admin.prepare:
-    description: Allows player to force rounds to enter preparation stage.
-    default: op
-  ttt.admin.start:
-    description: Allows player to force rounds to enter playing stage.
-    default: op
-  ttt.admin.end:
-    description: Allows player to force rounds to end.
-    default: op
-  ttt.admin.kick:
-    description: Allows player to kick players from their current TTT round.
-    default: op
-  ttt.admin.ban:
-    description: Allows player to ban and unban players from joining TTT rounds.
-    default: op
-  ttt.admin.reload:
-    description: Allows player to reload the plugin.
-    default: op
-
-  ttt.arena:
-    description: Grants all permissions beginning with ttt.arena.
-    default: op
-    children:
-      ttt.arena.import: true
-      ttt.arena.create: true
-      ttt.arena.addspawn: true
-      ttt.arena.removespawn: true
-      ttt.arena.join: true
-      ttt.arena.leave: true
-  ttt.arena.*:
-    description: Grants all permissions beginning with ttt.arena.
-    children:
-      ttt.arena: true
-  ttt.arena.import:
-    description: Allows player to import worlds into the plugin.
-    default: op
-  ttt.arena.create:
-    description: Allows player to create arenas for use with the plugin.
-    default: op
-  ttt.arena.remove:
-      description: Allows player to remove arenas from the plugin's registry.
-      default: op
-  ttt.arena.list:
-      description: Allows player to view a list of available arenas.
-      default: true
-  ttt.arena.addspawn:
-    description: Allows player to add spawn points to an arena.
-    default: op
-  ttt.arena.removespawn:
-    description: Allows player to remove spawn points from an arena.
-    default: op
-  ttt.arena.listspawns:
-    description: Allows player to list an arena's spawn point.
-    default: op
-  ttt.arena.join:
-    description: Allows player to join TTT rounds.
-    default: true
-  ttt.arena.leave:
-    description: Allows player to leave TTT rounds.
-    default: true
-
-  ttt.help:
-    description: Allows use of /ttt help.
-    default: true
 
   ttt.lobby:
     description: Allows for full usage and manipulation of lobby signs.
     default: op
     children:
-      ttt.lobby.create: true
-      ttt.lobby.destroy: true
+      ttt.lobby.admin: true
       ttt.lobby.use: true
   ttt.lobby.*:
     description: Allows for full usage and manipulation of lobby signs.
     children:
       ttt.lobby: true
-  ttt.lobby.create:
-    description: Allows creation of lobby signs.
+  ttt.lobby.admin:
+    description: Allows creation and destruction of lobby signs.
     default: op
-  ttt.lobby.destroy:
-    description: Allows destruction of lobby signs.
-    default: op
+    children:
+      ttt.lobby.create: true
+      ttt.lobby.destroy: true
   ttt.lobby.use:
     description: Allows use of lobby signs.
     default: true
 
-  ttt.build.warn:
-    description: Players with this node will be notified of persistent issues with the plugin on join or command.
-    default: op
-
   # deprecated nodes
-  ttt.import:
-    description: Allows player to import worlds into the plugin. (deprecated)
-    default: false
+  ttt.admin.*:
+    description: Allows for full administrative use of the plugin.
     children:
-      ttt.arena.import: true
-  ttt.join:
-    description: Allows player to join TTT rounds. (deprecated)
-    default: false
-    children:
-      ttt.arena.join: true
-  ttt.quit:
-    description: Allows player to leave TTT rounds. (deprecated)
-    default: false
-    children:
-      ttt.arena.leave: true
+      ttt.admin: true

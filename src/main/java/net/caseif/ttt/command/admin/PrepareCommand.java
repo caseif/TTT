@@ -36,7 +36,7 @@ import org.bukkit.command.CommandSender;
 public class PrepareCommand extends SubcommandHandler {
 
     public PrepareCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.adnin.prepare");
+        super(sender, args, "ttt.adnin");
     }
 
     @Override

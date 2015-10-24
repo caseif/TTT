@@ -36,7 +36,7 @@ import org.bukkit.entity.Player;
 public class KickCommand extends SubcommandHandler {
 
     public KickCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.admin.kick");
+        super(sender, args, "ttt.admin");
     }
 
     @Override

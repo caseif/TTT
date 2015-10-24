@@ -34,7 +34,7 @@ import org.bukkit.command.CommandSender;
 public class ReloadCommand extends SubcommandHandler {
 
     public ReloadCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.admin.reload");
+        super(sender, args, "ttt.superadmin");
     }
 
     @Override

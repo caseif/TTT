@@ -36,7 +36,7 @@ import org.bukkit.command.CommandSender;
 public class StartCommand extends SubcommandHandler {
 
     public StartCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.admin.start");
+        super(sender, args, "ttt.admin");
     }
 
     @Override

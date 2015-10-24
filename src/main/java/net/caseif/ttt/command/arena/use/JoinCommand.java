@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.arena;
+package net.caseif.ttt.command.arena.use;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.SubcommandHandler;
@@ -39,7 +39,7 @@ import org.bukkit.entity.Player;
 public class JoinCommand extends SubcommandHandler {
 
     public JoinCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.arena.join");
+        super(sender, args, "ttt.use");
     }
 
     @Override
