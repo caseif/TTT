@@ -108,25 +108,8 @@ public final class ContributorListHelper {
         if (hasRole(uuid, Constants.Contributor.DEVELOPER)) {
             str += ", " + TTTCore.locale.getLocalizable("fragment.special.dev")
                     .withPrefix(Constants.Color.TRAITOR).localizeFor(player) + "," + Constants.Color.INFO;
-        } else if (hasRole(uuid, Constants.Contributor.ALPHA_TESTER)
-                && hasRole(uuid, Constants.Contributor.TRANSLATOR)) {
-            str += ", " + TTTCore.locale.getLocalizable("fragment.special.tester.alpha")
-                    .withPrefix(Constants.Color.TRAITOR).localizeFor(player) + ", "
-                    + TTTCore.locale.getLocalizable("fragment.special.translator").localizeFor(player) + ","
-                    + Constants.Color.INFO;
-        } else if (hasRole(uuid, Constants.Contributor.TESTER) && hasRole(uuid, Constants.Contributor.TRANSLATOR)) {
-            str += ", " + TTTCore.locale.getLocalizable("fragment.special.tester")
-                    .withPrefix(Constants.Color.TRAITOR).localizeFor(player) + ", "
-                    + TTTCore.locale.getLocalizable("fragment.special.translator").localizeFor(player) + ","
-                    + Constants.Color.INFO;
         } else if (hasRole(uuid, Constants.Contributor.ALPHA_TESTER)) {
             str += ", " + TTTCore.locale.getLocalizable("fragment.special.tester.alpha")
-                    .withPrefix(Constants.Color.TRAITOR).localizeFor(player) + "," + Constants.Color.INFO;
-        } else if (hasRole(uuid, Constants.Contributor.TESTER)) {
-            str += ", " + TTTCore.locale.getLocalizable("fragment.special.tester")
-                    .withPrefix(Constants.Color.TRAITOR).localizeFor(player) + "," + Constants.Color.INFO;
-        } else if (hasRole(uuid, Constants.Contributor.TRANSLATOR)) {
-            str += ", " + TTTCore.locale.getLocalizable("fragment.special.translator")
                     .withPrefix(Constants.Color.TRAITOR).localizeFor(player) + "," + Constants.Color.INFO;
         }
         return str;
