@@ -37,7 +37,7 @@ import org.bukkit.entity.Player;
 public class RemoveSpawnCommand extends CommandHandler {
 
     public RemoveSpawnCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.superadmin");
+        super(sender, args);
     }
 
     @Override

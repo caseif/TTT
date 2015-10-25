@@ -33,7 +33,7 @@ import org.bukkit.command.CommandSender;
 public class DefaultCommand extends CommandHandler {
 
     public DefaultCommand(CommandSender sender, String[] args) {
-        super(sender, args, null);
+        super(sender, args);
     }
 
     @Override

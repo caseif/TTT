@@ -34,7 +34,7 @@ import org.bukkit.command.CommandSender;
 public class ListArenasCommand extends CommandHandler {
 
     public ListArenasCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.use");
+        super(sender, args);
     }
 
     @Override

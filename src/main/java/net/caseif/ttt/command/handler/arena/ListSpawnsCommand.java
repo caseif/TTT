@@ -37,7 +37,7 @@ import java.util.Map;
 public class ListSpawnsCommand extends CommandHandler {
 
     public ListSpawnsCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.superadmin");
+        super(sender, args);
     }
 
     @Override

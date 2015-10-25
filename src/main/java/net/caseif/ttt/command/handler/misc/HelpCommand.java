@@ -34,7 +34,7 @@ import org.bukkit.command.CommandSender;
 public class HelpCommand extends CommandHandler {
 
     public HelpCommand(CommandSender sender, String[] args) {
-        super(sender, args, null);
+        super(sender, args);
     }
 
     @Override

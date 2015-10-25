@@ -32,12 +32,10 @@ public abstract class CommandHandler {
 
     protected CommandSender sender;
     protected String[] args;
-    protected String perm;
 
-    public CommandHandler(CommandSender sender, String[] args, String perm) {
+    public CommandHandler(CommandSender sender, String[] args) {
         this.sender = sender;
         this.args = args;
-        this.perm = perm;
     }
 
     public abstract void handle();

@@ -36,7 +36,7 @@ import org.bukkit.entity.Player;
 public class CreateArenaCommand extends CommandHandler {
 
     public CreateArenaCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.superadmin");
+        super(sender, args);
     }
 
     @Override

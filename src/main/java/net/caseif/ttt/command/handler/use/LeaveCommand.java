@@ -35,7 +35,7 @@ import org.bukkit.entity.Player;
 public class LeaveCommand extends CommandHandler {
 
     public LeaveCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.use");
+        super(sender, args);
     }
 
     @Override

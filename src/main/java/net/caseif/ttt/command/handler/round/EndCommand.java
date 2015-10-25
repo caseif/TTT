@@ -35,7 +35,7 @@ import org.bukkit.command.CommandSender;
 public class EndCommand extends CommandHandler {
 
     public EndCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.admin");
+        super(sender, args);
     }
 
     @Override

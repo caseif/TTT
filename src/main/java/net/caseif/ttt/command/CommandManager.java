@@ -25,24 +25,24 @@ package net.caseif.ttt.command;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.command.handler.player.BanCommand;
-import net.caseif.ttt.command.handler.round.EndCommand;
-import net.caseif.ttt.command.handler.player.KickCommand;
-import net.caseif.ttt.command.handler.player.PardonCommand;
-import net.caseif.ttt.command.handler.round.PrepareCommand;
-import net.caseif.ttt.command.handler.round.StartCommand;
 import net.caseif.ttt.command.handler.arena.AddSpawnCommand;
 import net.caseif.ttt.command.handler.arena.CreateArenaCommand;
 import net.caseif.ttt.command.handler.arena.ImportCommand;
 import net.caseif.ttt.command.handler.arena.ListSpawnsCommand;
 import net.caseif.ttt.command.handler.arena.RemoveArenaCommand;
 import net.caseif.ttt.command.handler.arena.RemoveSpawnCommand;
-import net.caseif.ttt.command.handler.use.JoinCommand;
-import net.caseif.ttt.command.handler.use.LeaveCommand;
-import net.caseif.ttt.command.handler.use.ListArenasCommand;
 import net.caseif.ttt.command.handler.misc.DefaultCommand;
 import net.caseif.ttt.command.handler.misc.HelpCommand;
 import net.caseif.ttt.command.handler.misc.ReloadCommand;
+import net.caseif.ttt.command.handler.player.BanCommand;
+import net.caseif.ttt.command.handler.player.KickCommand;
+import net.caseif.ttt.command.handler.player.PardonCommand;
+import net.caseif.ttt.command.handler.round.EndCommand;
+import net.caseif.ttt.command.handler.round.PrepareCommand;
+import net.caseif.ttt.command.handler.round.StartCommand;
+import net.caseif.ttt.command.handler.use.JoinCommand;
+import net.caseif.ttt.command.handler.use.LeaveCommand;
+import net.caseif.ttt.command.handler.use.ListArenasCommand;
 import net.caseif.ttt.util.Constants.Color;
 
 import com.google.common.collect.ImmutableMap;
@@ -60,13 +60,7 @@ public class CommandManager implements CommandExecutor {
     static {
         Map<String, CommandRef> map = new HashMap<>();
 
-        addRef(map, "ban", BanCommand.class, "admin", "[player name]", 2, true);
-        addRef(map, "end", EndCommand.class, "admin", "[arena name] {victor (t/i)}", 2, true);
-        addRef(map, "kick", KickCommand.class, "admin", "[player name]", 2, true);
-        addRef(map, "pardon", PardonCommand.class, "admin", "[player name] {minutes}", 2, true);
-        addRef(map, "prepare", PrepareCommand.class, "admin", "[arena name]", 2, true);
-        addRef(map, "start", StartCommand.class, "admin", "[arena name]", 2, true);
-
+        // arena
         addRef(map, "addspawn", AddSpawnCommand.class, "superadmin", "[arena name] {[x] [y] [z]}", 2, true);
         addRef(map, "carena", CreateArenaCommand.class, "superadmin", "", 1, false);
         addRef(map, "import", ImportCommand.class, "superadmin", "[arena name]", 2, true);
@@ -75,12 +69,25 @@ public class CommandManager implements CommandExecutor {
         addRef(map, "removespawn", RemoveSpawnCommand.class, "superadmin", "[arena name] [index]|[[x] [y] [z]]", 2,
                 true);
 
+        // misc
+        addRef(map, "help", HelpCommand.class, null, "{command}", 1, true);
+        addRef(map, "reload", ReloadCommand.class, "superadmin", "", 1, true);
+
+        // player
+        addRef(map, "ban", BanCommand.class, "admin", "[player name]", 2, true);
+        addRef(map, "kick", KickCommand.class, "admin", "[player name]", 2, true);
+        addRef(map, "pardon", PardonCommand.class, "admin", "[player name] {minutes}", 2, true);
+
+        // round
+        addRef(map, "end", EndCommand.class, "admin", "[arena name] {victor (t/i)}", 2, true);
+        addRef(map, "prepare", PrepareCommand.class, "admin", "[arena name]", 2, true);
+        addRef(map, "start", StartCommand.class, "admin", "[arena name]", 2, true);
+
+        // use
         addRef(map, "join", JoinCommand.class, "use", "[arena name]", 2, false);
         addRef(map, "leave", LeaveCommand.class, "use", "", 1, false);
         addRef(map, "listarenas", ListArenasCommand.class, "use", "", 1, true);
 
-        addRef(map, "help", HelpCommand.class, null, "{command}", 1, true);
-        addRef(map, "reload", ReloadCommand.class, "superadmin", "", 1, true);
 
         commands = ImmutableMap.copyOf(map);
     }

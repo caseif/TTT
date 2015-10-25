@@ -39,7 +39,7 @@ import org.bukkit.entity.Player;
 public class JoinCommand extends CommandHandler {
 
     public JoinCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.use");
+        super(sender, args);
     }
 
     @Override

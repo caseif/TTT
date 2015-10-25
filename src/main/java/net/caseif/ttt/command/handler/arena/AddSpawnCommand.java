@@ -39,7 +39,7 @@ import org.bukkit.entity.Player;
 public class AddSpawnCommand extends CommandHandler {
 
     public AddSpawnCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.superadmin");
+        super(sender, args);
     }
 
     @Override

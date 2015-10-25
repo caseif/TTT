@@ -41,12 +41,13 @@ import java.io.File;
 public class ImportCommand extends CommandHandler {
 
     public ImportCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.superadmin");
+        super(sender, args);
     }
 
     @Override
     public void handle() {
         String worldName = null;
+        assert Bukkit.getWorldContainer().listFiles() != null;
         for (File f : Bukkit.getWorldContainer().listFiles()) {
             if (f.getName().equalsIgnoreCase(args[1])) {
                 worldName = f.getName();
