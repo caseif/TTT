@@ -21,33 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.arena.use;
+package net.caseif.ttt.command.handler.arena;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.CommandHandler;
+import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
 import com.google.common.base.Optional;
-import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.arena.Arena;
+import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-public class LeaveCommand extends CommandHandler {
+import java.util.Map;
 
-    public LeaveCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.use");
+public class ListSpawnsCommand extends CommandHandler {
+
+    public ListSpawnsCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.superadmin");
     }
 
     @Override
     public void handle() {
-        Optional<Challenger> ch = TTTCore.mg.getChallenger(((Player) sender).getUniqueId());
-        if (ch.isPresent()) {
-            String roundName = ch.get().getRound().getArena().getName();
-            ch.get().removeFromRound();
-            TTTCore.locale.getLocalizable("info.personal.arena.leave.success").withPrefix(Color.INFO)
-                    .withReplacements(Color.ARENA + roundName + Color.INFO).sendTo(sender);
-        } else {
-            TTTCore.locale.getLocalizable("error.round.outside").withPrefix(Color.ERROR).sendTo(sender);
+        Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
+        if (!arena.isPresent()) {
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
+            return;
+        }
+        Map<Integer, Location3D> spawns = arena.get().getSpawnPoints();
+        TTTCore.locale.getLocalizable("info.personal.arena.listspawns").withPrefix(Color.INFO)
+                .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
+        for (Map.Entry<Integer, Location3D> spawn : spawns.entrySet()) {
+            Location3D l = spawn.getValue();
+            sender.sendMessage(Color.INFO + "    " + spawn.getKey() + ": " + Color.DESCRIPTION
+                    + "(" + l.getX() + ", " + l.getY() + ", " + l.getZ() + ")");
         }
     }
 

@@ -21,29 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.arena.admin;
+package net.caseif.ttt.command.handler.use;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.CommandHandler;
+import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.Stage;
 
+import net.caseif.flint.arena.Arena;
 import org.bukkit.command.CommandSender;
 
-public class RemoveArenaCommand extends CommandHandler {
+public class ListArenasCommand extends CommandHandler {
 
-    public RemoveArenaCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.superadmin");
+    public ListArenasCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.use");
     }
 
     @Override
     public void handle() {
-        String name = args[1];
-        try {
-            TTTCore.mg.removeArena(name);
-            TTTCore.locale.getLocalizable("info.personal.arena.remove.success").withPrefix(Color.INFO)
-                    .withReplacements(Color.ARENA + name + Color.INFO).sendTo(sender);
-        } catch (IllegalArgumentException ex) {
-            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
+        TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
+        for (Arena arena : TTTCore.mg.getArenas()) {
+            sender.sendMessage("    " + Color.USAGE + arena.getId() + ": "
+                    + Color.DESCRIPTION + TTTCore.locale.getLocalizable("fragment.stage."
+                    + (arena.getRound().isPresent()
+                    ? arena.getRound().get().getLifecycleStage().getId()
+                    : Stage.WAITING.getId()))
+                    .localizeFor(sender).toUpperCase());
         }
     }
 

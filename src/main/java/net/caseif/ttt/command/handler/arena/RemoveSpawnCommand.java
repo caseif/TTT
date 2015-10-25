@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.arena.admin;
+package net.caseif.ttt.command.handler.arena;
 
 import static net.caseif.ttt.util.helper.misc.MiscHelper.isInt;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.CommandHandler;
+import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
 import net.caseif.flint.arena.Arena;

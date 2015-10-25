@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.admin;
+package net.caseif.ttt.command.handler.player;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.CommandHandler;
+import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.UUIDFetcher;
 import net.caseif.ttt.util.helper.gamemode.BanHelper;

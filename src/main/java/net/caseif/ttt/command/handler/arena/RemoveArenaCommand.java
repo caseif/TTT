@@ -21,41 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.admin;
+package net.caseif.ttt.command.handler.arena;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.CommandHandler;
+import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
-import com.google.common.base.Optional;
-import net.caseif.flint.challenger.Challenger;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-public class KickCommand extends CommandHandler {
+public class RemoveArenaCommand extends CommandHandler {
 
-    public KickCommand(CommandSender sender, String[] args) {
-        super(sender, args, "ttt.admin");
+    public RemoveArenaCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.superadmin");
     }
 
     @Override
     public void handle() {
         String name = args[1];
-        @SuppressWarnings("deprecation")
-        Player pl = Bukkit.getPlayer(name);
-        if (pl == null) {
-            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR).sendTo(sender);
-            return;
-        }
-        Optional<Challenger> ch = TTTCore.mg.getChallenger(pl.getUniqueId());
-        if (ch.isPresent()) {
-            ch.get().removeFromRound();
-            TTTCore.locale.getLocalizable("info.personal.kick").withPrefix(Color.ERROR).sendTo(pl);
-            TTTCore.locale.getLocalizable("info.global.round.event.kick").withPrefix(Color.INFO)
-                    .withReplacements(ch.get().getName()).sendTo(sender);
-        } else {
-            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ERROR).sendTo(sender);
+        try {
+            TTTCore.mg.removeArena(name);
+            TTTCore.locale.getLocalizable("info.personal.arena.remove.success").withPrefix(Color.INFO)
+                    .withReplacements(Color.ARENA + name + Color.INFO).sendTo(sender);
+        } catch (IllegalArgumentException ex) {
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
         }
     }
 

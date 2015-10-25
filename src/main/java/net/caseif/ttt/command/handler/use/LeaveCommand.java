@@ -21,29 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command;
+package net.caseif.ttt.command.handler.use;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
+import com.google.common.base.Optional;
+import net.caseif.flint.challenger.Challenger;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-public abstract class CommandHandler {
+public class LeaveCommand extends CommandHandler {
 
-    protected CommandSender sender;
-    protected String[] args;
-    protected String perm;
-
-    public CommandHandler(CommandSender sender, String[] args, String perm) {
-        this.sender = sender;
-        this.args = args;
-        this.perm = perm;
+    public LeaveCommand(CommandSender sender, String[] args) {
+        super(sender, args, "ttt.use");
     }
 
-    public abstract void handle();
-
-    protected void printInvalidArgsError() {
-        TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR).sendTo(sender);
+    @Override
+    public void handle() {
+        Optional<Challenger> ch = TTTCore.mg.getChallenger(((Player) sender).getUniqueId());
+        if (ch.isPresent()) {
+            String roundName = ch.get().getRound().getArena().getName();
+            ch.get().removeFromRound();
+            TTTCore.locale.getLocalizable("info.personal.arena.leave.success").withPrefix(Color.INFO)
+                    .withReplacements(Color.ARENA + roundName + Color.INFO).sendTo(sender);
+        } else {
+            TTTCore.locale.getLocalizable("error.round.outside").withPrefix(Color.ERROR).sendTo(sender);
+        }
     }
 
 }

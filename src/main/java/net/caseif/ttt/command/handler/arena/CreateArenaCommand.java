@@ -21,39 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.arena.admin;
+package net.caseif.ttt.command.handler.arena;
+
+import static net.caseif.ttt.listeners.WizardListener.WIZARDS;
+import static net.caseif.ttt.listeners.WizardListener.WIZARD_INFO;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.CommandHandler;
+import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
-import com.google.common.base.Optional;
-import net.caseif.flint.arena.Arena;
-import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-import java.util.Map;
+public class CreateArenaCommand extends CommandHandler {
 
-public class ListSpawnsCommand extends CommandHandler {
-
-    public ListSpawnsCommand(CommandSender sender, String[] args) {
+    public CreateArenaCommand(CommandSender sender, String[] args) {
         super(sender, args, "ttt.superadmin");
     }
 
     @Override
     public void handle() {
-        Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
-        if (!arena.isPresent()) {
-            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
-            return;
-        }
-        Map<Integer, Location3D> spawns = arena.get().getSpawnPoints();
-        TTTCore.locale.getLocalizable("info.personal.arena.listspawns").withPrefix(Color.INFO)
-                .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
-        for (Map.Entry<Integer, Location3D> spawn : spawns.entrySet()) {
-            Location3D l = spawn.getValue();
-            sender.sendMessage(Color.INFO + "    " + spawn.getKey() + ": " + Color.DESCRIPTION
-                    + "(" + l.getX() + ", " + l.getY() + ", " + l.getZ() + ")");
+        if (!WIZARDS.containsKey(((Player) sender).getUniqueId())) {
+            WIZARDS.put(((Player) sender).getUniqueId(), 0);
+            WIZARD_INFO.put(((Player) sender).getUniqueId(), new Object[4]);
+            TTTCore.locale.getLocalizable("info.personal.arena.create.welcome").withPrefix(Color.INFO).sendTo(sender);
+            TTTCore.locale.getLocalizable("info.personal.arena.create.exit-note")
+                    .withPrefix(Color.INFO).withReplacements(Color.USAGE
+                    + TTTCore.locale.getLocalizable("info.personal.arena.create.cancel-keyword").localizeFor(sender)
+                    + Color.INFO).sendTo(sender);
+        } else {
+            TTTCore.locale.getLocalizable("error.arena.create.already")
+                    .withPrefix(Color.ERROR).sendTo(sender);
         }
     }
 

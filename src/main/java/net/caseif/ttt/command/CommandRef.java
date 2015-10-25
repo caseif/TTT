@@ -24,6 +24,7 @@
 package net.caseif.ttt.command;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants;
 
 import net.caseif.rosetta.Localizable;
