@@ -29,7 +29,6 @@ import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.NmsHelper;
 
@@ -63,18 +62,24 @@ public class DeathHelper {
     private static Method logBlockChange;
 
     private final PlayerDeathEvent event;
+    private final Player player;
 
     public DeathHelper(PlayerDeathEvent event) {
         this.event = event;
+        this.player = event.getEntity();
+    }
+
+    public DeathHelper(Player player) {
+        this.event = null;
+        this.player = player;
     }
 
     public void handleEvent() {
-        Player pl = event.getEntity();
         // admittedly not the best way of doing this, but easiest for the purpose of porting
-        Optional<Challenger> chOpt = TTTCore.mg.getChallenger(pl.getUniqueId());
+        Optional<Challenger> chOpt = TTTCore.mg.getChallenger(player.getUniqueId());
         if (chOpt.isPresent()) {
             Challenger ch = chOpt.get();
-            Location loc = event.getEntity().getLocation();
+            Location loc = player.getLocation();
 
             cancelEvent(ch);
 
@@ -102,31 +107,37 @@ public class DeathHelper {
     }
 
     private void cancelEvent(Challenger ch) {
-        event.setDeathMessage("");
-        event.getDrops().clear();
+        Location loc = player.getLocation(); // sending the packet resets the location
 
-        Location loc = event.getEntity().getLocation(); // sending the packet resets the location
-        NmsHelper.sendRespawnPacket(event.getEntity());
-        event.getEntity().teleport(loc);
+        if (event != null) {
+            event.setDeathMessage("");
+            event.getDrops().clear();
+
+            NmsHelper.sendRespawnPacket(player);
+            player.teleport(loc);
+        }
         ch.setSpectating(true);
         //ch.setPrefix(Config.SB_MIA_PREFIX); //TODO
-        event.getEntity().setHealth(event.getEntity().getMaxHealth());
+        player.setHealth(player.getMaxHealth());
     }
 
     private Optional<Challenger> getKiller() {
-        if (event.getEntity().getKiller() != null) {
-            UUID uuid = null;
-            if (event.getEntity().getType() == EntityType.PLAYER) {
-                uuid = event.getEntity().getKiller().getUniqueId();
-            } else if (event.getEntity().getKiller() instanceof Projectile) {
-                ProjectileSource shooter = ((Projectile) event.getEntity()).getShooter();
-                if (shooter instanceof Player) {
-                    uuid = ((Player) shooter).getUniqueId();
-                }
+        if (event == null || player.getKiller() == null) {
+            return Optional.absent();
+        }
+
+        UUID uuid = null;
+        if (player.getKiller().getType() == EntityType.PLAYER) {
+            uuid = player.getKiller().getUniqueId();
+        } else if (player.getKiller() instanceof Projectile) {
+            ProjectileSource shooter = ((Projectile) player).getShooter();
+            if (shooter instanceof Player) {
+                uuid = ((Player) shooter).getUniqueId();
             }
-            if (uuid != null) {
-                return TTTCore.mg.getChallenger(uuid);
-            }
+        }
+
+        if (uuid != null) {
+            return TTTCore.mg.getChallenger(uuid);
         }
         return Optional.absent();
     }
@@ -147,7 +158,7 @@ public class DeathHelper {
 
         long expiry = -1;
         if (killer != null) {
-            double dist = event.getEntity().getLocation().toVector()
+            double dist = player.getLocation().toVector()
                     .distance(Bukkit.getPlayer(killer.getUniqueId()).getLocation().toVector());
             if (dist <= TTTCore.config.KILLER_DNA_RANGE) {
                 final double a = 3.6e-4;
