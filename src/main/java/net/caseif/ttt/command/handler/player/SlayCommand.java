@@ -29,14 +29,14 @@ public class SlayCommand extends CommandHandler {
         }
 
         Optional<Challenger> ch = TTTCore.mg.getChallenger(pl.getUniqueId());
-        if (ch.isPresent()) {
-            new DeathHelper(pl).handleEvent();
-            TTTCore.locale.getLocalizable("info.personal.slay").withPrefix(Constants.Color.ERROR).sendTo(pl);
-            TTTCore.locale.getLocalizable("info.global.slay.other").withPrefix(Constants.Color.INFO)
-                    .withReplacements(ch.get().getName()).sendTo(sender);
-        } else {
+        if (!ch.isPresent()) {
             TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Constants.Color.ERROR).sendTo(sender);
+            return;
         }
+        new DeathHelper(pl).handleEvent();
+        TTTCore.locale.getLocalizable("info.personal.slay").withPrefix(Constants.Color.ERROR).sendTo(pl);
+        TTTCore.locale.getLocalizable("info.personal.slay.other").withPrefix(Constants.Color.INFO)
+                .withReplacements(ch.get().getName()).sendTo(sender);
     }
 
 }

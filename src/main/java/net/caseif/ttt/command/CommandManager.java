@@ -37,6 +37,7 @@ import net.caseif.ttt.command.handler.misc.ReloadCommand;
 import net.caseif.ttt.command.handler.player.BanCommand;
 import net.caseif.ttt.command.handler.player.KickCommand;
 import net.caseif.ttt.command.handler.player.PardonCommand;
+import net.caseif.ttt.command.handler.player.RespawnCommand;
 import net.caseif.ttt.command.handler.player.SlayCommand;
 import net.caseif.ttt.command.handler.round.EndCommand;
 import net.caseif.ttt.command.handler.round.PrepareCommand;
@@ -78,6 +79,7 @@ public class CommandManager implements CommandExecutor {
         addRef(map, "ban", BanCommand.class, "admin", "[player name]", 2, true);
         addRef(map, "kick", KickCommand.class, "admin", "[player name]", 2, true);
         addRef(map, "pardon", PardonCommand.class, "admin", "[player name] {minutes}", 2, true);
+        addRef(map, "respawn", RespawnCommand.class, "admin", "[player name]", 2, true);
         addRef(map, "slay", SlayCommand.class, "admin", "[player name]", 2, true);
 
         // round

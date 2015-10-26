@@ -169,7 +169,8 @@ public class DeathHelper {
             }
         }
 
-        bodies.add(new Body(
+        Body body;
+        bodies.add(body = new Body(
                 ch.getRound(),
                 LocationHelper.convert(loc),
                 ch.getUniqueId(),
@@ -182,6 +183,7 @@ public class DeathHelper {
                 expiry
         ));
         ch.getRound().getMetadata().set(MetadataTag.BODY_LIST, bodies);
+        ch.getMetadata().set(MetadataTag.BODY, body);
     }
 
     private void flagForRollback(Location loc, Round round) {

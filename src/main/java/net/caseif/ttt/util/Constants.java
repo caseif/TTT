@@ -82,6 +82,7 @@ public final class Constants {
     public static class MetadataTag {
         public static final String PURE_SPECTATOR = "pureSpectator";
 
+        public static final String BODY = "body";
         public static final String BODY_LIST = "bodies";
         public static final String BODY_FOUND = "bodyFound";
         public static final String SEARCHING_BODY = "searchingBody";
