@@ -219,7 +219,7 @@ public class InteractHelper {
             ItemMeta idMeta = id.getItemMeta();
             idMeta.setDisplayName(TTTCore.locale.getLocalizable("item.id.name").localizeFor(player));
             List<String> idLore = new ArrayList<>();
-            idLore.add(TTTCore.locale.getLocalizable("corpse.of").withReplacements(body.getName()).localizeFor(player));
+            idLore.add(TTTCore.locale.getLocalizable("item.id.desc").withReplacements(body.getName()).localizeFor(player));
             idLore.add(body.getName());
             idMeta.setLore(idLore);
             id.setItemMeta(idMeta);
@@ -253,7 +253,7 @@ public class InteractHelper {
             roleIdMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment." + roleStr).withPrefix(Color.DETECTIVE)
                     .localizeFor(player));
             roleIdMeta.setLore(Collections.singletonList(
-                    TTTCore.locale.getLocalizable("item.id." + roleStr).localizeFor(player)
+                    TTTCore.locale.getLocalizable("item.role." + roleStr).localizeFor(player)
             ));
             roleId.setItemMeta(roleIdMeta);
             inv.addItem(roleId);
@@ -273,6 +273,7 @@ public class InteractHelper {
                             .withReplacements(deathTime).localizeFor(player),
                     32
             ));
+            clock.setItemMeta(clockMeta);
             inv.addItem(clock);
         }
 
@@ -289,6 +290,7 @@ public class InteractHelper {
                     TTTCore.locale.getLocalizable("item.dna.desc").withReplacements(decayTime).localizeFor(player),
                     32
             ));
+            dna.setItemMeta(dnaMeta);
             inv.addItem(dna);
         }
 

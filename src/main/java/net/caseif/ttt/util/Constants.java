@@ -56,8 +56,17 @@ public final class Constants {
     // lifecycle stages
     public static class Stage {
         public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
-        public static final LifecycleStage PREPARING = new LifecycleStage("preparing", TTTCore.config.PREPTIME_SECONDS);
-        public static final LifecycleStage PLAYING = new LifecycleStage("playing", TTTCore.config.ROUNDTIME_SECONDS);
+        public static LifecycleStage PREPARING;
+        public static LifecycleStage PLAYING;
+
+        static {
+            initialize();
+        }
+
+        public static void initialize() {
+            PREPARING = new LifecycleStage("preparing", TTTCore.config.PREPTIME_SECONDS);
+            PLAYING = new LifecycleStage("playing", TTTCore.config.ROUNDTIME_SECONDS);
+        }
     }
 
     public static class Role {

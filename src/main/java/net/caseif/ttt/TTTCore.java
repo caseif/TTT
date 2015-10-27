@@ -31,6 +31,7 @@ import net.caseif.ttt.listeners.PlayerListener;
 import net.caseif.ttt.listeners.WizardListener;
 import net.caseif.ttt.listeners.WorldListener;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
@@ -112,9 +113,6 @@ public class TTTCore {
         applyConfigOptions();
 
         doCompatibilityActions();
-
-        mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
-                ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING));
         mg.setConfigValue(ConfigNode.RANDOM_SPAWNING, true);
 
         // register events and commands
@@ -147,6 +145,9 @@ public class TTTCore {
         locale.setDefaultLocale(config.LOCALE);
 
         mg.setConfigValue(ConfigNode.MAX_PLAYERS, TTTCore.config.MAXIMUM_PLAYERS);
+        Constants.Stage.initialize();
+        mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
+                ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING));
 
         if (TTTCore.config.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
             logWarning("error.plugin.title-support");

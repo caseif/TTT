@@ -24,9 +24,9 @@
 package net.caseif.ttt.command.handler.misc;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.command.CommandManager;
 import net.caseif.ttt.command.CommandRef;
+import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
 import org.bukkit.command.CommandSender;
@@ -41,8 +41,6 @@ public class HelpCommand extends CommandHandler {
     @SuppressWarnings("unchecked")
     public void handle() {
         if (args.length > 1) {
-            String cmd = args[1];
-
             if (!CommandManager.commands.containsKey(args[1])) {
                 printInvalidArgsError();
                 return;
