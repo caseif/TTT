@@ -42,6 +42,7 @@ import net.caseif.ttt.command.handler.player.SlayCommand;
 import net.caseif.ttt.command.handler.player.RoleCommand;
 import net.caseif.ttt.command.handler.round.EndCommand;
 import net.caseif.ttt.command.handler.round.PrepareCommand;
+import net.caseif.ttt.command.handler.round.RolesCommand;
 import net.caseif.ttt.command.handler.round.StartCommand;
 import net.caseif.ttt.command.handler.use.JoinCommand;
 import net.caseif.ttt.command.handler.use.LeaveCommand;
@@ -87,6 +88,7 @@ public class CommandManager implements CommandExecutor {
         // round
         addRef(map, "end", EndCommand.class, "admin", "[arena name] {victor (t/i)}", 2, true);
         addRef(map, "prepare", PrepareCommand.class, "admin", "[arena name]", 2, true);
+        addRef(map, "roles", RolesCommand.class, "admin", "[arena name]", 2, true);
         addRef(map, "start", StartCommand.class, "admin", "[arena name]", 2, true);
 
         // use

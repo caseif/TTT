@@ -24,6 +24,7 @@
 package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
 
@@ -31,6 +32,7 @@ import com.google.common.collect.Lists;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.challenger.Team;
 import net.caseif.flint.round.Round;
+import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
 import java.util.List;
@@ -68,4 +70,30 @@ public class RoleHelper {
         }
     }
 
+    public static String genRoleMessage(CommandSender sender, Challenger ch) {
+        String color;
+        String roleFrag;
+        if (!ch.getTeam().isPresent()) {
+            color = Constants.Color.UNASSIGNED;
+            roleFrag = "unassigned";
+        } else if (ch.getTeam().get().getId().equals(Role.TRAITOR)) {
+            color = Constants.Color.TRAITOR;
+            roleFrag = Role.TRAITOR;
+        } else if (ch.getMetadata().has(Role.DETECTIVE)) {
+            color = Constants.Color.DETECTIVE;
+            roleFrag = Role.DETECTIVE;
+        } else {
+            color = Constants.Color.INNOCENT;
+            roleFrag = Role.INNOCENT;
+        }
+
+        String roleMsg = TTTCore.locale.getLocalizable("fragment." + roleFrag).withPrefix(color).localizeFor(sender);
+
+        if (ch.isSpectating() && !ch.getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
+            roleMsg += TTTCore.locale.getLocalizable("fragment.desceased").withPrefix(" " + Constants.Color.FADED + "(")
+                    .localizeFor(sender) + ")";
+        }
+
+        return roleMsg;
+    }
 }

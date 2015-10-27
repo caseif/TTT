@@ -3,7 +3,7 @@ package net.caseif.ttt.command.handler.player;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.helper.gamemode.RoleHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -24,39 +24,23 @@ public class RoleCommand extends CommandHandler {
         @SuppressWarnings("deprecation")
         Player pl = Bukkit.getPlayer(name);
         if (pl == null) {
-            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Constants.Color.ERROR)
+            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR)
                     .sendTo(sender);
             return;
         }
 
         Optional<Challenger> ch = TTTCore.mg.getChallenger(pl.getUniqueId());
         if (!ch.isPresent()) {
-            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Constants.Color.ERROR)
+            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ERROR)
                     .sendTo(sender);
             return;
         }
 
-        TTTCore.locale.getLocalizable("fragment-in-round").withPrefix(Color.INFO)
+        String title = TTTCore.locale.getLocalizable("fragment-in-round").withPrefix(Color.INFO)
                 .withReplacements(Color.DESCRIPTION + pl.getName() + Color.INFO,
-                        Color.ARENA + ch.get().getRound().getArena().getName() + Color.INFO)
-                .sendTo(pl);
+                        Color.ARENA + ch.get().getRound().getArena().getName() + Color.INFO).localizeFor(sender);
 
-        String color;
-        String roleFrag;
-        if (!ch.get().getTeam().isPresent()) {
-            color = Color.UNASSIGNED;
-            roleFrag = "unassigned";
-        } else if (ch.get().getTeam().get().getId().equals(Constants.Role.TRAITOR)) {
-            color = Color.TRAITOR;
-            roleFrag = Constants.Role.TRAITOR;
-        } else if (ch.get().getMetadata().has(Constants.Role.DETECTIVE)) {
-            color = Color.DETECTIVE;
-            roleFrag = Constants.Role.DETECTIVE;
-        } else {
-            color = Color.INNOCENT;
-            roleFrag = Constants.Role.INNOCENT;
-        }
-
-        TTTCore.locale.getLocalizable("fragment." + roleFrag).withPrefix(color + "    ").sendTo(pl);
+        sender.sendMessage(title + " " + RoleHelper.genRoleMessage(sender, ch.get()));
     }
+
 }
