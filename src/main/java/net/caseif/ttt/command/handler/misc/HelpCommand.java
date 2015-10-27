@@ -29,6 +29,7 @@ import net.caseif.ttt.command.CommandRef;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class HelpCommand extends CommandHandler {
@@ -71,13 +72,13 @@ public class HelpCommand extends CommandHandler {
         assert cmdRef != null;
 
         sender.sendMessage(
-                Color.INFO + "/ttt " + cmdRef.getLabel() + " "
-                        + Color.DESCRIPTION + cmdRef.getDescription().localizeFor(sender)
+                Color.LABEL + "/ttt " + cmdRef.getLabel() + " "
+                        + Color.INFO + cmdRef.getDescription().localizeFor(sender)
         );
 
         TTTCore.locale.getLocalizable("fragment.usage")
-                .withPrefix(Color.INFO + "    ")
-                .withReplacements(Color.USAGE + cmdRef.getUsage() + Color.INFO)
+                .withPrefix("" + Color.FLAIR + ChatColor.ITALIC + "    ")
+                .withReplacements("" + Color.SPECIAL + ChatColor.ITALIC + cmdRef.getUsage())
                 .sendTo(sender);
     }
 

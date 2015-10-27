@@ -52,7 +52,7 @@ public class ListSpawnsCommand extends CommandHandler {
                 .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
         for (Map.Entry<Integer, Location3D> spawn : spawns.entrySet()) {
             Location3D l = spawn.getValue();
-            sender.sendMessage(Color.INFO + "    " + spawn.getKey() + ": " + Color.DESCRIPTION
+            sender.sendMessage(Color.LABEL + "    " + spawn.getKey() + ": " + Color.FLAIR
                     + "(" + l.getX() + ", " + l.getY() + ", " + l.getZ() + ")");
         }
     }

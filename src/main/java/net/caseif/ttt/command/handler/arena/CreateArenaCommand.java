@@ -46,7 +46,7 @@ public class CreateArenaCommand extends CommandHandler {
             WIZARD_INFO.put(((Player) sender).getUniqueId(), new Object[4]);
             TTTCore.locale.getLocalizable("info.personal.arena.create.welcome").withPrefix(Color.INFO).sendTo(sender);
             TTTCore.locale.getLocalizable("info.personal.arena.create.exit-note")
-                    .withPrefix(Color.INFO).withReplacements(Color.USAGE
+                    .withPrefix(Color.INFO).withReplacements(Color.FLAIR
                     + TTTCore.locale.getLocalizable("info.personal.arena.create.cancel-keyword").localizeFor(sender)
                     + Color.INFO).sendTo(sender);
         } else {

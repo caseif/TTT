@@ -41,8 +41,8 @@ public class ListArenasCommand extends CommandHandler {
     public void handle() {
         TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
         for (Arena arena : TTTCore.mg.getArenas()) {
-            sender.sendMessage("    " + Color.USAGE + arena.getId() + ": "
-                    + Color.DESCRIPTION + TTTCore.locale.getLocalizable("fragment.stage."
+            sender.sendMessage("    " + Color.LABEL + arena.getId() + ": "
+                    + Color.FLAIR + TTTCore.locale.getLocalizable("fragment.stage."
                     + (arena.getRound().isPresent()
                     ? arena.getRound().get().getLifecycleStage().getId()
                     : Stage.WAITING.getId()))

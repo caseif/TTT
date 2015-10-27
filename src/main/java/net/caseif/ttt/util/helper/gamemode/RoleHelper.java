@@ -74,7 +74,7 @@ public class RoleHelper {
         String color;
         String roleFrag;
         if (!ch.getTeam().isPresent()) {
-            color = Constants.Color.UNASSIGNED;
+            color = Constants.Color.FADED;
             roleFrag = "unassigned";
         } else if (ch.getTeam().get().getId().equals(Role.TRAITOR)) {
             color = Constants.Color.TRAITOR;
@@ -92,7 +92,7 @@ public class RoleHelper {
 
         if (ch.isSpectating() && !ch.getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
             roleMsg += TTTCore.locale.getLocalizable("fragment.deceased")
-                    .withPrefix(" " + Constants.Color.UNASSIGNED + "(").localizeFor(sender) + ")";
+                    .withPrefix(" " + Constants.Color.FADED + "(").localizeFor(sender) + ")";
         }
 
         return roleMsg;

@@ -84,7 +84,7 @@ public class RespawnCommand extends CommandHandler {
 
         ScoreboardManager.get(ch.get().getRound()).get().update(ch.get());
 
-        TTTCore.locale.getLocalizable("info.personal.respawn").withPrefix(Color.ERROR).sendTo(pl);
+        TTTCore.locale.getLocalizable("info.personal.respawn").withPrefix(Color.INFO).sendTo(pl);
         TTTCore.locale.getLocalizable("info.personal.respawn.other").withPrefix(Color.INFO)
                 .withReplacements(ch.get().getName()).sendTo(sender);
     }

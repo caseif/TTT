@@ -52,7 +52,7 @@ public class KickCommand extends CommandHandler {
         if (ch.isPresent()) {
             ch.get().removeFromRound();
             TTTCore.locale.getLocalizable("info.personal.kick").withPrefix(Color.ERROR).sendTo(pl);
-            TTTCore.locale.getLocalizable("info.global.round.event.kick").withPrefix(Color.INFO)
+            TTTCore.locale.getLocalizable("info.personal.kick.other").withPrefix(Color.INFO)
                     .withReplacements(ch.get().getName()).sendTo(sender);
         } else {
             TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ERROR).sendTo(sender);

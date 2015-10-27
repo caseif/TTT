@@ -57,9 +57,9 @@ public class RolesCommand extends CommandHandler{
         }
 
         TTTCore.locale.getLocalizable("fragment.in-arena-all").withPrefix(Color.INFO)
-                .withReplacements(arena.get().getName()).sendTo(sender);
+                .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);
         for (Challenger ch : arena.get().getRound().get().getChallengers()) {
-            sender.sendMessage("    " + Color.DESCRIPTION + ch.getName() + ": "
+            sender.sendMessage("    " + Color.LABEL + ch.getName() + ": "
                     + RoleHelper.genRoleMessage(sender, ch));
         }
     }
