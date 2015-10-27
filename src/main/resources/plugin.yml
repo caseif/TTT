@@ -10,58 +10,6 @@ commands:
   ttt:
     description: The plugin's primary command.
     usage: /ttt [subcommand]
-    ## all below keys are useless, but are there for reference
-    # arena-related commands
-    import:
-      description: Imports a TTT map from a specified folder in the server's root directory.
-      usage: /ttt import [folder name]
-    carena:
-      description: Initiates the arena creation wizard.
-      usage: /ttt carena
-    rarena:
-      description: Removes the given arena from TTT's registry.
-      usage: /ttt rarena [arena name]
-    listarenas:
-      description: Lists available arenas.
-      usage: /ttt listarenas
-    addspawn:
-      description: Adds the sender's or a specified location as a spawn to a specified arena.
-      usage: /ttt addspawn [arena name] {[x] [y] [z]}
-    removespawn:
-      description: Removes the sender's or a specified location or an index as a spawn from the specified arena.
-      usage: /ttt removespawn [arena name] {index}|{[x] [y] [z]}
-    listspawns:
-      description: Lists the spawn points of a given arena.
-      usage: /ttt listspawns [arena name]
-    join:
-      description: Adds player to a specified TTT round.
-      usage: /ttt join [arena name]
-    leave:
-      description: Removes player from their current round.
-      usage: /ttt leave
-    # administrative commands
-    prepare:
-      description: Forces a round to enter its preparation stage.
-      usage: /ttt prepare [arena name]
-    start:
-      description: Forces a round to enter its playing stage.
-      usage: /ttt start [arena name]
-    end:
-      description: Forces a round to end.
-      usage: /ttt end [arena name] {victor (t/i)}
-    kick:
-      description: Kicks a player from their current round.
-      usage: /ttt kick [player name]
-    ban:
-      description: Bans a player from joining TTT rounds.
-      usage: /ttt ban [player name] {minutes}
-    pardon:
-      description: Unbans a player from joining TTT rounds.
-      usage: /ttt pardon [player name] {minutes}
-    # general commands
-    help:
-      description: Displays descriptions and usages of commands available to the sender.
-      usage: /ttt help
 
 permissions:
   ttt.*:
