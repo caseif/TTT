@@ -87,11 +87,12 @@ public class RoleHelper {
             roleFrag = Role.INNOCENT;
         }
 
-        String roleMsg = TTTCore.locale.getLocalizable("fragment." + roleFrag).withPrefix(color).localizeFor(sender);
+        String roleMsg = TTTCore.locale.getLocalizable("fragment." + roleFrag).withPrefix(color).localizeFor(sender)
+                .toUpperCase();
 
         if (ch.isSpectating() && !ch.getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
-            roleMsg += TTTCore.locale.getLocalizable("fragment.desceased").withPrefix(" " + Constants.Color.FADED + "(")
-                    .localizeFor(sender) + ")";
+            roleMsg += TTTCore.locale.getLocalizable("fragment.deceased")
+                    .withPrefix(" " + Constants.Color.UNASSIGNED + "(").localizeFor(sender) + ")";
         }
 
         return roleMsg;
