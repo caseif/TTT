@@ -48,6 +48,7 @@ public final class Constants {
         public static final String INNOCENT = ChatColor.DARK_GREEN.toString();
         public static final String SPECIAL = ChatColor.LIGHT_PURPLE.toString();
         public static final String TRAITOR = ChatColor.DARK_RED.toString();
+        public static final String UNASSIGNED = ChatColor.DARK_GRAY.toString();
         public static final String USAGE = (TTTBootstrap.STEEL && TTTCore.HALLOWEEN
                 ? ChatColor.DARK_AQUA
                 : ChatColor.GOLD).toString();
