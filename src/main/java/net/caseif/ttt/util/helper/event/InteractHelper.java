@@ -94,6 +94,7 @@ public class InteractHelper {
                 }
             }
 
+            event.setCancelled(true);
             searchBody(body, event.getPlayer(), ((Chest) event.getClickedBlock().getState()).getInventory().getSize());
 
             if (opener.isSpectating() || event.getPlayer().isSneaking()) {
@@ -219,8 +220,8 @@ public class InteractHelper {
             ItemMeta idMeta = id.getItemMeta();
             idMeta.setDisplayName(TTTCore.locale.getLocalizable("item.id.name").localizeFor(player));
             List<String> idLore = new ArrayList<>();
-            idLore.add(TTTCore.locale.getLocalizable("item.id.desc").withReplacements(body.getName()).localizeFor(player));
-            idLore.add(body.getName());
+            idLore.add(TTTCore.locale.getLocalizable("item.id.desc").withReplacements(body.getName())
+                    .localizeFor(player));
             idMeta.setLore(idLore);
             id.setItemMeta(idMeta);
             inv.addItem(id);
@@ -263,7 +264,7 @@ public class InteractHelper {
         {
             ItemStack clock = new ItemStack(Material.WATCH, 1);
             ItemMeta clockMeta = clock.getItemMeta();
-            long deathSeconds = System.currentTimeMillis() - body.getDeathTime();
+            long deathSeconds = (System.currentTimeMillis() - body.getDeathTime()) / 1000L;
             NumberFormat nf = NumberFormat.getInstance();
             nf.setMinimumIntegerDigits(2);
             String deathTime = nf.format(deathSeconds / 60) + ":" + nf.format(deathSeconds % 60);
@@ -279,7 +280,7 @@ public class InteractHelper {
 
         // DNA sample
         if (body.getExpiry() > System.currentTimeMillis()) { // still has DNA
-            long decaySeconds = body.getExpiry() - System.currentTimeMillis();
+            long decaySeconds = (body.getExpiry() - System.currentTimeMillis()) / 1000L;
             NumberFormat nf = NumberFormat.getInstance();
             nf.setMinimumIntegerDigits(2);
             String decayTime = nf.format(decaySeconds / 60) + ":" + nf.format(decaySeconds % 60);

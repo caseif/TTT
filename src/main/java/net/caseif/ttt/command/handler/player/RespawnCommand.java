@@ -33,6 +33,7 @@ import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.metadata.Metadata;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -71,6 +72,10 @@ public class RespawnCommand extends CommandHandler {
         Location loc = LocationHelper.convert(ch.get().getMetadata().<Body>get(MetadataTag.BODY).get().getLocation());
         loc.getBlock().setType(Material.AIR);
         pl.teleport(loc);
+
+        Metadata meta = ch.get().getMetadata();
+        meta.remove(MetadataTag.BODY);
+        meta.remove(MetadataTag.BODY_FOUND);
 
         ch.get().setSpectating(false);
 

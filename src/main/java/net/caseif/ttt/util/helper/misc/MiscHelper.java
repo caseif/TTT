@@ -113,8 +113,13 @@ public class MiscHelper {
             if (current.length() + s.trim().length() + 1 > lineLength) {
                 list.add(current);
                 current = "";
+            } else if (!current.isEmpty()) {
+                current += " ";
             }
-            current += " " + s.trim();
+            current += s.trim();
+        }
+        if (!current.isEmpty()) {
+            list.add(current);
         }
         return list;
     }
