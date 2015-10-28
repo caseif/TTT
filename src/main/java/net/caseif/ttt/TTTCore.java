@@ -30,7 +30,6 @@ import net.caseif.ttt.listeners.MinigameListener;
 import net.caseif.ttt.listeners.PlayerListener;
 import net.caseif.ttt.listeners.WizardListener;
 import net.caseif.ttt.listeners.WorldListener;
-import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
@@ -156,7 +155,6 @@ public class TTTCore {
 
     public void deinitialize() {
         // uninitialize static variables so as not to cause memory leaks when reloading
-        ScoreboardManager.uninitialize();
         if (TTTCore.config.VERBOSE_LOGGING) {
             logInfo("info.plugin.disable", plugin.toString());
         }

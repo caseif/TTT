@@ -25,6 +25,7 @@ package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
@@ -70,11 +71,13 @@ public class RoundHelper {
     @SuppressWarnings("deprecation")
     public static void startRound(Round round) {
         RoleHelper.assignRoles(round);
-        for (Challenger ch : round.getChallengers()) {
-            ScoreboardManager.getOrCreate(round).update(ch);
+        ScoreboardManager sm
+                = round.getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get();
+        sm.updateAllEntries();
+        for (Challenger ch : round.getTeam(Role.TRAITOR).get().getChallengers()) {
+            sm.applyScoreboard(ch);
         }
         distributeItems(round);
-        ScoreboardManager.getOrCreate(round).assignScoreboards();
 
         for (Challenger ch : round.getChallengers()) {
             assert ch.getTeam().isPresent();
@@ -124,6 +127,9 @@ public class RoundHelper {
                         .sendTo(pl);
             }
         }
+
+        round.getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get().updateAllEntries();
+
         MiscHelper.broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
                 .withPrefix(Color.INFO));
     }

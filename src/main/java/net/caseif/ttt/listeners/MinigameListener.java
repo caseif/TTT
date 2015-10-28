@@ -36,7 +36,6 @@ import net.caseif.ttt.util.helper.misc.MiscHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.TitleHelper;
 
-import com.google.common.base.Optional;
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.challenger.Team;
@@ -67,22 +66,11 @@ public class MinigameListener {
             event.getChallenger().getMetadata().set(MetadataTag.PURE_SPECTATOR, true);
         }
 
-        Bukkit.getPlayer(event.getChallenger().getUniqueId())
-                .setHealth(Bukkit.getPlayer(event.getChallenger().getUniqueId()).getMaxHealth());
-
-        Bukkit.getPlayer(event.getChallenger().getUniqueId())
-                .setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
-
-        if (ScoreboardManager.get(event.getRound()).isPresent()) {
-            ScoreboardManager.get(event.getRound()).get().assignScoreboard(event.getChallenger());
-        }
+        Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
+        pl.setHealth(pl.getMaxHealth());
+        pl.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 
         if (!event.getChallenger().getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
-            if (ScoreboardManager.get(event.getRound()).isPresent()) {
-                ScoreboardManager.get(event.getRound()).get().update(event.getChallenger());
-            }
-
-            Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
             pl.setGameMode(GameMode.SURVIVAL);
             KarmaHelper.applyKarma(event.getChallenger());
 
@@ -95,6 +83,16 @@ public class MinigameListener {
                 event.getRound().nextLifecycleStage();
             }
         }
+
+        if (!event.getRound().getMetadata().has(MetadataTag.SCOREBOARD_MANAGER)) {
+            event.getRound().getMetadata()
+                    .set(MetadataTag.SCOREBOARD_MANAGER, new ScoreboardManager(event.getRound()));
+        }
+
+        ScoreboardManager sm = event.getRound().getMetadata()
+                .<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get();
+        sm.applyScoreboard(event.getChallenger());
+        sm.updateEntry(event.getChallenger());
     }
 
     @Subscribe
@@ -128,6 +126,9 @@ public class MinigameListener {
                 }
             }
         }
+
+        event.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get()
+                .remove(event.getChallenger());
     }
 
     @Subscribe
@@ -135,7 +136,6 @@ public class MinigameListener {
         if (event.getStageAfter() == Stage.PREPARING) {
             MiscHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
                     .withPrefix(Color.INFO));
-            ScoreboardManager.getOrCreate(event.getRound());
         } else if (event.getStageAfter() == Stage.PLAYING) {
             RoundHelper.startRound(event.getRound());
         }
@@ -224,8 +224,6 @@ public class MinigameListener {
                     event.getRound().end();
                     return;
                 }
-
-                ScoreboardManager.getOrCreate(event.getRound());
             }
         }
     }
@@ -250,16 +248,13 @@ public class MinigameListener {
                 ent.remove();
             }
         }
-        Optional<ScoreboardManager> sbMan = ScoreboardManager.get(event.getRound());
-        if (sbMan.isPresent()) {
-            sbMan.get().unregister();
-        }
+
+        event.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get().uninitialize();
     }
 
     @Subscribe
     public void onStageChange(RoundChangeLifecycleStageEvent event) {
         if (event.getStageBefore() == Stage.PREPARING && event.getStageAfter() == Stage.WAITING) {
-            ScoreboardManager.getOrCreate(event.getRound()).unregister();
             for (Challenger ch : event.getRound().getChallengers()) {
                 Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             }
@@ -267,6 +262,8 @@ public class MinigameListener {
             for (Team team : event.getRound().getTeams()) {
                 event.getRound().removeTeam(team);
             }
+
+            event.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get().updateAllEntries();
         }
     }
 

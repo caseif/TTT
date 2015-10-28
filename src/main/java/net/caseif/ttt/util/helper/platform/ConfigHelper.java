@@ -179,7 +179,7 @@ public final class ConfigHelper {
 
         // Plugin settings
         VERBOSE_LOGGING = getBoolean("verbose-logging");
-        ENABLE_AUTO_UPDATE = getBoolean("enable-auto-update");
+        ENABLE_AUTO_UPDATE = getBoolean("enable-auto-updateAllEntries");
         ENABLE_METRICS = getBoolean("enable-metrics");
         LOCALE = getString("locale");
     }

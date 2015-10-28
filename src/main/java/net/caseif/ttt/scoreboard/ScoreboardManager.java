@@ -29,243 +29,138 @@ import net.caseif.ttt.util.Constants.AliveStatus;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-//TODO: this is kind of a clusterf--- of a system and really needs to be rewritten from scratch at some point
 public class ScoreboardManager {
 
-    public static final boolean SECONDARY_ENTRY_SUPPORT;
+    private static final String OBJECTIVE_ID = "ttt";
 
-    private static HashMap<String, ScoreboardManager> sbManagers = new HashMap<>();
-
-    private static org.bukkit.scoreboard.ScoreboardManager manager = Bukkit.getScoreboardManager();
-
-    static {
-        boolean support = false;
-        try {
-            Scoreboard.class.getMethod("getEntryTeam", String.class);
-            support = true;
-        } catch (NoSuchMethodException ignored) {
-        }
-        SECONDARY_ENTRY_SUPPORT = support;
-    }
-
-    private Scoreboard innocent;
-    private Scoreboard traitor;
-    private Objective iObj;
-    private Objective tObj;
-    private Round round;
-
-    private BiMap<TeamKey, Team> teams = HashBiMap.create();
-
-    private static final ImmutableMap<String, String> ALIVE_PREFIXES = ImmutableMap.<String, String>builder()
+    private static final ImmutableMap<String, String> LIFE_STATUS_PREFIXES = ImmutableMap.<String, String>builder()
             .put(AliveStatus.ALIVE, "")
             .put(AliveStatus.MIA, "§7")
             .put(AliveStatus.CONFIRMED_DEAD, "§m")
             .build();
 
-    @SuppressWarnings("deprecation")
+    private Round round;
+    private Scoreboard iBoard = createBoard(false);
+    private Scoreboard tBoard = createBoard(true);
+
     public ScoreboardManager(Round round) {
         this.round = round;
-        innocent = manager.getNewScoreboard();
-        traitor = manager.getNewScoreboard();
+    }
 
-        iObj = innocent.registerNewObjective("p", "dummy");
-        iObj.setDisplayName("Players");
-        iObj.setDisplaySlot(DisplaySlot.SIDEBAR);
+    public Round getRound() {
+        return round;
+    }
 
-        tObj = traitor.registerNewObjective("p", "dummy");
-        tObj.setDisplayName("Players");
-        tObj.setDisplaySlot(DisplaySlot.SIDEBAR);
+    private Scoreboard getInnocentBoard() {
+        return iBoard;
+    }
 
-        String[] roles = {Role.INNOCENT, Role.TRAITOR, Role.DETECTIVE};
-        String[] aliveStatuses = {AliveStatus.ALIVE, AliveStatus.MIA, AliveStatus.CONFIRMED_DEAD};
+    private Scoreboard getTraitorBoard() {
+        return tBoard;
+    }
 
-        for (int i = 0; i <= 1; i++) {
-            boolean traitorBoard = i == 1;
-            Scoreboard sb = traitorBoard ? traitor : innocent;
-            for (String role : roles) {
-                for (String alive : aliveStatuses) {
-                    Team team = sb.registerNewTeam(role.charAt(0) + "" + alive.charAt(0));
-                    String rolePrefix = role.equals(Role.DETECTIVE)
-                            ? Color.DETECTIVE
-                            : (role.equals(Role.TRAITOR) && traitorBoard ? Color.TRAITOR : "");
-                    String alivePrefix = fromNullableString(ALIVE_PREFIXES.get(alive));
-                    team.setPrefix(rolePrefix + alivePrefix);
-                    teams.put(new TeamKey(traitorBoard, role, alive), team);
+    private Scoreboard createBoard(boolean isTBoard) {
+        Scoreboard sb = Bukkit.getScoreboardManager().getNewScoreboard();
+        Objective obj = sb.registerNewObjective(OBJECTIVE_ID, "dummy");
+        obj.setDisplayName("Players");
+        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        registerTeams(sb, isTBoard);
+
+        return sb;
+    }
+
+    private void registerTeams(Scoreboard sb, boolean isTBoard) {
+        final String[] roles = {Role.INNOCENT, Role.TRAITOR, Role.DETECTIVE};
+        final String[] aliveStatuses = {AliveStatus.ALIVE, AliveStatus.MIA, AliveStatus.CONFIRMED_DEAD};
+        for (String role : roles) {
+            for (String alive : aliveStatuses) {
+                String teamId = role.charAt(0) + "" + alive.charAt(0);
+                if (sb.getTeam(teamId) != null) {
+                    return;
                 }
-            }
-        }
-
-        for (Challenger ch : round.getChallengers()) {
-            Player pl = Bukkit.getPlayer(ch.getUniqueId());
-            update(ch);
-            pl.setScoreboard(MiscHelper.isTraitor(ch) ? traitor : innocent);
-        }
-
-        sbManagers.put(round.getArena().getId(), this);
-    }
-
-    public static void uninitialize() {
-        for (ScoreboardManager sm : sbManagers.values()) {
-            sm.iObj.unregister();
-            sm.tObj.unregister();
-        }
-        sbManagers = null;
-        manager = null;
-    }
-
-    public static Optional<ScoreboardManager> get(Round round) {
-        return Optional.fromNullable(sbManagers.get(round.getArena().getId()));
-    }
-
-    public static ScoreboardManager getOrCreate(Round round) {
-        Optional<ScoreboardManager> sm = get(round);
-        if (sm.isPresent()) {
-            return sm.get();
-        } else {
-            return new ScoreboardManager(round);
-        }
-    }
-
-    public void unregister() {
-        iObj.unregister();
-        tObj.unregister();
-        sbManagers.remove(round.getArena().getId());
-    }
-
-    @SuppressWarnings("deprecation")
-    public void update(Challenger challenger) {
-        if (needsUpdate(challenger)) {
-            if (!challenger.getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
-                innocent.resetScores(challenger.getName());
-                traitor.resetScores(challenger.getName());
-
-                if (SECONDARY_ENTRY_SUPPORT) {
-                    if (innocent.getEntryTeam(challenger.getName()) != null) {
-                        innocent.getEntryTeam(challenger.getName()).removeEntry(challenger.getName());
-                    }
-                    if (traitor.getEntryTeam(challenger.getName()) != null) {
-                        traitor.getEntryTeam(challenger.getName()).removeEntry(challenger.getName());
-                    }
-                } else {
-                    if (innocent.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId())) != null) {
-                        innocent.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId()))
-                                .removePlayer(Bukkit.getPlayer(challenger.getUniqueId()));
-                    }
-                    if (traitor.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId())) != null) {
-                        traitor.getPlayerTeam(Bukkit.getPlayer(challenger.getUniqueId()))
-                                .removePlayer(Bukkit.getPlayer(challenger.getUniqueId()));
-                    }
-                }
-
-                for (Team team : getValidTeams(challenger)) {
-                    if (SECONDARY_ENTRY_SUPPORT) {
-                        team.addEntry(challenger.getName());
-                    } else {
-                        team.addPlayer(Bukkit.getPlayer(challenger.getUniqueId()));
-                    }
-                }
-
-                if (!challenger.getMetadata().has(MetadataTag.DISPLAY_KARMA)) {
-                    KarmaHelper.applyKarma(challenger);
-                }
-                int displayKarma = challenger.getMetadata().<Integer>get(MetadataTag.DISPLAY_KARMA).get();
-                iObj.getScore(challenger.getName()).setScore(displayKarma);
-                tObj.getScore(challenger.getName()).setScore(displayKarma);
+                Team team = sb.registerNewTeam(teamId);
+                String rolePrefix = role.equals(Role.DETECTIVE)
+                        ? Color.DETECTIVE
+                        : (role.equals(Role.TRAITOR) && isTBoard ? Color.TRAITOR : "");
+                String alivePrefix = fromNullableString(LIFE_STATUS_PREFIXES.get(alive));
+                team.setPrefix(rolePrefix + alivePrefix);
             }
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private ImmutableSet<Team> getValidTeams(Challenger ch) {
-        String role = MiscHelper.isTraitor(ch)
-                ? Role.TRAITOR
-                : (ch.getMetadata().has(Role.DETECTIVE) ? Role.DETECTIVE : Role.INNOCENT);
-        String aliveStatus = ch.isSpectating()
-                ?
-                (ch.getMetadata().has(MetadataTag.BODY_FOUND)
-                        ? AliveStatus.CONFIRMED_DEAD
-                        : AliveStatus.MIA)
-                : AliveStatus.ALIVE;
+    private void applyTeam(Challenger ch) {
+        String role = MiscHelper.isTraitor(ch) ? Role.TRAITOR
+                : ch.getMetadata().has(Role.DETECTIVE) ? Role.DETECTIVE
+                : Role.INNOCENT;
+        String alive = !ch.isSpectating() ? AliveStatus.ALIVE
+                : ch.getMetadata().has(MetadataTag.BODY_FOUND) ? AliveStatus.CONFIRMED_DEAD
+                : AliveStatus.MIA;
+        String teamName = role.charAt(0) + "" + alive.charAt(0);
+        ch.getMetadata().set(MetadataTag.TEAM_NAME, teamName);
+    }
 
-        Set<Team> teams = new HashSet<>();
-        for (Map.Entry<TeamKey, Team> e : this.teams.entrySet()) {
-            if (e.getKey().getRole().equals(role) && e.getKey().getAliveStatus().equals(aliveStatus)) {
-                teams.add(e.getValue());
-                if (teams.size() == 2) {
-                    break;
-                }
+    public void applyScoreboard(Challenger ch) {
+        Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(MiscHelper.isTraitor(ch) ? tBoard : iBoard);
+    }
+
+    public void updateAllEntries() {
+        for (Challenger ch : getRound().getChallengers()) {
+            updateEntry(ch);
+        }
+    }
+
+    private void updateEntry(Challenger ch, Scoreboard sb) {
+        assert ch.getRound() == getRound();
+
+        if (ch.getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
+            return;
+        }
+
+        String teamName = ch.getMetadata().<String>get(MetadataTag.TEAM_NAME).get();
+        if (sb.getTeam(teamName) == null) {
+            registerTeams(sb, sb == tBoard);
+        }
+        for (Team team : sb.getTeams()) {
+            if (team.getName().equals(teamName) && !team.hasEntry(ch.getName())) {
+                team.addEntry(ch.getName());
+            } else if (!team.getName().equals(teamName) && team.hasEntry(ch.getName())) {
+                team.removeEntry(ch.getName());
             }
         }
-        return ImmutableSet.copyOf(teams);
+        sb.getObjective(OBJECTIVE_ID).getScore(ch.getName())
+                .setScore(ch.getMetadata().<Integer>get(MetadataTag.DISPLAY_KARMA).or(1000));
     }
 
-    private boolean needsUpdate(Challenger ch) {
-        return needsUpdate(ch, iObj) || needsUpdate(ch, tObj);
+    public void updateEntry(Challenger ch) {
+        applyTeam(ch);
+        updateEntry(ch, getInnocentBoard());
+        updateEntry(ch, getTraitorBoard());
     }
 
-    private boolean needsUpdate(Challenger ch, Objective obj) {
-        @SuppressWarnings("deprecation")
-        Set<Score> scores = obj.getScoreboard().getScores(ch.getName());
-        boolean found = false;
-        for (Score score : scores) {
-            if (score.getObjective() == obj) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            return true;
-        }
-
-        @SuppressWarnings("deprecation")
-        Score score = obj.getScore(ch.getName());
-
-        if (score.getScore() != ch.getMetadata().<Integer>get(MetadataTag.DISPLAY_KARMA).or(0)) {
-            return true;
-        }
-
-        if (SECONDARY_ENTRY_SUPPORT) {
-            for (Team team : getValidTeams(ch)) {
-                if (!team.getEntries().contains(ch.getName())) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+    private void remove(Challenger ch, Scoreboard sm) {
+        sm.resetScores(ch.getName());
     }
 
-    public void assignScoreboards() {
-        for (Challenger ch : round.getChallengers()) {
-            assignScoreboard(ch);
-        }
+    public void remove(Challenger ch) {
+        remove(ch, getInnocentBoard());
+        remove(ch, getTraitorBoard());
     }
 
-    public void assignScoreboard(Challenger ch) {
-        Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(MiscHelper.isTraitor(ch) ? traitor : innocent);
+    public void uninitialize() {
+        iBoard.getObjective(OBJECTIVE_ID).unregister();
+        tBoard.getObjective(OBJECTIVE_ID).unregister();
     }
 
 }

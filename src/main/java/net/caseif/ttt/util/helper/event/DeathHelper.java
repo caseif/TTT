@@ -77,34 +77,33 @@ public class DeathHelper {
     public void handleEvent() {
         // admittedly not the best way of doing this, but easiest for the purpose of porting
         Optional<Challenger> chOpt = TTTCore.mg.getChallenger(player.getUniqueId());
-        if (chOpt.isPresent()) {
-            Challenger ch = chOpt.get();
-            Location loc = player.getLocation();
-
-            Optional<Challenger> killer = getKiller();
-
-            cancelEvent(ch);
-
-            if (killer.isPresent()) {
-                // set killer's karma
-                KarmaHelper.applyKillKarma(killer.get(), ch);
-            }
-
-            if (ScoreboardManager.get(ch.getRound()).isPresent()) {
-                ScoreboardManager.get(ch.getRound()).get().update(ch);
-            }
-
-            Block block = loc.getBlock();
-            while (block.getType() != Material.AIR && block.getType() != Material.WATER
-                    && block.getType() != Material.LAVA && block.getType() != Material.STATIONARY_WATER
-                    && block.getType() != Material.STATIONARY_LAVA) {
-                block = loc.add(0, 1, 0).getBlock();
-            }
-
-            flagForRollback(block.getLocation(), ch.getRound());
-
-            createBody(block.getLocation(), ch, killer.orNull());
+        if (!chOpt.isPresent()) {
+            return;
         }
+        Challenger ch = chOpt.get();
+        Location loc = player.getLocation();
+
+        Optional<Challenger> killer = getKiller();
+
+        cancelEvent(ch);
+
+        if (killer.isPresent()) {
+            // set killer's karma
+            KarmaHelper.applyKillKarma(killer.get(), ch);
+        }
+
+        Block block = loc.getBlock();
+        while (block.getType() != Material.AIR && block.getType() != Material.WATER
+                && block.getType() != Material.LAVA && block.getType() != Material.STATIONARY_WATER
+                && block.getType() != Material.STATIONARY_LAVA) {
+            block = loc.add(0, 1, 0).getBlock();
+        }
+
+        flagForRollback(block.getLocation(), ch.getRound());
+
+        createBody(block.getLocation(), ch, killer.orNull());
+
+        ch.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get().updateEntry(ch);
     }
 
     private void cancelEvent(Challenger ch) {

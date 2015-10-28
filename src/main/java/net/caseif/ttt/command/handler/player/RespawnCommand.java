@@ -93,7 +93,8 @@ public class RespawnCommand extends CommandHandler {
         pl.setHealth(pl.getMaxHealth());
         pl.setFoodLevel(20);
 
-        ScoreboardManager.get(ch.get().getRound()).get().update(ch.get());
+        ch.get().getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get()
+                .updateEntry(ch.get());
 
         TTTCore.locale.getLocalizable("info.personal.respawn").withPrefix(Color.INFO).sendTo(pl);
         TTTCore.locale.getLocalizable("info.personal.respawn.other").withPrefix(Color.INFO)

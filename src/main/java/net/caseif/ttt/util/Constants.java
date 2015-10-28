@@ -104,6 +104,9 @@ public final class Constants {
         public static final String DISPLAY_KARMA = "displayKarma";
         public static final String DAMAGE_REDUCTION = "damageRed";
         public static final String TEAM_KILLED = "hasTeamKilled";
+
+        public static final String TEAM_NAME = "teamName";
+        public static final String SCOREBOARD_MANAGER = "scoreboardManager";
     }
 
 }

@@ -123,6 +123,16 @@ public class InteractHelper {
                         throw new AssertionError("Failed to determine role of found body. Report this immediately.");
                     }
                 }
+
+                body.setFound();
+                if (bodyPlayer.isPresent() && bodyPlayer.get().getRound() == body.getRound()) {
+                    bodyPlayer.get().getMetadata().set(MetadataTag.BODY_FOUND, true);
+
+                    ScoreboardManager sm = body.getRound().getMetadata()
+                            .<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get();
+                    sm.updateEntry(bodyPlayer.get());
+                }
+
                 Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.body-find").withPrefix(color);
                 Localizable roleMsg
                         = TTTCore.locale.getLocalizable("info.global.round.event.body-find." + body.getRole());
@@ -130,14 +140,6 @@ public class InteractHelper {
                     Player pl = Bukkit.getPlayer(c.getUniqueId());
                     pl.sendMessage(loc.withReplacements(event.getPlayer().getName(),
                             body.getName()).localizeFor(pl) + " " + roleMsg.localizeFor(pl));
-                }
-
-                body.setFound();
-                if (bodyPlayer.isPresent() && bodyPlayer.get().getRound() == body.getRound()) {
-                    bodyPlayer.get().getMetadata().set(MetadataTag.BODY_FOUND, true);
-                    if (ScoreboardManager.get(bodyPlayer.get().getRound()).isPresent()) {
-                        ScoreboardManager.get(bodyPlayer.get().getRound()).get().update(bodyPlayer.get());
-                    }
                 }
             }
         }
