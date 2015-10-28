@@ -25,19 +25,47 @@ package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
-import net.caseif.ttt.util.helper.platform.InventoryHelper;
 import net.caseif.ttt.util.helper.platform.TitleHelper;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * Static-utility class for round-related methods.
  */
 public class RoundHelper {
+
+    private static final ItemStack ITEM_CROWBAR;
+    private static final ItemStack ITEM_GUN;
+    private static final ItemStack ITEM_AMMO;
+    private static final ItemStack ITEM_DNA_SCANNER;
+
+    static {
+        ITEM_CROWBAR = new ItemStack(TTTCore.config.CROWBAR_ITEM, 1);
+        ItemMeta cbMeta = ITEM_CROWBAR.getItemMeta();
+        cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.crowbar.name").localize());
+        ITEM_CROWBAR.setItemMeta(cbMeta);
+
+        ITEM_GUN = new ItemStack(TTTCore.config.GUN_ITEM, 1);
+        ItemMeta gunMeta = ITEM_GUN.getItemMeta();
+        gunMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.gun.name").localize());
+        ITEM_GUN.setItemMeta(gunMeta);
+
+        ITEM_AMMO = new ItemStack(Material.ARROW, TTTCore.config.INITIAL_AMMO);
+
+        ITEM_DNA_SCANNER = new ItemStack(Material.COMPASS, 1);
+        ItemMeta dnaMeta = ITEM_DNA_SCANNER.getItemMeta();
+        dnaMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.dna-scanner.name").localize());
+        ITEM_DNA_SCANNER.setItemMeta(dnaMeta);
+    }
 
     @SuppressWarnings("deprecation")
     public static void startRound(Round round) {
@@ -45,7 +73,7 @@ public class RoundHelper {
         for (Challenger ch : round.getChallengers()) {
             ScoreboardManager.getOrCreate(round).update(ch);
         }
-        InventoryHelper.distributeItems(round);
+        distributeItems(round);
         ScoreboardManager.getOrCreate(round).assignScoreboards();
 
         for (Challenger ch : round.getChallengers()) {
@@ -56,32 +84,32 @@ public class RoundHelper {
             pl.setHealth(pl.getMaxHealth());
             pl.setFoodLevel(20);
 
-            if (ch.getTeam().get().getId().equals(Constants.Role.INNOCENT)) {
-                if (ch.getMetadata().has(Constants.Role.DETECTIVE)) {
+            if (ch.getTeam().get().getId().equals(Role.INNOCENT)) {
+                if (ch.getMetadata().has(Role.DETECTIVE)) {
                     TTTCore.locale.getLocalizable("info.personal.status.role.detective")
-                            .withPrefix(Constants.Color.DETECTIVE).sendTo(pl);
-                    TitleHelper.sendStatusTitle(pl, Constants.Role.DETECTIVE);
+                            .withPrefix(Color.DETECTIVE).sendTo(pl);
+                    TitleHelper.sendStatusTitle(pl, Role.DETECTIVE);
                 } else {
                     TTTCore.locale.getLocalizable("info.personal.status.role.innocent")
-                            .withPrefix(Constants.Color.INNOCENT).sendTo(pl);
-                    TitleHelper.sendStatusTitle(pl, Constants.Role.INNOCENT);
+                            .withPrefix(Color.INNOCENT).sendTo(pl);
+                    TitleHelper.sendStatusTitle(pl, Role.INNOCENT);
                 }
-            } else if (ch.getTeam().get().getId().equals(Constants.Role.TRAITOR)) {
+            } else if (ch.getTeam().get().getId().equals(Role.TRAITOR)) {
                 if (ch.getTeam().get().getChallengers().size() > 1) {
                     TTTCore.locale.getLocalizable("info.personal.status.role.traitor")
-                            .withPrefix(Constants.Color.TRAITOR).sendTo(pl);
+                            .withPrefix(Color.TRAITOR).sendTo(pl);
                     TTTCore.locale.getLocalizable("info.personal.status.role.traitor.allies")
-                            .withPrefix(Constants.Color.TRAITOR).sendTo(pl);
+                            .withPrefix(Color.TRAITOR).sendTo(pl);
                     for (Challenger traitor : ch.getTeam().get().getChallengers()) {
                         if (traitor != ch) { // don't list them as an ally to themselves
-                            pl.sendMessage(Constants.Color.TRAITOR + "- " + traitor.getName());
+                            pl.sendMessage(Color.TRAITOR + "- " + traitor.getName());
                         }
                     }
                 } else {
                     TTTCore.locale.getLocalizable("info.personal.status.role.traitor.alone")
-                            .withPrefix(Constants.Color.TRAITOR).sendTo(pl);
+                            .withPrefix(Color.TRAITOR).sendTo(pl);
                 }
-                TitleHelper.sendStatusTitle(pl, Constants.Role.TRAITOR);
+                TitleHelper.sendStatusTitle(pl, Role.TRAITOR);
             }
 
             if (TTTCore.config.KARMA_DAMAGE_REDUCTION) {
@@ -92,12 +120,26 @@ public class RoundHelper {
                         : TTTCore.locale.getLocalizable("fragment.full")
                         .localizeFor(pl);
                 TTTCore.locale.getLocalizable("info.personal.status.karma-damage")
-                        .withPrefix(Constants.Color.INFO).withReplacements(KarmaHelper.getKarma(ch) + "", percentage)
+                        .withPrefix(Color.INFO).withReplacements(KarmaHelper.getKarma(ch) + "", percentage)
                         .sendTo(pl);
             }
         }
         MiscHelper.broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
-                .withPrefix(Constants.Color.INFO));
+                .withPrefix(Color.INFO));
     }
 
+    public static void distributeItems(Round round) {
+        for (Challenger ch : round.getChallengers()) {
+            distributeItems(ch);
+        }
+    }
+
+    public static void distributeItems(Challenger chal) {
+        Player pl = Bukkit.getPlayer(chal.getUniqueId());
+        assert pl != null;
+        pl.getInventory().addItem(ITEM_CROWBAR, ITEM_GUN, ITEM_AMMO);
+        if (chal.getMetadata().has(Role.DETECTIVE)) {
+            pl.getInventory().addItem(ITEM_DNA_SCANNER);
+        }
+    }
 }

@@ -29,6 +29,7 @@ import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
+import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.base.Optional;
@@ -39,6 +40,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class RespawnCommand extends CommandHandler {
 
@@ -74,10 +77,18 @@ public class RespawnCommand extends CommandHandler {
         pl.teleport(loc);
 
         Metadata meta = ch.get().getMetadata();
+        Body body = meta.<Body>get(MetadataTag.BODY).orNull();
         meta.remove(MetadataTag.BODY);
         meta.remove(MetadataTag.BODY_FOUND);
+        if (body != null) {
+            List<Body> bodies = ch.get().getRound().getMetadata().<List<Body>>get(MetadataTag.BODY_LIST).get();
+            bodies.remove(body);
+            ch.get().getRound().getMetadata().set(MetadataTag.BODY_LIST, bodies);
+        }
 
         ch.get().setSpectating(false);
+
+        RoundHelper.distributeItems(ch.get());
 
         pl.setHealth(pl.getMaxHealth());
         pl.setFoodLevel(20);
