@@ -233,17 +233,21 @@ public class InteractHelper {
             ItemMeta roleIdMeta = roleId.getItemMeta();
             short durability;
             String roleStr = body.getRole();
+            String prefix;
             switch (body.getRole()) {
                 case Role.DETECTIVE: {
                     durability = 11;
+                    prefix = Color.DETECTIVE;
                     break;
                 }
                 case Role.INNOCENT: {
                     durability = 5;
+                    prefix = Color.INNOCENT;
                     break;
                 }
                 case Role.TRAITOR: {
                     durability = 14;
+                    prefix = Color.TRAITOR;
                     break;
                 }
                 default: {
@@ -251,7 +255,7 @@ public class InteractHelper {
                 }
             }
             roleId.setDurability(durability);
-            roleIdMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment." + roleStr).withPrefix(Color.DETECTIVE)
+            roleIdMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment." + roleStr).withPrefix(prefix)
                     .localizeFor(player));
             roleIdMeta.setLore(Collections.singletonList(
                     TTTCore.locale.getLocalizable("item.role." + roleStr).localizeFor(player)
@@ -271,8 +275,7 @@ public class InteractHelper {
             clockMeta.setDisplayName(deathTime);
             clockMeta.setLore(MiscHelper.formatLore(
                     TTTCore.locale.getLocalizable("item.deathclock.desc").withReplacements(deathTime)
-                            .withReplacements(deathTime).localizeFor(player),
-                    32
+                            .withReplacements(deathTime).localizeFor(player)
             ));
             clock.setItemMeta(clockMeta);
             inv.addItem(clock);
@@ -286,10 +289,9 @@ public class InteractHelper {
             String decayTime = nf.format(decaySeconds / 60) + ":" + nf.format(decaySeconds % 60);
             ItemStack dna = new ItemStack(Material.LEASH, 1);
             ItemMeta dnaMeta = dna.getItemMeta();
-            dnaMeta.setDisplayName(TTTCore.locale.getLocalizable("item.dna").localizeFor(player));
+            dnaMeta.setDisplayName(TTTCore.locale.getLocalizable("item.dna.name").localizeFor(player));
             dnaMeta.setLore(MiscHelper.formatLore(
-                    TTTCore.locale.getLocalizable("item.dna.desc").withReplacements(decayTime).localizeFor(player),
-                    32
+                    TTTCore.locale.getLocalizable("item.dna.desc").withReplacements(decayTime).localizeFor(player)
             ));
             dna.setItemMeta(dnaMeta);
             inv.addItem(dna);

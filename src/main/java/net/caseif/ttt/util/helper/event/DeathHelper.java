@@ -81,9 +81,10 @@ public class DeathHelper {
             Challenger ch = chOpt.get();
             Location loc = player.getLocation();
 
+            Optional<Challenger> killer = getKiller();
+
             cancelEvent(ch);
 
-            Optional<Challenger> killer = getKiller();
             if (killer.isPresent()) {
                 // set killer's karma
                 KarmaHelper.applyKillKarma(killer.get(), ch);
@@ -161,10 +162,10 @@ public class DeathHelper {
             double dist = player.getLocation().toVector()
                     .distance(Bukkit.getPlayer(killer.getUniqueId()).getLocation().toVector());
             if (dist <= TTTCore.config.KILLER_DNA_RANGE) {
-                final double a = 3.6e-4;
+                final double a = 0.2268; // copied from the official gamemode and scaled to account for different units
                 int decayTime = TTTCore.config.KILLER_DNA_BASETIME - (int) Math.floor(a * Math.pow(dist, 2));
                 if (decayTime > 0) {
-                    expiry = System.currentTimeMillis() + decayTime;
+                    expiry = System.currentTimeMillis() + (decayTime * 1000);
                 }
             }
         }

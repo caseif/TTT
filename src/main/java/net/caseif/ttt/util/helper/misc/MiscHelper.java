@@ -106,7 +106,8 @@ public class MiscHelper {
         return sb.toString();
     }
 
-    public static List<String> formatLore(String str, int lineLength) {
+    public static List<String> formatLore(String str) {
+        final int lineLength = 36;
         List<String> list = new ArrayList<>();
         String current = "";
         for (String s : str.split(" ")) {

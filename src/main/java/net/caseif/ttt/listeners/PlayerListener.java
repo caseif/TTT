@@ -63,7 +63,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
 
-    private final ImmutableList<String> disabledCommands = ImmutableList.of("kit", "msg", "pm", "r", "me");
+    private final ImmutableList<String> disabledCommands = ImmutableList.of("kit", "msg", "pm", "r", "me", "back");
 
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGHEST)
