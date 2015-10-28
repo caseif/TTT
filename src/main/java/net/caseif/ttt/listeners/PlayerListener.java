@@ -90,12 +90,13 @@ public class PlayerListener implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         if (event.getEntityType() == EntityType.PLAYER) {
             Optional<Challenger> victim = TTTCore.mg.getChallenger(event.getEntity().getUniqueId());
-            if (victim.isPresent() && victim.get().getRound().getLifecycleStage() != Stage.PLAYING
-                    && event.getCause() == DamageCause.VOID) {
+            if (victim.isPresent() && victim.get().getRound().getLifecycleStage() != Stage.PLAYING) {
                 event.setCancelled(true);
-                Bukkit.getPlayer(victim.get().getUniqueId()).teleport(
-                        LocationHelper.convert(victim.get().getRound().getArena().getSpawnPoints().get(0))
-                );
+                if (event.getCause() == DamageCause.VOID) {
+                    Bukkit.getPlayer(victim.get().getUniqueId()).teleport(
+                            LocationHelper.convert(victim.get().getRound().getArena().getSpawnPoints().get(0))
+                    );
+                }
                 return;
             }
 

@@ -58,6 +58,12 @@ public class SlayCommand extends CommandHandler {
                     .sendTo(sender);
             return;
         }
+
+        if (ch.get().getRound().getLifecycleStage() != Constants.Stage.PLAYING) {
+            TTTCore.locale.getLocalizable("error.round.not-started").withPrefix(Constants.Color.ERROR).sendTo(sender);
+            return;
+        }
+
         new DeathHelper(pl).handleEvent();
         TTTCore.locale.getLocalizable("info.personal.slay").withPrefix(Constants.Color.ERROR).sendTo(pl);
         TTTCore.locale.getLocalizable("info.personal.slay.other").withPrefix(Constants.Color.INFO)
