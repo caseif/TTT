@@ -28,11 +28,11 @@ import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.helper.misc.MiscHelper;
 import net.caseif.ttt.util.helper.platform.TitleHelper;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
+import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -130,7 +130,7 @@ public class RoundHelper {
 
         round.getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get().updateAllEntries();
 
-        MiscHelper.broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
+        broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
                 .withPrefix(Color.INFO));
     }
 
@@ -143,9 +143,24 @@ public class RoundHelper {
     public static void distributeItems(Challenger chal) {
         Player pl = Bukkit.getPlayer(chal.getUniqueId());
         assert pl != null;
+        pl.getInventory().clear();
         pl.getInventory().addItem(ITEM_CROWBAR, ITEM_GUN, ITEM_AMMO);
         if (chal.getMetadata().has(Role.DETECTIVE)) {
             pl.getInventory().addItem(ITEM_DNA_SCANNER);
+        }
+    }
+
+    /**
+     * Broadcasts a {@link Localizable} to a {@link Round}.
+     *
+     * @param round The {@link Round} to broadcast to
+     * @param localizable The {@link Localizable} to broadcast
+     */
+    public static void broadcast(Round round, Localizable localizable) {
+        for (Challenger ch : round.getChallengers()) {
+            Player pl = Bukkit.getPlayer(ch.getUniqueId());
+            assert pl != null;
+            localizable.sendTo(pl);
         }
     }
 }

@@ -26,10 +26,6 @@ package net.caseif.ttt.util.helper.misc;
 import net.caseif.ttt.util.Constants.Role;
 
 import net.caseif.flint.challenger.Challenger;
-import net.caseif.flint.round.Round;
-import net.caseif.rosetta.Localizable;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,20 +46,6 @@ public class MiscHelper {
 
     public static String fromNullableString(String nullable) {
         return nullable == null ? "" : nullable;
-    }
-
-    /**
-     * Broadcasts a {@link Localizable} to a {@link Round}.
-     *
-     * @param round The {@link Round} to broadcast to
-     * @param localizable The {@link Localizable} to broadcast
-     */
-    public static void broadcast(Round round, Localizable localizable) {
-        for (Challenger ch : round.getChallengers()) {
-            Player pl = Bukkit.getPlayer(ch.getUniqueId());
-            assert pl != null;
-            localizable.sendTo(pl);
-        }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

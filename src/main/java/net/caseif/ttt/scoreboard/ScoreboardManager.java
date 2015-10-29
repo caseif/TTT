@@ -25,6 +25,7 @@ package net.caseif.ttt.scoreboard;
 
 import static net.caseif.ttt.util.helper.misc.MiscHelper.fromNullableString;
 
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.AliveStatus;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
@@ -39,6 +40,8 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+
+import java.text.NumberFormat;
 
 public class ScoreboardManager {
 
@@ -156,6 +159,29 @@ public class ScoreboardManager {
     public void remove(Challenger ch) {
         remove(ch, getInnocentBoard());
         remove(ch, getTraitorBoard());
+    }
+
+    public void updateTitle() {
+        updateTitle(iBoard.getObjective(OBJECTIVE_ID));
+        updateTitle(tBoard.getObjective(OBJECTIVE_ID));
+    }
+
+    private void updateTitle(Objective obj) {
+        StringBuilder title = new StringBuilder();
+        title.append(Color.LABEL);
+        title.append(round.getLifecycleStage().getId().toUpperCase());
+
+        if (round.getLifecycleStage() != Constants.Stage.WAITING) {
+            title.append(" - ");
+
+            long time = round.getRemainingTime();
+            NumberFormat nf = NumberFormat.getIntegerInstance();
+            nf.setMinimumIntegerDigits(2);
+            String minutes = nf.format(time / 60);
+            String seconds = nf.format(time % 60);
+            title.append(minutes).append(":").append(seconds);
+        }
+        obj.setDisplayName(title.toString());
     }
 
     public void uninitialize() {

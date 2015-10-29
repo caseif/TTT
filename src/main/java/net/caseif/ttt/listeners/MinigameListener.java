@@ -46,7 +46,6 @@ import net.caseif.flint.event.round.RoundTimerTickEvent;
 import net.caseif.flint.event.round.challenger.ChallengerJoinRoundEvent;
 import net.caseif.flint.event.round.challenger.ChallengerLeaveRoundEvent;
 import net.caseif.flint.round.Round;
-import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -74,7 +73,7 @@ public class MinigameListener {
             pl.setGameMode(GameMode.SURVIVAL);
             KarmaHelper.applyKarma(event.getChallenger());
 
-            MiscHelper.broadcast(event.getRound(),
+            RoundHelper.broadcast(event.getRound(),
                     TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO)
                             .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl)));
 
@@ -113,14 +112,14 @@ public class MinigameListener {
         if (!event.getRound().getMetadata().has("ending")) { //TODO: temp fix
             if (!event.getChallenger().getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
                 KarmaHelper.saveKarma(event.getChallenger());
-                MiscHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
+                RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                         .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
                                 Color.ARENA + event.getChallenger().getRound().getArena().getName() + Color.INFO));
 
                 if (event.getRound().getLifecycleStage() == Stage.PREPARING
                         && event.getRound().getChallengers().size() <= 1) {
                     event.getRound().setLifecycleStage(Stage.WAITING);
-                    MiscHelper.broadcast(event.getRound(),
+                    RoundHelper.broadcast(event.getRound(),
                             TTTCore.locale.getLocalizable("info.global.round.status.starting.stopped")
                                     .withPrefix(Color.ERROR));
                 }
@@ -134,7 +133,7 @@ public class MinigameListener {
     @Subscribe
     public void onRoundPrepare(RoundChangeLifecycleStageEvent event) {
         if (event.getStageAfter() == Stage.PREPARING) {
-            MiscHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
+            RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
                     .withPrefix(Color.INFO));
         } else if (event.getStageAfter() == Stage.PLAYING) {
             RoundHelper.startRound(event.getRound());
@@ -145,31 +144,10 @@ public class MinigameListener {
     @Subscribe
     public void onRoundTick(RoundTimerTickEvent event) {
         Round r = event.getRound();
+
+        r.getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get().updateTitle();
+
         if (r.getLifecycleStage() != Stage.WAITING) {
-            long rTime = r.getRemainingTime();
-            Localizable loc;
-            Localizable time = null;
-            if (rTime >= 60 && rTime % 60 == 0) {
-                time = TTTCore.locale.getLocalizable("fragment.minutes" + (rTime / 60 == 1 ? ".singular" : ""))
-                        .withReplacements(Long.toString(rTime / 60));
-                ;
-            } else if (rTime > 0 && rTime <= 30 && rTime % 10 == 0) {
-                time = TTTCore.locale.getLocalizable("fragment.seconds" + (rTime == 1 ? ".singular" : ""))
-                        .withReplacements(Long.toString(rTime));
-            }
-            if (time != null) {
-                loc = TTTCore.locale.getLocalizable(
-                        r.getLifecycleStage() == Stage.PREPARING
-                                ? "info.global.round.status.starting.time"
-                                : "info.global.round.status.time.remaining"
-                ).withPrefix(Color.INFO);
-
-                for (Challenger ch : r.getChallengers()) {
-                    Player pl = Bukkit.getPlayer(ch.getUniqueId());
-                    loc.withReplacements(time.localizeFor(pl)).sendTo(pl);
-                }
-            }
-
             if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
                 // check if game is over
                 boolean iLeft = false;
@@ -256,7 +234,8 @@ public class MinigameListener {
     public void onStageChange(RoundChangeLifecycleStageEvent event) {
         if (event.getStageBefore() == Stage.PREPARING && event.getStageAfter() == Stage.WAITING) {
             for (Challenger ch : event.getRound().getChallengers()) {
-                Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                Bukkit.getPlayer(ch.getUniqueId())
+                        .setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             }
 
             for (Team team : event.getRound().getTeams()) {
