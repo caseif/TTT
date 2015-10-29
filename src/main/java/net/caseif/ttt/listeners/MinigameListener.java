@@ -119,6 +119,7 @@ public class MinigameListener {
                 if (event.getRound().getLifecycleStage() == Stage.PREPARING
                         && event.getRound().getChallengers().size() <= 1) {
                     event.getRound().setLifecycleStage(Stage.WAITING);
+                    event.getRound().setTime(0);
                     RoundHelper.broadcast(event.getRound(),
                             TTTCore.locale.getLocalizable("info.global.round.status.starting.stopped")
                                     .withPrefix(Color.ERROR));
@@ -204,6 +205,7 @@ public class MinigameListener {
                     //TODO: duct tape
                     event.getRound().getMetadata().set("ending", true); //TODO: temp fix
                     event.getRound().setLifecycleStage(Stage.ROUND_OVER);
+                    event.getRound().setTime(0);
                     return;
                 }
             }

@@ -69,6 +69,7 @@ public class EndCommand extends CommandHandler {
 
         //TODO: should this instead immediately end the round?
         arena.get().getRound().get().setLifecycleStage(Constants.Stage.ROUND_OVER);
+        arena.get().getRound().get().setTime(0);
     }
 
 }
