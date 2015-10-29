@@ -200,8 +200,10 @@ public class MinigameListener {
                     if (tLeft) {
                         event.getRound().getMetadata().set("t-victory", true);
                     }
+
+                    //TODO: duct tape
                     event.getRound().getMetadata().set("ending", true); //TODO: temp fix
-                    event.getRound().end();
+                    event.getRound().setLifecycleStage(Stage.ROUND_OVER);
                     return;
                 }
             }

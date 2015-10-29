@@ -42,27 +42,33 @@ public class EndCommand extends CommandHandler {
     public void handle() {
         String arenaName = args[1];
         Optional<Arena> arena = TTTCore.mg.getArena(arenaName);
-        if (arena.isPresent()) {
-            if (arena.get().getRound().isPresent()
-                    && arena.get().getRound().get().getLifecycleStage() != Constants.Stage.WAITING) {
-                if (args.length > 2) {
-                    if (args[2].equalsIgnoreCase("t")) {
-                        arena.get().getRound().get().getMetadata().set("t-victory", true);
-                    } else if (!args[2].equalsIgnoreCase("i")) {
-                        printInvalidArgsError();
-                        return;
-                    }
-                }
-                arena.get().getRound().get().getMetadata().set("ending", true); //TODO: temp fix
-                arena.get().getRound().get().end();
-            } else {
-                TTTCore.locale.getLocalizable("error.arena.no-round").withPrefix(Color.ERROR)
-                        .withReplacements(Color.ARENA + arenaName + Color.ERROR).sendTo(sender);
-            }
-        } else {
-            TTTCore.locale.getLocalizable("error.arena.dne")
-                    .withPrefix(Color.ERROR).withReplacements(Color.ARENA + arenaName + Color.ERROR).sendTo(sender);
+        if (!arena.isPresent()) {
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR)
+                    .withReplacements(Color.ARENA + arenaName + Color.ERROR).sendTo(sender);
+            return;
         }
+
+        if (!arena.get().getRound().isPresent()
+                || arena.get().getRound().get().getLifecycleStage() == Constants.Stage.WAITING) {
+            TTTCore.locale.getLocalizable("error.arena.no-round").withPrefix(Color.ERROR)
+                    .withReplacements(Color.ARENA + arenaName + Color.ERROR).sendTo(sender);
+            return;
+        }
+
+        if (args.length > 2) {
+            if (args[2].equalsIgnoreCase("t")) {
+                arena.get().getRound().get().getMetadata().set("t-victory", true);
+            } else if (!args[2].equalsIgnoreCase("i")) {
+                printInvalidArgsError();
+                return;
+            }
+        }
+        //TODO: Duct tape isn't holding. Need to get API support implemented.
+        //arena.get().getRound().get().getMetadata().set("ending", true); //TODO: temp fix
+        //arena.get().getRound().get().end();
+
+        //TODO: should this instead immediately end the round?
+        arena.get().getRound().get().setLifecycleStage(Constants.Stage.ROUND_OVER);
     }
 
 }
