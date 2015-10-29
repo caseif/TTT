@@ -37,6 +37,7 @@ import com.google.common.collect.ImmutableMap;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -48,6 +49,7 @@ public class ScoreboardManager {
 
     private static final String OBJECTIVE_ID = "ttt";
 
+    private static final boolean SECONDARY_ENTRY_SUPPORT;
     private static final ImmutableMap<String, String> LIFE_STATUS_PREFIXES = ImmutableMap.<String, String>builder()
             .put(AliveStatus.ALIVE, "")
             .put(AliveStatus.MIA, "§7")
@@ -57,6 +59,18 @@ public class ScoreboardManager {
     private Round round;
     private Scoreboard iBoard = createBoard(false);
     private Scoreboard tBoard = createBoard(true);
+
+    static {
+        {
+            boolean support = false;
+            try {
+                Scoreboard.class.getMethod("getEntryTeam", String.class);
+                support = true;
+            } catch (NoSuchMethodException ignored) {
+            }
+            SECONDARY_ENTRY_SUPPORT = support;
+        }
+    }
 
     public ScoreboardManager(Round round) {
         this.round = round;
@@ -125,6 +139,7 @@ public class ScoreboardManager {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void updateEntry(Challenger ch, Scoreboard sb) {
         assert ch.getRound() == getRound();
 
@@ -137,10 +152,19 @@ public class ScoreboardManager {
             registerTeams(sb, sb == tBoard);
         }
         for (Team team : sb.getTeams()) {
-            if (team.getName().equals(teamName) && !team.hasEntry(ch.getName())) {
-                team.addEntry(ch.getName());
-            } else if (!team.getName().equals(teamName) && team.hasEntry(ch.getName())) {
-                team.removeEntry(ch.getName());
+            if (SECONDARY_ENTRY_SUPPORT) {
+                if (team.getName().equals(teamName) && !team.hasEntry(ch.getName())) {
+                    team.addEntry(ch.getName());
+                } else if (!team.getName().equals(teamName) && team.hasEntry(ch.getName())) {
+                    team.removeEntry(ch.getName());
+                }
+            } else {
+                Player pl = Bukkit.getPlayer(ch.getUniqueId());
+                if (team.getName().equals(teamName) && !team.hasPlayer(pl)) {
+                    team.addPlayer(pl);
+                } else if (!team.getName().equals(teamName) && team.hasPlayer(pl)) {
+                    team.removePlayer(pl);
+                }
             }
         }
         sb.getObjective(OBJECTIVE_ID).getScore(ch.getName())
@@ -179,8 +203,9 @@ public class ScoreboardManager {
             long time = round.getRemainingTime();
             NumberFormat nf = NumberFormat.getIntegerInstance();
             nf.setMinimumIntegerDigits(2);
-            String minutes = nf.format(time / 60);
-            String seconds = nf.format(time % 60);
+            final int secondsPerMinute = 60;
+            String minutes = nf.format(time / secondsPerMinute);
+            String seconds = nf.format(time % secondsPerMinute);
             title.append(minutes).append(":").append(seconds);
         }
         obj.setDisplayName(title.toString());
