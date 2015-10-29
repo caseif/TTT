@@ -134,6 +134,18 @@ public class RoundHelper {
                 .withPrefix(Color.INFO));
     }
 
+    public static void closeRound(Round round) {
+        KarmaHelper.allocateKarma(round);
+        KarmaHelper.saveKarma(round);
+
+        boolean tVic = round.getMetadata().has("t-victory");
+        String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
+        TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
+                .withPrefix(color)
+                .withReplacements(Color.ARENA + round.getArena().getName() + color).broadcast();
+        TitleHelper.sendVictoryTitle(round, tVic);
+    }
+
     public static void distributeItems(Round round) {
         for (Challenger ch : round.getChallengers()) {
             distributeItems(ch);

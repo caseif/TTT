@@ -56,6 +56,7 @@ public final class ConfigHelper {
     // Round structure
     public final int PREPTIME_SECONDS;
     public final int ROUNDTIME_SECONDS;
+    public final int POSTTIME_SECONDS;
     public final int MINIMUM_PLAYERS;
     public final int MAXIMUM_PLAYERS;
     public final boolean ALLOW_JOIN_AS_SPECTATOR;
@@ -134,6 +135,7 @@ public final class ConfigHelper {
         // Round settings
         PREPTIME_SECONDS = getInt("preptime-seconds");
         ROUNDTIME_SECONDS = getInt("roundtime-seconds");
+        POSTTIME_SECONDS = getInt("posttime-seconds");
         MINIMUM_PLAYERS = getInt("minimum-players");
         MAXIMUM_PLAYERS = getInt("maximum-players");
         ALLOW_JOIN_AS_SPECTATOR = getBoolean("allow-join-as-spectator");

@@ -34,7 +34,6 @@ import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
-import net.caseif.ttt.util.helper.platform.TitleHelper;
 
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
@@ -60,7 +59,8 @@ public class MinigameListener {
 
     @Subscribe
     public void onChallengerJoinRound(ChallengerJoinRoundEvent event) {
-        if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
+        if (event.getRound().getLifecycleStage() == Stage.PLAYING
+                || event.getRound().getLifecycleStage() == Stage.ROUND_OVER) {
             event.getChallenger().setSpectating(true);
             event.getChallenger().getMetadata().set(MetadataTag.PURE_SPECTATOR, true);
         }
@@ -131,12 +131,14 @@ public class MinigameListener {
     }
 
     @Subscribe
-    public void onRoundPrepare(RoundChangeLifecycleStageEvent event) {
+    public void onRoundChangeLifecycleStage(RoundChangeLifecycleStageEvent event) {
         if (event.getStageAfter() == Stage.PREPARING) {
             RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
                     .withPrefix(Color.INFO));
         } else if (event.getStageAfter() == Stage.PLAYING) {
             RoundHelper.startRound(event.getRound());
+        } else if (event.getStageAfter() == Stage.ROUND_OVER) {
+            RoundHelper.closeRound(event.getRound());
         }
     }
 
@@ -208,19 +210,6 @@ public class MinigameListener {
 
     @Subscribe
     public void onRoundEnd(RoundEndEvent event) {
-        KarmaHelper.allocateKarma(event.getRound());
-        KarmaHelper.saveKarma(event.getRound());
-
-        if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
-            boolean tVic = event.getRound().getMetadata().has("t-victory");
-
-            String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
-            TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
-                    .withPrefix(color)
-                    .withReplacements(Color.ARENA + event.getRound().getArena().getName() + color).broadcast();
-            TitleHelper.sendVictoryTitle(event.getRound(), tVic);
-        }
-
         for (Entity ent : Bukkit.getWorld(event.getRound().getArena().getWorld()).getEntities()) {
             if (ent.getType() == EntityType.ARROW) {
                 ent.remove();
@@ -242,7 +231,8 @@ public class MinigameListener {
                 event.getRound().removeTeam(team);
             }
 
-            event.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get().updateAllEntries();
+            event.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get()
+                    .updateAllEntries();
         }
     }
 

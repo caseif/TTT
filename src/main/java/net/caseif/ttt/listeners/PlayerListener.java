@@ -90,7 +90,9 @@ public class PlayerListener implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         if (event.getEntityType() == EntityType.PLAYER) {
             Optional<Challenger> victim = TTTCore.mg.getChallenger(event.getEntity().getUniqueId());
-            if (victim.isPresent() && victim.get().getRound().getLifecycleStage() != Stage.PLAYING) {
+            if (victim.isPresent()
+                    && (victim.get().getRound().getLifecycleStage() == Stage.WAITING
+                    || victim.get().getRound().getLifecycleStage() == Stage.PREPARING)) {
                 event.setCancelled(true);
                 if (event.getCause() == DamageCause.VOID) {
                     Bukkit.getPlayer(victim.get().getUniqueId()).teleport(
@@ -110,7 +112,8 @@ public class PlayerListener implements Listener {
                             : (Player) ((Projectile) ed.getDamager()).getShooter();
                     Optional<Challenger> damagerCh = TTTCore.mg.getChallenger(damager.getUniqueId());
                     if (damagerCh.isPresent()) {
-                        if (damagerCh.get().getRound().getLifecycleStage() != Stage.PLAYING
+                        if ((damagerCh.get().getRound().getLifecycleStage() == Stage.WAITING
+                                || damagerCh.get().getRound().getLifecycleStage() == Stage.PREPARING)
                                 || !victim.isPresent()
                                 || damagerCh.get().isSpectating()) {
                             event.setCancelled(true);

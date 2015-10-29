@@ -146,7 +146,7 @@ public class TTTCore {
         mg.setConfigValue(ConfigNode.MAX_PLAYERS, TTTCore.config.MAXIMUM_PLAYERS);
         Constants.Stage.initialize();
         mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
-                ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING));
+                ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING, Stage.ROUND_OVER));
 
         if (TTTCore.config.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
             logWarning("error.plugin.title-support");

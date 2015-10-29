@@ -26,6 +26,7 @@ package net.caseif.ttt.util.helper.gamemode;
 import static net.caseif.ttt.util.helper.misc.MiscHelper.isTraitor;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 
@@ -213,6 +214,10 @@ public class KarmaHelper {
     }
 
     private static void addKarma(Challenger challenger, int amount) {
+        if (challenger.getRound().getLifecycleStage() == Constants.Stage.ROUND_OVER) {
+            return;
+        }
+
         int karma = getKarma(challenger);
         if (amount == 0 && TTTCore.config.KARMA_ROUND_TO_ONE) {
             amount = 1;

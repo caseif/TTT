@@ -46,7 +46,7 @@ public class StartCommand extends CommandHandler {
         if (arena.isPresent()) {
             if (arena.get().getRound().isPresent()) {
                 Round round = arena.get().getRound().get();
-                if (round.getLifecycleStage() == Stage.PLAYING) {
+                if (round.getLifecycleStage() == Stage.PLAYING || round.getLifecycleStage() == Stage.ROUND_OVER) {
                     TTTCore.locale.getLocalizable("error.round.started").withPrefix(Color.ERROR).sendTo(sender);
                     return;
                 }

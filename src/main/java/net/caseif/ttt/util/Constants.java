@@ -62,6 +62,7 @@ public final class Constants {
         public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
         public static LifecycleStage PREPARING;
         public static LifecycleStage PLAYING;
+        public static LifecycleStage ROUND_OVER;
 
         static {
             initialize();
@@ -70,6 +71,7 @@ public final class Constants {
         public static void initialize() {
             PREPARING = new LifecycleStage("preparing", TTTCore.config.PREPTIME_SECONDS);
             PLAYING = new LifecycleStage("playing", TTTCore.config.ROUNDTIME_SECONDS);
+            ROUND_OVER = new LifecycleStage("round_over", TTTCore.config.POSTTIME_SECONDS);
         }
     }
 
@@ -88,8 +90,6 @@ public final class Constants {
     public static class Contributor {
         public static final String DEVELOPER = "dev";
         public static final String ALPHA_TESTER = "alpha";
-        public static final String TESTER = "tester";
-        public static final String TRANSLATOR = "translator";
     }
 
     public static class MetadataTag {

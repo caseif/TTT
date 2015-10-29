@@ -25,7 +25,8 @@ package net.caseif.ttt.command.handler.player;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.helper.event.DeathHelper;
 
 import com.google.common.base.Optional;
@@ -47,26 +48,27 @@ public class SlayCommand extends CommandHandler {
         @SuppressWarnings("deprecation")
         Player pl = Bukkit.getPlayer(name);
         if (pl == null) {
-            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Constants.Color.ERROR)
+            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR)
                     .sendTo(sender);
             return;
         }
 
         Optional<Challenger> ch = TTTCore.mg.getChallenger(pl.getUniqueId());
         if (!ch.isPresent()) {
-            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Constants.Color.ERROR)
+            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ERROR)
                     .sendTo(sender);
             return;
         }
 
-        if (ch.get().getRound().getLifecycleStage() != Constants.Stage.PLAYING) {
-            TTTCore.locale.getLocalizable("error.round.not-started").withPrefix(Constants.Color.ERROR).sendTo(sender);
+        if (ch.get().getRound().getLifecycleStage() == Stage.WAITING
+                || ch.get().getRound().getLifecycleStage() == Stage.PREPARING) {
+            TTTCore.locale.getLocalizable("error.round.not-started").withPrefix(Color.ERROR).sendTo(sender);
             return;
         }
 
         new DeathHelper(pl).handleEvent();
-        TTTCore.locale.getLocalizable("info.personal.slay").withPrefix(Constants.Color.ERROR).sendTo(pl);
-        TTTCore.locale.getLocalizable("info.personal.slay.other").withPrefix(Constants.Color.INFO)
+        TTTCore.locale.getLocalizable("info.personal.slay").withPrefix(Color.ERROR).sendTo(pl);
+        TTTCore.locale.getLocalizable("info.personal.slay.other").withPrefix(Color.INFO)
                 .withReplacements(ch.get().getName()).sendTo(sender);
     }
 

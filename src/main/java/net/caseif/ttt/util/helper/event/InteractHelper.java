@@ -194,7 +194,8 @@ public class InteractHelper {
 
             Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
             if (!ch.isPresent() || ch.get().isSpectating()
-                    || (ch.get().getRound().getLifecycleStage() != Constants.Stage.PLAYING)) {
+                    || (ch.get().getRound().getLifecycleStage() == Constants.Stage.WAITING
+                    || ch.get().getRound().getLifecycleStage() == Constants.Stage.PREPARING)) {
                 return;
             }
 

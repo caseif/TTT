@@ -61,15 +61,13 @@ public class ScoreboardManager {
     private Scoreboard tBoard = createBoard(true);
 
     static {
-        {
-            boolean support = false;
-            try {
-                Scoreboard.class.getMethod("getEntryTeam", String.class);
-                support = true;
-            } catch (NoSuchMethodException ignored) {
-            }
-            SECONDARY_ENTRY_SUPPORT = support;
+        boolean support = false;
+        try {
+            Scoreboard.class.getMethod("getEntryTeam", String.class);
+            support = true;
+        } catch (NoSuchMethodException ignored) {
         }
+        SECONDARY_ENTRY_SUPPORT = support;
     }
 
     public ScoreboardManager(Round round) {
