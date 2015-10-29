@@ -25,6 +25,7 @@ package net.caseif.ttt.scoreboard;
 
 import static net.caseif.ttt.util.helper.misc.MiscHelper.fromNullableString;
 
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.AliveStatus;
 import net.caseif.ttt.util.Constants.Color;
@@ -169,7 +170,8 @@ public class ScoreboardManager {
     private void updateTitle(Objective obj) {
         StringBuilder title = new StringBuilder();
         title.append(Color.LABEL);
-        title.append(round.getLifecycleStage().getId().toUpperCase());
+        title.append(TTTCore.locale.getLocalizable("fragment.stage." + round.getLifecycleStage().getId())
+                .localize().toUpperCase());
 
         if (round.getLifecycleStage() != Constants.Stage.WAITING) {
             title.append(" - ");
