@@ -42,7 +42,7 @@ detective-pct: 0.13
 # This will override the value of detective-pct if the minimum count is reached.
 detective-min-players: 10
 
-# The number of seconds required for the DNA scanner to charge (updateAllEntries).
+# The number of seconds required for the DNA scanner to charge (update).
 # (Vanilla TTT uses 25 as default, but also displays the exact location rather than just the direction.)
 scanner-charge-time: 7.5
 
@@ -175,7 +175,7 @@ verbose-logging: true
 # is not available in a locale. It will also be used for console messages.
 locale: en_US
 
-# Whether the plugin should updateAllEntries itself (highly recommended).
+# Whether the plugin should update itself (highly recommended).
 enable-auto-update: true
 
 # Whether the plugin is allowed to submit anonymous usage information to MCStats.

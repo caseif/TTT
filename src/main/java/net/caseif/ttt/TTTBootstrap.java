@@ -107,7 +107,7 @@ public class TTTBootstrap extends JavaPlugin {
     }
 
     private void initializeUpdater() {
-        if (getConfig().getBoolean("enable-auto-updateAllEntries")) {
+        if (getConfig().getBoolean("enable-auto-update")) {
             new Updater(this, CURSEFORGE_PROJECT_ID, getFile(), Updater.UpdateType.DEFAULT,
                     new TTTUpdateCallback(), true);
 
