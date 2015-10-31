@@ -24,6 +24,8 @@
 package net.caseif.ttt;
 
 import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
+import static net.caseif.ttt.util.Constants.STEEL_CURSEFORGE_PROJECT_ID;
+import static net.caseif.ttt.util.Constants.TTT_CURSEFORGE_PROJECT_ID;
 
 import net.caseif.ttt.command.SpecialCommandManager;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
@@ -39,9 +41,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class TTTBootstrap extends JavaPlugin {
-
-    private static final int CURSEFORGE_PROJECT_ID = 52474;
-    private static final int STEEL_CURSEFORGE_PROJECT_ID = 95203;
 
     public static TTTBootstrap INSTANCE;
 
@@ -109,7 +108,7 @@ public class TTTBootstrap extends JavaPlugin {
 
     private void initializeUpdater() {
         if (getConfig().getBoolean("enable-auto-update")) {
-            new Updater(this, CURSEFORGE_PROJECT_ID, getFile(), Updater.UpdateType.DEFAULT,
+            new Updater(this, TTT_CURSEFORGE_PROJECT_ID, getFile(), Updater.UpdateType.DEFAULT,
                     new TTTUpdateCallback(), true);
 
             if (!STEEL) {
