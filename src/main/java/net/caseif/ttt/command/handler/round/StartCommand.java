@@ -51,8 +51,7 @@ public class StartCommand extends CommandHandler {
                     return;
                 }
                 if (round.getChallengers().size() > 1) {
-                    round.setLifecycleStage(Stage.PLAYING);
-                    round.setTime(0);
+                    round.setLifecycleStage(Stage.PLAYING, true);
                     TTTCore.locale.getLocalizable("info.personal.arena.set-stage.playing.success")
                             .withPrefix(Color.INFO)
                             .withReplacements(Color.ARENA + arena.get().getName() + Color.INFO).sendTo(sender);

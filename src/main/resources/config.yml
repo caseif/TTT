@@ -16,8 +16,7 @@ preptime-seconds: 60
 roundtime-seconds: 360
 
 # The duration of the period after the round has ended but before it has reset.
-
-posttime-seconds: 30
+posttime-seconds: 15
 
 # The number of players required for a round to automtically enter its preparation period.
 minimum-players: 3

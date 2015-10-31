@@ -97,9 +97,7 @@ public class MinigameListener {
     @Subscribe
     public void onChallengerLeaveRound(ChallengerLeaveRoundEvent event) {
         Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
-        pl.setScoreboard(
-                TTTCore.getPlugin().getServer().getScoreboardManager().getNewScoreboard()
-        );
+        pl.setScoreboard(TTTCore.getPlugin().getServer().getScoreboardManager().getNewScoreboard());
 
         if (event.getChallenger().getMetadata().has(MetadataTag.SEARCHING_BODY)) {
             pl.closeInventory();
@@ -109,7 +107,7 @@ public class MinigameListener {
         pl.setCompassTarget(LocationHelper.convert(event.getReturnLocation()).getWorld().getSpawnLocation());
         pl.setHealth(pl.getMaxHealth());
 
-        if (!event.getRound().getMetadata().has("ending")) { //TODO: temp fix
+        if (!event.getRound().isEnding()) {
             if (!event.getChallenger().getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
                 KarmaHelper.saveKarma(event.getChallenger());
                 RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
@@ -118,8 +116,7 @@ public class MinigameListener {
 
                 if (event.getRound().getLifecycleStage() == Stage.PREPARING
                         && event.getRound().getChallengers().size() <= 1) {
-                    event.getRound().setLifecycleStage(Stage.WAITING);
-                    event.getRound().setTime(0);
+                    event.getRound().setLifecycleStage(Stage.WAITING, true);
                     RoundHelper.broadcast(event.getRound(),
                             TTTCore.locale.getLocalizable("info.global.round.status.starting.stopped")
                                     .withPrefix(Color.ERROR));
@@ -129,6 +126,10 @@ public class MinigameListener {
 
         event.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get()
                 .remove(event.getChallenger());
+
+        if (event.getRound().getChallengers().isEmpty()) {
+            event.getRound().end();
+        }
     }
 
     @Subscribe
@@ -202,10 +203,7 @@ public class MinigameListener {
                         event.getRound().getMetadata().set("t-victory", true);
                     }
 
-                    //TODO: duct tape
-                    event.getRound().getMetadata().set("ending", true); //TODO: temp fix
-                    event.getRound().setLifecycleStage(Stage.ROUND_OVER);
-                    event.getRound().setTime(0);
+                    event.getRound().setLifecycleStage(Stage.ROUND_OVER, true);
                     return;
                 }
             }

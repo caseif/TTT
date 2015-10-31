@@ -34,7 +34,8 @@ import org.bukkit.ChatColor;
  */
 public final class Constants {
 
-    public static final int MIN_FLINT_VERSION = 1;
+    public static final int MIN_FLINT_VERSION = 2;
+    public static final String CODENAME = "Alicia";
 
     // message colors
     public static class Color {

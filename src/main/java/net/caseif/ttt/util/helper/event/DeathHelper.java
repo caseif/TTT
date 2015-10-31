@@ -114,7 +114,6 @@ public class DeathHelper {
             player.teleport(loc);
         }
         ch.setSpectating(true);
-        //ch.setPrefix(Config.SB_MIA_PREFIX); //TODO
         player.setHealth(player.getMaxHealth());
     }
 

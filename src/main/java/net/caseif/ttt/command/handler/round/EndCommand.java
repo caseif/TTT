@@ -63,13 +63,9 @@ public class EndCommand extends CommandHandler {
                 return;
             }
         }
-        //TODO: Duct tape isn't holding. Need to get API support implemented.
-        //arena.get().getRound().get().getMetadata().set("ending", true); //TODO: temp fix
-        //arena.get().getRound().get().end();
 
         //TODO: should this instead immediately end the round?
-        arena.get().getRound().get().setLifecycleStage(Constants.Stage.ROUND_OVER);
-        arena.get().getRound().get().setTime(0);
+        arena.get().getRound().get().setLifecycleStage(Constants.Stage.ROUND_OVER, true);
     }
 
 }

@@ -40,6 +40,7 @@ import net.caseif.ttt.util.helper.platform.ConfigHelper;
 import com.google.common.collect.ImmutableSet;
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.FlintCore;
+import net.caseif.flint.arena.SpawningMode;
 import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.minigame.Minigame;
 import net.caseif.rosetta.LocaleManager;
@@ -62,8 +63,6 @@ import java.util.logging.Logger;
 public class TTTCore {
 
     private static TTTCore INSTANCE;
-
-    private static final String CODENAME = "Alicia";
 
     public static Minigame mg;
 
@@ -112,7 +111,7 @@ public class TTTCore {
         applyConfigOptions();
 
         doCompatibilityActions();
-        mg.setConfigValue(ConfigNode.RANDOM_SPAWNING, true);
+        mg.setConfigValue(ConfigNode.SPAWNING_MODE, SpawningMode.RANDOM);
 
         // register events and commands
         mg.getEventBus().register(new MinigameListener());
@@ -170,10 +169,6 @@ public class TTTCore {
         return plugin;
     }
 
-    public static String getCodename() {
-        return CODENAME;
-    }
-
     public void createFile(String s) {
         File f = new File(TTTCore.plugin.getDataFolder(), s);
         if (!f.exists()) {
@@ -181,6 +176,7 @@ public class TTTCore {
                 logInfo("info.plugin.compatibility.creating-file", s);
             }
             try {
+                //noinspection ResultOfMethodCallIgnored
                 f.createNewFile();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -196,6 +192,7 @@ public class TTTCore {
             OutputStream os = null;
             try {
                 File dir = new File(TTTCore.plugin.getDataFolder(), "locales");
+                //noinspection ResultOfMethodCallIgnored
                 dir.mkdir();
                 exLocale.createNewFile();
                 is = TTTCore.class.getClassLoader().getResourceAsStream("locales/" + s);

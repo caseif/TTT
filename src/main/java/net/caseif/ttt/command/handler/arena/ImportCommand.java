@@ -58,7 +58,6 @@ public class ImportCommand extends CommandHandler {
                 World w = Bukkit.createWorld(new WorldCreator(worldName));
                 if (w != null) {
                     if (TTTCore.mg.getArena(worldName).isPresent()) {
-                        //TODO: replace this message with something more accurate
                         TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(Color.ERROR)
                                 .sendTo(sender);
                     }

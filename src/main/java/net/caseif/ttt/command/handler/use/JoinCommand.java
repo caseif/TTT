@@ -31,7 +31,7 @@ import net.caseif.ttt.util.helper.gamemode.BanHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;
-import net.caseif.flint.exception.round.RoundJoinException;
+import net.caseif.flint.round.JoinResult;
 import net.caseif.flint.round.Round;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -60,23 +60,23 @@ public class JoinCommand extends CommandHandler {
                 && !TTTCore.config.ALLOW_JOIN_AS_SPECTATOR) {
             TTTCore.locale.getLocalizable("error.round.in-progress").withPrefix(Color.ERROR).sendTo(sender);
         }
-        try {
-            round.addChallenger(((Player) sender).getUniqueId());
-        } catch (RoundJoinException ex) {
-            switch (ex.getReason()) {
-                case ALREADY_ENTERED: {
+
+        JoinResult result = round.addChallenger(((Player) sender).getUniqueId());
+        if (result.getStatus() != JoinResult.Status.SUCCESS) {
+            switch (result.getStatus()) {
+                case ALREADY_IN_ROUND: {
                     TTTCore.locale.getLocalizable("error.round.inside").withPrefix(Color.ERROR).sendTo(sender);
                     break;
                 }
-                case FULL: {
-                    TTTCore.locale.getLocalizable("error.round.full").withPrefix(Color.ERROR).sendTo(sender);
+                case INTERNAL_ERROR: {
+                    throw new RuntimeException(result.getThrowable()); // sender is notified of internal error
+                }
+                case PLAYER_OFFLINE: {
+                    TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR).sendTo(sender);
                     break;
                 }
-                case INTERNAL_ERROR: {
-                    throw new RuntimeException(ex); // sender is notified of internal error
-                }
-                case OFFLINE: {
-                    TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR).sendTo(sender);
+                case ROUND_FULL: {
+                    TTTCore.locale.getLocalizable("error.round.full").withPrefix(Color.ERROR).sendTo(sender);
                     break;
                 }
                 default: {

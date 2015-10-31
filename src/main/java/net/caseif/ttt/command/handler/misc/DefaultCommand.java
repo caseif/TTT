@@ -25,6 +25,7 @@ package net.caseif.ttt.command.handler.misc;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.helper.misc.MiscHelper;
 
@@ -40,7 +41,7 @@ public class DefaultCommand extends CommandHandler {
     public void handle() {
         TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(Color.SPECIAL)
                 .withReplacements(TTTCore.getPlugin().getDescription().getVersion()
-                                + " \"" + TTTCore.getCodename() + "\"",
+                                + " \"" + Constants.CODENAME + "\"",
                         MiscHelper.prettyList(TTTCore.getPlugin().getDescription().getAuthors()))
                 .sendTo(sender);
         TTTCore.locale.getLocalizable("info.command.usage.help").withPrefix(Color.INFO).sendTo(sender);

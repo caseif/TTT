@@ -51,8 +51,7 @@ public class PrepareCommand extends CommandHandler {
                     return;
                 }
                 if (round.getChallengers().size() > 1) {
-                    round.setLifecycleStage(Stage.PREPARING);
-                    round.setTime(0);
+                    round.setLifecycleStage(Stage.PREPARING, true);
                     TTTCore.locale.getLocalizable("info.personal.arena.set-stage.preparing.success")
                             .withPrefix(Color.INFO).withReplacements(Color.ARENA + arena.get().getName() + Color.ERROR)
                             .sendTo(sender);
