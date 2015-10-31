@@ -34,12 +34,10 @@ import net.caseif.ttt.util.helper.platform.NmsHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
-import net.caseif.flint.round.Round;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -47,7 +45,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +96,7 @@ public class DeathHelper {
             block = loc.add(0, 1, 0).getBlock();
         }
 
-        flagForRollback(block.getLocation(), ch.getRound());
+        ch.getRound().getArena().markForRollback(LocationHelper.convert(loc));
 
         createBody(block.getLocation(), ch, killer.orNull());
 
@@ -184,29 +181,6 @@ public class DeathHelper {
         ));
         ch.getRound().getMetadata().set(MetadataTag.BODY_LIST, bodies);
         ch.getMetadata().set(MetadataTag.BODY, body);
-    }
-
-    private void flagForRollback(Location loc, Round round) {
-        //TTTCore.mg.getRollbackManager().logBlockChange(block, ch.getArena()); //TODO (probably Flint 1.1)
-        //TODO: Add check for doors and such (sort of implemented as of 0.8)
-        try {
-            //TODO: temporary hack (I'm still a terrible person for even writing this)
-            if (fieldRbHelper == null) {
-                fieldRbHelper = round.getArena().getClass().getDeclaredField("rbHelper");
-                fieldRbHelper.setAccessible(true);
-            }
-            Object rbHelper = fieldRbHelper.get(round.getArena());
-            if (logBlockChange == null) {
-                logBlockChange
-                        = rbHelper.getClass().getDeclaredMethod("logBlockChange", Location.class, BlockState.class);
-                logBlockChange.setAccessible(true);
-            }
-            logBlockChange.invoke(rbHelper, loc, loc.getBlock().getState());
-
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchFieldException | NoSuchMethodException ex) {
-            TTTCore.log.severe("Failed to log body for rollback");
-            ex.printStackTrace();
-        }
     }
 
 }
