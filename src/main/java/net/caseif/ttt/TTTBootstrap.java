@@ -27,6 +27,7 @@ import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.command.SpecialCommandManager;
 import net.caseif.ttt.listeners.SpecialPlayerListener;
+import net.caseif.ttt.util.FreshUpdater;
 import net.caseif.ttt.util.helper.ConfigHelper;
 
 import net.caseif.rosetta.LocaleManager;
@@ -112,8 +113,8 @@ public class TTTBootstrap extends JavaPlugin {
                     new TTTUpdateCallback(), true);
 
             if (!STEEL) {
-                new Updater(this, STEEL_CURSEFORGE_PROJECT_ID, new File(getDataFolder().getParentFile(), "Steel.jar"),
-                        Updater.UpdateType.DEFAULT,
+                new FreshUpdater(this, STEEL_CURSEFORGE_PROJECT_ID,
+                        new File(getDataFolder().getParentFile(), "Steel.jar"), Updater.UpdateType.NO_VERSION_CHECK,
                         new SteelUpdateCallback(), true);
             }
         }
