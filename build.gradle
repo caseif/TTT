@@ -13,7 +13,7 @@ defaultTasks 'clean', 'licenseFormat', 'build', 'shadowJar'
 
 // Project information
 group = 'net.caseif.ttt'
-version = '0.8.7'
+version = '0.8.8'
 
 // Extended project information
 ext.projectName = 'ttt'
@@ -101,6 +101,11 @@ shadowJar {
         include dependency(metrics)
     }
     classifier = ''
+
+    relocate('net.caseif.rosetta', 'net.caseif.ttt.lib.net.caseif.rosetta')
+    relocate('net.caseif.crosstitles', 'net.caseif.ttt.lib.net.caseif.crosstitles')
+    relocate('net.gravitydevelopment.updater', 'net.caseif.ttt.lib.net.gravitydevelopment.updater')
+    relocate('org.mcstats', 'net.caseif.ttt.lib.org.mcstats')
 }
 
 task sourceJar(type: Jar) {
