@@ -37,6 +37,7 @@ import com.google.common.collect.ImmutableList;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
@@ -222,12 +223,17 @@ public class PlayerListener implements Listener {
         Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
         if (ch.isPresent()) {
             if (ch.get().isSpectating()) {
-                Localizable dead = TTTCore.locale.getLocalizable("fragment.dead");
+                boolean spec = ch.get().getMetadata().has(MetadataTag.PURE_SPECTATOR);
+
+                Localizable prefix = TTTCore.locale.getLocalizable(spec ? "fragment.spectator" : "fragment.dead");
+                ChatColor color = spec ? ChatColor.GRAY : ChatColor.RED;
+
                 for (Player pl : event.getRecipients()) {
-                    pl.sendMessage("[" + dead.localizeFor(pl).toUpperCase() + "]"
+                    pl.sendMessage(color + "[" + prefix.localizeFor(pl).toUpperCase() + "]" + ChatColor.WHITE
                             + "<" + event.getPlayer().getDisplayName() + "> "
                             + event.getMessage());
                 }
+
                 event.getRecipients().clear();
             }
         }
