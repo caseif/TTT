@@ -200,7 +200,7 @@ public class MinigameListener {
                 }
                 if (!(tLeft && iLeft)) {
                     if (tLeft) {
-                        event.getRound().getMetadata().set("t-victory", true);
+                        event.getRound().getMetadata().set(MetadataTag.TRAITOR_VICTORY, true);
                     }
 
                     event.getRound().setLifecycleStage(Stage.ROUND_OVER, true);
@@ -212,6 +212,10 @@ public class MinigameListener {
 
     @Subscribe
     public void onRoundEnd(RoundEndEvent event) {
+        if (event.getRound().getLifecycleStage() != Stage.ROUND_OVER) {
+            RoundHelper.closeRound(event.getRound());
+        }
+
         for (Entity ent : Bukkit.getWorld(event.getRound().getArena().getWorld()).getEntities()) {
             if (ent.getType() == EntityType.ARROW) {
                 ent.remove();

@@ -25,8 +25,10 @@ package net.caseif.ttt.command.handler.round;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.Constants.MetadataTag;
+import net.caseif.ttt.util.Constants.Stage;
+import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;
@@ -40,6 +42,10 @@ public class EndCommand extends CommandHandler {
 
     @Override
     public void handle() {
+        handle(false);
+    }
+
+    protected void handle(boolean force) {
         String arenaName = args[1];
         Optional<Arena> arena = TTTCore.mg.getArena(arenaName);
         if (!arena.isPresent()) {
@@ -49,7 +55,7 @@ public class EndCommand extends CommandHandler {
         }
 
         if (!arena.get().getRound().isPresent()
-                || arena.get().getRound().get().getLifecycleStage() == Constants.Stage.WAITING) {
+                || arena.get().getRound().get().getLifecycleStage() == Stage.WAITING) {
             TTTCore.locale.getLocalizable("error.arena.no-round").withPrefix(Color.ERROR)
                     .withReplacements(Color.ARENA + arenaName + Color.ERROR).sendTo(sender);
             return;
@@ -57,15 +63,18 @@ public class EndCommand extends CommandHandler {
 
         if (args.length > 2) {
             if (args[2].equalsIgnoreCase("t")) {
-                arena.get().getRound().get().getMetadata().set("t-victory", true);
+                arena.get().getRound().get().getMetadata().set(MetadataTag.TRAITOR_VICTORY, true);
             } else if (!args[2].equalsIgnoreCase("i")) {
                 printInvalidArgsError();
                 return;
             }
         }
 
-        //TODO: should this instead immediately end the round?
-        arena.get().getRound().get().setLifecycleStage(Constants.Stage.ROUND_OVER, true);
+        if (force) {
+            arena.get().getRound().get().end();
+        } else {
+            arena.get().getRound().get().setLifecycleStage(Stage.ROUND_OVER, true);
+        }
     }
 
 }

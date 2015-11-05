@@ -111,6 +111,8 @@ public final class Constants {
 
         public static final String TEAM_NAME = "teamName";
         public static final String SCOREBOARD_MANAGER = "scoreboardManager";
+
+        public static final String TRAITOR_VICTORY = "t-victory";
     }
 
 }
