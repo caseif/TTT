@@ -57,6 +57,10 @@ public class KarmaHelper {
     }
 
     public static void saveKarma(Challenger challenger) {
+        if (challenger.getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
+            return; // we don't want to save karma for a player that's simply spectating
+        }
+
         playerKarma.put(challenger.getUniqueId(), getKarma(challenger));
         File karmaFile = new File(TTTCore.getPlugin().getDataFolder(), "karma.yml");
         try {
@@ -174,7 +178,9 @@ public class KarmaHelper {
     }
 
     public static int getKarma(Challenger mp) {
-        return mp.getMetadata().has(MetadataTag.KARMA) ? mp.getMetadata().<Integer>get(MetadataTag.KARMA).get() : 0;
+        return mp.getMetadata().has(MetadataTag.KARMA)
+                ? mp.getMetadata().<Integer>get(MetadataTag.KARMA).get()
+                : TTTCore.config.KARMA_STARTING;
     }
 
     public static void applyDamageReduction(Challenger challenger) {
