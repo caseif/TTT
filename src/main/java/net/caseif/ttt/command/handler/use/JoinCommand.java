@@ -54,7 +54,7 @@ public class JoinCommand extends CommandHandler {
             return;
         }
 
-        Round round = arena.get().getRound().isPresent() ? arena.get().getRound().get() : arena.get().createRound();
+        Round round = arena.get().getOrCreateRound();
 
         if ((round.getLifecycleStage() == Stage.PLAYING || round.getLifecycleStage() == Stage.ROUND_OVER)
                 && !TTTCore.config.ALLOW_JOIN_AS_SPECTATOR) {

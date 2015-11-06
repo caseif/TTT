@@ -33,7 +33,6 @@ import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
@@ -56,15 +55,12 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
-
-    private final ImmutableList<String> disabledCommands = ImmutableList.of("kit", "msg", "pm", "r", "me", "back");
 
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -197,18 +193,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         new DeathHelper(event).handleEvent();
-    }
-
-    @EventHandler
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        String label = event.getMessage().split(" ")[0].substring(1);
-        if (disabledCommands.contains(label)) {
-            if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
-                event.setCancelled(true);
-                TTTCore.locale.getLocalizable("error.round.disabled-command").withPrefix(Color.ERROR)
-                        .sendTo(event.getPlayer());
-            }
-        }
     }
 
     @EventHandler

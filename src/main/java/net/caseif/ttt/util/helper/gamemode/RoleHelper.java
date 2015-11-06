@@ -32,9 +32,7 @@ import com.google.common.collect.Lists;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.challenger.Team;
 import net.caseif.flint.round.Round;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +47,7 @@ public class RoleHelper {
         Team iTeam = round.getOrCreateTeam(Role.INNOCENT);
         Team tTeam = round.getOrCreateTeam(Role.TRAITOR);
         for (Challenger ch : round.getChallengers()) {
-            iTeam.addChallenger(ch);
+            ch.setTeam(iTeam);
         }
 
         int tLimit = MiscHelper.clamp((int) (players * TTTCore.config.TRAITOR_PCT), 1, players - 1);
@@ -57,7 +55,7 @@ public class RoleHelper {
         List<Challenger> tList = Lists.newArrayList(round.getChallengers());
         Collections.shuffle(tList);
         for (int i = 0; i < tLimit; i++) {
-            tTeam.addChallenger(tList.get(i));
+            tList.get(i).setTeam(tTeam);
         }
 
         int dLimit = (int) (players * TTTCore.config.DETECTIVE_PCT);

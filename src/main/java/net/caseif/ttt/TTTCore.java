@@ -109,6 +109,8 @@ public class TTTCore {
         // register plugin with Flint
         mg = FlintCore.registerPlugin(plugin.getName());
 
+        mg.setConfigValue(ConfigNode.FORBIDDEN_COMMANDS, ImmutableSet.of("kit", "msg", "pm", "r", "me", "back"));
+
         applyConfigOptions();
 
         doCompatibilityActions();
@@ -195,6 +197,7 @@ public class TTTCore {
                 File dir = new File(TTTCore.plugin.getDataFolder(), "locales");
                 //noinspection ResultOfMethodCallIgnored
                 dir.mkdir();
+                //noinspection ResultOfMethodCallIgnored
                 exLocale.createNewFile();
                 is = TTTCore.class.getClassLoader().getResourceAsStream("locales/" + s);
                 os = new FileOutputStream(exLocale);
