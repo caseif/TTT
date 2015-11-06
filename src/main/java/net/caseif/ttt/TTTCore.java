@@ -34,6 +34,7 @@ import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
+import net.caseif.ttt.util.compatibility.LegacyMglibStorageDeleter;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
@@ -240,6 +241,8 @@ public class TTTCore {
 
         LegacyMglibStorageConverter.convertArenaStore();
         LegacyMglibStorageConverter.convertLobbyStore();
+
+        LegacyMglibStorageDeleter.deleteObsoleteStorage();
     }
 
 }
