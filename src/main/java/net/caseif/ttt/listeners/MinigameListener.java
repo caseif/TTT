@@ -38,6 +38,7 @@ import net.caseif.ttt.util.helper.platform.LocationHelper;
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.challenger.Team;
+import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.event.lobby.PlayerClickLobbySignEvent;
 import net.caseif.flint.event.round.RoundChangeLifecycleStageEvent;
 import net.caseif.flint.event.round.RoundEndEvent;
@@ -239,6 +240,8 @@ public class MinigameListener {
 
             event.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get()
                     .updateAllEntries();
+        } else if (event.getStageAfter() == Stage.ROUND_OVER) {
+            event.getRound().setConfigValue(ConfigNode.WITHHOLD_SPECTATOR_CHAT, false);
         }
     }
 
