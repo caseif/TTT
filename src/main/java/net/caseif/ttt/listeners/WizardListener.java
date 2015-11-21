@@ -25,7 +25,7 @@ package net.caseif.ttt.listeners;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.helper.LocationHelper;
+import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -94,7 +94,7 @@ public class WizardListener implements Listener {
                         event.getPlayer().sendMessage(DIVIDER);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.id")
                                 .withPrefix(Color.INFO)
-                                .withReplacements(Color.USAGE + event.getMessage().toLowerCase() + Color.INFO)
+                                .withReplacements(Color.FLAIR + event.getMessage().toLowerCase() + Color.INFO)
                                 .sendTo(event.getPlayer());
                     } else {
                         TTTCore.locale.getLocalizable("error.arena.create.id-already-exists")
@@ -123,7 +123,7 @@ public class WizardListener implements Listener {
                                 boundary);
                         event.getPlayer().sendMessage(DIVIDER);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(Color.INFO)
-                                .withReplacements(Color.USAGE + "/ttt join "
+                                .withReplacements(Color.FLAIR + "/ttt join "
                                         + ((String) info[Stage.WIZARD_ID]).toLowerCase() + Color.INFO)
                                 .sendTo(event.getPlayer());
                         WIZARDS.remove(event.getPlayer().getUniqueId());
@@ -156,7 +156,7 @@ public class WizardListener implements Listener {
                         event.getPlayer().sendMessage(DIVIDER);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.bound-1")
                                 .withPrefix(Color.INFO)
-                                .withReplacements(Color.USAGE + "(x=" + c.getX() + ", z=" + c.getZ() + ")" + Color.INFO)
+                                .withReplacements(Color.FLAIR + "(x=" + c.getX() + ", z=" + c.getZ() + ")" + Color.INFO)
                                 .sendTo(event.getPlayer());
                         break;
                     case Stage.WIZARD_SECOND_BOUND:
@@ -171,8 +171,8 @@ public class WizardListener implements Listener {
                             event.getPlayer().sendMessage(DIVIDER);
                             TTTCore.locale.getLocalizable("info.personal.arena.create.bound-2")
                                     .withPrefix(Color.INFO)
-                                    .withReplacements(Color.USAGE + "(x=" + c.getX() + ", z=" + c.getZ() + ")"
-                                            + Color.INFO, Color.USAGE
+                                    .withReplacements(Color.FLAIR + "(x=" + c.getX() + ", z=" + c.getZ() + ")"
+                                            + Color.INFO, Color.FLAIR
                                             + TTTCore.locale.getLocalizable("info.personal.arena.create.ok-keyword")
                                             .localizeFor(event.getPlayer()) + Color.INFO)
                                     .sendTo(event.getPlayer());

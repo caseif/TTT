@@ -9,54 +9,65 @@
 # Round Settings #
 ##################
 
-# How long should the plugin wait before starting a new round once enough players have joined?
+# The duration of the "preparation" period, before roles are assigned and the round fully starts.
 preptime-seconds: 60
 
-# How long should rounds last for?
+# The duration of rounds after the preparation period.
 roundtime-seconds: 360
 
-# How many players are required to start a round?
+# The duration of the period after the round has ended but before it has reset.
+posttime-seconds: 15
+
+# The number of players required for a round to automtically enter its preparation period.
 minimum-players: 3
 
-# How many players are allowed to enter a given round? (Set to -1 for no limit.)
+# The maximum number of players permitted in a round (set to -1 for no limit).
 maximum-players: 32
 
-# Should players be permitted to join rounds in progress as spectators?
+# Whether players may join rounds in-progress as spectators.
 allow-join-as-spectator: true
 
 ##############################
 # Traitor/Detective Settings #
 ##############################
 
-# What should the ratio of traitors to innocents be (as a decimal)?
+# The ratio of traitors to innocents as a decimal.
 traitor-pct: 0.25
 
-# What should the ratio be for detectives to other players?
+# The ratio of detectives to other players.
 detective-pct: 0.13
 
-# If at least this many players are in a game, there is guaranteed to be a detective.
+# The minimum number of players required for a detective to be assigned in a round.
+# This will override the value of detective-pct if the minimum count is reached.
 detective-min-players: 10
 
-# How many seconds should the DNA scanner take to charge?
+# The number of seconds required for the DNA scanner to charge (update).
 # (Vanilla TTT uses 25 as default, but also displays the exact location rather than just the direction.)
 scanner-charge-time: 7.5
+
+# Maximum range in meters within which a DNA sample of the killer is planted on the corpse of the victim.
+killer-dna-range: 10
+
+# The time in seconds DNA samples last for when the killer is 0 meters from the victim.
+# When the killer is further, the time will be decreased.
+killer-dna-basetime: 100
 
 ##################
 # Title Settings #
 ##################
 
-# Should TTT send fancy titles to players on round start and end?
+# Whether TTT should send titles to players on round start and end.
 # This will not do anything on Minecraft versions prior to 1.8.
 send-titles: true
 
-# If true, status titles (event.g. "You are a traitor!") will be sent as full-sized titles.
-# If false (default), subtitles will be sent.
+# Whether status titles (event.g. "You are a traitor!") should be sent as full-sized titles.
+# If false (default), subtitles will be sent instead.
 # Setting this to true may cause the title to obstruct the player's screen.
 large-status-titles: false
 
 
-# If true, status titles (event.g. "The traitors won!") will be sent as full-sized titles.
-# If false (default), subtitles will be sent.
+# Whether status titles (event.g. "The traitors won!") should be sent as full-sized titles.
+# If false (default), subtitles will be sent instead.
 # Setting this to true may cause the title to obstruct the player's screen and additionally may
 # cause the title to not fit on the screen for certain locales (such as de_DE).
 large-victory-titles: false
@@ -65,7 +76,7 @@ large-victory-titles: false
 # Weapon Settings #
 ###################
 
-# The item to use as a gun. This should be a raw Material enum value.
+# The item to use as a crowbar. This should be a raw Material enum value.
 # See here for all valid values: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 crowbar-item: IRON_SWORD
 
@@ -74,14 +85,14 @@ crowbar-item: IRON_SWORD
 # The default value, IRON_BARDING, represents iron horse armor.
 gun-item: IRON_BARDING
 
-# How much damage should crowbars do at full karma (in half-hearts)?
-crowbar-damage: 6
+# The amount of damage (in half-hearts) each hit with a crowbar should do.
+crowbar-damage: 5
 
-# Should ammunition (arrows) be required to use guns?
+# Whether ammunition is required to use guns.
 require-ammo-for-guns: true
 
-# How many arrows should be given to players upon the round starting?
-initial-ammo: 40
+# The number of arrows given to players on round start.
+initial-ammo: 55
 
 ##################
 # Karma Settings #
@@ -91,96 +102,80 @@ initial-ammo: 40
 # However, beyond this limit it will follow a more parabolic curve, dropping more severely the lower the player's karma.
 karma-strict: true
 
-# What karma should players initially be given?
+# The initial karma assigned to players. This will be clamped to karma-max.
 karma-starting: 1000
 
-# What should the maximum allowed karma be?
+# The maximum karma a player may hold at a given time.
 # (After this is reached, the player will not receive karma until they go below it again.)
 karma-max: 1000
 
-# What ratio should be used when determining the karma taken when a player damages their ally? (0-1)
+# The ratio used in the formula used to determine the karma penalty for damaging an ally (0-1).
 karma-ratio: 0.001
 
 # From the official TTT documentation:
+#
 # All karma penalties are based on damage dealt. The kill penalty is just an extra amount of "damage" dealt
 # when you kill someone. So if this was 100, and you headshot someone with a rifle, it would penalise you as
 # if you dealt 200 damage.
 karma-kill-penalty: 15
 
-# How much karma should be allocated to each player at the end of a round?
+# The amount of karma allocated to each player on round end.
 karma-round-increment: 5
 
-# How much karma should be allocated to players who avoided damaging or killing teammates during a round at the end?
+# The amount of karma allocated on round end to each player who avoided friendly fire.
 karma-clean-bonus: 30
 
-# At what point should the clean bonus be halved? (The default value of 0.25 sets it a quarter of the way between
-# the starting karma and the maximum.)
+# From the official TTT documentation:
+#
+# When a player's Karma is above the starting level (meaning the karma max has been configured to be higher than
+# that), all his karma increases will be reduced based on how far his karma is above that starting level. So it
+# goes up slower the higher it is.
 karma-clean-half: 0.25
 
-# What ratio should be used when determining the karma given when an innocent damages a traitor? (0-1)
+# The ratio used in the formula used to determine the karma reward to innocents for damaging a traitor (0-1).
 karma-traitordmg-ratio: 0.0003
 
-# How much karma should be given when an innocent kills a traitor? (Scaled by traitordmg-ratio and the victim's karma.)
+# The amount of karma given to an innocent upon killing a traitor.
+# (This will be scaled by traitordmg-ratio and the victim's karma.)
 karma-traitorkill-bonus: 40
 
 # Players will be kicked from the round once they reach or go under this karma level. (Set to -1 for no autokick.)
 karma-low-autokick: 450
 
-# Should player's be temporarily banned from using the plugin rather than kicked?
+# Whether players should be temporarily or permanently banned instead of kicked.
 karma-low-ban: false
 
-# How long in minutes should users be banned from using the plugin for? (Set to -1 for a permanent ban.)
+# The duration in minutes players will be banned for upon falling below the threshold. (Set to -1 for a permanent ban.)
 # Note: changing this will not retroactively apply to previously issued bans.
 karma-low-ban-minutes: 60
 
-# Should karma persist through reloads and PlayerQuitEvents (players leaving)? (If false, karma will reset when
-# the plugin is reloaded and when players leave the server.)
+# Whether karma will persist through restarts and disconnects.
+# If false, karma will reset when the plugin is reloaded and when players leave the server.
 karma-persist: true
 
-# Should damage dealt by users be negatively impacted by karma? (Full damage is done at 1000.)
+# Whether damage is scaled based on karma. At lower karma values, players will do less damage.
 karma-damage-reduction: true
 
-# Should added or subtracted karma be rounded up to 1 if it is between 0 and 1?
+# Whether karma changes less than 1 should be rounded up.
 karma-round-to-one: true
 
-# When true, karma changes will be logged to the console. Note that this will typically cause massive log spam.
+# Whether karma changes should be logged to the console. Note that this will typically cause massive log spam.
 karma-debug: false
-
-#######################
-# Scoreboard Settings #
-#######################
-
-# TTT uses Minecraft's scoreboard system to display player karma and status.
-# This section allows you to configure the formatting used to denote various states.
-# Please note that team prefixes (innocent/traitor/detective) are displayed before life prefixes (alive/mia/dead).
-# Protip: ALT+21 is the Windows shortcut for a section symbol (§). :)
-
-# The prefix for alive players.
-sb-alive-prefix:
-
-# The prefix for missing-in-action players.
-sb-mia-prefix: §7
-
-# The prefix for confirmed dead players.
-sb-dead-prefix: §m
-
-# Setting this to true will cause TTT to use the player list to display the karma scoreboard, as opposed to the sidebar.
-# Enable this if you're having issues with the scoreboard system.
-sb-use-player-list: false
 
 ###################
 # Plugin Settings #
 ###################
 
-# Should potentially unnecessary information be logged?
+# Whether potentially unnecessary information should be logged.
 verbose-logging: true
 
-# What locale should be used by default? (TTT will attempt to send messages to players in their respective locale, but
-# will fall back to this. This will also be used for console messages.
+# The default locale used by the plugin.
+# TTT will attempt to send messages to players in their respective locale, but will fall back to this if a message
+# is not available in a locale. It will also be used for console messages.
 locale: en_US
 
-# Should the plugin update itself? (recommended)
+# Whether the plugin should update itself (highly recommended).
 enable-auto-update: true
 
-# Allow me to collect anonymous usage information? (Pretty please? :3)
+# Whether the plugin is allowed to submit anonymous usage information to MCStats.
 enable-metrics: true

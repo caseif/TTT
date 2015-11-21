@@ -25,7 +25,6 @@ package net.caseif.ttt.util;
 
 import net.caseif.ttt.TTTBootstrap;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.helper.ConfigHelper;
 
 import net.caseif.flint.round.LifecycleStage;
 import org.bukkit.ChatColor;
@@ -35,30 +34,49 @@ import org.bukkit.ChatColor;
  */
 public final class Constants {
 
-    public static final int MIN_FLINT_VERSION = 1;
+    public static final int MIN_FLINT_VERSION = 2;
+    public static final String CODENAME = "Alicia";
+
+    public static final int TTT_CURSEFORGE_PROJECT_ID = 52474;
+    public static final int STEEL_CURSEFORGE_PROJECT_ID = 95203;
 
     // message colors
     public static class Color {
-        public static final String ARENA = ChatColor.ITALIC.toString();
-        public static final String DESCRIPTION = ChatColor.GREEN.toString();
-        public static final String DETECTIVE = ChatColor.BLUE.toString();
-        public static final String ERROR = ChatColor.RED.toString();
         public static final String INFO = (TTTBootstrap.STEEL && TTTCore.HALLOWEEN
                 ? ChatColor.GOLD
                 : ChatColor.DARK_AQUA).toString();
-        public static final String INNOCENT = ChatColor.DARK_GREEN.toString();
-        public static final String SPECIAL = ChatColor.LIGHT_PURPLE.toString();
-        public static final String TRAITOR = ChatColor.DARK_RED.toString();
-        public static final String USAGE = (TTTBootstrap.STEEL && TTTCore.HALLOWEEN
+        public static final String ERROR = ChatColor.RED.toString();
+
+        public static final String FADED = ChatColor.GRAY.toString();
+        public static final String FLAIR = (TTTBootstrap.STEEL && TTTCore.HALLOWEEN
                 ? ChatColor.DARK_AQUA
                 : ChatColor.GOLD).toString();
+        public static final String LABEL = ChatColor.GREEN.toString();
+        public static final String SPECIAL = ChatColor.LIGHT_PURPLE.toString();
+
+        public static final String ARENA = ChatColor.AQUA.toString();
+
+        public static final String DETECTIVE = ChatColor.BLUE.toString();
+        public static final String INNOCENT = ChatColor.DARK_GREEN.toString();
+        public static final String TRAITOR = ChatColor.DARK_RED.toString();
     }
 
     // lifecycle stages
     public static class Stage {
         public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
-        public static final LifecycleStage PREPARING = new LifecycleStage("preparing", ConfigHelper.PREPTIME_SECONDS);
-        public static final LifecycleStage PLAYING = new LifecycleStage("playing", ConfigHelper.ROUNDTIME_SECONDS);
+        public static LifecycleStage PREPARING;
+        public static LifecycleStage PLAYING;
+        public static LifecycleStage ROUND_OVER;
+
+        static {
+            initialize();
+        }
+
+        public static void initialize() {
+            PREPARING = new LifecycleStage("preparing", TTTCore.config.PREPTIME_SECONDS);
+            PLAYING = new LifecycleStage("playing", TTTCore.config.ROUNDTIME_SECONDS);
+            ROUND_OVER = new LifecycleStage("round_over", TTTCore.config.POSTTIME_SECONDS);
+        }
     }
 
     public static class Role {
@@ -76,12 +94,25 @@ public final class Constants {
     public static class Contributor {
         public static final String DEVELOPER = "dev";
         public static final String ALPHA_TESTER = "alpha";
-        public static final String TESTER = "tester";
-        public static final String TRANSLATOR = "translator";
     }
 
-    public static class PlayerTag {
+    public static class MetadataTag {
         public static final String PURE_SPECTATOR = "pureSpectator";
+
+        public static final String BODY = "body";
+        public static final String BODY_LIST = "bodies";
+        public static final String BODY_FOUND = "bodyFound";
+        public static final String SEARCHING_BODY = "searchingBody";
+
+        public static final String KARMA = "karma";
+        public static final String DISPLAY_KARMA = "displayKarma";
+        public static final String DAMAGE_REDUCTION = "damageRed";
+        public static final String TEAM_KILLED = "hasTeamKilled";
+
+        public static final String TEAM_NAME = "teamName";
+        public static final String SCOREBOARD_MANAGER = "scoreboardManager";
+
+        public static final String TRAITOR_VICTORY = "t-victory";
     }
 
 }

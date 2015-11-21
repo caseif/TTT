@@ -1,4 +1,4 @@
-# TTT [![](http://ci.caseif.net/job/TTT/branch/master/badge/icon)](http://ci.caseif.net/job/TTT/)
+# TTT [![](http://ci.caseif.net/job/TTT/branch/develop/badge/icon)](http://ci.caseif.net/job/TTT/)
 
 TTT is a Bukkit minigame plugin which emulates the popular gamemode "Trouble In Terrorist Town" from the sandbox game
 *Garry's Mod*.

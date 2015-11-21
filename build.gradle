@@ -13,7 +13,7 @@ defaultTasks 'clean', 'licenseFormat', 'build', 'shadowJar'
 
 // Project information
 group = 'net.caseif.ttt'
-version = '0.8.8'
+version = '0.9.0'
 
 // Extended project information
 ext.projectName = 'ttt'
@@ -60,7 +60,7 @@ repositories {
 
 ext {
     bukkit = 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
-    flint = 'net.caseif.flint:flint:1.0'
+    flint = 'net.caseif.flint:flint:1.1'
     rosetta = 'net.caseif.rosetta:rosetta:1.0.1'
     crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.1'
     updater = 'net.gravitydevelopment.updater:updater:2.3'
@@ -154,5 +154,5 @@ tasks.withType(Checkstyle) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.7'
+    gradleVersion = '2.8'
 }

@@ -30,16 +30,18 @@ import net.caseif.ttt.listeners.MinigameListener;
 import net.caseif.ttt.listeners.PlayerListener;
 import net.caseif.ttt.listeners.WizardListener;
 import net.caseif.ttt.listeners.WorldListener;
-import net.caseif.ttt.scoreboard.ScoreboardManager;
+import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
-import net.caseif.ttt.util.helper.ConfigHelper;
-import net.caseif.ttt.util.helper.ContributorListHelper;
+import net.caseif.ttt.util.compatibility.LegacyMglibStorageDeleter;
+import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
+import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import com.google.common.collect.ImmutableSet;
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.FlintCore;
+import net.caseif.flint.arena.SpawningMode;
 import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.minigame.Minigame;
 import net.caseif.rosetta.LocaleManager;
@@ -50,22 +52,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
  * Minecraft port of Trouble In Terrorist Town.
  *
  * @author Maxim Roncacé
- * @version 0.8.0
+ * @version 0.9.0
  */
 public class TTTCore {
 
     private static TTTCore INSTANCE;
-
-    private static final String CODENAME = "Chad";
 
     public static Minigame mg;
 
@@ -73,12 +71,7 @@ public class TTTCore {
     public static Logger kLog;
     private static JavaPlugin plugin;
     public static LocaleManager locale;
-
-    //TODO: associate bodies with rounds
-    public static List<Body> bodies = new ArrayList<>();
-    public static List<Body> foundBodies = new ArrayList<>();
-
-    public static int maxKarma = 1000;
+    public static ConfigHelper config;
 
     public static ContributorListHelper clh;
 
@@ -104,6 +97,8 @@ public class TTTCore {
         kLog = Logger.getLogger("TTT Karma Debug");
         kLog.setParent(log);
 
+        config = new ConfigHelper();
+
         if (FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
             TTTBootstrap.INSTANCE.fail();
             return;
@@ -114,12 +109,12 @@ public class TTTCore {
         // register plugin with Flint
         mg = FlintCore.registerPlugin(plugin.getName());
 
-        doCompatibilityActions();
+        mg.setConfigValue(ConfigNode.FORBIDDEN_COMMANDS, ImmutableSet.of("kit", "msg", "pm", "r", "me", "back"));
 
-        mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
-                ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING));
-        mg.setConfigValue(ConfigNode.MAX_PLAYERS, ConfigHelper.MAXIMUM_PLAYERS);
-        mg.setConfigValue(ConfigNode.RANDOM_SPAWNING, true);
+        applyConfigOptions();
+
+        doCompatibilityActions();
+        mg.setConfigValue(ConfigNode.SPAWNING_MODE, SpawningMode.RANDOM);
 
         // register events and commands
         mg.getEventBus().register(new MinigameListener());
@@ -136,7 +131,7 @@ public class TTTCore {
                 ConfigHelper.addMissingKeys();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                logSevere("Failed to write new config keys!");
+                log.severe("Failed to write new config keys!");
             }
         }
 
@@ -145,18 +140,24 @@ public class TTTCore {
 
         File invDir = new File(plugin.getDataFolder() + File.separator + "inventories");
         invDir.mkdir();
+    }
 
-        maxKarma = ConfigHelper.KARMA_MAX;
+    public void applyConfigOptions() {
+        locale.setDefaultLocale(config.LOCALE);
 
-        if (ConfigHelper.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
+        mg.setConfigValue(ConfigNode.MAX_PLAYERS, TTTCore.config.MAXIMUM_PLAYERS);
+        Constants.Stage.initialize();
+        mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
+                ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING, Stage.ROUND_OVER));
+
+        if (TTTCore.config.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
             logWarning("error.plugin.title-support");
         }
     }
 
     public void deinitialize() {
         // uninitialize static variables so as not to cause memory leaks when reloading
-        ScoreboardManager.uninitialize();
-        if (ConfigHelper.VERBOSE_LOGGING) {
+        if (TTTCore.config.VERBOSE_LOGGING) {
             logInfo("info.plugin.disable", plugin.toString());
         }
         locale = null;
@@ -171,17 +172,14 @@ public class TTTCore {
         return plugin;
     }
 
-    public static String getCodename() {
-        return CODENAME;
-    }
-
     public void createFile(String s) {
         File f = new File(TTTCore.plugin.getDataFolder(), s);
         if (!f.exists()) {
-            if (ConfigHelper.VERBOSE_LOGGING) {
+            if (TTTCore.config.VERBOSE_LOGGING) {
                 logInfo("info.plugin.compatibility.creating-file", s);
             }
             try {
+                //noinspection ResultOfMethodCallIgnored
                 f.createNewFile();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -197,7 +195,9 @@ public class TTTCore {
             OutputStream os = null;
             try {
                 File dir = new File(TTTCore.plugin.getDataFolder(), "locales");
+                //noinspection ResultOfMethodCallIgnored
                 dir.mkdir();
+                //noinspection ResultOfMethodCallIgnored
                 exLocale.createNewFile();
                 is = TTTCore.class.getClassLoader().getResourceAsStream("locales/" + s);
                 os = new FileOutputStream(exLocale);
@@ -244,6 +244,8 @@ public class TTTCore {
 
         LegacyMglibStorageConverter.convertArenaStore();
         LegacyMglibStorageConverter.convertLobbyStore();
+
+        LegacyMglibStorageDeleter.deleteObsoleteStorage();
     }
 
 }
