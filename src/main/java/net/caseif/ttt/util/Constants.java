@@ -35,7 +35,7 @@ import org.bukkit.ChatColor;
 public final class Constants {
 
     public static final int MIN_FLINT_VERSION = 2;
-    public static final String CODENAME = "Alicia";
+    public static final String CODENAME = "Bruno";
 
     public static final int TTT_CURSEFORGE_PROJECT_ID = 52474;
     public static final int STEEL_CURSEFORGE_PROJECT_ID = 95203;
