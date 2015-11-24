@@ -59,7 +59,7 @@ public class RoleHelper {
         }
 
         int dLimit = (int) (players * TTTCore.config.DETECTIVE_PCT);
-        dLimit = MiscHelper.clamp(dLimit, 1, iTeam.getChallengers().size());
+        dLimit = MiscHelper.clamp(dLimit, 0, iTeam.getChallengers().size());
         if (players >= TTTCore.config.DETECTIVE_MIN_PLAYERS && dLimit == 0) {
             dLimit = 1;
         }

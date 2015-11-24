@@ -96,7 +96,7 @@ public class DeathHelper {
             block = loc.add(0, 1, 0).getBlock();
         }
 
-        ch.getRound().getArena().markForRollback(LocationHelper.convert(loc));
+        ch.getRound().getArena().markForRollback(LocationHelper.convert(block.getLocation()));
 
         createBody(block.getLocation(), ch, killer.orNull());
 
