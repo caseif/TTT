@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2015, Maxim RoncacÃ© <mproncace@lapis.blue>
+ * Copyright (c) 2013-2015, Maxim Roncace <mproncace@lapis.blue>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package net.caseif.ttt.util.config;
  * Represents a mode by which the server cycles arenas. This applies to servers
  * implementing the {@link OperatingMode#DEDICATED dedicated operating mode}.
  *
- * @author Max Roncacé
+ * @author Max Roncace
  */
 public enum CycleMode {
 

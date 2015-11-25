@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2015, Maxim Roncacé <mproncace@lapis.blue>
+ * Copyright (c) 2013-2015, Maxim Roncace <mproncace@lapis.blue>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import java.io.File;
 /**
  * Static utility class for maintaining compatibility with the old data folder.
  *
- * @author Max Roncacé
+ * @author Max Roncace
  */
 public class LegacyConfigFolderRenamer {
 
