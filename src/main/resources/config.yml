@@ -162,6 +162,41 @@ karma-round-to-one: true
 # Whether karma changes should be logged to the console. Note that this will typically cause massive log spam.
 karma-debug: false
 
+###########################
+# Operating Mode Settings #
+###########################
+
+# The operating mode of the plugin. Three options are available:
+#     standard - Players may join rounds at will, and will be ejected from the round when it ends.
+#     continuous - Players may join rounds at will, but will not be ejected when it ends.
+#                  Instead, the arena will reset to its initial state and a new round will begin.
+#     dedicated - Only one round will exist on the server, which players will be entered into upon connecting.
+#                 After a time or round limit (whichever comes first), the server will switch to a new arena.
+# If the set value is not valid, it will default to 'standard'.
+operating-mode: standard
+
+# The mode by which new arenas are selected in dedicated mode. Three options are available:
+#     sequential - Arenas will be selected in a fixed order determined by the engine.
+#     shuffle - Arenas will be selected in a fixed order determined by performing a random shuffle upon the arena list.
+#               This order may change between restarts.
+#     random - Arenas will be selected completely randomly.
+# If the set value is not valid, it will default to 'sequential'.
+#
+# NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
+cycle-mode: sequential
+
+# The round limit for each arena in dedicated mode.
+# After this number of rounds have taken place, the server will switch to a new arena.
+#
+# NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
+cycle-round-limit: 6
+
+# The time limit in minutes for a given arena in dedicated mode.
+# After this limit is reached, the server will switch to a new arena.
+#
+# NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
+cycle-time-limit: 60
+
 ###################
 # Plugin Settings #
 ###################

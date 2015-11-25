@@ -26,6 +26,9 @@ package net.caseif.ttt.util.helper.platform;
 import static net.caseif.ttt.util.helper.misc.MiscHelper.isDouble;
 
 import net.caseif.ttt.TTTBootstrap;
+import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.config.CycleMode;
+import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.misc.FileHelper;
 
 import com.google.common.base.Predicate;
@@ -99,6 +102,12 @@ public final class ConfigHelper {
     public final boolean KARMA_DAMAGE_REDUCTION;
     public final boolean KARMA_ROUND_TO_ONE;
     public final boolean KARMA_DEBUG;
+
+    // Operating settings
+    public final OperatingMode OPERATING_MODE;
+    public final CycleMode CYCLE_MODE;
+    public final int CYCLE_ROUND_LIMIT;
+    public final int CYCLE_TIME_LIMIT;
 
     // Plugin settings
     public final boolean VERBOSE_LOGGING;
@@ -178,6 +187,30 @@ public final class ConfigHelper {
         KARMA_DAMAGE_REDUCTION = getBoolean("karma-damage-reduction");
         KARMA_ROUND_TO_ONE = getBoolean("karma-round-to-one");
         KARMA_DEBUG = getBoolean("karma-debug");
+
+        // Operating settings
+        OperatingMode localOperatingMode;
+        try {
+            localOperatingMode = OperatingMode.valueOf(getString("operating-mode"));
+        } catch (IllegalArgumentException ex) {
+            TTTCore.getPlugin().getLogger()
+                    .warning("Invalid value for config key 'operating-mode' - defaulting to STANDARD");
+            localOperatingMode = OperatingMode.STANDARD;
+        }
+        OPERATING_MODE = localOperatingMode;
+
+        CYCLE_ROUND_LIMIT = getInt("cycle-round-limit");
+        CYCLE_TIME_LIMIT = getInt("cycle-time-limit");
+
+        CycleMode localCycleMode;
+        try {
+            localCycleMode = CycleMode.valueOf(getString("cycle-mode"));
+        } catch (IllegalArgumentException ex) {
+            TTTCore.getPlugin().getLogger()
+                    .warning("Invalid value for config key 'cycle-mode' - defaulting to SEQUENTIAL");
+            localCycleMode = CycleMode.SEQUENTIAL;
+        }
+        CYCLE_MODE = localCycleMode;
 
         // Plugin settings
         VERBOSE_LOGGING = getBoolean("verbose-logging");
