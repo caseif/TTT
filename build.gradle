@@ -86,6 +86,7 @@ tasks.withType(JavaCompile) {
 }
 
 processResources {
+    from 'LICENSE'
     filter {String line -> line.replace('SNAPSHOT', 'SNAPSHOT' + versionSuffix)}
 }
 
