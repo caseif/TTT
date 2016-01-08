@@ -46,6 +46,12 @@ public class ImportCommand extends CommandHandler {
 
     @Override
     public void handle() {
+        if (TTTCore.mg.getArena(args[1].toLowerCase()).isPresent()) {
+            TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(Color.ERROR)
+                    .sendTo(sender);
+            return;
+        }
+
         String worldName = null;
         assert Bukkit.getWorldContainer().listFiles() != null;
         for (File f : Bukkit.getWorldContainer().listFiles()) {
@@ -57,10 +63,6 @@ public class ImportCommand extends CommandHandler {
             if (FileHelper.isWorld(args[1])) {
                 World w = Bukkit.createWorld(new WorldCreator(worldName));
                 if (w != null) {
-                    if (TTTCore.mg.getArena(worldName).isPresent()) {
-                        TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(Color.ERROR)
-                                .sendTo(sender);
-                    }
                     Location l = w.getSpawnLocation();
                     TTTCore.mg.createArena(
                             worldName,
