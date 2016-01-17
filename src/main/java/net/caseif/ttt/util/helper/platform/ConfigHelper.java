@@ -143,7 +143,7 @@ public final class ConfigHelper {
         // Traitor/Detective settings
         TRAITOR_PCT = getDouble("traitor-pct");
         DETECTIVE_PCT = getDouble("detective-pct");
-        DETECTIVE_MIN_PLAYERS = getInt("minimum-players-for-detective");
+        DETECTIVE_MIN_PLAYERS = getInt("detective-min-players");
         SCANNER_CHARGE_TIME = getInt("scanner-charge-time");
         KILLER_DNA_RANGE = getInt("killer-dna-range");
         KILLER_DNA_BASETIME = getInt("killer-dna-basetime");
