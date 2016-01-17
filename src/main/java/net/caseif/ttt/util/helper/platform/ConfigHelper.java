@@ -191,7 +191,7 @@ public final class ConfigHelper {
         // Operating settings
         OperatingMode localOperatingMode;
         try {
-            localOperatingMode = OperatingMode.valueOf(getString("operating-mode"));
+            localOperatingMode = OperatingMode.valueOf(getString("operating-mode").toUpperCase());
         } catch (IllegalArgumentException ex) {
             TTTCore.getPlugin().getLogger()
                     .warning("Invalid value for config key 'operating-mode' - defaulting to STANDARD");
@@ -204,7 +204,7 @@ public final class ConfigHelper {
 
         CycleMode localCycleMode;
         try {
-            localCycleMode = CycleMode.valueOf(getString("cycle-mode"));
+            localCycleMode = CycleMode.valueOf(getString("cycle-mode").toUpperCase());
         } catch (IllegalArgumentException ex) {
             TTTCore.getPlugin().getLogger()
                     .warning("Invalid value for config key 'cycle-mode' - defaulting to SEQUENTIAL");
