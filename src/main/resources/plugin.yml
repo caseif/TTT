@@ -1,5 +1,5 @@
 name: TTT
-version: 0.9.3
+version: 0.9.4-SNAPSHOT
 main: net.caseif.ttt.TTTBootstrap
 author: Max Roncace
 website: http://dev.bukkit.org/bukkit-plugins/ttt
