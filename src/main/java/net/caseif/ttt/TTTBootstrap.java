@@ -88,15 +88,17 @@ public class TTTBootstrap extends JavaPlugin {
         if (getConfig().getBoolean("enable-metrics")) {
             try {
                 Metrics metrics = new Metrics(this);
-                Metrics.Graph graph = metrics.createGraph("Steel Version");
-                graph.addPlotter(new Metrics.Plotter(
-                        Bukkit.getPluginManager().getPlugin("Steel").getDescription().getVersion()
-                ) {
-                    public int getValue() {
-                        return 1;
-                    }
-                });
-                metrics.addGraph(graph);
+                if (STEEL) {
+                    Metrics.Graph graph = metrics.createGraph("Steel Version");
+                    graph.addPlotter(new Metrics.Plotter(
+                            Bukkit.getPluginManager().getPlugin("Steel").getDescription().getVersion()
+                    ) {
+                        public int getValue() {
+                            return 1;
+                        }
+                    });
+                    metrics.addGraph(graph);
+                }
                 metrics.start();
             } catch (IOException ex) {
                 if (getConfig().getBoolean("verbose-logging")) {
