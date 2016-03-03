@@ -38,7 +38,7 @@ repositories {
     mavenCentral()
     maven {
         name = 'spigot'
-        url 'http://hub.spigotmc.org/nexus/content/groups/public/'
+        url 'https://hub.spigotmc.org/nexus/content/groups/public/'
     }
     maven {
         name = 'caseif'
@@ -54,7 +54,7 @@ repositories {
     }
     maven {
         name = 'sponge'
-        url = 'http://repo.spongepowered.org/maven'
+        url = 'https://repo.spongepowered.org/maven'
     }
 }
 
@@ -155,5 +155,5 @@ tasks.withType(Checkstyle) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.8'
+    gradleVersion = '2.11'
 }
