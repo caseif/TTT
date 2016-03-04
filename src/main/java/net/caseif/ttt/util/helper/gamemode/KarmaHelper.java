@@ -44,11 +44,14 @@ import java.util.UUID;
 /**
  * Static utility class for karma-related functionality.
  */
-public class KarmaHelper {
+public final class KarmaHelper {
 
     private static final int BASE_KARMA = 1000;
 
     private static HashMap<UUID, Integer> playerKarma = new HashMap<>();
+
+    private KarmaHelper() {
+    }
 
     public static void saveKarma(Round round) {
         for (Challenger ch : round.getChallengers()) {

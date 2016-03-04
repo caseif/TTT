@@ -34,7 +34,10 @@ import java.io.File;
  *
  * @author Max Roncace
  */
-public class LegacyConfigFolderRenamer {
+public final class LegacyConfigFolderRenamer {
+
+    private LegacyConfigFolderRenamer() {
+    }
 
     public static void renameLegacyFolder() {
         final File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");

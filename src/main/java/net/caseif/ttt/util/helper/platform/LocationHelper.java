@@ -35,7 +35,10 @@ import org.bukkit.WorldCreator;
  *
  * @author Max Roncace
  */
-public class LocationHelper {
+public final class LocationHelper {
+
+    private LocationHelper() {
+    }
 
     public static Location3D convert(Location location) {
         return new Location3D(location.getWorld().getName(), location.getX(), location.getY(), location.getZ());

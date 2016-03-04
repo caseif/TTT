@@ -41,6 +41,9 @@ import org.bukkit.entity.Player;
  */
 public final class TitleHelper {
 
+    private TitleHelper() {
+    }
+
     public static void sendStatusTitle(Player player, String role) {
         if (TTTCore.config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
             if (player == null) {

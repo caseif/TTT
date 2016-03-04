@@ -31,6 +31,9 @@ import java.util.List;
  */
 public final class CollectionsHelper {
 
+    private CollectionsHelper() {
+    }
+
     public static String prettyList(List<?> list) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < list.size(); i++) {

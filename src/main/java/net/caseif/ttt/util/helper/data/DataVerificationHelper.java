@@ -28,6 +28,9 @@ package net.caseif.ttt.util.helper.data;
  */
 public final class DataVerificationHelper {
 
+    private DataVerificationHelper() {
+    }
+
     public static String fromNullableString(String nullable) {
         return nullable == null ? "" : nullable;
     }

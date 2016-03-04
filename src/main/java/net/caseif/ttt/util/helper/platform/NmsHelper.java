@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
  * Static utility class for NMS-related functionality. This class serves as an
  * abstraction layer for some under-the-hood hacks.
  */
-public class NmsHelper {
+public final class NmsHelper {
 
     private static final boolean NMS_SUPPORT;
     public static final String VERSION_STRING;
@@ -110,6 +110,9 @@ public class NmsHelper {
         CLIENT_COMMAND_PACKET_INSTANCE = clientCommandPacketInstance;
 
         NMS_SUPPORT = !nmsException;
+    }
+
+    private NmsHelper() {
     }
 
     /**

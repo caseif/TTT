@@ -30,7 +30,10 @@ import java.io.File;
 /**
  * Handles deletion of obsolete storage files.
  */
-public class LegacyMglibStorageDeleter {
+public final class LegacyMglibStorageDeleter {
+
+    private LegacyMglibStorageDeleter() {
+    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void deleteObsoleteStorage() {

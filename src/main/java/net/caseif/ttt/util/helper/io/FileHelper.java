@@ -38,6 +38,9 @@ import java.io.OutputStream;
  */
 public final class FileHelper {
 
+    private FileHelper() {
+    }
+
     // world checking method from Multiverse
     public static boolean isWorld(String worldName) {
         File folder = new File(Bukkit.getWorldContainer(), worldName);

@@ -23,12 +23,12 @@
  */
 package net.caseif.ttt.util.helper.gamemode;
 
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.rosetta.Localizable;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
 
 import com.google.common.base.Optional;
-import net.caseif.flint.challenger.Challenger;
-import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -44,12 +44,14 @@ import java.util.UUID;
  */
 public final class BanHelper {
 
+    private BanHelper() {
+    }
+
     /**
      * Bans the player by the specified UUID from using TTT for a set amount of time.
      *
      * @param player  the UUID of the player to ban
-     * @param minutes the length of time to ban the player for.
-     * @return whether the player was successfully banned
+     * @param minutes the length of time to ban the player for
      */
     public static void ban(UUID player, int minutes) throws InvalidConfigurationException, IOException {
         File f = new File(TTTCore.getPlugin().getDataFolder(), "bans.yml");

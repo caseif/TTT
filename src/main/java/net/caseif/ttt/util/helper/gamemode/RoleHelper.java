@@ -40,7 +40,10 @@ import java.util.List;
 /**
  * Static utility class for role-related functionality.
  */
-public class RoleHelper {
+public final class RoleHelper {
+
+    private RoleHelper() {
+    }
 
     public static void assignRoles(Round round) {
         int players = round.getChallengers().size();

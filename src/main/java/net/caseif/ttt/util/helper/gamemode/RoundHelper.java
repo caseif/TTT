@@ -42,7 +42,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 /**
  * Static-utility class for round-related methods.
  */
-public class RoundHelper {
+public final class RoundHelper {
 
     private static final ItemStack ITEM_CROWBAR;
     private static final ItemStack ITEM_GUN;
@@ -66,6 +66,9 @@ public class RoundHelper {
         ItemMeta dnaMeta = ITEM_DNA_SCANNER.getItemMeta();
         dnaMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.dna-scanner.name").localize());
         ITEM_DNA_SCANNER.setItemMeta(dnaMeta);
+    }
+
+    private RoundHelper() {
     }
 
     @SuppressWarnings("deprecation")

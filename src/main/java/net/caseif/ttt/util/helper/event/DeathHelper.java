@@ -23,6 +23,7 @@
  */
 package net.caseif.ttt.util.helper.event;
 
+import net.caseif.flint.challenger.Challenger;
 import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
@@ -33,7 +34,6 @@ import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.NmsHelper;
 
 import com.google.common.base.Optional;
-import net.caseif.flint.challenger.Challenger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,8 +44,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,10 +51,7 @@ import java.util.UUID;
 /**
  * Utility class for player death-related functionality.
  */
-public class DeathHelper {
-
-    private static Field fieldRbHelper;
-    private static Method logBlockChange;
+public final class DeathHelper {
 
     private final PlayerDeathEvent event;
     private final Player player;

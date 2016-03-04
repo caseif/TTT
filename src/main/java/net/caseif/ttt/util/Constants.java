@@ -40,6 +40,9 @@ public final class Constants {
     public static final int TTT_CURSEFORGE_PROJECT_ID = 52474;
     public static final int STEEL_CURSEFORGE_PROJECT_ID = 95203;
 
+    private Constants() {
+    }
+
     // message colors
     public static class Color {
         public static final String INFO = (TTTBootstrap.STEEL && TTTCore.HALLOWEEN
