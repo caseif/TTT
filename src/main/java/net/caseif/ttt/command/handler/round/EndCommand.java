@@ -29,7 +29,6 @@ import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Stage;
-import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;

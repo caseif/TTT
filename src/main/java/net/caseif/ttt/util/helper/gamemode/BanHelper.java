@@ -24,12 +24,12 @@
 
 package net.caseif.ttt.util.helper.gamemode;
 
-import net.caseif.flint.challenger.Challenger;
-import net.caseif.rosetta.Localizable;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
 
 import com.google.common.base.Optional;
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

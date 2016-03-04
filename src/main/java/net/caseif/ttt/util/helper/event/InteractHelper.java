@@ -24,9 +24,6 @@
 
 package net.caseif.ttt.util.helper.event;
 
-import net.caseif.flint.challenger.Challenger;
-import net.caseif.flint.util.physical.Location3D;
-import net.caseif.rosetta.Localizable;
 import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
@@ -38,6 +35,9 @@ import net.caseif.ttt.util.helper.data.CollectionsHelper;
 import net.caseif.ttt.util.helper.platform.InventoryHelper;
 
 import com.google.common.base.Optional;
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.util.physical.Location3D;
+import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;

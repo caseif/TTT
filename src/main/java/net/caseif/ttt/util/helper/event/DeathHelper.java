@@ -24,7 +24,6 @@
 
 package net.caseif.ttt.util.helper.event;
 
-import net.caseif.flint.challenger.Challenger;
 import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
@@ -35,6 +34,7 @@ import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.NmsHelper;
 
 import com.google.common.base.Optional;
+import net.caseif.flint.challenger.Challenger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

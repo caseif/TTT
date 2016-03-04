@@ -24,13 +24,13 @@
 
 package net.caseif.ttt.util.compatibility;
 
-import net.caseif.flint.arena.Arena;
-import net.caseif.flint.util.physical.Boundary;
-import net.caseif.flint.util.physical.Location3D;
 import net.caseif.ttt.TTTCore;
 
 import com.google.common.base.Optional;
 import com.google.common.io.Files;
+import net.caseif.flint.arena.Arena;
+import net.caseif.flint.util.physical.Boundary;
+import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

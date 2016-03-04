@@ -24,8 +24,6 @@
 
 package net.caseif.ttt.listeners;
 
-import net.caseif.flint.challenger.Challenger;
-import net.caseif.rosetta.Localizable;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
@@ -36,6 +34,8 @@ import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.base.Optional;
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

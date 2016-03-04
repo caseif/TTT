@@ -26,8 +26,6 @@ package net.caseif.ttt.scoreboard;
 
 import static net.caseif.ttt.util.helper.data.DataVerificationHelper.fromNullableString;
 
-import net.caseif.flint.challenger.Challenger;
-import net.caseif.flint.round.Round;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.AliveStatus;
@@ -37,6 +35,8 @@ import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.helper.gamemode.RoleHelper;
 
 import com.google.common.collect.ImmutableMap;
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.round.Round;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;

@@ -24,15 +24,15 @@
 
 package net.caseif.ttt.util.helper.gamemode;
 
-import net.caseif.flint.challenger.Challenger;
-import net.caseif.flint.challenger.Team;
-import net.caseif.flint.round.Round;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.helper.data.DataVerificationHelper;
 
 import com.google.common.collect.Lists;
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.challenger.Team;
+import net.caseif.flint.round.Round;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
