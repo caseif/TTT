@@ -23,7 +23,7 @@
  */
 package net.caseif.ttt.command.handler.player;
 
-import static net.caseif.ttt.util.helper.misc.MiscHelper.isInt;
+import static net.caseif.ttt.util.helper.data.DataVerificationHelper.isInt;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;

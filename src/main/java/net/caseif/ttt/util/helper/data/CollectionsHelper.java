@@ -21,56 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util.helper.misc;
-
-import net.caseif.ttt.util.Constants.Role;
-
-import net.caseif.flint.challenger.Challenger;
+package net.caseif.ttt.util.helper.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: organize these methods into other helper classes
-public class MiscHelper {
-
-    /**
-     * Determines whether a given {@link Challenger challenger} is marked as a
-     * Traitor.
-     *
-     * @param player the player to check
-     * @return whether the player is a traitor
-     */
-    public static boolean isTraitor(Challenger player) {
-        return player.getTeam().isPresent() && player.getTeam().get().getId().equals(Role.TRAITOR);
-    }
-
-    public static String fromNullableString(String nullable) {
-        return nullable == null ? "" : nullable;
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static boolean isInt(String s) {
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException ex) {
-            return false;
-        }
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static boolean isDouble(String s) {
-        try {
-            Double.parseDouble(s);
-            return true;
-        } catch (NumberFormatException ex) {
-            return false;
-        }
-    }
-
-    public static int clamp(int val, int min, int max) {
-        return Math.max(min, Math.min(max, val));
-    }
+/**
+ * Static utility class for collections-related functionality.
+ */
+public final class CollectionsHelper {
 
     public static String prettyList(List<?> list) {
         StringBuilder sb = new StringBuilder();

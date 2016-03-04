@@ -30,7 +30,7 @@ import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.helper.misc.MiscHelper;
+import net.caseif.ttt.util.helper.data.CollectionsHelper;
 import net.caseif.ttt.util.helper.platform.InventoryHelper;
 
 import com.google.common.base.Optional;
@@ -276,7 +276,7 @@ public class InteractHelper {
             nf.setMinimumIntegerDigits(2);
             String deathTime = nf.format(deathSeconds / 60) + ":" + nf.format(deathSeconds % 60);
             clockMeta.setDisplayName(deathTime);
-            clockMeta.setLore(MiscHelper.formatLore(
+            clockMeta.setLore(CollectionsHelper.formatLore(
                     TTTCore.locale.getLocalizable("item.deathclock.desc").withReplacements(deathTime)
                             .withReplacements(deathTime).localizeFor(player)
             ));
@@ -293,7 +293,7 @@ public class InteractHelper {
             ItemStack dna = new ItemStack(Material.LEASH, 1);
             ItemMeta dnaMeta = dna.getItemMeta();
             dnaMeta.setDisplayName(TTTCore.locale.getLocalizable("item.dna.name").localizeFor(player));
-            dnaMeta.setLore(MiscHelper.formatLore(
+            dnaMeta.setLore(CollectionsHelper.formatLore(
                     TTTCore.locale.getLocalizable("item.dna.desc").withReplacements(decayTime).localizeFor(player)
             ));
             dna.setItemMeta(dnaMeta);

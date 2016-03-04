@@ -23,7 +23,7 @@
  */
 package net.caseif.ttt.scoreboard;
 
-import static net.caseif.ttt.util.helper.misc.MiscHelper.fromNullableString;
+import static net.caseif.ttt.util.helper.data.DataVerificationHelper.fromNullableString;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
@@ -31,7 +31,7 @@ import net.caseif.ttt.util.Constants.AliveStatus;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.helper.misc.MiscHelper;
+import net.caseif.ttt.util.helper.gamemode.RoleHelper;
 
 import com.google.common.collect.ImmutableMap;
 import net.caseif.flint.challenger.Challenger;
@@ -117,7 +117,7 @@ public class ScoreboardManager {
     }
 
     private void applyTeam(Challenger ch) {
-        String role = MiscHelper.isTraitor(ch) ? Role.TRAITOR
+        String role = RoleHelper.isTraitor(ch) ? Role.TRAITOR
                 : ch.getMetadata().has(Role.DETECTIVE) ? Role.DETECTIVE
                 : Role.INNOCENT;
         String alive = !ch.isSpectating() ? AliveStatus.ALIVE
@@ -128,7 +128,7 @@ public class ScoreboardManager {
     }
 
     public void applyScoreboard(Challenger ch) {
-        Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(MiscHelper.isTraitor(ch) ? tBoard : iBoard);
+        Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(RoleHelper.isTraitor(ch) ? tBoard : iBoard);
     }
 
     public void updateAllEntries() {

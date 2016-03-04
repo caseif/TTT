@@ -23,7 +23,7 @@
  */
 package net.caseif.ttt.util.helper.gamemode;
 
-import static net.caseif.ttt.util.helper.misc.MiscHelper.isTraitor;
+import static net.caseif.ttt.util.helper.gamemode.RoleHelper.isTraitor;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;

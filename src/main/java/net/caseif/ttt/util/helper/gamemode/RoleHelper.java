@@ -23,15 +23,15 @@
  */
 package net.caseif.ttt.util.helper.gamemode;
 
-import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.helper.misc.MiscHelper;
-
-import com.google.common.collect.Lists;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.challenger.Team;
 import net.caseif.flint.round.Round;
+import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.helper.data.DataVerificationHelper;
+
+import com.google.common.collect.Lists;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -50,8 +50,8 @@ public class RoleHelper {
             ch.setTeam(iTeam);
         }
 
-        int tLimit = MiscHelper.clamp((int) (players * TTTCore.config.TRAITOR_PCT), 1, players - 1);
-        tLimit = MiscHelper.clamp(tLimit, 1, players - 1);
+        int tLimit = DataVerificationHelper.clamp((int) (players * TTTCore.config.TRAITOR_PCT), 1, players - 1);
+        tLimit = DataVerificationHelper.clamp(tLimit, 1, players - 1);
         List<Challenger> tList = Lists.newArrayList(round.getChallengers());
         Collections.shuffle(tList);
         for (int i = 0; i < tLimit; i++) {
@@ -59,7 +59,7 @@ public class RoleHelper {
         }
 
         int dLimit = (int) (players * TTTCore.config.DETECTIVE_PCT);
-        dLimit = MiscHelper.clamp(dLimit, 0, iTeam.getChallengers().size());
+        dLimit = DataVerificationHelper.clamp(dLimit, 0, iTeam.getChallengers().size());
         if (players >= TTTCore.config.DETECTIVE_MIN_PLAYERS && dLimit == 0) {
             dLimit = 1;
         }
@@ -97,4 +97,16 @@ public class RoleHelper {
 
         return roleMsg;
     }
+
+    /**
+     * Determines whether a given {@link Challenger challenger} is marked as a
+     * Traitor.
+     *
+     * @param player the player to check
+     * @return whether the player is a traitor
+     */
+    public static boolean isTraitor(Challenger player) {
+        return player.getTeam().isPresent() && player.getTeam().get().getId().equals(Role.TRAITOR);
+    }
+
 }

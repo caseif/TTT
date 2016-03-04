@@ -31,8 +31,8 @@ import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
+import net.caseif.ttt.util.helper.gamemode.RoleHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
-import net.caseif.ttt.util.helper.misc.MiscHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.eventbus.Subscribe;
@@ -160,7 +160,7 @@ public class MinigameListener {
                 for (Challenger ch : event.getRound().getChallengers()) {
                     if (!(tLeft && iLeft)) {
                         if (!ch.isSpectating()) {
-                            if (MiscHelper.isTraitor(ch)) {
+                            if (RoleHelper.isTraitor(ch)) {
                                 tLeft = true;
                             } else {
                                 iLeft = true;

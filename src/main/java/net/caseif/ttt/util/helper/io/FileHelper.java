@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util.helper.misc;
+package net.caseif.ttt.util.helper.io;
 
 import org.bukkit.Bukkit;
 

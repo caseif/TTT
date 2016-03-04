@@ -21,30 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.handler.misc;
+package net.caseif.ttt.util.helper.data;
 
-import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.helper.data.CollectionsHelper;
+/**
+ * Static utility class for data type verification and similar functionality.
+ */
+public final class DataVerificationHelper {
 
-import org.bukkit.command.CommandSender;
-
-public class DefaultCommand extends CommandHandler {
-
-    public DefaultCommand(CommandSender sender, String[] args) {
-        super(sender, args);
+    public static String fromNullableString(String nullable) {
+        return nullable == null ? "" : nullable;
     }
 
-    @Override
-    public void handle() {
-        TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(Color.SPECIAL)
-                .withReplacements(TTTCore.getPlugin().getDescription().getVersion()
-                                + " \"" + Constants.CODENAME + "\"",
-                        CollectionsHelper.prettyList(TTTCore.getPlugin().getDescription().getAuthors()))
-                .sendTo(sender);
-        TTTCore.locale.getLocalizable("info.command.usage.help").withPrefix(Color.INFO).sendTo(sender);
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static boolean isInt(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static boolean isDouble(String s) {
+        try {
+            Double.parseDouble(s);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
+
+    public static int clamp(int val, int min, int max) {
+        return Math.max(min, Math.min(max, val));
     }
 
 }

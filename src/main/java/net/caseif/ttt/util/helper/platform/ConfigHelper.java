@@ -23,13 +23,13 @@
  */
 package net.caseif.ttt.util.helper.platform;
 
-import static net.caseif.ttt.util.helper.misc.MiscHelper.isDouble;
+import static net.caseif.ttt.util.helper.data.DataVerificationHelper.isDouble;
 
 import net.caseif.ttt.TTTBootstrap;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.config.CycleMode;
 import net.caseif.ttt.util.config.OperatingMode;
-import net.caseif.ttt.util.helper.misc.FileHelper;
+import net.caseif.ttt.util.helper.io.FileHelper;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
