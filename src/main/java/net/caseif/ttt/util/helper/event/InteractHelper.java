@@ -142,8 +142,8 @@ public final class InteractHelper {
                         = TTTCore.locale.getLocalizable("info.global.round.event.body-find." + body.getRole());
                 for (Challenger c : body.getRound().getChallengers()) {
                     Player pl = Bukkit.getPlayer(c.getUniqueId());
-                    pl.sendMessage(loc.withReplacements(event.getPlayer().getName(),
-                            body.getName()).localizeFor(pl) + " " + roleMsg.localizeFor(pl));
+                    loc.withReplacements(event.getPlayer().getName(), body.getName())
+                            .withSuffix(" " + roleMsg.localizeFor(pl)).sendTo(pl);
                 }
             }
         }

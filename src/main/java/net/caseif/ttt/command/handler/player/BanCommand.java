@@ -85,7 +85,7 @@ public class BanCommand extends CommandHandler {
                 if (pl != null) {
                     TTTCore.locale.getLocalizable("info.personal.ban.temp").withPrefix(Color.ERROR)
                             .withReplacements(TTTCore.locale.getLocalizable("fragment.minutes"
-                                    + (time == 1 ? ".singular" : "")).withReplacements(time + "").localizeFor(pl))
+                                    + (time == 1 ? ".singular" : "")).withReplacements(time + ""))
                             .sendTo(pl);
                 }
                 TTTCore.locale.getLocalizable("info.personal.ban.other.temp").withPrefix(Color.INFO)

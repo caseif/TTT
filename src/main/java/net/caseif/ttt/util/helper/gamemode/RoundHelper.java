@@ -124,8 +124,7 @@ public final class RoundHelper {
                 double reduc = KarmaHelper.getDamageReduction(ch);
                 String percentage = reduc < 1
                         ? (int) (reduc * 100) + "%"
-                        : TTTCore.locale.getLocalizable("fragment.full")
-                        .localizeFor(pl);
+                        : TTTCore.locale.getLocalizable("fragment.full").localizeFor(pl);
                 TTTCore.locale.getLocalizable("info.personal.status.karma-damage")
                         .withPrefix(Color.INFO).withReplacements(KarmaHelper.getKarma(ch) + "", percentage)
                         .sendTo(pl);

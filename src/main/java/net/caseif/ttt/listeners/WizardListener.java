@@ -173,7 +173,8 @@ public class WizardListener implements Listener {
                             TTTCore.locale.getLocalizable("info.personal.arena.create.bound-2")
                                     .withPrefix(Color.INFO)
                                     .withReplacements(Color.FLAIR + "(x=" + c.getX() + ", z=" + c.getZ() + ")"
-                                            + Color.INFO, Color.FLAIR
+                                            + Color.INFO,
+                                            Color.FLAIR
                                             + TTTCore.locale.getLocalizable("info.personal.arena.create.ok-keyword")
                                             .localizeFor(event.getPlayer()) + Color.INFO)
                                     .sendTo(event.getPlayer());
