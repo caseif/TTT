@@ -62,9 +62,9 @@ ext {
     bukkit = 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
     flint = 'net.caseif.flint:flint:1.1'
     rosetta = 'net.caseif.rosetta:rosetta:1.1.0'
-    crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.1'
+    crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.2'
     updater = 'net.gravitydevelopment.updater:updater:2.3'
-    metrics = 'org.mcstats.bukkit:metrics:R7'
+    metrics = 'org.mcstats.bukkit:metrics:R8-SNAPSHOT'
 }
 
 // Project dependencies
