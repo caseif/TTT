@@ -42,8 +42,13 @@ public class LeaveCommand extends CommandHandler {
 
     @Override
     public void handle() {
-        if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
+        if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED
+                && !(sender.hasPermission("ttt.admin") && args.length >= 2 && args[1].equalsIgnoreCase("force"))) {
             TTTCore.locale.getLocalizable("error.round.leave-dedicated").withPrefix(Color.ERROR).sendTo(sender);
+            if (sender.hasPermission("ttt.admin")) {
+                TTTCore.locale.getLocalizable("error.round.leave-dedicated-force").withPrefix(Color.ERROR)
+                        .sendTo(sender);
+            }
         }
 
         Optional<Challenger> ch = TTTCore.mg.getChallenger(((Player) sender).getUniqueId());

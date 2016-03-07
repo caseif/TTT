@@ -28,6 +28,7 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Stage;
+import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.BanHelper;
 
 import com.google.common.base.Optional;
@@ -49,7 +50,14 @@ public class JoinCommand extends CommandHandler {
             return;
         }
 
-        Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
+        if (args.length < 2 && TTTCore.config.OPERATING_MODE != OperatingMode.DEDICATED) {
+            TTTCore.locale.getLocalizable("error.command.too-few-args").sendTo(sender);
+            return;
+        }
+
+        Optional<Arena> arena = TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED
+                ? Optional.of(TTTCore.getDedicatedArena()) // default to dedicated arena
+                : TTTCore.mg.getArena(args[1]); // otherwise get the arena from the arg
         if (!arena.isPresent()) {
             TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
             return;

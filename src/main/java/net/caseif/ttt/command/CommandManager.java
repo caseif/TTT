@@ -95,7 +95,7 @@ public class CommandManager implements CommandExecutor {
         addRef(map, "start", StartCommand.class, "admin", "[arena name]", 2, true);
 
         // use
-        addRef(map, "join", JoinCommand.class, "use", "[arena name]", 2, false);
+        addRef(map, "join", JoinCommand.class, "use", "[arena name]", 1, false);
         addRef(map, "leave", LeaveCommand.class, "use", "", 1, false);
         addRef(map, "listarenas", ListArenasCommand.class, "use", "", 1, true);
 
