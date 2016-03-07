@@ -53,6 +53,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -66,7 +67,6 @@ public class TTTCore {
     private static TTTCore INSTANCE;
 
     public static Minigame mg;
-    private static Arena dedicatedArena;
 
     public static Logger log;
     public static Logger kLog;
@@ -77,6 +77,11 @@ public class TTTCore {
     public static ContributorListHelper clh;
 
     public static final boolean HALLOWEEN;
+
+    // dedicated mode stuff
+    private static Arena dedicatedArena;
+    public static List<Arena> shuffledArenas;
+    public static int arenaIndex = 0;
 
     static {
         Calendar cal = Calendar.getInstance();
@@ -165,13 +170,15 @@ public class TTTCore {
         // uninitialize static variables so as not to cause memory leaks when reloading
         INSTANCE = null;
         mg = null;
-        dedicatedArena = null;
         log = null;
         kLog = null;
         plugin = null;
         locale = null;
         config = null;
         clh = null;
+        dedicatedArena = null;
+        shuffledArenas.clear();
+        shuffledArenas = null;
     }
 
     public static TTTCore getInstance() {

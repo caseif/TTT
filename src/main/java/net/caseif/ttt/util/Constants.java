@@ -117,6 +117,9 @@ public final class Constants {
         public static final String SCOREBOARD_MANAGER = "scoreboardManager";
 
         public static final String TRAITOR_VICTORY = "t-victory";
+
+        public static final String ARENA_START_TIME = "startTime";
+        public static final String ARENA_ROUND_TALLY = "roundTally";
     }
 
 }
