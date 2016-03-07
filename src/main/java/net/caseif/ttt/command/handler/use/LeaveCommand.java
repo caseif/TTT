@@ -27,6 +27,7 @@ package net.caseif.ttt.command.handler.use;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.config.OperatingMode;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -41,6 +42,10 @@ public class LeaveCommand extends CommandHandler {
 
     @Override
     public void handle() {
+        if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
+            TTTCore.locale.getLocalizable("error.round.leave-dedicated").withPrefix(Color.ERROR).sendTo(sender);
+        }
+
         Optional<Challenger> ch = TTTCore.mg.getChallenger(((Player) sender).getUniqueId());
         if (ch.isPresent()) {
             String roundName = ch.get().getRound().getArena().getName();
