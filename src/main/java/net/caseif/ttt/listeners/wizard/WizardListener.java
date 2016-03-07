@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt.listeners;
+package net.caseif.ttt.listeners.wizard;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;

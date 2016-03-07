@@ -24,10 +24,10 @@
 
 package net.caseif.ttt.command.handler.player;
 
-import net.caseif.ttt.util.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
+import net.caseif.ttt.util.Body;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;

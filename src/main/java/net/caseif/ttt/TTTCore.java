@@ -27,10 +27,7 @@ package net.caseif.ttt;
 import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.command.CommandManager;
-import net.caseif.ttt.listeners.MinigameListener;
-import net.caseif.ttt.listeners.PlayerListener;
-import net.caseif.ttt.listeners.WizardListener;
-import net.caseif.ttt.listeners.WorldListener;
+import net.caseif.ttt.listeners.ListenerManager;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
@@ -46,7 +43,6 @@ import net.caseif.flint.arena.SpawningMode;
 import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.minigame.Minigame;
 import net.caseif.rosetta.LocaleManager;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -118,10 +114,7 @@ public class TTTCore {
         mg.setConfigValue(ConfigNode.SPAWNING_MODE, SpawningMode.RANDOM);
 
         // register events and commands
-        mg.getEventBus().register(new MinigameListener());
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), plugin);
-        Bukkit.getPluginManager().registerEvents(new WizardListener(), plugin);
-        Bukkit.getPluginManager().registerEvents(new WorldListener(), plugin);
+        ListenerManager.registerEventListeners();
         plugin.getCommand("ttt").setExecutor(new CommandManager());
 
         // check if config should be overwritten

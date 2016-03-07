@@ -24,8 +24,6 @@
 
 package net.caseif.ttt.util;
 
-import net.caseif.ttt.util.Constants;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import net.caseif.flint.round.Round;

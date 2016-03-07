@@ -24,8 +24,8 @@
 
 package net.caseif.ttt.command.handler.arena;
 
-import static net.caseif.ttt.listeners.WizardListener.WIZARDS;
-import static net.caseif.ttt.listeners.WizardListener.WIZARD_INFO;
+import static net.caseif.ttt.listeners.wizard.WizardListener.WIZARDS;
+import static net.caseif.ttt.listeners.wizard.WizardListener.WIZARD_INFO;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;

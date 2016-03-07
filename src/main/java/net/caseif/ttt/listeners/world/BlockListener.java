@@ -22,24 +22,31 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt.listeners;
+package net.caseif.ttt.listeners.world;
 
-import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
-
-import net.caseif.ttt.TTTBootstrap;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.TTTCore;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
-public class SpecialPlayerListener implements Listener {
+/**
+ * Listener for block events.
+ */
+public class BlockListener implements Listener {
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if (event.getPlayer().hasPermission("ttt.build.warn")) {
-            TTTBootstrap.locale.getLocalizable("error.plugin.flint").withPrefix(Color.ERROR)
-                    .withReplacements(MIN_FLINT_VERSION + "").sendTo(event.getPlayer());
+    public void onBlockPlace(BlockPlaceEvent event) {
+        if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
+            event.setCancelled(true);
         }
     }
 

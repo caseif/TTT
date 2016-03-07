@@ -35,7 +35,6 @@ import net.caseif.ttt.util.helper.io.FileHelper;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
-import net.caseif.flint.config.ConfigNode;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

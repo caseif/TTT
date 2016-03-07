@@ -29,7 +29,7 @@ import static net.caseif.ttt.util.Constants.STEEL_CURSEFORGE_PROJECT_ID;
 import static net.caseif.ttt.util.Constants.TTT_CURSEFORGE_PROJECT_ID;
 
 import net.caseif.ttt.command.SpecialCommandManager;
-import net.caseif.ttt.listeners.SpecialPlayerListener;
+import net.caseif.ttt.listeners.ListenerManager;
 import net.caseif.ttt.util.FreshUpdater;
 
 import net.caseif.rosetta.LocaleManager;
@@ -81,7 +81,7 @@ public class TTTBootstrap extends JavaPlugin {
         locale.setDefaultLocale(getConfig().getString("locale"));
         getLogger().warning(locale.getLocalizable("error.plugin.flint")
                 .withReplacements(MIN_FLINT_VERSION + "").localize());
-        Bukkit.getPluginManager().registerEvents(new SpecialPlayerListener(), this);
+        ListenerManager.registerSpecialEventListeners();
         getCommand("ttt").setExecutor(new SpecialCommandManager());
     }
 
