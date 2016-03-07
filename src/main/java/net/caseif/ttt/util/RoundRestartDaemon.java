@@ -32,6 +32,7 @@ import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 
 import net.caseif.flint.arena.Arena;
+import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -54,13 +55,16 @@ public class RoundRestartDaemon extends BukkitRunnable {
 
     public RoundRestartDaemon(Arena arena) {
         super();
+
+        assert arena.getRound().isPresent();
+
         this.arena = arena;
         arena.getMetadata().set(ARENA_ROUND_TALLY, arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get() + 1);
         willCycle = TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED && shouldArenaBeCycled();
-    }
 
-    public void addPlayer(UUID uuid) {
-        players.add(uuid);
+        for (Challenger ch : arena.getRound().get().getChallengers()) {
+            players.add(ch.getUniqueId());
+        }
     }
 
     @Override
