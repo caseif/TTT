@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt;
+package net.caseif.ttt.util;
 
 import net.caseif.ttt.util.Constants;
 

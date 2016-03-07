@@ -24,7 +24,7 @@
 
 package net.caseif.ttt.util.helper.event;
 
-import net.caseif.ttt.Body;
+import net.caseif.ttt.util.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants;
