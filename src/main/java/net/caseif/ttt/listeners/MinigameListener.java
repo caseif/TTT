@@ -31,6 +31,8 @@ import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.Constants.Stage;
+import net.caseif.ttt.util.RoundRestartDaemon;
+import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoleHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
@@ -225,6 +227,12 @@ public class MinigameListener {
         }
 
         event.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get().uninitialize();
+
+        if (TTTCore.config.OPERATING_MODE == OperatingMode.CONTINUOUS
+                || TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
+            // restart the round
+            new RoundRestartDaemon(event.getRound().getArena()).runTask(TTTCore.getPlugin());
+        }
     }
 
     @Subscribe
