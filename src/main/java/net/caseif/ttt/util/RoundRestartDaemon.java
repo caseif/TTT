@@ -101,7 +101,7 @@ public class RoundRestartDaemon extends BukkitRunnable {
         Arena newArena;
         switch (TTTCore.config.CYCLE_MODE) {
             case SEQUENTIAL:
-                 newArena = TTTCore.mg.getArenas().get(newIndex);
+                newArena = TTTCore.mg.getArenas().get(newIndex);
                 break;
             case SHUFFLE:
                 newArena = TTTCore.shuffledArenas.get(newIndex);

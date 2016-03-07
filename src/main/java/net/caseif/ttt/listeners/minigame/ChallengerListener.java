@@ -100,7 +100,8 @@ public class ChallengerListener {
                 KarmaHelper.saveKarma(event.getChallenger());
                 RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                         .withPrefix(Constants.Color.INFO).withReplacements(event.getChallenger().getName(),
-                                Constants.Color.ARENA + event.getChallenger().getRound().getArena().getName() + Constants.Color.INFO));
+                                Constants.Color.ARENA + event.getChallenger().getRound().getArena().getName()
+                                        + Constants.Color.INFO));
 
                 if (event.getRound().getLifecycleStage() == Constants.Stage.PREPARING
                         && event.getRound().getChallengers().size() <= 1) {

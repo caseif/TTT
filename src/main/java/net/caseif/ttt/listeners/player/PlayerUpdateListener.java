@@ -116,7 +116,8 @@ public class PlayerUpdateListener implements Listener {
                             event.setDamage(TTTCore.config.CROWBAR_DAMAGE);
                         }
 
-                        Optional<Double> reduc = damagerCh.get().getMetadata().get(Constants.MetadataTag.DAMAGE_REDUCTION);
+                        Optional<Double> reduc = damagerCh.get().getMetadata()
+                                .get(Constants.MetadataTag.DAMAGE_REDUCTION);
                         if (reduc.isPresent()) {
                             event.setDamage((int) (event.getDamage() * reduc.get()));
                         }

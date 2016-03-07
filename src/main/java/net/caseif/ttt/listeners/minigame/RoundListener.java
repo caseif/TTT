@@ -144,7 +144,8 @@ public class RoundListener {
             }
         }
 
-        event.getRound().getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get().uninitialize();
+        event.getRound().getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get()
+                .uninitialize();
 
         if (TTTCore.config.OPERATING_MODE == OperatingMode.CONTINUOUS
                 || TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
