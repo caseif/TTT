@@ -25,16 +25,25 @@
 package net.caseif.ttt.listeners.player;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  * Listener for player events related to the player's connection to the server.
  */
 public class PlayerConnectionListener implements Listener {
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
+            TTTCore.getDedicatedArena().getOrCreateRound().addChallenger(event.getPlayer().getUniqueId());
+        }
+    }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {

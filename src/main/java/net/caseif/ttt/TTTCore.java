@@ -33,17 +33,20 @@ import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageDeleter;
+import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
 import com.google.common.collect.ImmutableSet;
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.FlintCore;
+import net.caseif.flint.arena.Arena;
 import net.caseif.flint.arena.SpawningMode;
 import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.minigame.Minigame;
 import net.caseif.rosetta.LocaleManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import sun.rmi.runtime.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,6 +66,7 @@ public class TTTCore {
     private static TTTCore INSTANCE;
 
     public static Minigame mg;
+    private static Arena dedicatedArena;
 
     public static Logger log;
     public static Logger kLog;
@@ -99,6 +103,10 @@ public class TTTCore {
         if (FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
             TTTBootstrap.INSTANCE.fail();
             return;
+        }
+
+        if (config.OPERATING_MODE == OperatingMode.DEDICATED) {
+            //TODO: set dedicated arena
         }
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
@@ -150,12 +158,20 @@ public class TTTCore {
     }
 
     public void deinitialize() {
-        // uninitialize static variables so as not to cause memory leaks when reloading
         if (TTTCore.config.VERBOSE_LOGGING) {
             logInfo("info.plugin.disable", plugin.toString());
         }
-        locale = null;
+
+        // uninitialize static variables so as not to cause memory leaks when reloading
+        INSTANCE = null;
+        mg = null;
+        dedicatedArena = null;
+        log = null;
+        kLog = null;
         plugin = null;
+        locale = null;
+        config = null;
+        clh = null;
     }
 
     public static TTTCore getInstance() {
@@ -164,6 +180,14 @@ public class TTTCore {
 
     public static JavaPlugin getPlugin() {
         return plugin;
+    }
+
+    public static Arena getDedicatedArena() {
+        return dedicatedArena;
+    }
+
+    public static void setDedicatedArena(Arena arena) {
+        dedicatedArena = arena;
     }
 
     public void createFile(String s) {
