@@ -34,6 +34,7 @@ import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageDeleter;
 import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 import net.caseif.ttt.util.helper.platform.ConfigHelper;
 
@@ -46,14 +47,12 @@ import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.minigame.Minigame;
 import net.caseif.rosetta.LocaleManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import sun.rmi.runtime.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -80,8 +79,6 @@ public class TTTCore {
 
     // dedicated mode stuff
     private static Arena dedicatedArena;
-    public static List<Arena> shuffledArenas;
-    public static int arenaIndex = 0;
 
     static {
         Calendar cal = Calendar.getInstance();
@@ -111,7 +108,7 @@ public class TTTCore {
         }
 
         if (config.OPERATING_MODE == OperatingMode.DEDICATED) {
-            //TODO: set dedicated arena
+            setDedicatedArena(ArenaHelper.getNextArena());
         }
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
@@ -177,8 +174,6 @@ public class TTTCore {
         config = null;
         clh = null;
         dedicatedArena = null;
-        shuffledArenas.clear();
-        shuffledArenas = null;
     }
 
     public static TTTCore getInstance() {

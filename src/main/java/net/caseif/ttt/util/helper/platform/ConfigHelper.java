@@ -193,6 +193,12 @@ public final class ConfigHelper {
         OperatingMode localOperatingMode;
         try {
             localOperatingMode = OperatingMode.valueOf(getString("operating-mode").toUpperCase());
+            if (localOperatingMode == OperatingMode.DEDICATED && TTTCore.mg.getArenas().size() == 0) {
+                localOperatingMode = OperatingMode.STANDARD;
+
+                TTTCore.log.warning(TTTCore.locale.getLocalizable("error.plugin.dedicated-no-arenas").localize());
+                TTTCore.log.warning(TTTCore.locale.getLocalizable("error.plugin.dedicated-fallback").localize());
+            }
         } catch (IllegalArgumentException ex) {
             TTTCore.getPlugin().getLogger()
                     .warning("Invalid value for config key 'operating-mode' - defaulting to STANDARD");

@@ -29,6 +29,7 @@ import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_START_TIME;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 
 import net.caseif.flint.arena.Arena;
 import net.caseif.flint.round.Round;
@@ -92,30 +93,8 @@ public class RoundRestartDaemon extends BukkitRunnable {
     }
 
     private void cycleArena() {
-        // increment the arena index
-        int newIndex = TTTCore.arenaIndex + 1;
-        if (newIndex > TTTCore.mg.getArenas().size()) {
-            newIndex = 0;
-        }
-
-        Arena newArena;
-        switch (TTTCore.config.CYCLE_MODE) {
-            case SEQUENTIAL:
-                newArena = TTTCore.mg.getArenas().get(newIndex);
-                break;
-            case SHUFFLE:
-                newArena = TTTCore.shuffledArenas.get(newIndex);
-                break;
-            case RANDOM:
-                int randIndex = (int) Math.floor(Math.random() * TTTCore.mg.getArenas().size());
-                newArena = TTTCore.mg.getArenas().get(randIndex);
-                break;
-            default:
-                throw new AssertionError();
-        }
-
-        TTTCore.setDedicatedArena(newArena);
-        this.arena = newArena;
+        this.arena = ArenaHelper.getNextArena();
+        TTTCore.setDedicatedArena(arena);
     }
 
 }
