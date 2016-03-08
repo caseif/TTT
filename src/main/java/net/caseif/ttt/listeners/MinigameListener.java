@@ -52,6 +52,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.Random;
 import java.util.UUID;
@@ -97,16 +98,19 @@ public class MinigameListener {
 
     @Subscribe
     public void onChallengerLeaveRound(ChallengerLeaveRoundEvent event) {
-        Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
-        pl.setScoreboard(TTTCore.getPlugin().getServer().getScoreboardManager().getNewScoreboard());
+        try {
+            Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
+            pl.setScoreboard(TTTCore.getPlugin().getServer().getScoreboardManager().getNewScoreboard());
 
-        if (event.getChallenger().getMetadata().has(MetadataTag.SEARCHING_BODY)) {
-            pl.closeInventory();
+            if (event.getChallenger().getMetadata().has(MetadataTag.SEARCHING_BODY)) {
+                pl.closeInventory();
+            }
+
+            pl.setDisplayName(event.getChallenger().getName());
+            pl.setCompassTarget(LocationHelper.convert(event.getReturnLocation()).getWorld().getSpawnLocation());
+            pl.setHealth(pl.getMaxHealth());
+        } catch (IllegalStateException ex) { // player is probably disconnecting; just ignore the event
         }
-
-        pl.setDisplayName(event.getChallenger().getName());
-        pl.setCompassTarget(LocationHelper.convert(event.getReturnLocation()).getWorld().getSpawnLocation());
-        pl.setHealth(pl.getMaxHealth());
 
         if (!event.getRound().isEnding()) {
             if (!event.getChallenger().getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
