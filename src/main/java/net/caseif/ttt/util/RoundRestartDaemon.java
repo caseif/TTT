@@ -53,16 +53,14 @@ public class RoundRestartDaemon extends BukkitRunnable {
 
     boolean willCycle = false;
 
-    public RoundRestartDaemon(Arena arena) {
+    public RoundRestartDaemon(Round round) {
         super();
 
-        assert arena.getRound().isPresent();
-
-        this.arena = arena;
-        arena.getMetadata().set(ARENA_ROUND_TALLY, arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get() + 1);
+        this.arena = round.getArena();
+        arena.getMetadata().set(ARENA_ROUND_TALLY, arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).or(0) + 1);
         willCycle = TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED && shouldArenaBeCycled();
 
-        for (Challenger ch : arena.getRound().get().getChallengers()) {
+        for (Challenger ch : round.getChallengers()) {
             players.add(ch.getUniqueId());
         }
     }
@@ -85,11 +83,13 @@ public class RoundRestartDaemon extends BukkitRunnable {
         int timeLimit = TTTCore.config.CYCLE_TIME_LIMIT;
         int roundLimit = TTTCore.config.CYCLE_ROUND_LIMIT;
 
-        if ((TTTCore.config.CYCLE_TIME_LIMIT >= 0)
+        if (timeLimit >= 0 && (TTTCore.config.CYCLE_TIME_LIMIT >= 0)
                 && (System.currentTimeMillis() - arena.getMetadata().<Long>get(ARENA_START_TIME).get())
                 >= (timeLimit * 1000)) { // I realize that was super-ugly
+            arena.getMetadata().remove(ARENA_START_TIME);
             return true; // time limit reached
         } else if (roundLimit >= 0 && arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get() >= roundLimit) {
+            arena.getMetadata().set(ARENA_ROUND_TALLY, 0);
             return true; // round limit reached
         }
 
@@ -99,6 +99,7 @@ public class RoundRestartDaemon extends BukkitRunnable {
     private void cycleArena() {
         this.arena = ArenaHelper.getNextArena();
         TTTCore.setDedicatedArena(arena);
+        arena.getMetadata().set(ARENA_START_TIME, System.currentTimeMillis());
     }
 
 }

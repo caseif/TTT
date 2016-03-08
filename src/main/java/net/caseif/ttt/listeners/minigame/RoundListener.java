@@ -150,7 +150,7 @@ public class RoundListener {
         if (TTTCore.config.OPERATING_MODE == OperatingMode.CONTINUOUS
                 || TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
             // restart the round
-            new RoundRestartDaemon(event.getRound().getArena()).runTask(TTTCore.getPlugin());
+            new RoundRestartDaemon(event.getRound()).runTask(TTTCore.getPlugin());
         }
     }
 

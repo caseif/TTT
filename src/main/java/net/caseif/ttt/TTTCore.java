@@ -25,6 +25,7 @@
 package net.caseif.ttt;
 
 import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
+import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_START_TIME;
 
 import net.caseif.ttt.command.CommandManager;
 import net.caseif.ttt.listeners.ListenerManager;
@@ -100,6 +101,9 @@ public class TTTCore {
         kLog = Logger.getLogger("TTT Karma Debug");
         kLog.setParent(log);
 
+        // register plugin with Flint
+        mg = FlintCore.registerPlugin(plugin.getName());
+
         config = new ConfigHelper();
 
         if (FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
@@ -109,12 +113,10 @@ public class TTTCore {
 
         if (config.OPERATING_MODE == OperatingMode.DEDICATED) {
             setDedicatedArena(ArenaHelper.getNextArena());
+            getDedicatedArena().getMetadata().set(ARENA_START_TIME, System.currentTimeMillis());
         }
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
-
-        // register plugin with Flint
-        mg = FlintCore.registerPlugin(plugin.getName());
 
         mg.setConfigValue(ConfigNode.FORBIDDEN_COMMANDS, ImmutableSet.of("kit", "msg", "pm", "r", "me", "back"));
 
