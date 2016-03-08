@@ -49,6 +49,7 @@ public class LeaveCommand extends CommandHandler {
                 TTTCore.locale.getLocalizable("error.round.leave-dedicated-force").withPrefix(Color.ERROR)
                         .sendTo(sender);
             }
+            return;
         }
 
         Optional<Challenger> ch = TTTCore.mg.getChallenger(((Player) sender).getUniqueId());
