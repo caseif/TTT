@@ -176,14 +176,14 @@ karma-debug: false
 operating-mode: standard
 
 # The mode by which new arenas are selected in dedicated mode. Three options are available:
-#     sequential - Arenas will be selected in a fixed order determined by the engine.
 #     shuffle - Arenas will be selected in a fixed order determined by performing a random shuffle upon the arena list.
 #               This order may change between restarts.
+#     sequential - Arenas will be selected in a fixed order determined by the engine.
 #     random - Arenas will be selected completely randomly.
 # If the set value is not valid, it will default to 'sequential'.
 #
 # NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
-cycle-mode: sequential
+cycle-mode: shuffle
 
 # The round limit for each arena in dedicated mode.
 # After this number of rounds have taken place, the server will switch to a new arena.

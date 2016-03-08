@@ -28,6 +28,7 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -39,9 +40,16 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class PlayerConnectionListener implements Listener {
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerJoin(final PlayerJoinEvent event) {
         if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
-            TTTCore.getDedicatedArena().getOrCreateRound().addChallenger(event.getPlayer().getUniqueId());
+            // goddamn do I miss lambdas
+            Bukkit.getScheduler().runTask(TTTCore.getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+                    TTTCore.getDedicatedArena().getOrCreateRound()
+                            .addChallenger(event.getPlayer().getUniqueId());
+                }
+            });
         }
     }
 

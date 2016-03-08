@@ -26,6 +26,7 @@ package net.caseif.ttt.listeners.wizard;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.collect.BiMap;
@@ -122,6 +123,7 @@ public class WizardListener implements Listener {
                         }
                         TTTCore.mg.createArena((String) info[Stage.WIZARD_ID], spawn,
                                 boundary);
+                        ArenaHelper.updateShuffledArenas();
                         event.getPlayer().sendMessage(DIVIDER);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(Color.INFO)
                                 .withReplacements(Color.FLAIR + "/ttt join "

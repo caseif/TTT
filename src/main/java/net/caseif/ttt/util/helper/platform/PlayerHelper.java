@@ -22,32 +22,31 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt.command.handler.arena;
+package net.caseif.ttt.util.helper.platform;
 
-import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.entity.Player;
 
-import org.bukkit.command.CommandSender;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.logging.Level;
 
-public class RemoveArenaCommand extends CommandHandler {
+/**
+ * Static utility class for player-related functionality.
+ */
+public final class PlayerHelper {
 
-    public RemoveArenaCommand(CommandSender sender, String[] args) {
-        super(sender, args);
-    }
-
-    @Override
-    public void handle() {
-        String name = args[1];
+    @SuppressWarnings("unchecked")
+    public static Collection<? extends Player> getOnlinePlayers() {
         try {
-            TTTCore.mg.removeArena(name);
-            ArenaHelper.updateShuffledArenas();
-
-            TTTCore.locale.getLocalizable("info.personal.arena.remove.success").withPrefix(Color.INFO)
-                    .withReplacements(Color.ARENA + name + Color.INFO).sendTo(sender);
-        } catch (IllegalArgumentException ex) {
-            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
+            Method gop = Server.class.getMethod("getOnlinePlayers");
+            return gop.getReturnType().equals(Collection.class)
+                    ? (Collection<? extends Player>) gop.invoke(Bukkit.getServer())
+                    : Arrays.asList((Player[]) gop.invoke(Bukkit.getServer()));
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 

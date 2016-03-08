@@ -26,8 +26,10 @@ package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
 
+import com.google.common.collect.Lists;
 import net.caseif.flint.arena.Arena;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,6 +39,15 @@ public final class ArenaHelper {
 
     public static List<Arena> shuffledArenas;
     public static int arenaIndex = 0;
+
+    static {
+        updateShuffledArenas();
+    }
+
+    public static void updateShuffledArenas() {
+        shuffledArenas = Lists.newArrayList(TTTCore.mg.getArenas());
+        Collections.shuffle(shuffledArenas);
+    }
 
     public static Arena getNextArena() {
         assert TTTCore.mg.getArenas().size() > 0;

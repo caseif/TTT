@@ -38,6 +38,7 @@ import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 import net.caseif.ttt.util.helper.platform.ConfigHelper;
+import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
 import com.google.common.collect.ImmutableSet;
 import net.caseif.crosstitles.TitleUtil;
@@ -47,6 +48,7 @@ import net.caseif.flint.arena.SpawningMode;
 import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.minigame.Minigame;
 import net.caseif.rosetta.LocaleManager;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -146,6 +148,12 @@ public class TTTCore {
 
         File invDir = new File(plugin.getDataFolder() + File.separator + "inventories");
         invDir.mkdir();
+
+        if (config.OPERATING_MODE == OperatingMode.DEDICATED) {
+            for (Player pl : PlayerHelper.getOnlinePlayers()) {
+                getDedicatedArena().getOrCreateRound().addChallenger(pl.getUniqueId());
+            }
+        }
     }
 
     public void applyConfigOptions() {
