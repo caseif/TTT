@@ -91,11 +91,11 @@ public class RoundListener {
                         break;
                     }
 
-                    // manage DNA Scanners every n seconds
-                    if (ch.getMetadata().has(Constants.Role.DETECTIVE)
-                            && ch.getRound().getTime() % TTTCore.config.SCANNER_CHARGE_TIME == 0) {
-                        Player tracker = TTTCore.getPlugin().getServer().getPlayer(ch.getName());
-                        if (ch.getMetadata().has("tracking")) {
+                    // manage DNA scanners
+                    Player tracker = TTTCore.getPlugin().getServer().getPlayer(ch.getName());
+                    if (ch.getMetadata().has(Constants.Role.DETECTIVE) && ch.getMetadata().has("tracking")) {
+                        // update every n secconds
+                        if (ch.getRound().getTime() % TTTCore.config.SCANNER_CHARGE_TIME == 0) {
                             Player killer = TTTCore.getPlugin().getServer()
                                     .getPlayer(ch.getMetadata().<UUID>get("tracking").get());
                             if (killer != null
@@ -107,19 +107,19 @@ public class RoundListener {
                                 ch.getMetadata().remove("tracking");
                                 tracker.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
                             }
-                        } else {
-                            Random rand = new Random();
-                            tracker.setCompassTarget(
-                                    new Location(
-                                            tracker.getWorld(),
-                                            tracker.getLocation().getX() + rand.nextInt(10) - 5,
-                                            tracker.getLocation().getY(),
-                                            tracker.getLocation().getZ() + rand.nextInt(10) - 5
-                                    )
-                            );
                         }
+                    } else { // jjust give it random coordinates
+                        tracker.setCompassTarget(
+                                new Location(
+                                        tracker.getWorld(),
+                                        tracker.getLocation().getX() + (Math.random() * 100 - 50),
+                                        tracker.getLocation().getY(),
+                                        tracker.getLocation().getZ() + (Math.random() * 100 - 50)
+                                )
+                        );
                     }
                 }
+
                 if (!(tLeft && iLeft)) {
                     if (tLeft) {
                         event.getRound().getMetadata().set(Constants.MetadataTag.TRAITOR_VICTORY, true);
