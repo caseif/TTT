@@ -75,9 +75,18 @@ public class HelpCommand extends CommandHandler {
         cmdRef.getDescription().withPrefix(Color.LABEL + "/ttt " + cmdRef.getLabel() + " " + Color.INFO).sendTo(sender);
 
         TTTCore.locale.getLocalizable("fragment.usage")
-                .withPrefix("" + Color.FLAIR + ChatColor.ITALIC + "    ")
+                .withPrefix("    " + Color.FLAIR + ChatColor.ITALIC)
                 .withReplacements("" + Color.SPECIAL + ChatColor.ITALIC + cmdRef.getUsage())
                 .sendTo(sender);
+        if (cmdRef.getAliases().length > 0) {
+            StringBuilder aliasStr = new StringBuilder();
+            for (String alias : cmdRef.getAliases()) {
+                aliasStr.append(alias).append(", ");
+            }
+            aliasStr.delete(aliasStr.length() - 2, aliasStr.length());
+            TTTCore.locale.getLocalizable("fragment.aliases").withPrefix("    " + Color.FLAIR + ChatColor.ITALIC)
+                    .withReplacements(Color.SPECIAL + ChatColor.ITALIC + aliasStr.toString()).sendTo(sender);
+        }
     }
 
 }

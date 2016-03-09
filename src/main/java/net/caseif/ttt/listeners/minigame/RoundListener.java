@@ -46,7 +46,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -108,7 +107,7 @@ public class RoundListener {
                                 tracker.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
                             }
                         }
-                    } else { // jjust give it random coordinates
+                    } else { // just give it random coordinates
                         tracker.setCompassTarget(
                                 new Location(
                                         tracker.getWorld(),

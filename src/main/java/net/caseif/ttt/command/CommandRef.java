@@ -47,21 +47,22 @@ public class CommandRef {
     private String usage;
     private int argCount;
     private boolean consoleAllowed;
+    private String[] aliases;
 
     public CommandRef(String cmd, Class<? extends CommandHandler> handlerClass, Localizable desc, String perm,
-                      String usage, int argCount, boolean consoleAllowed) {
+                      String usage, int argCount, boolean consoleAllowed, String... aliases) {
         this.cmd = cmd;
         try {
             this.constructor = handlerClass.getConstructor(CommandSender.class, String[].class);
         } catch (NoSuchMethodException ex) {
             throw new AssertionError(ex);
-
         }
         this.description = desc;
         this.permission = perm;
         this.usage = usage;
         this.argCount = argCount;
         this.consoleAllowed = consoleAllowed;
+        this.aliases = aliases;
     }
 
     public String getLabel() {
@@ -90,6 +91,10 @@ public class CommandRef {
 
     public boolean isConsoleAllowed() {
         return consoleAllowed;
+    }
+
+    public String[] getAliases() {
+        return aliases;
     }
 
     public void invoke(CommandSender sender, String[] args) {

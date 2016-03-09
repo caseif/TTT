@@ -68,15 +68,15 @@ public class CommandManager implements CommandExecutor {
 
         // arena
         addRef(map, "addspawn", AddSpawnCommand.class, "superadmin", "[arena name] {[x] [y] [z]}", 2, true);
-        addRef(map, "carena", CreateArenaCommand.class, "superadmin", "", 1, false);
+        addRef(map, "createarena", CreateArenaCommand.class, "superadmin", "", 1, false, "carena");
         addRef(map, "import", ImportCommand.class, "superadmin", "[arena name]", 2, true);
         addRef(map, "listspawns", ListSpawnsCommand.class, "superadmin", "[arena name]", 2, true);
-        addRef(map, "rarena", RemoveArenaCommand.class, "superadmin", "[arena name]", 2, true);
+        addRef(map, "removearena", RemoveArenaCommand.class, "superadmin", "[arena name]", 2, true, "rarena");
         addRef(map, "removespawn", RemoveSpawnCommand.class, "superadmin", "[arena name] [index]|[[x] [y] [z]]", 2,
                 true);
 
         // misc
-        addRef(map, "help", HelpCommand.class, null, "{command}", 1, true);
+        addRef(map, "help", HelpCommand.class, null, "{command}", 1, true, "?");
         addRef(map, "reload", ReloadCommand.class, "superadmin", "", 1, true);
 
         // player
@@ -104,10 +104,14 @@ public class CommandManager implements CommandExecutor {
     }
 
     private static void addRef(Map<String, CommandRef> map, String cmd, Class<? extends CommandHandler> clazz,
-                               String perm, String usage, int minArgs, boolean consoleAllowed) {
+                               String perm, String usage, int minArgs, boolean consoleAllowed, String... aliases) {
         cmd = cmd.toLowerCase();
-        map.put(cmd, new CommandRef(cmd, clazz, TTTCore.locale.getLocalizable("info.command.desc." + cmd),
-                perm != null ? "ttt." + perm : null, "/ttt " + cmd + " " + usage, minArgs, consoleAllowed));
+        CommandRef cr = new CommandRef(cmd, clazz, TTTCore.locale.getLocalizable("info.command.desc." + cmd),
+                perm != null ? "ttt." + perm : null, "/ttt " + cmd + " " + usage, minArgs, consoleAllowed, aliases);
+        map.put(cmd, cr);
+        for (String alias : aliases) {
+            map.put(alias, cr);
+        }
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -117,13 +121,13 @@ public class CommandManager implements CommandExecutor {
                 return true;
             }
 
-            final String subCmd = args[0].equals("?") ? "help" : args[0].toLowerCase();
+            final String subCmd = args[0].toLowerCase();
 
             if (commands.containsKey(subCmd)) {
                 commands.get(subCmd).invoke(sender, args);
             } else {
                 TTTCore.locale.getLocalizable("error.command.invalid-args")
-                        .withPrefix(Color.ERROR).sendTo(sender);
+                        .withPrefix(Color.ERROR).sendTo(sender);    
             }
 
             return true;
