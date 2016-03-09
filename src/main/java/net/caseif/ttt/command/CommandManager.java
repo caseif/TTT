@@ -127,7 +127,7 @@ public class CommandManager implements CommandExecutor {
                 commands.get(subCmd).invoke(sender, args);
             } else {
                 TTTCore.locale.getLocalizable("error.command.invalid-args")
-                        .withPrefix(Color.ERROR).sendTo(sender);    
+                        .withPrefix(Color.ERROR).sendTo(sender);
             }
 
             return true;

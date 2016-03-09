@@ -50,7 +50,7 @@ public class HelpCommand extends CommandHandler {
 
             CommandRef cmdRef = CommandManager.commands.get(args[1]);
 
-            if (sender.hasPermission(cmdRef.getPermission())) {
+            if (cmdRef.getPermission() == null || sender.hasPermission(cmdRef.getPermission())) {
                 sendDescription(cmdRef);
             } else {
                 TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR).sendTo(sender);
