@@ -24,6 +24,9 @@
 
 package net.caseif.ttt.util.helper.gamemode;
 
+import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_ROUND_TALLY;
+import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_START_TIME;
+
 import net.caseif.ttt.TTTCore;
 
 import com.google.common.collect.Lists;
@@ -49,7 +52,13 @@ public final class ArenaHelper {
         Collections.shuffle(shuffledArenas);
     }
 
-    public static Arena getNextArena() {
+    public static void applyNextArena() {
+        TTTCore.setDedicatedArena(ArenaHelper.getNextArena());
+        TTTCore.getDedicatedArena().getMetadata().set(ARENA_START_TIME, System.currentTimeMillis());
+        TTTCore.getDedicatedArena().getMetadata().set(ARENA_ROUND_TALLY, 1);
+    }
+
+    private static Arena getNextArena() {
         assert TTTCore.mg.getArenas().size() > 0;
 
         incrementIndex();
@@ -68,9 +77,10 @@ public final class ArenaHelper {
     }
 
     private static void incrementIndex() {
-        int newIndex = arenaIndex + 1;
-        if (newIndex > TTTCore.mg.getArenas().size()) {
+        arenaIndex++;
+        if (arenaIndex >= TTTCore.mg.getArenas().size()) {
             arenaIndex = 0;
         }
     }
+
 }

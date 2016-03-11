@@ -25,6 +25,7 @@
 package net.caseif.ttt;
 
 import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
+import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_ROUND_TALLY;
 import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_START_TIME;
 
 import net.caseif.ttt.command.CommandManager;
@@ -114,8 +115,7 @@ public class TTTCore {
         }
 
         if (config.OPERATING_MODE == OperatingMode.DEDICATED) {
-            setDedicatedArena(ArenaHelper.getNextArena());
-            getDedicatedArena().getMetadata().set(ARENA_START_TIME, System.currentTimeMillis());
+            ArenaHelper.applyNextArena();
         }
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));

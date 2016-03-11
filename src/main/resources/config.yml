@@ -197,7 +197,7 @@ cycle-round-limit: 6
 # Set to -1 for no limit.
 #
 # NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
-cycle-time-limit: 60
+cycle-time-limit: 30
 
 ###################
 # Plugin Settings #

@@ -27,6 +27,7 @@ package net.caseif.ttt.command;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.command.handler.arena.AddSpawnCommand;
+import net.caseif.ttt.command.handler.arena.ArenaInfoCommand;
 import net.caseif.ttt.command.handler.arena.CreateArenaCommand;
 import net.caseif.ttt.command.handler.arena.ImportCommand;
 import net.caseif.ttt.command.handler.arena.ListSpawnsCommand;
@@ -74,6 +75,7 @@ public class CommandManager implements CommandExecutor {
         addRef(map, "removearena", RemoveArenaCommand.class, "superadmin", "[arena name]", 2, true, "rarena");
         addRef(map, "removespawn", RemoveSpawnCommand.class, "superadmin", "[arena name] [index]|[[x] [y] [z]]", 2,
                 true);
+        addRef(map, "arenainfo", ArenaInfoCommand.class, "admin", "[arena name]", 1, true);
 
         // misc
         addRef(map, "help", HelpCommand.class, null, "{command}", 1, true, "?");

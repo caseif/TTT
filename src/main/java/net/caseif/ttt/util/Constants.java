@@ -65,6 +65,19 @@ public final class Constants {
         public static final String TRAITOR = ChatColor.DARK_RED.toString();
     }
 
+    public static class Text {
+        public static final String DIVIDER;
+
+        static {
+            final int dividerLength = 36;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < dividerLength; i++) {
+                sb.append("-");
+            }
+            DIVIDER = sb.toString();
+        }
+    }
+
     // lifecycle stages
     public static class Stage {
         public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
