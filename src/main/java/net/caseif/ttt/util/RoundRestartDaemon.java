@@ -51,17 +51,27 @@ public class RoundRestartDaemon extends BukkitRunnable {
 
     private final Set<UUID> players = new HashSet<>();
 
-    boolean willCycle = false;
+    private final boolean willCycle;
+    private final boolean willRestart;
 
     public RoundRestartDaemon(Round round) {
         super();
 
-        this.arena = round.getArena();
-        arena.getMetadata().set(ARENA_ROUND_TALLY, arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get() + 1);
-        willCycle = TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED && shouldArenaBeCycled();
+        this.willRestart = round.getChallengers().size() > 0;
 
-        for (Challenger ch : round.getChallengers()) {
-            players.add(ch.getUniqueId());
+        this.arena = round.getArena();
+
+        if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
+            arena.getMetadata().set(ARENA_ROUND_TALLY, arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get() + 1);
+            this.willCycle = shouldArenaBeCycled();
+        } else {
+            this.willCycle = false;
+        }
+
+        if (this.willRestart) {
+            for (Challenger ch : round.getChallengers()) {
+                players.add(ch.getUniqueId());
+            }
         }
     }
 
@@ -73,9 +83,11 @@ public class RoundRestartDaemon extends BukkitRunnable {
             cycleArena();
         }
 
-        Round round = arena.createRound();
-        for (UUID uuid : players) {
-            round.addChallenger(uuid);
+        if (this.willRestart) {
+            Round round = arena.createRound();
+            for (UUID uuid : players) {
+                round.addChallenger(uuid);
+            }
         }
     }
 
@@ -89,7 +101,6 @@ public class RoundRestartDaemon extends BukkitRunnable {
             arena.getMetadata().remove(ARENA_START_TIME);
             return true; // time limit reached
         } else if (roundLimit >= 0 && arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get() - 1 >= roundLimit) {
-            arena.getMetadata().set(ARENA_ROUND_TALLY, 1);
             return true; // round limit reached
         }
 
