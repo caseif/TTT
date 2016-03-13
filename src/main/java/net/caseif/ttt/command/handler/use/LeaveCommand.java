@@ -47,7 +47,7 @@ public class LeaveCommand extends CommandHandler {
             TTTCore.locale.getLocalizable("error.round.leave-dedicated").withPrefix(Color.ERROR).sendTo(sender);
             if (sender.hasPermission("ttt.admin")) {
                 TTTCore.locale.getLocalizable("error.round.leave-dedicated-force").withPrefix(Color.ERROR)
-                        .sendTo(sender);
+                        .withReplacements(Color.FLAIR + "/ttt leave force").sendTo(sender);
             }
             return;
         }

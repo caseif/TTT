@@ -183,21 +183,21 @@ operating-mode: standard
 # If the set value is not valid, it will default to 'sequential'.
 #
 # NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
-cycle-mode: shuffle
+map-cycle-mode: shuffle
 
 # The round limit for each arena in dedicated mode.
 # After this number of rounds have taken place, the server will switch to a new arena.
 # Set to -1 for no limit.
 #
 # NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
-cycle-round-limit: 6
+map-cycle-round-limit: 6
 
 # The time limit in minutes for a given arena in dedicated mode.
 # After this limit is reached, the server will switch to a new arena.
 # Set to -1 for no limit.
 #
 # NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
-cycle-time-limit: 30
+map-cycle-time-limit: 30
 
 ###################
 # Plugin Settings #

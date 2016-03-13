@@ -64,8 +64,9 @@ public class RoundListener {
         } else if (event.getStageAfter() == Constants.Stage.ROUND_OVER) {
             RoundHelper.closeRound(event.getRound());
             if (ArenaHelper.shouldArenaCycle(event.getRound().getArena())) {
-                RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.status.cycle")
-                        .withPrefix(Constants.Color.INFO));
+                RoundHelper.broadcast(event.getRound(),
+                        TTTCore.locale.getLocalizable("info.global.arena.status.map-change")
+                                .withPrefix(Constants.Color.INFO));
             }
         }
     }

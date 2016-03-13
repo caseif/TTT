@@ -106,9 +106,9 @@ public final class ConfigHelper {
 
     // Operating settings
     public final OperatingMode OPERATING_MODE;
-    public final CycleMode CYCLE_MODE;
-    public final int CYCLE_ROUND_LIMIT;
-    public final int CYCLE_TIME_LIMIT;
+    public final CycleMode MAP_CYCLE_MODE;
+    public final int MAP_CYCLE_ROUND_LIMIT;
+    public final int MAP_CYCLE_TIME_LIMIT;
 
     // Plugin settings
     public final boolean VERBOSE_LOGGING;
@@ -206,18 +206,18 @@ public final class ConfigHelper {
         }
         OPERATING_MODE = localOperatingMode;
 
-        CYCLE_ROUND_LIMIT = getInt("cycle-round-limit");
-        CYCLE_TIME_LIMIT = getInt("cycle-time-limit");
+        MAP_CYCLE_ROUND_LIMIT = getInt("map-cycle-round-limit");
+        MAP_CYCLE_TIME_LIMIT = getInt("map-cycle-time-limit");
 
         CycleMode localCycleMode;
         try {
-            localCycleMode = CycleMode.valueOf(getString("cycle-mode").toUpperCase());
+            localCycleMode = CycleMode.valueOf(getString("map-cycle-mode").toUpperCase());
         } catch (IllegalArgumentException ex) {
             TTTCore.getPlugin().getLogger()
-                    .warning("Invalid value for config key 'cycle-mode' - defaulting to SEQUENTIAL");
+                    .warning("Invalid value for config key 'map-cycle-mode' - defaulting to SEQUENTIAL");
             localCycleMode = CycleMode.SEQUENTIAL;
         }
-        CYCLE_MODE = localCycleMode;
+        MAP_CYCLE_MODE = localCycleMode;
 
         // Plugin settings
         VERBOSE_LOGGING = getBoolean("verbose-logging");

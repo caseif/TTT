@@ -92,23 +92,23 @@ public class ArenaInfoCommand extends CommandHandler {
         }
         if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
             long elapsed = System.currentTimeMillis() - arena.getMetadata().<Long>get(ARENA_START_TIME).get();
-            long remainingTime = Math.max(0, TTTCore.config.CYCLE_TIME_LIMIT - (elapsed / 1000 / 60));
+            long remainingTime = Math.max(0, TTTCore.config.MAP_CYCLE_TIME_LIMIT - (elapsed / 1000 / 60));
 
-            TTTCore.locale.getLocalizable("info.personal.arena-info.cycle-time").withPrefix(Color.INFO)
+            TTTCore.locale.getLocalizable("info.personal.arena-info.map-change-time").withPrefix(Color.INFO)
                     .withReplacements(
                             TTTCore.locale.getLocalizable("fragment.minutes" + (remainingTime == 1 ? ".singular" : ""))
                                     .withPrefix(Color.FLAIR).withReplacements(remainingTime + "")
                     ).sendTo(sender);
-            int remainingRounds = TTTCore.config.CYCLE_ROUND_LIMIT
+            int remainingRounds = TTTCore.config.MAP_CYCLE_ROUND_LIMIT
                     - arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get();
-            TTTCore.locale.getLocalizable("info.personal.arena-info.cycle-rounds").withPrefix(Color.INFO)
+            TTTCore.locale.getLocalizable("info.personal.arena-info.map-change-rounds").withPrefix(Color.INFO)
                     .withReplacements(Color.FLAIR + remainingRounds).sendTo(sender);
 
             if (remainingTime == 0 || remainingRounds == 0) {
-                TTTCore.locale.getLocalizable("info.personal.arena-info.cycle-after-current")
+                TTTCore.locale.getLocalizable("info.personal.arena-info.map-change-after-current")
                         .withPrefix(Color.INFO + ChatColor.ITALIC).sendTo(sender);
             } else if (remainingRounds == 1) {
-                TTTCore.locale.getLocalizable("info.personal.arena-info.cycle-after-next")
+                TTTCore.locale.getLocalizable("info.personal.arena-info.map-change-after-next")
                         .withPrefix(Color.INFO + ChatColor.ITALIC).sendTo(sender);
             }
         }

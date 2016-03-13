@@ -63,7 +63,7 @@ public final class ArenaHelper {
 
         incrementIndex();
 
-        switch (TTTCore.config.CYCLE_MODE) {
+        switch (TTTCore.config.MAP_CYCLE_MODE) {
             case SEQUENTIAL:
                 return TTTCore.mg.getArenas().get(arenaIndex);
             case SHUFFLE:
@@ -84,10 +84,10 @@ public final class ArenaHelper {
     }
 
     public static boolean shouldArenaCycle(Arena arena) {
-        int timeLimit = TTTCore.config.CYCLE_TIME_LIMIT;
-        int roundLimit = TTTCore.config.CYCLE_ROUND_LIMIT;
+        int timeLimit = TTTCore.config.MAP_CYCLE_TIME_LIMIT;
+        int roundLimit = TTTCore.config.MAP_CYCLE_ROUND_LIMIT;
 
-        if (timeLimit >= 0 && (TTTCore.config.CYCLE_TIME_LIMIT >= 0)
+        if (timeLimit >= 0 && (TTTCore.config.MAP_CYCLE_TIME_LIMIT >= 0)
                 && (System.currentTimeMillis() - arena.getMetadata().<Long>get(ARENA_START_TIME).get())
                 >= (timeLimit * 60 * 1000)) { // I realize that was super-ugly
             return true; // time limit reached
