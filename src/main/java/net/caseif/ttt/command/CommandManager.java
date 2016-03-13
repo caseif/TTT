@@ -35,7 +35,6 @@ import net.caseif.ttt.command.handler.arena.RemoveArenaCommand;
 import net.caseif.ttt.command.handler.arena.RemoveSpawnCommand;
 import net.caseif.ttt.command.handler.misc.DefaultCommand;
 import net.caseif.ttt.command.handler.misc.HelpCommand;
-import net.caseif.ttt.command.handler.misc.ReloadCommand;
 import net.caseif.ttt.command.handler.player.BanCommand;
 import net.caseif.ttt.command.handler.player.KickCommand;
 import net.caseif.ttt.command.handler.player.PardonCommand;
@@ -56,6 +55,7 @@ import com.google.common.collect.ImmutableMap;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.defaults.ReloadCommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -79,7 +79,6 @@ public class CommandManager implements CommandExecutor {
 
         // misc
         addRef(map, "help", HelpCommand.class, null, "{command}", 1, true, "?");
-        addRef(map, "reload", ReloadCommand.class, "superadmin", "", 1, true);
 
         // player
         addRef(map, "ban", BanCommand.class, "admin", "[player name]", 2, true);
