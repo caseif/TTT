@@ -70,10 +70,9 @@ public class EndCommand extends CommandHandler {
             }
         }
 
+        arena.get().getRound().get().setLifecycleStage(Stage.ROUND_OVER, true);
         if (force) {
-            arena.get().getRound().get().end();
-        } else {
-            arena.get().getRound().get().setLifecycleStage(Stage.ROUND_OVER, true);
+            arena.get().getRound().get().setTime(Stage.ROUND_OVER.getDuration() + 1);
         }
     }
 
