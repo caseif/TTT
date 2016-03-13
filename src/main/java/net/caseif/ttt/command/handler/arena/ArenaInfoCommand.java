@@ -37,6 +37,7 @@ import net.caseif.ttt.util.config.OperatingMode;
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;
 import net.caseif.flint.round.Round;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -104,8 +105,11 @@ public class ArenaInfoCommand extends CommandHandler {
                     .withReplacements(Color.FLAIR + remainingRounds).sendTo(sender);
 
             if (remainingTime == 0 || remainingRounds == 0) {
-                TTTCore.locale.getLocalizable("info.personal.arena-info.cycle-after-"
-                        + (arena.getRound().isPresent() ? "current" : "next")).withPrefix(Color.INFO).sendTo(sender);
+                TTTCore.locale.getLocalizable("info.personal.arena-info.cycle-after-current")
+                        .withPrefix(Color.INFO + ChatColor.ITALIC).sendTo(sender);
+            } else if (remainingRounds == 1) {
+                TTTCore.locale.getLocalizable("info.personal.arena-info.cycle-after-next")
+                        .withPrefix(Color.INFO + ChatColor.ITALIC).sendTo(sender);
             }
         }
         sender.sendMessage(DIVIDER);
