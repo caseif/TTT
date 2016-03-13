@@ -133,6 +133,8 @@ public final class Constants {
 
         public static final String ARENA_START_TIME = "startTime";
         public static final String ARENA_ROUND_TALLY = "roundTally";
+
+        public static final String ROUND_RESTARTING = "restarting";
     }
 
 }

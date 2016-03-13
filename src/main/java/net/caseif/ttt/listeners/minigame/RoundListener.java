@@ -29,6 +29,7 @@ import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.RoundRestartDaemon;
 import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoleHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 
@@ -62,6 +63,10 @@ public class RoundListener {
             RoundHelper.startRound(event.getRound());
         } else if (event.getStageAfter() == Constants.Stage.ROUND_OVER) {
             RoundHelper.closeRound(event.getRound());
+            if (ArenaHelper.shouldArenaCycle(event.getRound().getArena())) {
+                RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.status.cycle")
+                        .withPrefix(Constants.Color.INFO));
+            }
         }
     }
 

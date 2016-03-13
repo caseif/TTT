@@ -61,9 +61,12 @@ public class ChallengerListener {
             pl.setGameMode(GameMode.SURVIVAL);
             KarmaHelper.applyKarma(event.getChallenger());
 
-            RoundHelper.broadcast(event.getRound(),
-                    TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Constants.Color.INFO)
-                            .withReplacements(event.getChallenger().getName() + TTTCore.clh.getContributorString(pl)));
+            if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_RESTARTING)) {
+                RoundHelper.broadcast(event.getRound(),
+                        TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Constants.Color.INFO)
+                                .withReplacements(event.getChallenger().getName()
+                                        + TTTCore.clh.getContributorString(pl)));
+            }
 
             if (event.getRound().getLifecycleStage() == Constants.Stage.WAITING
                     && event.getRound().getChallengers().size() >= TTTCore.config.MINIMUM_PLAYERS) {
