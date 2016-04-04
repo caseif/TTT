@@ -63,6 +63,7 @@ ext {
     flint = 'net.caseif.flint:flint:1.1'
     rosetta = 'net.caseif.rosetta:rosetta:1.1.1'
     crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.2'
+    jtelemetry = 'net.caseif.jtelemetry:jtelemetry:1.1.0'
     updater = 'net.gravitydevelopment.updater:updater:2.3'
     metrics = 'org.mcstats.bukkit:metrics:R8-SNAPSHOT'
 }
@@ -73,6 +74,7 @@ dependencies {
     compile flint
     compile rosetta
     compile crosstitles
+    compile jtelemetry
     compile updater
     compile metrics
 
@@ -98,6 +100,7 @@ shadowJar {
     dependencies {
         include dependency(rosetta)
         include dependency(crosstitles)
+        include dependency(jtelemetry)
         include dependency(updater)
         include dependency(metrics)
     }
@@ -143,5 +146,5 @@ tasks.withType(Checkstyle) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.11'
+    gradleVersion = '2.12'
 }
