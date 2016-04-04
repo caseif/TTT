@@ -25,13 +25,12 @@
 package net.caseif.ttt;
 
 import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
-import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_ROUND_TALLY;
-import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_START_TIME;
 
 import net.caseif.ttt.command.CommandManager;
 import net.caseif.ttt.listeners.ListenerManager;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Stage;
+import net.caseif.ttt.util.TelemetryRunner;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageDeleter;
@@ -74,10 +73,11 @@ public class TTTCore {
     public static Logger log;
     public static Logger kLog;
     private static JavaPlugin plugin;
+
     public static LocaleManager locale;
     public static ConfigHelper config;
-
     public static ContributorListHelper clh;
+    public static TelemetryRunner telRunner;
 
     public static final boolean HALLOWEEN;
 
@@ -119,6 +119,8 @@ public class TTTCore {
         }
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
+
+        telRunner = new TelemetryRunner();
 
         mg.setConfigValue(ConfigNode.FORBIDDEN_COMMANDS, ImmutableSet.of("kit", "msg", "pm", "r", "me", "back"));
 
