@@ -29,6 +29,7 @@ import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.RoundRestartDaemon;
 import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoleHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
@@ -68,6 +69,15 @@ public class RoundListener {
                         TTTCore.locale.getLocalizable("info.global.arena.status.map-change")
                                 .withPrefix(Constants.Color.INFO));
             }
+
+            if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_DURATION)) {
+                event.getRound().getMetadata()
+                        .set(Constants.MetadataTag.ROUND_DURATION, event.getStageBefore().getDuration());
+            }
+            if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_RESULT)) {
+                event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, 2);
+            }
+            TelemetryStorageHelper.pushRound(event.getRound());
         }
     }
 
@@ -129,6 +139,9 @@ public class RoundListener {
                     if (tLeft) {
                         event.getRound().getMetadata().set(Constants.MetadataTag.TRAITOR_VICTORY, true);
                     }
+                    event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, tLeft ? 1 : 0);
+                    event.getRound().getMetadata()
+                            .set(Constants.MetadataTag.ROUND_DURATION, event.getRound().getTime());
 
                     event.getRound().setLifecycleStage(Constants.Stage.ROUND_OVER, true);
                     return;

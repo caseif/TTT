@@ -135,6 +135,23 @@ public final class Constants {
         public static final String ARENA_ROUND_TALLY = "roundTally";
 
         public static final String ROUND_RESTARTING = "restarting";
+
+        public static final String ROUND_DURATION = "duration";
+        public static final String ROUND_RESULT = "result";
+    }
+
+    public static class TelemetryKey {
+        public static final String UUID = "uuid";
+        public static final String VERSION = "version";
+        public static final String FLINT_API = "flintApi";
+        public static final String OPERATING_MODE = "opMode";
+        public static final String ARENA_COUNT = "arenas";
+        public static final String ROUND_COUNT = "rounds";
+        public static final String ROUND_DURATION_MEAN = "roundDur";
+        public static final String ROUND_DURATION_STD_DEV = "roundDurSD";
+        public static final String ROUND_INNOCENT_WINS = "iWins";
+        public static final String ROUND_TRAITOR_WINS = "tWins";
+        public static final String ROUND_FORFEITS = "forfeits";
     }
 
 }

@@ -25,7 +25,9 @@
 package net.caseif.ttt.util;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 
+import net.caseif.flint.FlintCore;
 import net.caseif.jtelemetry.JTelemetry;
 import org.bukkit.Bukkit;
 
@@ -50,9 +52,6 @@ public class TelemetryRunner implements Runnable {
     private static final String TIMESTAMP_FILE_NAME = "tel_ts.txt";
 
     private static final String TELEMETRY_SERVER = "http://telemetry.caseif.net/ttt.php";
-
-    private static final String KEY_UUID = "uuid";
-    private static final String KEY_VERSION = "version";
 
     private final JTelemetry jt = new JTelemetry(TELEMETRY_SERVER);
 
@@ -144,8 +143,19 @@ public class TelemetryRunner implements Runnable {
             throw new RuntimeException("Failed to get telemetry UUID - not submitting data", ex);
         }
 
-        payload.addData(KEY_UUID, uuid.toString());
-        payload.addData(KEY_VERSION, TTTCore.getPlugin().getDescription().getVersion());
+        payload.addData(Constants.TelemetryKey.UUID, uuid.toString());
+        payload.addData(Constants.TelemetryKey.VERSION, TTTCore.getPlugin().getDescription().getVersion());
+        payload.addData(Constants.TelemetryKey.FLINT_API, FlintCore.getApiRevision());
+        payload.addData(Constants.TelemetryKey.OPERATING_MODE, TTTCore.config.OPERATING_MODE.name());
+        payload.addData(Constants.TelemetryKey.ARENA_COUNT, TTTCore.mg.getArenas().size());
+
+        TelemetryStorageHelper.RoundSummaryStats stats = TelemetryStorageHelper.getSummaryStats();
+        payload.addData(Constants.TelemetryKey.ROUND_COUNT, stats.getRoundCount());
+        payload.addData(Constants.TelemetryKey.ROUND_DURATION_MEAN, stats.getDurationMean());
+        payload.addData(Constants.TelemetryKey.ROUND_DURATION_STD_DEV, stats.getDurationStdDev());
+        payload.addData(Constants.TelemetryKey.ROUND_INNOCENT_WINS, stats.getInnoWins());
+        payload.addData(Constants.TelemetryKey.ROUND_TRAITOR_WINS, stats.getTraitorWins());
+        payload.addData(Constants.TelemetryKey.ROUND_FORFEITS, stats.getForfeits());
 
         return payload;
     }
