@@ -120,7 +120,7 @@ public class TTTCore {
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
 
-        if (config.ENABLE_METRICS) {
+        if (config.ENABLE_TELEMETRY) {
             telRunner = new TelemetryRunner();
         }
 

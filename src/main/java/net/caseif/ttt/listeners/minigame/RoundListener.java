@@ -70,7 +70,7 @@ public class RoundListener {
                                 .withPrefix(Constants.Color.INFO));
             }
 
-            if (TTTCore.config.ENABLE_METRICS) {
+            if (TTTCore.config.ENABLE_TELEMETRY) {
                 if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_DURATION)) {
                     event.getRound().getMetadata()
                             .set(Constants.MetadataTag.ROUND_DURATION, event.getStageBefore().getDuration());
@@ -142,7 +142,7 @@ public class RoundListener {
                         event.getRound().getMetadata().set(Constants.MetadataTag.TRAITOR_VICTORY, true);
                     }
 
-                    if (TTTCore.config.ENABLE_METRICS) {
+                    if (TTTCore.config.ENABLE_TELEMETRY) {
                         event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, tLeft ? 1 : 0);
                         event.getRound().getMetadata()
                                 .set(Constants.MetadataTag.ROUND_DURATION, event.getRound().getTime());

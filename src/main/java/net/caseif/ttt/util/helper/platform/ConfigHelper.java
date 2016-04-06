@@ -114,6 +114,7 @@ public final class ConfigHelper {
     public final boolean VERBOSE_LOGGING;
     public final String LOCALE;
     public final boolean ENABLE_AUTO_UPDATE;
+    public final boolean ENABLE_TELEMETRY;
     public final boolean ENABLE_METRICS;
 
     static {
@@ -221,9 +222,10 @@ public final class ConfigHelper {
 
         // Plugin settings
         VERBOSE_LOGGING = getBoolean("verbose-logging");
-        ENABLE_AUTO_UPDATE = getBoolean("enable-auto-update");
-        ENABLE_METRICS = getBoolean("enable-metrics");
         LOCALE = getString("locale");
+        ENABLE_AUTO_UPDATE = getBoolean("enable-auto-update");
+        ENABLE_TELEMETRY = getBoolean("enable-telemetry");
+        ENABLE_METRICS = getBoolean("enable-metrics");
     }
 
     public static String getString(String key) {
