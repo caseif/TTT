@@ -25,6 +25,7 @@
 package net.caseif.ttt.util;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.Constants.TelemetryKey;
 import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 
 import net.caseif.flint.FlintCore;
@@ -143,19 +144,19 @@ public class TelemetryRunner implements Runnable {
             throw new RuntimeException("Failed to get telemetry UUID - not submitting data", ex);
         }
 
-        payload.addData(Constants.TelemetryKey.UUID, uuid.toString());
-        payload.addData(Constants.TelemetryKey.VERSION, TTTCore.getPlugin().getDescription().getVersion());
-        payload.addData(Constants.TelemetryKey.FLINT_API, FlintCore.getApiRevision());
-        payload.addData(Constants.TelemetryKey.OPERATING_MODE, TTTCore.config.OPERATING_MODE.name());
-        payload.addData(Constants.TelemetryKey.ARENA_COUNT, TTTCore.mg.getArenas().size());
+        payload.addData(TelemetryKey.UUID, uuid.toString());
+        payload.addData(TelemetryKey.VERSION, TTTCore.getPlugin().getDescription().getVersion());
+        payload.addData(TelemetryKey.FLINT_API, FlintCore.getApiRevision());
+        payload.addData(TelemetryKey.OPERATING_MODE, TTTCore.config.OPERATING_MODE.name());
+        payload.addData(TelemetryKey.ARENA_COUNT, TTTCore.mg.getArenas().size());
 
         TelemetryStorageHelper.RoundSummaryStats stats = TelemetryStorageHelper.getSummaryStats();
-        payload.addData(Constants.TelemetryKey.ROUND_COUNT, stats.getRoundCount());
-        payload.addData(Constants.TelemetryKey.ROUND_DURATION_MEAN, stats.getDurationMean());
-        payload.addData(Constants.TelemetryKey.ROUND_DURATION_STD_DEV, stats.getDurationStdDev());
-        payload.addData(Constants.TelemetryKey.ROUND_INNOCENT_WINS, stats.getInnoWins());
-        payload.addData(Constants.TelemetryKey.ROUND_TRAITOR_WINS, stats.getTraitorWins());
-        payload.addData(Constants.TelemetryKey.ROUND_FORFEITS, stats.getForfeits());
+        payload.addData(TelemetryKey.ROUND_COUNT, stats.getRoundCount());
+        payload.addData(TelemetryKey.ROUND_DURATION_MEAN, stats.getDurationMean());
+        payload.addData(TelemetryKey.ROUND_DURATION_STD_DEV, stats.getDurationStdDev());
+        payload.addData(TelemetryKey.ROUND_INNOCENT_WINS, stats.getInnoWins());
+        payload.addData(TelemetryKey.ROUND_TRAITOR_WINS, stats.getTraitorWins());
+        payload.addData(TelemetryKey.ROUND_FORFEITS, stats.getForfeits());
 
         return payload;
     }

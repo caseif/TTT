@@ -70,14 +70,16 @@ public class RoundListener {
                                 .withPrefix(Constants.Color.INFO));
             }
 
-            if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_DURATION)) {
-                event.getRound().getMetadata()
-                        .set(Constants.MetadataTag.ROUND_DURATION, event.getStageBefore().getDuration());
+            if (TTTCore.config.ENABLE_METRICS) {
+                if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_DURATION)) {
+                    event.getRound().getMetadata()
+                            .set(Constants.MetadataTag.ROUND_DURATION, event.getStageBefore().getDuration());
+                }
+                if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_RESULT)) {
+                    event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, 2);
+                }
+                TelemetryStorageHelper.pushRound(event.getRound());
             }
-            if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_RESULT)) {
-                event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, 2);
-            }
-            TelemetryStorageHelper.pushRound(event.getRound());
         }
     }
 
@@ -139,12 +141,14 @@ public class RoundListener {
                     if (tLeft) {
                         event.getRound().getMetadata().set(Constants.MetadataTag.TRAITOR_VICTORY, true);
                     }
-                    event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, tLeft ? 1 : 0);
-                    event.getRound().getMetadata()
-                            .set(Constants.MetadataTag.ROUND_DURATION, event.getRound().getTime());
+
+                    if (TTTCore.config.ENABLE_METRICS) {
+                        event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, tLeft ? 1 : 0);
+                        event.getRound().getMetadata()
+                                .set(Constants.MetadataTag.ROUND_DURATION, event.getRound().getTime());
+                    }
 
                     event.getRound().setLifecycleStage(Constants.Stage.ROUND_OVER, true);
-                    return;
                 }
             }
         }

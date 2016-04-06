@@ -77,7 +77,7 @@ public class TTTCore {
     public static LocaleManager locale;
     public static ConfigHelper config;
     public static ContributorListHelper clh;
-    public static TelemetryRunner telRunner;
+    private static TelemetryRunner telRunner;
 
     public static final boolean HALLOWEEN;
 
@@ -120,7 +120,9 @@ public class TTTCore {
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
 
-        telRunner = new TelemetryRunner();
+        if (config.ENABLE_METRICS) {
+            telRunner = new TelemetryRunner();
+        }
 
         mg.setConfigValue(ConfigNode.FORBIDDEN_COMMANDS, ImmutableSet.of("kit", "msg", "pm", "r", "me", "back"));
 
