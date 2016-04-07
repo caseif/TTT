@@ -98,7 +98,7 @@ public class TelemetryStorageHelper {
             Tag tag = is.readTag();
 
             if (!(tag instanceof ListTag)) {
-                is.close();
+                is.close(); // release file
                 Files.delete(store.toPath());
                 throw new IllegalStateException("Root tag of telemetry data store is not a list! This won't do...");
             }
@@ -130,15 +130,17 @@ public class TelemetryStorageHelper {
         }
 
         File store = getStoreFile();
-        try {
-            Files.delete(store.toPath());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            TTTCore.log.severe("Failed to delete telemetry database! Attempting to manually erase data...");
-            try (FileOutputStream os = new FileOutputStream(store)) {
-                os.write(new byte[0]);
-            } catch (IOException exc) {
-                throw new RuntimeException("Failed to erase telemetry database! This is not good." , exc);
+        if (store.exists()) {
+            try {
+                Files.delete(store.toPath());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                TTTCore.log.severe("Failed to delete telemetry database! Attempting to manually erase data...");
+                try (FileOutputStream os = new FileOutputStream(store)) {
+                    os.write(new byte[0]);
+                } catch (IOException exc) {
+                    throw new RuntimeException("Failed to erase telemetry database! This is not good.", exc);
+                }
             }
         }
 
@@ -201,13 +203,17 @@ public class TelemetryStorageHelper {
                 results[round.getResult()]++;
             }
 
-            durationMean = (float) sum / roundCount;
+            durationMean = roundCount > 0 ? (float) sum / roundCount : 0f;
 
-            float stdDevSum = 0f;
-            for (RoundSummary round : rounds) {
-                stdDevSum += Math.pow(round.getDuration() - durationMean, 2);
+            if (roundCount > 0) {
+                float stdDevSum = 0f;
+                for (RoundSummary round : rounds) {
+                    stdDevSum += Math.pow(round.getDuration() - durationMean, 2);
+                }
+                durationStdDev = stdDevSum / roundCount;
+            } else {
+                durationStdDev = 0f;
             }
-            durationStdDev = stdDevSum / roundCount;
 
             innoWins = results[0];
             traitorWins = results[1];

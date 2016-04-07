@@ -27,6 +27,7 @@ package net.caseif.ttt.util;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.TelemetryKey;
 import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
+import net.caseif.ttt.util.helper.math.ByteHelper;
 
 import net.caseif.flint.FlintCore;
 import net.caseif.jtelemetry.JTelemetry;
@@ -34,6 +35,8 @@ import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -49,8 +52,8 @@ public class TelemetryRunner implements Runnable {
     private static final int TICKS_PER_HOUR = 60 * 60 * 20;
     private static final int SECONDS_PER_DAY = 24 * 60 * 60;
 
-    private static final String UUID_FILE_NAME = "telemetry/uuid.txt";
-    private static final String TIMESTAMP_FILE_NAME = "telemetry/timestamp.txt";
+    private static final String UUID_FILE_NAME = "telemetry/uuid.dat";
+    private static final String TIMESTAMP_FILE_NAME = "telemetry/timestamp.dat";
 
     private static final String TELEMETRY_SERVER = "http://telemetry.caseif.net/ttt.php";
 
@@ -86,18 +89,20 @@ public class TelemetryRunner implements Runnable {
                 return false;
             }
 
-            String contents = Files.readAllLines(tsFile.toPath(), StandardCharsets.UTF_8).get(0);
-            try {
-                long timestamp = Long.parseLong(contents);
+            byte[] bytes = new byte[8];
+            try (FileInputStream is = new FileInputStream(tsFile)) {
+                int readBytes = is.read(bytes);
+                if (readBytes < 8) {
+                    TTTCore.log.warning("Telemetry timestamp file is malformed - regenerating");
+                    Files.delete(tsFile.toPath());
+                    writeRunTime();
+                    return false;
+                }
+                long timestamp = ByteHelper.bytesToLong(bytes);
                 return (System.currentTimeMillis() - timestamp) / 1000 >= SECONDS_PER_DAY;
-            } catch (NumberFormatException ex) {
-                TTTCore.log.warning("Invalid timestamp in telemetry timestamp file - resetting file");
-                Files.delete(tsFile.toPath());
-                writeRunTime();
-                return false;
             }
         } catch (IOException ex) {
-            throw new RuntimeException("Failed to read timestamp file - not submitting telemetry data");
+            throw new RuntimeException("Failed to read timestamp file - not submitting telemetry data", ex);
         }
     }
 
@@ -107,28 +112,44 @@ public class TelemetryRunner implements Runnable {
             Files.delete(tsFile.toPath());
         }
 
-        try (FileWriter writer = new FileWriter(tsFile)) {
-            writer.write("" + System.currentTimeMillis());
+        Files.createDirectories(tsFile.getParentFile().toPath());
+        Files.createFile(tsFile.toPath());
+
+        try (FileOutputStream os = new FileOutputStream(tsFile)) {
+            os.write(ByteHelper.longToBytes(System.currentTimeMillis()));
         }
     }
 
     private static UUID getUuid() throws IOException {
         File uuidFile = new File(TTTCore.getPlugin().getDataFolder(), UUID_FILE_NAME);
         if (!uuidFile.exists()) {
+            Files.createDirectories(uuidFile.getParentFile().toPath());
             //noinspection ResultOfMethodCallIgnored
-            uuidFile.createNewFile();
+            Files.createFile(uuidFile.toPath());
         }
-        try (BufferedReader reader = new BufferedReader(new FileReader(uuidFile))) {
-            String uuid = reader.readLine();
+        try (FileInputStream is = new FileInputStream(uuidFile)) {
+            UUID uuid = null;
+
+            byte[] most = new byte[8];
+            byte[] least = new byte[8];
+            int read1 = is.read(most);
+            int read2 = is.read(least);
+            if (read1 == 8 || read2 == 8) {
+                uuid = new UUID(ByteHelper.bytesToLong(most), ByteHelper.bytesToLong(least));
+            } else {
+                TTTCore.log.warning("UUID file is missing or malformed - regenerating");
+            }
+
             try {
                 if (uuid == null) {
                     throw new IllegalArgumentException();
                 }
-                return UUID.fromString(uuid);
+                return uuid;
             } catch (IllegalArgumentException ex) {
                 UUID newUuid = UUID.randomUUID();
-                try (FileWriter writer = new FileWriter(uuidFile)) {
-                    writer.write(newUuid.toString());
+                try (FileOutputStream os = new FileOutputStream(uuidFile)) {
+                    os.write(ByteHelper.longToBytes(newUuid.getMostSignificantBits()));
+                    os.write(ByteHelper.longToBytes(newUuid.getLeastSignificantBits()));
                 }
                 return newUuid;
             }
