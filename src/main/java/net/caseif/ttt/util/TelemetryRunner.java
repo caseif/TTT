@@ -33,14 +33,10 @@ import net.caseif.flint.FlintCore;
 import net.caseif.jtelemetry.JTelemetry;
 import org.bukkit.Bukkit;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.UUID;
 
@@ -174,6 +170,7 @@ public class TelemetryRunner implements Runnable {
 
         TelemetryStorageHelper.RoundSummaryStats stats = TelemetryStorageHelper.getSummaryStats();
         payload.addData(TelemetryKey.ROUND_COUNT, stats.getRoundCount());
+        payload.addData(TelemetryKey.ROUND_MEAN_PLAYERS, stats.getMeanPlayerCount());
         payload.addData(TelemetryKey.ROUND_DURATION_MEAN, stats.getDurationMean());
         payload.addData(TelemetryKey.ROUND_DURATION_STD_DEV, stats.getDurationStdDev());
         payload.addData(TelemetryKey.ROUND_INNOCENT_WINS, stats.getInnoWins());

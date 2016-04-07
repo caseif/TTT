@@ -138,6 +138,7 @@ public final class Constants {
 
         public static final String ROUND_DURATION = "duration";
         public static final String ROUND_RESULT = "result";
+        public static final String ROUND_PLAYER_COUNT = "players";
     }
 
     public static class TelemetryKey {
@@ -147,6 +148,7 @@ public final class Constants {
         public static final String OPERATING_MODE = "opMode";
         public static final String ARENA_COUNT = "arenas";
         public static final String ROUND_COUNT = "rounds";
+        public static final String ROUND_MEAN_PLAYERS = "players";
         public static final String ROUND_DURATION_MEAN = "roundDur";
         public static final String ROUND_DURATION_STD_DEV = "roundDurSD";
         public static final String ROUND_INNOCENT_WINS = "iWins";

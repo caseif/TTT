@@ -62,6 +62,10 @@ public class RoundListener {
                     .withPrefix(Constants.Color.INFO));
         } else if (event.getStageAfter() == Constants.Stage.PLAYING) {
             RoundHelper.startRound(event.getRound());
+            if (TTTCore.config.ENABLE_TELEMETRY) {
+                event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_PLAYER_COUNT,
+                        event.getRound().getChallengers().size());
+            }
         } else if (event.getStageAfter() == Constants.Stage.ROUND_OVER) {
             RoundHelper.closeRound(event.getRound());
             if (ArenaHelper.shouldArenaCycle(event.getRound().getArena())) {

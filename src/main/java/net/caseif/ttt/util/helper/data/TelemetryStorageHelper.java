@@ -52,10 +52,12 @@ public class TelemetryStorageHelper {
 
     private static final String KEY_ROUND_DURATION = "dur";
     private static final String KEY_ROUND_RESULT = "res";
+    private static final String KEY_ROUND_PLAYERS = "plc";
 
     public static void pushRound(Round round) {
         int duration = round.getMetadata().<Integer>get(Constants.MetadataTag.ROUND_DURATION).get();
         byte result = round.getMetadata().<Byte>get(Constants.MetadataTag.ROUND_RESULT).get();
+        int players = round.getMetadata().<Integer>get(Constants.MetadataTag.ROUND_PLAYER_COUNT).get();
 
         File store = getStoreFile();
 
@@ -64,6 +66,7 @@ public class TelemetryStorageHelper {
         Map<String, Tag> tagMap = new HashMap<>();
         tagMap.put(KEY_ROUND_DURATION, new IntTag(KEY_ROUND_DURATION, duration));
         tagMap.put(KEY_ROUND_RESULT, new ByteTag(KEY_ROUND_RESULT, result));
+        tagMap.put(KEY_ROUND_PLAYERS, new IntTag(KEY_ROUND_PLAYERS, players));
         CompoundTag newTag = new CompoundTag(null, tagMap);
         tags.add(newTag);
 
@@ -106,7 +109,6 @@ public class TelemetryStorageHelper {
             ListTag list = (ListTag) tag;
             List<CompoundTag> tagList = new ArrayList<>();
             for (Tag element : list.getValue()) {
-                //TODO: this shit's broken, but I'm about to switch the NBT library anyway
                 if (!(element instanceof CompoundTag)) {
                     TTTCore.log.warning("Found non-compound root tag in telemetry data store! Ignoring...");
                     continue;
@@ -126,7 +128,8 @@ public class TelemetryStorageHelper {
         for (CompoundTag tag : loadStore()) {
             int duration = ((IntTag) tag.getValue().get(KEY_ROUND_DURATION)).getValue();
             byte result = ((ByteTag) tag.getValue().get(KEY_ROUND_RESULT)).getValue();
-            rounds.add(new RoundSummary(duration, result));
+            byte players = ((ByteTag) tag.getValue().get(KEY_ROUND_PLAYERS)).getValue();
+            rounds.add(new RoundSummary(duration, result, players));
         }
 
         File store = getStoreFile();
@@ -156,10 +159,12 @@ public class TelemetryStorageHelper {
         private final int duration;
         // for reference: 0=inno, 1=traitor, 2=stalemate
         private final byte result;
+        private final int playerCount;
 
-        private RoundSummary(int duration, byte result) {
+        private RoundSummary(int duration, byte result, int playerCount) {
             this.duration = duration;
             this.result = result;
+            this.playerCount = playerCount;
         }
 
         private int getDuration() {
@@ -182,11 +187,16 @@ public class TelemetryStorageHelper {
             return result;
         }
 
+        private int getPlayerCount() {
+            return playerCount;
+        }
+
     }
 
     public static class RoundSummaryStats {
 
         private final int roundCount;
+        private final float playerCount;
         private final float durationMean;
         private final float durationStdDev;
         private final int innoWins;
@@ -196,14 +206,17 @@ public class TelemetryStorageHelper {
         private RoundSummaryStats(List<RoundSummary> rounds) {
             this.roundCount = rounds.size();
 
-            int sum = 0;
+            int durationSum = 0;
+            int playerSum = 0;
             int[] results = new int[3];
             for (RoundSummary round : rounds) {
-                sum += round.getDuration();
+                durationSum += round.getDuration();
+                playerSum += round.getPlayerCount();
                 results[round.getResult()]++;
             }
 
-            durationMean = roundCount > 0 ? (float) sum / roundCount : 0f;
+            durationMean = roundCount > 0 ? (float) durationSum / roundCount : 0f;
+            playerCount = playerSum > 0 ? (float) playerSum / roundCount : 0f;
 
             if (roundCount > 0) {
                 float stdDevSum = 0f;
@@ -222,6 +235,10 @@ public class TelemetryStorageHelper {
 
         public int getRoundCount() {
             return roundCount;
+        }
+
+        public float getMeanPlayerCount() {
+            return playerCount;
         }
 
         public float getDurationMean() {
