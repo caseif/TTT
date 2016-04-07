@@ -49,8 +49,8 @@ public class TelemetryRunner implements Runnable {
     private static final int TICKS_PER_HOUR = 60 * 60 * 20;
     private static final int SECONDS_PER_DAY = 24 * 60 * 60;
 
-    private static final String UUID_FILE_NAME = "uuid.txt";
-    private static final String TIMESTAMP_FILE_NAME = "tel_ts.txt";
+    private static final String UUID_FILE_NAME = "telemetry/uuid.txt";
+    private static final String TIMESTAMP_FILE_NAME = "telemetry/timestamp.txt";
 
     private static final String TELEMETRY_SERVER = "http://telemetry.caseif.net/ttt.php";
 

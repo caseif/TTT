@@ -28,14 +28,13 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
 
 import net.caseif.flint.round.Round;
-import net.obnoxint.xnbt.NBTInputStream;
-import net.obnoxint.xnbt.NBTOutputStream;
-import net.obnoxint.xnbt.Tag;
-import net.obnoxint.xnbt.types.ByteTag;
-import net.obnoxint.xnbt.types.CompoundTag;
-import net.obnoxint.xnbt.types.IntegerTag;
-import net.obnoxint.xnbt.types.ListTag;
-import net.obnoxint.xnbt.types.NBTTag;
+import org.jnbt.ByteTag;
+import org.jnbt.CompoundTag;
+import org.jnbt.IntTag;
+import org.jnbt.ListTag;
+import org.jnbt.NBTInputStream;
+import org.jnbt.NBTOutputStream;
+import org.jnbt.Tag;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,11 +42,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TelemetryStorageHelper {
 
-    private static final String STORE_FILE_NAME = "tel_data.dat";
+    private static final String STORE_FILE_NAME = "telemetry/rounds.dat";
 
     private static final String KEY_ROUND_DURATION = "dur";
     private static final String KEY_ROUND_RESULT = "res";
@@ -60,15 +61,17 @@ public class TelemetryStorageHelper {
 
         List<CompoundTag> tags = store.exists() ? loadStore() : new ArrayList<CompoundTag>();
 
-        CompoundTag newTag = new CompoundTag(null);
-        newTag.put(new IntegerTag(KEY_ROUND_DURATION, duration));
-        newTag.put(new ByteTag(KEY_ROUND_RESULT, result));
+        Map<String, Tag> tagMap = new HashMap<>();
+        tagMap.put(KEY_ROUND_DURATION, new IntTag(KEY_ROUND_DURATION, duration));
+        tagMap.put(KEY_ROUND_RESULT, new ByteTag(KEY_ROUND_RESULT, result));
+        CompoundTag newTag = new CompoundTag(null, tagMap);
         tags.add(newTag);
 
-        ListTag listTag = new ListTag("root");
-        for (NBTTag tag : tags) {
-            listTag.add(tag);
+        List<Tag> list = new ArrayList<>();
+        for (Tag tag : tags) {
+            list.add(tag);
         }
+        ListTag listTag = new ListTag("root", CompoundTag.class, list);
 
         try (NBTOutputStream os = new NBTOutputStream(new FileOutputStream(store))) {
             if (!store.exists()) {
@@ -92,7 +95,7 @@ public class TelemetryStorageHelper {
         }
 
         try (NBTInputStream is = new NBTInputStream(new FileInputStream(store))) {
-            NBTTag tag = is.readTag();
+            Tag tag = is.readTag();
 
             if (!(tag instanceof ListTag)) {
                 is.close();
@@ -102,9 +105,9 @@ public class TelemetryStorageHelper {
 
             ListTag list = (ListTag) tag;
             List<CompoundTag> tagList = new ArrayList<>();
-            for (NBTTag element : list) {
+            for (Tag element : list.getValue()) {
                 //TODO: this shit's broken, but I'm about to switch the NBT library anyway
-                if (element.getHeader().getType() != 0x0A) {
+                if (!(element instanceof CompoundTag)) {
                     TTTCore.log.warning("Found non-compound root tag in telemetry data store! Ignoring...");
                     continue;
                 }
@@ -121,9 +124,22 @@ public class TelemetryStorageHelper {
     private static List<RoundSummary> readAndPopStore() {
         List<RoundSummary> rounds = new ArrayList<>();
         for (CompoundTag tag : loadStore()) {
-            int duration = ((IntegerTag) tag.get(KEY_ROUND_DURATION)).getPayload();
-            byte result = ((ByteTag) tag.get(KEY_ROUND_RESULT)).getPayload();
+            int duration = ((IntTag) tag.getValue().get(KEY_ROUND_DURATION)).getValue();
+            byte result = ((ByteTag) tag.getValue().get(KEY_ROUND_RESULT)).getValue();
             rounds.add(new RoundSummary(duration, result));
+        }
+
+        File store = getStoreFile();
+        try {
+            Files.delete(store.toPath());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            TTTCore.log.severe("Failed to delete telemetry database! Attempting to manually erase data...");
+            try (FileOutputStream os = new FileOutputStream(store)) {
+                os.write(new byte[0]);
+            } catch (IOException exc) {
+                throw new RuntimeException("Failed to erase telemetry database! This is not good." , exc);
+            }
         }
 
         return rounds;

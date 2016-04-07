@@ -66,7 +66,7 @@ ext {
     jtelemetry = 'net.caseif.jtelemetry:jtelemetry:1.1.0'
     updater = 'net.gravitydevelopment.updater:updater:2.3'
     metrics = 'org.mcstats.bukkit:metrics:R8-SNAPSHOT'
-    xnbt = 'net.obnoxint:xnbt:1.2.0'
+    jnbt = 'org.jnbt:jnbt:1.1'
 }
 
 // Project dependencies
@@ -78,7 +78,7 @@ dependencies {
     compile jtelemetry
     compile updater
     compile metrics
-    compile xnbt
+    compile jnbt
 
     checkstyle 'org.spongepowered:checkstyle:6.1.1-sponge1'
 }
@@ -105,7 +105,7 @@ shadowJar {
         include dependency(jtelemetry)
         include dependency(updater)
         include dependency(metrics)
-        include dependency(xnbt)
+        include dependency(jnbt)
     }
     classifier = ''
 
@@ -113,7 +113,7 @@ shadowJar {
     relocate('net.caseif.crosstitles', 'net.caseif.ttt.lib.net.caseif.crosstitles')
     relocate('net.gravitydevelopment.updater', 'net.caseif.ttt.lib.net.gravitydevelopment.updater')
     relocate('org.mcstats', 'net.caseif.ttt.lib.org.mcstats')
-    relocate('net.obnoxint', 'net.caseif.ttt.lib.net.obnoxint')
+    relocate('org.jnbt', 'net.caseif.ttt.lib.org.jnbt')
 }
 
 task sourceJar(type: Jar) {
