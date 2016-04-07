@@ -87,6 +87,13 @@ public final class ArenaHelper {
         int timeLimit = TTTCore.config.MAP_CYCLE_TIME_LIMIT;
         int roundLimit = TTTCore.config.MAP_CYCLE_ROUND_LIMIT;
 
+        if (!arena.getMetadata().has(ARENA_START_TIME)) {
+            arena.getMetadata().set(ARENA_START_TIME, System.currentTimeMillis());
+        }
+        if (!arena.getMetadata().has(ARENA_ROUND_TALLY)) {
+            arena.getMetadata().set(ARENA_ROUND_TALLY, 1);
+        }
+
         if (timeLimit >= 0 && (TTTCore.config.MAP_CYCLE_TIME_LIMIT >= 0)
                 && (System.currentTimeMillis() - arena.getMetadata().<Long>get(ARENA_START_TIME).get())
                 >= (timeLimit * 60 * 1000)) { // I realize that was super-ugly

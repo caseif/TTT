@@ -143,9 +143,9 @@ public class RoundListener {
                     }
 
                     if (TTTCore.config.ENABLE_TELEMETRY) {
-                        event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, tLeft ? 1 : 0);
+                        event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, (byte) (tLeft ? 1 : 0));
                         event.getRound().getMetadata()
-                                .set(Constants.MetadataTag.ROUND_DURATION, event.getRound().getTime());
+                                .set(Constants.MetadataTag.ROUND_DURATION, (int) event.getRound().getTime());
                     }
 
                     event.getRound().setLifecycleStage(Constants.Stage.ROUND_OVER, true);
@@ -166,8 +166,7 @@ public class RoundListener {
             }
         }
 
-        event.getRound().getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get()
-                .uninitialize();
+        event.getRound().getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get().uninitialize();
 
         if (event.isNatural()
                 && (TTTCore.config.OPERATING_MODE == OperatingMode.CONTINUOUS

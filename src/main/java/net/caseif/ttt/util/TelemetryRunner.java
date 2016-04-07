@@ -66,6 +66,7 @@ public class TelemetryRunner implements Runnable {
             JTelemetry.Payload payload = constructPayload();
 
             try {
+                writeRunTime();
                 JTelemetry.HttpResponse response = payload.submit();
                 if (response.getStatusCode() / 100 != 2) { // not 2xx response code
                     TTTCore.log.warning("Telemetry server responded with non-success status code ("

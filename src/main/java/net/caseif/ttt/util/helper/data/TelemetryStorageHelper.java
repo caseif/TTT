@@ -54,7 +54,7 @@ public class TelemetryStorageHelper {
 
     public static void pushRound(Round round) {
         int duration = round.getMetadata().<Integer>get(Constants.MetadataTag.ROUND_DURATION).get();
-        int result = round.getMetadata().<Integer>get(Constants.MetadataTag.ROUND_RESULT).get();
+        byte result = round.getMetadata().<Byte>get(Constants.MetadataTag.ROUND_RESULT).get();
 
         File store = getStoreFile();
 
@@ -62,7 +62,7 @@ public class TelemetryStorageHelper {
 
         CompoundTag newTag = new CompoundTag(null);
         newTag.put(new IntegerTag(KEY_ROUND_DURATION, duration));
-        newTag.put(new IntegerTag(KEY_ROUND_RESULT, result));
+        newTag.put(new ByteTag(KEY_ROUND_RESULT, result));
         tags.add(newTag);
 
         ListTag listTag = new ListTag("root");
@@ -87,6 +87,10 @@ public class TelemetryStorageHelper {
     private static List<CompoundTag> loadStore() {
         File store = getStoreFile();
 
+        if (!store.exists()) {
+            return new ArrayList<>();
+        }
+
         try (NBTInputStream is = new NBTInputStream(new FileInputStream(store))) {
             NBTTag tag = is.readTag();
 
@@ -99,7 +103,8 @@ public class TelemetryStorageHelper {
             ListTag list = (ListTag) tag;
             List<CompoundTag> tagList = new ArrayList<>();
             for (NBTTag element : list) {
-                if (!(element instanceof CompoundTag)) {
+                //TODO: this shit's broken, but I'm about to switch the NBT library anyway
+                if (element.getHeader().getType() != 0x0A) {
                     TTTCore.log.warning("Found non-compound root tag in telemetry data store! Ignoring...");
                     continue;
                 }
