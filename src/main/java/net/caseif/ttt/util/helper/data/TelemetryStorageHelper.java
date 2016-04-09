@@ -128,7 +128,7 @@ public class TelemetryStorageHelper {
         for (CompoundTag tag : loadStore()) {
             int duration = ((IntTag) tag.getValue().get(KEY_ROUND_DURATION)).getValue();
             byte result = ((ByteTag) tag.getValue().get(KEY_ROUND_RESULT)).getValue();
-            byte players = ((ByteTag) tag.getValue().get(KEY_ROUND_PLAYERS)).getValue();
+            int players = ((IntTag) tag.getValue().get(KEY_ROUND_PLAYERS)).getValue();
             rounds.add(new RoundSummary(duration, result, players));
         }
 
