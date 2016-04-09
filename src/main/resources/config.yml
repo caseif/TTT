@@ -199,6 +199,12 @@ map-cycle-round-limit: 6
 # NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
 map-cycle-time-limit: 30
 
+# The server to return players to upon using the `/ttt leave` command in a dedicated server.
+# This will only take effect if
+#   a) the server is part of a BungeeCord network
+#   b) the 'operating-mode' config key is set to 'dedicated'
+return-server: ''
+
 ###################
 # Plugin Settings #
 ###################

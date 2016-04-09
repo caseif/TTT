@@ -109,6 +109,7 @@ public final class ConfigHelper {
     public final CycleMode MAP_CYCLE_MODE;
     public final int MAP_CYCLE_ROUND_LIMIT;
     public final int MAP_CYCLE_TIME_LIMIT;
+    public final String RETURN_SERVER;
 
     // Plugin settings
     public final boolean VERBOSE_LOGGING;
@@ -219,6 +220,8 @@ public final class ConfigHelper {
             localCycleMode = CycleMode.SEQUENTIAL;
         }
         MAP_CYCLE_MODE = localCycleMode;
+
+        RETURN_SERVER = getString("return-server");
 
         // Plugin settings
         VERBOSE_LOGGING = getBoolean("verbose-logging");
