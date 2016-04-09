@@ -60,6 +60,7 @@ repositories {
 
 ext {
     bukkit = 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
+    bungeecord = 'net.md_5.bungeecord:bungeecord:1.8-SNAPSHOT'
     flint = 'net.caseif.flint:flint:1.1'
     rosetta = 'net.caseif.rosetta:rosetta:1.1.1'
     crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.2'
@@ -72,6 +73,7 @@ ext {
 // Project dependencies
 dependencies {
     compile bukkit
+    compile bungeecord
     compile flint
     compile rosetta
     compile crosstitles
@@ -111,6 +113,7 @@ shadowJar {
 
     relocate('net.caseif.rosetta', 'net.caseif.ttt.lib.net.caseif.rosetta')
     relocate('net.caseif.crosstitles', 'net.caseif.ttt.lib.net.caseif.crosstitles')
+    relocate('net.caseif.jtelemetry', 'net.caseif.ttt.lib.net.caseif.jtelemetry')
     relocate('net.gravitydevelopment.updater', 'net.caseif.ttt.lib.net.gravitydevelopment.updater')
     relocate('org.mcstats', 'net.caseif.ttt.lib.org.mcstats')
     relocate('org.jnbt', 'net.caseif.ttt.lib.org.jnbt')
