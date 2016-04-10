@@ -24,6 +24,7 @@
 
 package net.caseif.ttt.util.helper.platform;
 
+import static com.google.common.base.Preconditions.checkState;
 import static net.caseif.ttt.TTTCore.getPlugin;
 
 import net.caseif.ttt.TTTCore;
@@ -43,13 +44,26 @@ public class BungeeHelper implements PluginMessageListener{
 
     private static final BungeeHelper INSTANCE;
 
-    private static boolean configVerified = false;
+    private static boolean startedInitializing = false;
+    private static boolean support = false;
 
     static {
         INSTANCE = new BungeeHelper();
+    }
 
+    public static void initialize() {
+        checkState(!startedInitializing, "BungeeHelper initialization cannot be called more than once");
+        startedInitializing = true;
         registerBungeeChannel();
         sendPluginMessage("GetServers", null, Iterables.getFirst(PlayerHelper.getOnlinePlayers(), null));
+    }
+
+    public static boolean wasInitializationCalled() {
+        return startedInitializing;
+    }
+
+    public static boolean hasSupport() {
+        return support;
     }
 
     public static void sendPlayerToReturnServer(Player player) {
@@ -76,27 +90,28 @@ public class BungeeHelper implements PluginMessageListener{
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
         if (!channel.equals("BungeeCord")) {
-            ByteArrayDataInput in = ByteStreams.newDataInput(message);
-            String subchannel = in.readUTF();
+            return;
+        }
+        ByteArrayDataInput in = ByteStreams.newDataInput(message);
+        String subchannel = in.readUTF();
 
-            if (subchannel.equals("GetServers")) {
-                List<String> servers = Arrays.asList(in.readUTF().split(","));
+        if (subchannel.equals("GetServers")) {
+            List<String> servers = Arrays.asList(in.readUTF().split(","));
 
-                if (!configVerified) { // still need to verify that server is valid
-                    if (!servers.contains(TTTCore.config.RETURN_SERVER)) {
-                        TTTCore.log.warning(TTTCore.locale.getLocalizable("error.bungee.configuration").localize());
-                    }
-                    configVerified = true;
-                } else {
-                    if (servers.contains(TTTCore.config.RETURN_SERVER)) {
-                        sendPluginMessage("Connect", TTTCore.config.RETURN_SERVER, player);
-                    } else {
-                        TTTCore.locale.getLocalizable("error.bungee.configuration").withPrefix(Constants.Color.ERROR)
-                                .sendTo(player);
-                        TTTCore.locale.getLocalizable("error.report").withPrefix(Constants.Color.ERROR).sendTo(player);
-                    }
-
+            if (!support) { // still need to verify that server is valid
+                if (!servers.contains(TTTCore.config.RETURN_SERVER)) {
+                    TTTCore.log.warning(TTTCore.locale.getLocalizable("error.bungee.configuration").localize());
                 }
+                support = true;
+            } else {
+                if (servers.contains(TTTCore.config.RETURN_SERVER)) {
+                    sendPluginMessage("Connect", TTTCore.config.RETURN_SERVER, player);
+                } else {
+                    TTTCore.locale.getLocalizable("error.bungee.configuration").withPrefix(Constants.Color.ERROR)
+                            .sendTo(player);
+                    TTTCore.locale.getLocalizable("error.report").withPrefix(Constants.Color.ERROR).sendTo(player);
+                }
+
             }
         }
     }

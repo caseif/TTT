@@ -27,6 +27,7 @@ package net.caseif.ttt.listeners.player;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
+import net.caseif.ttt.util.helper.platform.BungeeHelper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -46,8 +47,10 @@ public class PlayerConnectionListener implements Listener {
             Bukkit.getScheduler().runTask(TTTCore.getPlugin(), new Runnable() {
                 @Override
                 public void run() {
-                    TTTCore.getDedicatedArena().getOrCreateRound()
-                            .addChallenger(event.getPlayer().getUniqueId());
+                    if (!BungeeHelper.wasInitializationCalled()) {
+                        BungeeHelper.initialize();
+                    }
+                    TTTCore.getDedicatedArena().getOrCreateRound().addChallenger(event.getPlayer().getUniqueId());
                 }
             });
         }

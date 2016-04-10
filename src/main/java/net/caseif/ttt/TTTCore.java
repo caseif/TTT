@@ -37,6 +37,7 @@ import net.caseif.ttt.util.compatibility.LegacyMglibStorageDeleter;
 import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
+import net.caseif.ttt.util.helper.platform.BungeeHelper;
 import net.caseif.ttt.util.helper.platform.ConfigHelper;
 import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
@@ -48,6 +49,7 @@ import net.caseif.flint.arena.SpawningMode;
 import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.minigame.Minigame;
 import net.caseif.rosetta.LocaleManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -116,6 +118,14 @@ public class TTTCore {
 
         if (config.OPERATING_MODE == OperatingMode.DEDICATED) {
             ArenaHelper.applyNextArena();
+            if (PlayerHelper.getOnlinePlayers().size() > 0) {
+                Bukkit.getScheduler().runTask(getPlugin(), new Runnable() {
+                    @Override
+                    public void run() {
+                        BungeeHelper.initialize();
+                    }
+                });
+            }
         }
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
