@@ -28,8 +28,6 @@ import static net.caseif.ttt.util.helper.data.DataVerificationHelper.isDouble;
 
 import net.caseif.ttt.TTTBootstrap;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.config.CycleMode;
-import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.io.FileHelper;
 
 import com.google.common.base.Predicate;
@@ -37,6 +35,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.BufferedReader;
@@ -56,6 +55,8 @@ import java.util.Set;
 public final class TTTConfig {
 
     private static final ImmutableMap<String, String> LEGACY_NODES;
+
+    private final FileConfiguration config;
 
     // Round structure
     public final int PREPTIME_SECONDS;
@@ -144,7 +145,9 @@ public final class TTTConfig {
                 .build();
     }
 
-    public TTTConfig() {
+    public TTTConfig(FileConfiguration config) {
+        this.config = config;
+
         // Round settings
         PREPTIME_SECONDS = getInt("preptime-seconds");
         ROUNDTIME_SECONDS = getInt("roundtime-seconds");
@@ -233,8 +236,8 @@ public final class TTTConfig {
         ENABLE_METRICS = getBoolean("enable-metrics");
     }
 
-    public static String getString(String key) {
-        String value = TTTBootstrap.INSTANCE.getConfig().getString(key);
+    private String getString(String key) {
+        String value = config.getString(key);
         if (value != null) {
             if (value.contains("Â§")) { // fix encoding mistakes on Windoofs
                 value = value.replace("Â§", "§");
@@ -244,28 +247,24 @@ public final class TTTConfig {
         return "";
     }
 
-    public static boolean getBoolean(String key) {
-        return TTTBootstrap.INSTANCE.getConfig().getBoolean(key);
+    private boolean getBoolean(String key) {
+        return config.getBoolean(key);
     }
 
-    public static int getInt(String key) {
-        return TTTBootstrap.INSTANCE.getConfig().getInt(key);
+    private int getInt(String key) {
+        return config.getInt(key);
     }
 
-    public static double getDouble(String key) {
-        return TTTBootstrap.INSTANCE.getConfig().getDouble(key);
+    private double getDouble(String key) {
+        return config.getDouble(key);
     }
 
-    public static Material getMaterial(String key, Material fallback) {
-        Material m = Material.getMaterial(TTTBootstrap.INSTANCE.getConfig().getString(key));
+    private Material getMaterial(String key, Material fallback) {
+        Material m = Material.getMaterial(config.getString(key));
         return m != null ? m : fallback;
     }
 
-    private static String getModernKey(String legacyKey) {
-        return LEGACY_NODES.get(legacyKey);
-    }
-
-    private static Set<String> getLegacyKeys(final String modernKey) {
+    private Set<String> getLegacyKeys(final String modernKey) {
         return new HashSet<>(Collections2.filter(LEGACY_NODES.keySet(), new Predicate<String>() {
             @Override
             public boolean apply(String key) {
@@ -274,7 +273,7 @@ public final class TTTConfig {
         }));
     }
 
-    public static void addMissingKeys() throws InvalidConfigurationException, IOException {
+    public void addMissingKeys() throws InvalidConfigurationException, IOException {
         BufferedReader stockConfig
                 = new BufferedReader(new InputStreamReader(TTTBootstrap.class.getResourceAsStream("/config.yml")));
         File userConfigFile = new File(TTTBootstrap.INSTANCE.getDataFolder(), "config.yml");
