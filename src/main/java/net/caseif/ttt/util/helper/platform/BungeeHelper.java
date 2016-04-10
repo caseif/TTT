@@ -54,6 +54,11 @@ public class BungeeHelper implements PluginMessageListener{
     public static void initialize() {
         checkState(!startedInitializing, "BungeeHelper initialization cannot be called more than once");
         startedInitializing = true;
+
+        if (TTTCore.config.RETURN_SERVER.isEmpty()) {
+            return;
+        }
+
         registerBungeeChannel();
         sendPluginMessage("GetServers", null, Iterables.getFirst(PlayerHelper.getOnlinePlayers(), null));
     }

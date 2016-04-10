@@ -109,7 +109,7 @@ public class TTTCore {
         // register plugin with Flint
         mg = FlintCore.registerPlugin(plugin.getName());
 
-        config = new TTTConfig();
+        config = new TTTConfig(plugin.getConfig());
 
         if (FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
             TTTBootstrap.INSTANCE.fail();
@@ -150,7 +150,7 @@ public class TTTCore {
             plugin.saveDefaultConfig();
         } else {
             try {
-                TTTConfig.addMissingKeys();
+                config.addMissingKeys();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 log.severe("Failed to write new config keys!");
