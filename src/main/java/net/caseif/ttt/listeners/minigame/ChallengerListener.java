@@ -28,6 +28,7 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.use.JoinCommand;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
@@ -68,14 +69,15 @@ public class ChallengerListener {
                         TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Constants.Color.INFO)
                                 .withReplacements(event.getChallenger().getName()
                                         + TTTCore.clh.getContributorString(pl)));
-                if (TTTCore.config.OPERATING_MODE != OperatingMode.DEDICATED || BungeeHelper.hasSupport()) {
+                if (TTTCore.config.get(ConfigKey.OPERATING_MODE) != OperatingMode.DEDICATED
+                        || BungeeHelper.hasSupport()) {
                     TTTCore.locale.getLocalizable("info.personal.arena.join.leave-tip").withPrefix(Constants.Color.INFO)
                             .withReplacements(Constants.Color.FLAIR + "/ttt leave").sendTo(pl);
                 }
             }
 
             if (event.getRound().getLifecycleStage() == Constants.Stage.WAITING
-                    && event.getRound().getChallengers().size() >= TTTCore.config.MINIMUM_PLAYERS) {
+                    && event.getRound().getChallengers().size() >= TTTCore.config.get(ConfigKey.MINIMUM_PLAYERS)) {
                 event.getRound().nextLifecycleStage();
             }
         }

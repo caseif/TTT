@@ -29,6 +29,7 @@ import static net.caseif.ttt.TTTCore.getPlugin;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.config.ConfigKey;
 
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
@@ -55,7 +56,7 @@ public class BungeeHelper implements PluginMessageListener{
         checkState(!startedInitializing, "BungeeHelper initialization cannot be called more than once");
         startedInitializing = true;
 
-        if (TTTCore.config.RETURN_SERVER.isEmpty()) {
+        if (TTTCore.config.get(ConfigKey.RETURN_SERVER).isEmpty()) {
             return;
         }
 
@@ -104,13 +105,13 @@ public class BungeeHelper implements PluginMessageListener{
             List<String> servers = Arrays.asList(in.readUTF().split(","));
 
             if (!support) { // still need to verify that server is valid
-                if (!servers.contains(TTTCore.config.RETURN_SERVER)) {
+                if (!servers.contains(TTTCore.config.get(ConfigKey.RETURN_SERVER))) {
                     TTTCore.log.warning(TTTCore.locale.getLocalizable("error.bungee.configuration").localize());
                 }
                 support = true;
             } else {
-                if (servers.contains(TTTCore.config.RETURN_SERVER)) {
-                    sendPluginMessage("Connect", TTTCore.config.RETURN_SERVER, player);
+                if (servers.contains(TTTCore.config.get(ConfigKey.RETURN_SERVER))) {
+                    sendPluginMessage("Connect", TTTCore.config.get(ConfigKey.RETURN_SERVER), player);
                 } else {
                     TTTCore.locale.getLocalizable("error.bungee.configuration").withPrefix(Constants.Color.ERROR)
                             .sendTo(player);

@@ -70,7 +70,6 @@ send-titles: true
 # Setting this to true may cause the title to obstruct the player's screen.
 large-status-titles: false
 
-
 # Whether status titles (event.g. "The traitors won!") should be sent as full-sized titles.
 # If false (default), subtitles will be sent instead.
 # Setting this to true may cause the title to obstruct the player's screen and additionally may

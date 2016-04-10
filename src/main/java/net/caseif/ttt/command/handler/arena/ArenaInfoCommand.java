@@ -32,6 +32,7 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
 
 import com.google.common.base.Optional;
@@ -51,7 +52,7 @@ public class ArenaInfoCommand extends CommandHandler {
 
     @Override
     public void handle() {
-        if (args.length == 1 && TTTCore.config.OPERATING_MODE != OperatingMode.DEDICATED) {
+        if (args.length == 1 && TTTCore.config.get(ConfigKey.OPERATING_MODE) != OperatingMode.DEDICATED) {
             TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR).sendTo(sender);
             return;
         }
@@ -90,16 +91,17 @@ public class ArenaInfoCommand extends CommandHandler {
                         ).sendTo(sender);
             }
         }
-        if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
+        if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
             long elapsed = System.currentTimeMillis() - arena.getMetadata().<Long>get(ARENA_START_TIME).get();
-            long remainingTime = Math.max(0, TTTCore.config.MAP_CYCLE_TIME_LIMIT - (elapsed / 1000 / 60));
+            long remainingTime
+                    = Math.max(0, TTTCore.config.get(ConfigKey.MAP_CYCLE_TIME_LIMIT) - (elapsed / 1000 / 60));
 
             TTTCore.locale.getLocalizable("info.personal.arena-info.map-change-time").withPrefix(Color.INFO)
                     .withReplacements(
                             TTTCore.locale.getLocalizable("fragment.minutes" + (remainingTime == 1 ? ".singular" : ""))
                                     .withPrefix(Color.FLAIR).withReplacements(remainingTime + "")
                     ).sendTo(sender);
-            int remainingRounds = TTTCore.config.MAP_CYCLE_ROUND_LIMIT
+            int remainingRounds = TTTCore.config.get(ConfigKey.MAP_CYCLE_ROUND_LIMIT)
                     - arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get();
             TTTCore.locale.getLocalizable("info.personal.arena-info.map-change-rounds").withPrefix(Color.INFO)
                     .withReplacements(Color.FLAIR + remainingRounds).sendTo(sender);

@@ -29,6 +29,7 @@ import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Body;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.NmsHelper;
@@ -152,9 +153,10 @@ public final class DeathHelper {
         if (killer != null) {
             double dist = player.getLocation().toVector()
                     .distance(Bukkit.getPlayer(killer.getUniqueId()).getLocation().toVector());
-            if (dist <= TTTCore.config.KILLER_DNA_RANGE) {
+            if (dist <= TTTCore.config.get(ConfigKey.KILLER_DNA_RANGE)) {
                 final double a = 0.2268; // copied from the official gamemode and scaled to account for different units
-                int decayTime = TTTCore.config.KILLER_DNA_BASETIME - (int) Math.floor(a * Math.pow(dist, 2));
+                int decayTime
+                        = TTTCore.config.get(ConfigKey.KILLER_DNA_BASETIME) - (int) Math.floor(a * Math.pow(dist, 2));
                 if (decayTime > 0) {
                     expiry = System.currentTimeMillis() + (decayTime * 1000);
                 }

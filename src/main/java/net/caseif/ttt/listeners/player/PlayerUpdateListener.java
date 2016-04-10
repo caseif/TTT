@@ -26,6 +26,7 @@ package net.caseif.ttt.listeners.player;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.helper.event.DeathHelper;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
@@ -113,7 +114,7 @@ public class PlayerUpdateListener implements Listener {
                                 && damager.getItemInHand().getItemMeta().getDisplayName()
                                 .endsWith(TTTCore.locale.getLocalizable("item.crowbar.name")
                                         .localize())) {
-                            event.setDamage(TTTCore.config.CROWBAR_DAMAGE);
+                            event.setDamage(TTTCore.config.get(ConfigKey.CROWBAR_DAMAGE));
                         }
 
                         Optional<Double> reduc = damagerCh.get().getMetadata()

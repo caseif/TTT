@@ -26,6 +26,7 @@ package net.caseif.ttt.util;
 
 import net.caseif.ttt.TTTBootstrap;
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.config.ConfigKey;
 
 import net.caseif.flint.round.LifecycleStage;
 import org.bukkit.ChatColor;
@@ -90,9 +91,9 @@ public final class Constants {
         }
 
         public static void initialize() {
-            PREPARING = new LifecycleStage("preparing", TTTCore.config.PREPTIME_SECONDS);
-            PLAYING = new LifecycleStage("playing", TTTCore.config.ROUNDTIME_SECONDS);
-            ROUND_OVER = new LifecycleStage("round_over", TTTCore.config.POSTTIME_SECONDS);
+            PREPARING = new LifecycleStage("preparing", TTTCore.config.get(ConfigKey.PREPTIME_SECONDS));
+            PLAYING = new LifecycleStage("playing", TTTCore.config.get(ConfigKey.ROUNDTIME_SECONDS));
+            ROUND_OVER = new LifecycleStage("round_over", TTTCore.config.get(ConfigKey.POSTTIME_SECONDS));
         }
     }
 

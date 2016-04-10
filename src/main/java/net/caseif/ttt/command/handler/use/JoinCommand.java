@@ -28,6 +28,7 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.Stage;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.BanHelper;
 
@@ -50,12 +51,12 @@ public class JoinCommand extends CommandHandler {
             return;
         }
 
-        if (args.length < 2 && TTTCore.config.OPERATING_MODE != OperatingMode.DEDICATED) {
+        if (args.length < 2 && TTTCore.config.get(ConfigKey.OPERATING_MODE) != OperatingMode.DEDICATED) {
             TTTCore.locale.getLocalizable("error.command.too-few-args").sendTo(sender);
             return;
         }
 
-        Optional<Arena> arena = TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED
+        Optional<Arena> arena = TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED
                 ? Optional.of(TTTCore.getDedicatedArena()) // default to dedicated arena
                 : TTTCore.mg.getArena(args[1]); // otherwise get the arena from the arg
         if (!arena.isPresent()) {
@@ -66,7 +67,7 @@ public class JoinCommand extends CommandHandler {
         Round round = arena.get().getOrCreateRound();
 
         if ((round.getLifecycleStage() == Stage.PLAYING || round.getLifecycleStage() == Stage.ROUND_OVER)
-                && !TTTCore.config.ALLOW_JOIN_AS_SPECTATOR) {
+                && !TTTCore.config.get(ConfigKey.ALLOW_JOIN_AS_SPECTATOR)) {
             TTTCore.locale.getLocalizable("error.round.in-progress").withPrefix(Color.ERROR).sendTo(sender);
         }
 

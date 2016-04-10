@@ -34,11 +34,12 @@ import net.caseif.ttt.util.TelemetryRunner;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageDeleter;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.config.TTTConfig;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 import net.caseif.ttt.util.helper.platform.BungeeHelper;
-import net.caseif.ttt.util.config.TTTConfig;
 import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
 import com.google.common.collect.ImmutableSet;
@@ -116,7 +117,7 @@ public class TTTCore {
             return;
         }
 
-        if (config.OPERATING_MODE == OperatingMode.DEDICATED) {
+        if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
             ArenaHelper.applyNextArena();
             if (PlayerHelper.getOnlinePlayers().size() > 0) {
                 Bukkit.getScheduler().runTask(getPlugin(), new Runnable() {
@@ -130,7 +131,7 @@ public class TTTCore {
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
 
-        if (config.ENABLE_TELEMETRY) {
+        if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
             telRunner = new TelemetryRunner();
         }
 
@@ -163,7 +164,7 @@ public class TTTCore {
         File invDir = new File(plugin.getDataFolder() + File.separator + "inventories");
         invDir.mkdir();
 
-        if (config.OPERATING_MODE == OperatingMode.DEDICATED) {
+        if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
             for (Player pl : PlayerHelper.getOnlinePlayers()) {
                 getDedicatedArena().getOrCreateRound().addChallenger(pl.getUniqueId());
             }
@@ -171,20 +172,20 @@ public class TTTCore {
     }
 
     public void applyConfigOptions() {
-        locale.setDefaultLocale(config.LOCALE);
+        locale.setDefaultLocale(TTTCore.config.get(ConfigKey.LOCALE));
 
-        mg.setConfigValue(ConfigNode.MAX_PLAYERS, TTTCore.config.MAXIMUM_PLAYERS);
+        mg.setConfigValue(ConfigNode.MAX_PLAYERS, TTTCore.config.get(ConfigKey.MAXIMUM_PLAYERS));
         Constants.Stage.initialize();
         mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
                 ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING, Stage.ROUND_OVER));
 
-        if (TTTCore.config.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
+        if (TTTCore.config.get(ConfigKey.SEND_TITLES) && !TitleUtil.areTitlesSupported()) {
             logWarning("error.plugin.title-support");
         }
     }
 
     public void deinitialize() {
-        if (TTTCore.config.VERBOSE_LOGGING) {
+        if (TTTCore.config.get(ConfigKey.VERBOSE_LOGGING)) {
             logInfo("info.plugin.disable", plugin.toString());
         }
 
@@ -219,7 +220,7 @@ public class TTTCore {
     public void createFile(String s) {
         File f = new File(TTTCore.plugin.getDataFolder(), s);
         if (!f.exists()) {
-            if (TTTCore.config.VERBOSE_LOGGING) {
+            if (TTTCore.config.get(ConfigKey.VERBOSE_LOGGING)) {
                 logInfo("info.plugin.compatibility.creating-file", s);
             }
             try {

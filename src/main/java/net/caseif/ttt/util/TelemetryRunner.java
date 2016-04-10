@@ -26,6 +26,7 @@ package net.caseif.ttt.util;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants.TelemetryKey;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 import net.caseif.ttt.util.helper.math.ByteHelper;
 
@@ -165,7 +166,7 @@ public class TelemetryRunner implements Runnable {
         payload.addData(TelemetryKey.UUID, uuid.toString());
         payload.addData(TelemetryKey.VERSION, TTTCore.getPlugin().getDescription().getVersion());
         payload.addData(TelemetryKey.FLINT_API, FlintCore.getApiRevision());
-        payload.addData(TelemetryKey.OPERATING_MODE, TTTCore.config.OPERATING_MODE.name());
+        payload.addData(TelemetryKey.OPERATING_MODE, TTTCore.config.get(ConfigKey.OPERATING_MODE).name());
         payload.addData(TelemetryKey.ARENA_COUNT, TTTCore.mg.getArenas().size());
 
         TelemetryStorageHelper.RoundSummaryStats stats = TelemetryStorageHelper.getSummaryStats();

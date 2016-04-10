@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.config.ConfigKey;
 
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.challenger.Challenger;
@@ -46,7 +47,7 @@ public final class TitleHelper {
     }
 
     public static void sendStatusTitle(Player player, String role) {
-        if (TTTCore.config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
+        if (TTTCore.config.get(ConfigKey.SEND_TITLES) && TitleUtil.areTitlesSupported()) {
             if (player == null) {
                 throw new IllegalArgumentException("Player cannot be null!");
             }
@@ -68,7 +69,7 @@ public final class TitleHelper {
                     break;
                 }
             }
-            if (TTTCore.config.LARGE_STATUS_TITLES) {
+            if (TTTCore.config.get(ConfigKey.LARGE_STATUS_TITLES)) {
                 TitleUtil.sendTitle(player, title, ChatColor.getByChar(color.charAt(1)));
             } else {
                 TitleUtil.sendTitle(player, "", ChatColor.RESET, title, ChatColor.getByChar(color.charAt(1)));
@@ -77,7 +78,7 @@ public final class TitleHelper {
     }
 
     public static void sendVictoryTitle(Round round, boolean traitorVictory) {
-        if (TTTCore.config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
+        if (TTTCore.config.get(ConfigKey.SEND_TITLES) && TitleUtil.areTitlesSupported()) {
             checkNotNull(round, "Round cannot be null!");
             Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.end."
                     + (traitorVictory ? Constants.Role.TRAITOR : Constants.Role.INNOCENT) + ".min");
@@ -86,7 +87,7 @@ public final class TitleHelper {
             );
             for (Challenger ch : round.getChallengers()) {
                 Player pl = Bukkit.getPlayer(ch.getUniqueId());
-                if (TTTCore.config.LARGE_VICTORY_TITLES) {
+                if (TTTCore.config.get(ConfigKey.LARGE_VICTORY_TITLES)) {
                     TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), loc.localizeFor(pl),
                             color);
                 } else {

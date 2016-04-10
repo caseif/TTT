@@ -27,6 +27,7 @@ package net.caseif.ttt.util.helper.gamemode;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.helper.data.DataVerificationHelper;
 
 import com.google.common.collect.Lists;
@@ -54,7 +55,8 @@ public final class RoleHelper {
             ch.setTeam(iTeam);
         }
 
-        int tLimit = DataVerificationHelper.clamp((int) (players * TTTCore.config.TRAITOR_PCT), 1, players - 1);
+        int tLimit = DataVerificationHelper.clamp((int) (players * TTTCore.config.get(ConfigKey.TRAITOR_PCT)), 1,
+                players - 1);
         tLimit = DataVerificationHelper.clamp(tLimit, 1, players - 1);
         List<Challenger> tList = Lists.newArrayList(round.getChallengers());
         Collections.shuffle(tList);
@@ -62,9 +64,9 @@ public final class RoleHelper {
             tList.get(i).setTeam(tTeam);
         }
 
-        int dLimit = (int) (players * TTTCore.config.DETECTIVE_PCT);
+        int dLimit = (int) (players * TTTCore.config.get(ConfigKey.DETECTIVE_PCT));
         dLimit = DataVerificationHelper.clamp(dLimit, 0, iTeam.getChallengers().size());
-        if (players >= TTTCore.config.DETECTIVE_MIN_PLAYERS && dLimit == 0) {
+        if (players >= TTTCore.config.get(ConfigKey.DETECTIVE_MIN_PLAYERS) && dLimit == 0) {
             dLimit = 1;
         }
         List<Challenger> dList = Lists.newArrayList(iTeam.getChallengers());

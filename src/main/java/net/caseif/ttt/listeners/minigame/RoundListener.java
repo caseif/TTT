@@ -28,6 +28,7 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.RoundRestartDaemon;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
@@ -62,7 +63,7 @@ public class RoundListener {
                     .withPrefix(Constants.Color.INFO));
         } else if (event.getStageAfter() == Constants.Stage.PLAYING) {
             RoundHelper.startRound(event.getRound());
-            if (TTTCore.config.ENABLE_TELEMETRY) {
+            if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
                 event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_PLAYER_COUNT,
                         event.getRound().getChallengers().size());
             }
@@ -74,7 +75,7 @@ public class RoundListener {
                                 .withPrefix(Constants.Color.INFO));
             }
 
-            if (TTTCore.config.ENABLE_TELEMETRY) {
+            if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
                 if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_DURATION)) {
                     event.getRound().getMetadata()
                             .set(Constants.MetadataTag.ROUND_DURATION, event.getStageBefore().getDuration());
@@ -116,7 +117,7 @@ public class RoundListener {
                     Player tracker = TTTCore.getPlugin().getServer().getPlayer(ch.getName());
                     if (ch.getMetadata().has(Constants.Role.DETECTIVE) && ch.getMetadata().has("tracking")) {
                         // update every n secconds
-                        if (ch.getRound().getTime() % TTTCore.config.SCANNER_CHARGE_TIME == 0) {
+                        if (ch.getRound().getTime() % TTTCore.config.get(ConfigKey.SCANNER_CHARGE_TIME) == 0) {
                             Player killer = TTTCore.getPlugin().getServer()
                                     .getPlayer(ch.getMetadata().<UUID>get("tracking").get());
                             if (killer != null
@@ -146,7 +147,7 @@ public class RoundListener {
                         event.getRound().getMetadata().set(Constants.MetadataTag.TRAITOR_VICTORY, true);
                     }
 
-                    if (TTTCore.config.ENABLE_TELEMETRY) {
+                    if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
                         event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, (byte) (tLeft ? 1 : 0));
                         event.getRound().getMetadata()
                                 .set(Constants.MetadataTag.ROUND_DURATION, (int) event.getRound().getTime());
@@ -170,11 +171,12 @@ public class RoundListener {
             }
         }
 
-        event.getRound().getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get().uninitialize();
+        event.getRound().getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get()
+                .uninitialize();
 
         if (event.isNatural()
-                && (TTTCore.config.OPERATING_MODE == OperatingMode.CONTINUOUS
-                || TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED)) {
+                && (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.CONTINUOUS
+                || TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED)) {
             // restart the round
             new RoundRestartDaemon(event.getRound()).runTask(TTTCore.getPlugin());
         }

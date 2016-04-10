@@ -25,6 +25,7 @@
 package net.caseif.ttt.listeners.player;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.platform.BungeeHelper;
@@ -42,7 +43,7 @@ public class PlayerConnectionListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
+        if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
             // goddamn do I miss lambdas
             Bukkit.getScheduler().runTask(TTTCore.getPlugin(), new Runnable() {
                 @Override
@@ -58,7 +59,7 @@ public class PlayerConnectionListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (!TTTCore.config.KARMA_PERSIST) {
+        if (!TTTCore.config.get(ConfigKey.KARMA_PERSIST)) {
             KarmaHelper.resetKarma(event.getPlayer().getUniqueId());
         }
     }

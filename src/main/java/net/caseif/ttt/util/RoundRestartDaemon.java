@@ -29,6 +29,7 @@ import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_START_TIME;
 import static net.caseif.ttt.util.Constants.MetadataTag.ROUND_RESTARTING;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 
@@ -62,7 +63,7 @@ public class RoundRestartDaemon extends BukkitRunnable {
 
         this.arena = round.getArena();
 
-        if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED) {
+        if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
             arena.getMetadata().set(ARENA_ROUND_TALLY, arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get() + 1);
             this.willCycle = ArenaHelper.shouldArenaCycle(arena);
         } else {

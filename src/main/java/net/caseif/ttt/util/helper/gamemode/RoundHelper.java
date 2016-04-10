@@ -29,6 +29,7 @@ import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.helper.platform.TitleHelper;
 
 import net.caseif.flint.challenger.Challenger;
@@ -51,17 +52,17 @@ public final class RoundHelper {
     private static final ItemStack ITEM_DNA_SCANNER;
 
     static {
-        ITEM_CROWBAR = new ItemStack(TTTCore.config.CROWBAR_ITEM, 1);
+        ITEM_CROWBAR = new ItemStack(TTTCore.config.get(ConfigKey.CROWBAR_ITEM), 1);
         ItemMeta cbMeta = ITEM_CROWBAR.getItemMeta();
         cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.crowbar.name").localize());
         ITEM_CROWBAR.setItemMeta(cbMeta);
 
-        ITEM_GUN = new ItemStack(TTTCore.config.GUN_ITEM, 1);
+        ITEM_GUN = new ItemStack(TTTCore.config.get(ConfigKey.GUN_ITEM), 1);
         ItemMeta gunMeta = ITEM_GUN.getItemMeta();
         gunMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.gun.name").localize());
         ITEM_GUN.setItemMeta(gunMeta);
 
-        ITEM_AMMO = new ItemStack(Material.ARROW, TTTCore.config.INITIAL_AMMO);
+        ITEM_AMMO = new ItemStack(Material.ARROW, TTTCore.config.get(ConfigKey.INITIAL_AMMO));
 
         ITEM_DNA_SCANNER = new ItemStack(Material.COMPASS, 1);
         ItemMeta dnaMeta = ITEM_DNA_SCANNER.getItemMeta();
@@ -119,7 +120,7 @@ public final class RoundHelper {
                 TitleHelper.sendStatusTitle(pl, Role.TRAITOR);
             }
 
-            if (TTTCore.config.KARMA_DAMAGE_REDUCTION) {
+            if (TTTCore.config.get(ConfigKey.KARMA_DAMAGE_REDUCTION)) {
                 KarmaHelper.applyDamageReduction(ch);
                 double reduc = KarmaHelper.getDamageReduction(ch);
                 String percentage = reduc < 1
@@ -149,7 +150,7 @@ public final class RoundHelper {
                     + (tVic ? Role.TRAITOR : Role.INNOCENT))
                     .withPrefix(color)
                     .withReplacements(Color.ARENA + round.getArena().getName() + color);
-            if (TTTCore.config.BROADCAST_WIN_MESSAGES_TO_SERVER) {
+            if (TTTCore.config.get(ConfigKey.BROADCAST_WIN_MESSAGES_TO_SERVER)) {
                 msg.broadcast();
             } else {
                 for (Challenger ch : round.getChallengers()) {

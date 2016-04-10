@@ -55,7 +55,6 @@ import com.google.common.collect.ImmutableMap;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.ReloadCommand;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -27,7 +27,6 @@ package net.caseif.ttt.listeners.wizard;
 import static net.caseif.ttt.util.Constants.Text.DIVIDER;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
