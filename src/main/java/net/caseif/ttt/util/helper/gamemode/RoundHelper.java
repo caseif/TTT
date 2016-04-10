@@ -137,16 +137,18 @@ public final class RoundHelper {
                 .withPrefix(Color.INFO));
     }
 
-    public static void closeRound(Round round) {
+    public static void closeRound(Round round, boolean sendWinMessages) {
         KarmaHelper.allocateKarma(round);
         KarmaHelper.saveKarma(round);
 
-        boolean tVic = round.getMetadata().has(MetadataTag.TRAITOR_VICTORY);
-        String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
-        TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
-                .withPrefix(color)
-                .withReplacements(Color.ARENA + round.getArena().getName() + color).broadcast();
-        TitleHelper.sendVictoryTitle(round, tVic);
+        if (sendWinMessages) {
+            boolean tVic = round.getMetadata().has(MetadataTag.TRAITOR_VICTORY);
+            String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
+            TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
+                    .withPrefix(color)
+                    .withReplacements(Color.ARENA + round.getArena().getName() + color).broadcast();
+            TitleHelper.sendVictoryTitle(round, tVic);
+        }
     }
 
     public static void distributeItems(Round round) {

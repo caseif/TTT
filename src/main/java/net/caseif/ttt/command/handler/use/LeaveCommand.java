@@ -46,7 +46,7 @@ public class LeaveCommand extends CommandHandler {
         if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED
                 && !(sender.hasPermission("ttt.admin") && args.length >= 2 && args[1].equalsIgnoreCase("force"))) {
             if (BungeeHelper.hasSupport() && !TTTCore.config.RETURN_SERVER.isEmpty()) {
-                TTTCore.locale.getLocalizable("info.personal.bungee.connecting").withPrefix(Color.ERROR).sendTo(sender);
+                TTTCore.locale.getLocalizable("info.personal.bungee.connecting").withPrefix(Color.INFO).sendTo(sender);
                 trySendForceLeaveTip();
                 BungeeHelper.sendPlayerToReturnServer((Player) sender);
                 return;

@@ -67,7 +67,7 @@ public class RoundListener {
                         event.getRound().getChallengers().size());
             }
         } else if (event.getStageAfter() == Constants.Stage.ROUND_OVER) {
-            RoundHelper.closeRound(event.getRound());
+            RoundHelper.closeRound(event.getRound(), event.getStageBefore() == Constants.Stage.PLAYING);
             if (ArenaHelper.shouldArenaCycle(event.getRound().getArena())) {
                 RoundHelper.broadcast(event.getRound(),
                         TTTCore.locale.getLocalizable("info.global.arena.status.map-change")
@@ -161,7 +161,7 @@ public class RoundListener {
     @Subscribe
     public void onRoundEnd(RoundEndEvent event) {
         if (event.getRound().getLifecycleStage() != Constants.Stage.ROUND_OVER) {
-            RoundHelper.closeRound(event.getRound());
+            RoundHelper.closeRound(event.getRound(), event.getRound().getLifecycleStage() == Constants.Stage.PLAYING);
         }
 
         for (Entity ent : Bukkit.getWorld(event.getRound().getArena().getWorld()).getEntities()) {
