@@ -64,6 +64,7 @@ public final class ConfigHelper {
     public final int MINIMUM_PLAYERS;
     public final int MAXIMUM_PLAYERS;
     public final boolean ALLOW_JOIN_AS_SPECTATOR;
+    public final boolean BROADCAST_WIN_MESSAGES_TO_SERVER;
 
     // Traitor/Detective settings
     public final double TRAITOR_PCT;
@@ -151,6 +152,7 @@ public final class ConfigHelper {
         MINIMUM_PLAYERS = getInt("minimum-players");
         MAXIMUM_PLAYERS = getInt("maximum-players");
         ALLOW_JOIN_AS_SPECTATOR = getBoolean("allow-join-as-spectator");
+        BROADCAST_WIN_MESSAGES_TO_SERVER = getBoolean("broadcast-win-messages-to-server");
 
         // Traitor/Detective settings
         TRAITOR_PCT = getDouble("traitor-pct");

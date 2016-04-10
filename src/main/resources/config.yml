@@ -27,6 +27,11 @@ maximum-players: 32
 # Whether players may join rounds in-progress as spectators.
 allow-join-as-spectator: true
 
+# When true, victory messages (e.g. "The traitors won!" will be broadcast to all players on the server.
+#   (Note: this was the standard behavior until v0.10.)
+# When false, they will only be sent to players who were in the particular round.
+broadcast-win-messages-to-server: false
+
 ##############################
 # Traitor/Detective Settings #
 ##############################

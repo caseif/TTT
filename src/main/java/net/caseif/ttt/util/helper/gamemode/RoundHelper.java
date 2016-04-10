@@ -144,9 +144,19 @@ public final class RoundHelper {
         if (sendWinMessages) {
             boolean tVic = round.getMetadata().has(MetadataTag.TRAITOR_VICTORY);
             String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
-            TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
+
+            Localizable msg = TTTCore.locale.getLocalizable("info.global.round.event.end."
+                    + (tVic ? Role.TRAITOR : Role.INNOCENT))
                     .withPrefix(color)
-                    .withReplacements(Color.ARENA + round.getArena().getName() + color).broadcast();
+                    .withReplacements(Color.ARENA + round.getArena().getName() + color);
+            if (TTTCore.config.BROADCAST_WIN_MESSAGES_TO_SERVER) {
+                msg.broadcast();
+            } else {
+                for (Challenger ch : round.getChallengers()) {
+                    msg.sendTo(Bukkit.getPlayer(ch.getUniqueId()));
+                }
+            }
+
             TitleHelper.sendVictoryTitle(round, tVic);
         }
     }

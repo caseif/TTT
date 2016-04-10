@@ -170,8 +170,7 @@ public class RoundListener {
             }
         }
 
-        event.getRound().getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get()
-                .uninitialize();
+        event.getRound().getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get().uninitialize();
 
         if (event.isNatural()
                 && (TTTCore.config.OPERATING_MODE == OperatingMode.CONTINUOUS
