@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt.util.helper.platform;
+package net.caseif.ttt.util.config;
 
 import static net.caseif.ttt.util.helper.data.DataVerificationHelper.isDouble;
 
@@ -53,7 +53,7 @@ import java.util.Set;
 /**
  * Static utility class for config-related functionality.
  */
-public final class ConfigHelper {
+public final class TTTConfig {
 
     private static final ImmutableMap<String, String> LEGACY_NODES;
 
@@ -144,7 +144,7 @@ public final class ConfigHelper {
                 .build();
     }
 
-    public ConfigHelper() {
+    public TTTConfig() {
         // Round settings
         PREPTIME_SECONDS = getInt("preptime-seconds");
         ROUNDTIME_SECONDS = getInt("roundtime-seconds");

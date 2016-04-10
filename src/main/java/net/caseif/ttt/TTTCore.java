@@ -38,7 +38,7 @@ import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 import net.caseif.ttt.util.helper.platform.BungeeHelper;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
+import net.caseif.ttt.util.config.TTTConfig;
 import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
 import com.google.common.collect.ImmutableSet;
@@ -77,7 +77,7 @@ public class TTTCore {
     private static JavaPlugin plugin;
 
     public static LocaleManager locale;
-    public static ConfigHelper config;
+    public static TTTConfig config;
     public static ContributorListHelper clh;
     private static TelemetryRunner telRunner;
 
@@ -109,7 +109,7 @@ public class TTTCore {
         // register plugin with Flint
         mg = FlintCore.registerPlugin(plugin.getName());
 
-        config = new ConfigHelper();
+        config = new TTTConfig();
 
         if (FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
             TTTBootstrap.INSTANCE.fail();
@@ -150,7 +150,7 @@ public class TTTCore {
             plugin.saveDefaultConfig();
         } else {
             try {
-                ConfigHelper.addMissingKeys();
+                TTTConfig.addMissingKeys();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 log.severe("Failed to write new config keys!");
