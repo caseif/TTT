@@ -28,6 +28,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,14 +39,25 @@ import java.util.logging.Level;
  */
 public final class PlayerHelper {
 
+    private static final Method getOnlinePlayers;
+    private static final boolean newGopMethod;
+
+    static {
+        try {
+            getOnlinePlayers = Server.class.getMethod("getOnlinePlayers");
+            newGopMethod = getOnlinePlayers.getReturnType().equals(Collection.class);
+        } catch (NoSuchMethodException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public static Collection<? extends Player> getOnlinePlayers() {
         try {
-            Method gop = Server.class.getMethod("getOnlinePlayers");
-            return gop.getReturnType().equals(Collection.class)
-                    ? (Collection<? extends Player>) gop.invoke(Bukkit.getServer())
-                    : Arrays.asList((Player[]) gop.invoke(Bukkit.getServer()));
-        } catch (Exception ex) {
+            return newGopMethod
+                    ? (Collection<? extends Player>) getOnlinePlayers.invoke(Bukkit.getServer())
+                    : Arrays.asList((Player[]) getOnlinePlayers.invoke(Bukkit.getServer()));
+        } catch (IllegalAccessException | InvocationTargetException ex) {
             throw new RuntimeException(ex);
         }
     }
