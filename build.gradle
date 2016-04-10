@@ -60,7 +60,6 @@ repositories {
 
 ext {
     bukkit = 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
-    bungeecord = 'net.md_5.bungeecord:bungeecord:1.8-SNAPSHOT'
     flint = 'net.caseif.flint:flint:1.1'
     rosetta = 'net.caseif.rosetta:rosetta:1.1.1'
     crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.2'
@@ -73,7 +72,6 @@ ext {
 // Project dependencies
 dependencies {
     compile bukkit
-    compile bungeecord
     compile flint
     compile rosetta
     compile crosstitles

@@ -24,6 +24,8 @@
 
 package net.caseif.ttt.util.support;
 
+import org.bukkit.Bukkit;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,14 +37,12 @@ public class Support {
     private static Set<ServerFeature> featureSet = new HashSet<>();
 
     static {
-        try {
-            Class.forName("net.md_5.bungee.api.ProxyServer");
+        if (Bukkit.getServer().getMessenger().getOutgoingChannels().contains("BungeeCord")) {
             featureSet.add(ServerFeature.BUNGEECORD);
-        } catch (ClassNotFoundException ignored) {
         }
     }
 
-    public static boolean isSupported(ServerFeature feature) {
+    public static boolean hasSupport(ServerFeature feature) {
         return featureSet.contains(feature);
     }
 

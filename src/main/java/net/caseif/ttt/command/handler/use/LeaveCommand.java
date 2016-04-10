@@ -28,6 +28,9 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.helper.platform.BungeeHelper;
+import net.caseif.ttt.util.support.ServerFeature;
+import net.caseif.ttt.util.support.Support;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -44,12 +47,14 @@ public class LeaveCommand extends CommandHandler {
     public void handle() {
         if (TTTCore.config.OPERATING_MODE == OperatingMode.DEDICATED
                 && !(sender.hasPermission("ttt.admin") && args.length >= 2 && args[1].equalsIgnoreCase("force"))) {
-            TTTCore.locale.getLocalizable("error.round.leave-dedicated").withPrefix(Color.ERROR).sendTo(sender);
-            if (sender.hasPermission("ttt.admin")) {
-                TTTCore.locale.getLocalizable("error.round.leave-dedicated-force").withPrefix(Color.ERROR)
-                        .withReplacements(Color.FLAIR + "/ttt leave force").sendTo(sender);
+            if (Support.hasSupport(ServerFeature.BUNGEECORD) && !TTTCore.config.RETURN_SERVER.isEmpty()) {
+                trySendForceLeaveTip();
+                BungeeHelper.sendPlayerToReturnServer((Player) sender);
+            } else {
+                TTTCore.locale.getLocalizable("error.round.leave-dedicated").withPrefix(Color.ERROR).sendTo(sender);
+                trySendForceLeaveTip();
+                return;
             }
-            return;
         }
 
         Optional<Challenger> ch = TTTCore.mg.getChallenger(((Player) sender).getUniqueId());
@@ -60,6 +65,13 @@ public class LeaveCommand extends CommandHandler {
                     .withReplacements(Color.ARENA + roundName + Color.INFO).sendTo(sender);
         } else {
             TTTCore.locale.getLocalizable("error.round.outside").withPrefix(Color.ERROR).sendTo(sender);
+        }
+    }
+
+    private void trySendForceLeaveTip() {
+        if (sender.hasPermission("ttt.admin")) {
+            TTTCore.locale.getLocalizable("error.round.leave-dedicated-force").withPrefix(Color.ERROR)
+                    .withReplacements(Color.FLAIR + "/ttt leave force").sendTo(sender);
         }
     }
 
