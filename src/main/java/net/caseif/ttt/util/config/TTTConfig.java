@@ -112,9 +112,9 @@ public final class TTTConfig {
             map.put(key, getString(key.getConfigKey()));
         } else if (key.getType() == Material.class) {
             map.put(key, getMaterial(key.getConfigKey(), ((ConfigKey<Material>) key).getDefault()));
-        } else if (key.getType() == Material.class) {
+        } else if (key.getType() == OperatingMode.class) {
             map.put(key, getOperatingMode(key.getConfigKey(), ((ConfigKey<OperatingMode>) key).getDefault()));
-        } else if (key.getType() == Material.class) {
+        } else if (key.getType() == CycleMode.class) {
             map.put(key, getCycleMode(key.getConfigKey(), ((ConfigKey<CycleMode>) key).getDefault()));
         }
     }
