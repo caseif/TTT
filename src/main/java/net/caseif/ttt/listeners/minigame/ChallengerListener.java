@@ -72,7 +72,7 @@ public class ChallengerListener {
                 if (TTTCore.config.get(ConfigKey.OPERATING_MODE) != OperatingMode.DEDICATED
                         || BungeeHelper.hasSupport()) {
                     TTTCore.locale.getLocalizable("info.personal.arena.join.leave-tip").withPrefix(Constants.Color.INFO)
-                            .withReplacements(Constants.Color.FLAIR + "/ttt leave").sendTo(pl);
+                            .withReplacements(Constants.Color.FLAIR + "/ttt leave" + Constants.Color.INFO).sendTo(pl);
                 }
             }
 
