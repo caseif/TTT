@@ -24,16 +24,27 @@
 
 package net.caseif.ttt.command.handler.misc;
 
+import static javafx.scene.input.KeyCode.M;
+
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.CommandManager;
 import net.caseif.ttt.command.CommandRef;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.helper.data.DataVerificationHelper;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 public class HelpCommand extends CommandHandler {
+
+    private static final int COMMANDS_PER_PAGE = 4;
+    private static final String DIVIDER = "------------";
 
     public HelpCommand(CommandSender sender, String[] args) {
         super(sender, args);
@@ -42,7 +53,33 @@ public class HelpCommand extends CommandHandler {
     @Override
     @SuppressWarnings("unchecked")
     public void handle() {
-        if (args.length > 1) {
+
+        boolean isInt = false;
+        if (args.length == 1 || (isInt = DataVerificationHelper.isInt(args[1]))) {
+            int pageIndex = isInt ? Integer.parseInt(args[1]) : 1;
+
+            List<CommandRef> availableCommands = getAvailableCommands();
+
+            int pageCount = (int) Math.ceil((float) availableCommands.size() / COMMANDS_PER_PAGE);
+
+            if (pageIndex > pageCount || pageIndex <= 0) {
+                TTTCore.locale.getLocalizable("error.command.help.bad-page").withPrefix(Color.ERROR).sendTo(sender);
+                return;
+            }
+
+            printHeader(pageIndex, pageCount);
+
+            for (int i = 0; i < COMMANDS_PER_PAGE; i++) {
+                int index = COMMANDS_PER_PAGE * (pageIndex - 1) + i;
+                if (index >= availableCommands.size()) {
+                    break;
+                }
+
+                printDescription(availableCommands.get(index));
+            }
+
+            printFooter(pageIndex, pageCount);
+        } else { // assume they're querying a specific command
             if (!CommandManager.commands.containsKey(args[1])) {
                 printInvalidArgsError();
                 return;
@@ -51,25 +88,14 @@ public class HelpCommand extends CommandHandler {
             CommandRef cmdRef = CommandManager.commands.get(args[1]);
 
             if (cmdRef.getPermission() == null || sender.hasPermission(cmdRef.getPermission())) {
-                sendDescription(cmdRef);
+                printDescription(cmdRef);
             } else {
                 TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR).sendTo(sender);
-            }
-        } else {
-            sender.sendMessage("");
-            TTTCore.locale.getLocalizable("info.help.available-cmds").withPrefix(Color.SPECIAL).sendTo(sender);
-
-            for (String cmd : CommandManager.commands.keySet()) {
-                CommandRef cmdRef = CommandManager.commands.get(cmd);
-
-                if (cmdRef.getPermission() == null || sender.hasPermission(cmdRef.getPermission())) {
-                    sendDescription(cmdRef);
-                }
             }
         }
     }
 
-    private void sendDescription(CommandRef cmdRef) {
+    private void printDescription(CommandRef cmdRef) {
         assert cmdRef != null;
 
         cmdRef.getDescription().withPrefix(Color.LABEL + "/ttt " + cmdRef.getLabel() + " " + Color.INFO).sendTo(sender);
@@ -88,5 +114,31 @@ public class HelpCommand extends CommandHandler {
                     .withReplacements(Color.SPECIAL + ChatColor.ITALIC + aliasStr.toString()).sendTo(sender);
         }
     }
+
+    private List<CommandRef> getAvailableCommands() {
+        Set<CommandRef> cmds = new LinkedHashSet<>();
+        for (CommandRef ref : CommandManager.commands.values()) {
+            if (ref.getPermission() == null || sender.hasPermission(ref.getPermission())) {
+                cmds.add(ref);
+            }
+        }
+        return new ArrayList<>(cmds);
+    }
+
+    private void printHeader(int pageIndex, int pageCount) {
+        sender.sendMessage("");
+        TTTCore.locale.getLocalizable("info.help.available-cmds").withPrefix(Color.INFO).sendTo(sender);
+        TTTCore.locale.getLocalizable("info.help.page").withPrefix(DIVIDER + " " + Color.FLAIR)
+                .withSuffix(ChatColor.WHITE + " " + DIVIDER).withReplacements(pageIndex + " / " + pageCount)
+                .sendTo(sender);
+    }
+
+    private void printFooter(int pageIndex, int pageCount) {
+        if (pageIndex < pageCount) {
+            TTTCore.locale.getLocalizable("info.help.next-page").withPrefix(Color.INFO)
+                    .withReplacements(Color.FLAIR + "/ttt help " + (pageIndex + 1) + Color.INFO).sendTo(sender);
+        }
+    }
+
 
 }

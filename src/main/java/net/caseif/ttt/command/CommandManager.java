@@ -57,6 +57,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CommandManager implements CommandExecutor {
@@ -64,41 +65,40 @@ public class CommandManager implements CommandExecutor {
     public static final ImmutableMap<String, CommandRef> commands;
 
     static {
-        Map<String, CommandRef> map = new HashMap<>();
-
-        // arena
-        addRef(map, "addspawn", AddSpawnCommand.class, "superadmin", "[arena name] {[x] [y] [z]}", 2, true);
-        addRef(map, "createarena", CreateArenaCommand.class, "superadmin", "", 1, false, "carena");
-        addRef(map, "import", ImportCommand.class, "superadmin", "[arena name]", 2, true);
-        addRef(map, "listspawns", ListSpawnsCommand.class, "superadmin", "[arena name]", 2, true);
-        addRef(map, "removearena", RemoveArenaCommand.class, "superadmin", "[arena name]", 2, true, "rarena");
-        addRef(map, "removespawn", RemoveSpawnCommand.class, "superadmin", "[arena name] [index]|[[x] [y] [z]]", 2,
-                true);
-        addRef(map, "arenainfo", ArenaInfoCommand.class, "admin", "[arena name]", 1, true);
-
-        // misc
-        addRef(map, "help", HelpCommand.class, null, "{command}", 1, true, "?");
-
-        // player
-        addRef(map, "ban", BanCommand.class, "admin", "[player name]", 2, true);
-        addRef(map, "kick", KickCommand.class, "admin", "[player name]", 2, true);
-        addRef(map, "pardon", PardonCommand.class, "admin", "[player name] {minutes}", 2, true);
-        addRef(map, "respawn", RespawnCommand.class, "admin", "[player name]", 2, true);
-        addRef(map, "role", RoleCommand.class, "admin", "[player name]", 2, true);
-        addRef(map, "slay", SlayCommand.class, "admin", "[player name]", 2, true);
-
-        // round
-        addRef(map, "end", EndCommand.class, "admin", "[arena name] {victor (t/i)}", 2, true);
-        addRef(map, "forceend", ForceEndCommand.class, "admin", "[arena name] {victor (t/i)}", 2, true);
-        addRef(map, "prepare", PrepareCommand.class, "admin", "[arena name]", 2, true);
-        addRef(map, "roles", RolesCommand.class, "admin", "[arena name]", 2, true);
-        addRef(map, "start", StartCommand.class, "admin", "[arena name]", 2, true);
+        Map<String, CommandRef> map = new LinkedHashMap<>();
 
         // use
         addRef(map, "join", JoinCommand.class, "use", "[arena name]", 1, false);
         addRef(map, "leave", LeaveCommand.class, "use", "", 1, false);
         addRef(map, "listarenas", ListArenasCommand.class, "use", "", 1, true);
 
+        // arena
+        addRef(map, "arenainfo", ArenaInfoCommand.class, "admin", "[arena name]", 1, true);
+        addRef(map, "createarena", CreateArenaCommand.class, "superadmin", "", 1, false, "carena");
+        addRef(map, "import", ImportCommand.class, "superadmin", "[arena name]", 2, true);
+        addRef(map, "removearena", RemoveArenaCommand.class, "superadmin", "[arena name]", 2, true, "rarena");
+        addRef(map, "listspawns", ListSpawnsCommand.class, "superadmin", "[arena name]", 2, true);
+        addRef(map, "addspawn", AddSpawnCommand.class, "superadmin", "[arena name] {[x] [y] [z]}", 2, true);
+        addRef(map, "removespawn", RemoveSpawnCommand.class, "superadmin", "[arena name] [index]|[[x] [y] [z]]", 2,
+                true);
+
+        // player
+        addRef(map, "role", RoleCommand.class, "admin", "[player name]", 2, true);
+        addRef(map, "slay", SlayCommand.class, "admin", "[player name]", 2, true);
+        addRef(map, "respawn", RespawnCommand.class, "admin", "[player name]", 2, true);
+        addRef(map, "kick", KickCommand.class, "admin", "[player name]", 2, true);
+        addRef(map, "ban", BanCommand.class, "admin", "[player name]", 2, true);
+        addRef(map, "pardon", PardonCommand.class, "admin", "[player name] {minutes}", 2, true);
+
+        // round
+        addRef(map, "roles", RolesCommand.class, "admin", "[arena name]", 2, true);
+        addRef(map, "prepare", PrepareCommand.class, "admin", "[arena name]", 2, true);
+        addRef(map, "start", StartCommand.class, "admin", "[arena name]", 2, true);
+        addRef(map, "end", EndCommand.class, "admin", "[arena name] {victor (t/i)}", 2, true);
+        addRef(map, "forceend", ForceEndCommand.class, "admin", "[arena name] {victor (t/i)}", 2, true);
+
+        // misc
+        addRef(map, "help", HelpCommand.class, null, "{command}", 1, true, "?");
 
         commands = ImmutableMap.copyOf(map);
     }
