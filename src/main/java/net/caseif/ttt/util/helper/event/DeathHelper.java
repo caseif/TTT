@@ -100,7 +100,7 @@ public final class DeathHelper {
         ch.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get().updateEntry(ch);
     }
 
-    private void cancelEvent(Challenger ch) {
+    private void cancelEvent(final Challenger ch) {
         Location loc = player.getLocation(); // sending the packet resets the location
 
         if (event != null) {
@@ -110,7 +110,15 @@ public final class DeathHelper {
             NmsHelper.sendRespawnPacket(player);
             player.teleport(loc);
         }
-        ch.setSpectating(true);
+
+        // delay the gamemode change to avoid conflicts with other plugins (*cough* Multiverse *cough*)
+        Bukkit.getScheduler().runTask(TTTCore.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                ch.setSpectating(true);
+            }
+        });
+
         player.setHealth(player.getMaxHealth());
     }
 

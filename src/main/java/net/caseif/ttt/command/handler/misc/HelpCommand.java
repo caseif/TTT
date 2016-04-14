@@ -24,8 +24,6 @@
 
 package net.caseif.ttt.command.handler.misc;
 
-import static javafx.scene.input.KeyCode.M;
-
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.CommandManager;
 import net.caseif.ttt.command.CommandRef;
@@ -53,7 +51,6 @@ public class HelpCommand extends CommandHandler {
     @Override
     @SuppressWarnings("unchecked")
     public void handle() {
-
         boolean isInt = false;
         if (args.length == 1 || (isInt = DataVerificationHelper.isInt(args[1]))) {
             int pageIndex = isInt ? Integer.parseInt(args[1]) : 1;
