@@ -24,6 +24,8 @@
 
 package net.caseif.ttt.util;
 
+import net.caseif.ttt.util.constant.Role;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import net.caseif.flint.round.Round;
@@ -51,7 +53,7 @@ public class Body {
         this.player = player;
         this.name = name;
         this.killer = killer;
-        this.role = role != null ? role : Constants.Role.INNOCENT;
+        this.role = role != null ? role : Role.INNOCENT;
         this.deathTime = deathTime;
         this.expiry = expireTime;
     }

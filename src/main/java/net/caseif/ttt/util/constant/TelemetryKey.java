@@ -22,33 +22,24 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt.command.handler.use;
+package net.caseif.ttt.util.constant;
 
-import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.constant.Color;
-import net.caseif.ttt.util.constant.Stage;
+public class TelemetryKey {
 
-import net.caseif.flint.arena.Arena;
-import org.bukkit.command.CommandSender;
+    public static final String UUID = "uuid";
+    public static final String VERSION = "version";
+    public static final String FLINT_API = "flintApi";
+    public static final String OPERATING_MODE = "opMode";
+    public static final String ARENA_COUNT = "arenas";
+    public static final String ROUND_COUNT = "rounds";
+    public static final String ROUND_MEAN_PLAYERS = "players";
+    public static final String ROUND_DURATION_MEAN = "roundDur";
+    public static final String ROUND_DURATION_STD_DEV = "roundDurSD";
+    public static final String ROUND_INNOCENT_WINS = "iWins";
+    public static final String ROUND_TRAITOR_WINS = "tWins";
+    public static final String ROUND_FORFEITS = "forfeits";
 
-public class ListArenasCommand extends CommandHandler {
-
-    public ListArenasCommand(CommandSender sender, String[] args) {
-        super(sender, args);
-    }
-
-    @Override
-    public void handle() {
-        TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
-        for (Arena arena : TTTCore.mg.getArenas()) {
-            sender.sendMessage("    " + Color.LABEL + arena.getId() + ": "
-                    + Color.FLAIR + TTTCore.locale.getLocalizable("fragment.stage."
-                    + (arena.getRound().isPresent()
-                    ? arena.getRound().get().getLifecycleStage().getId()
-                    : Stage.WAITING.getId()))
-                    .localizeFor(sender).toUpperCase());
-        }
+    private TelemetryKey() {
     }
 
 }

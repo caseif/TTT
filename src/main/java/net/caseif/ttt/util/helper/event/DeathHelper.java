@@ -27,9 +27,9 @@ package net.caseif.ttt.util.helper.event;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Body;
-import net.caseif.ttt.util.Constants.MetadataTag;
-import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.NmsHelper;
@@ -98,7 +98,7 @@ public final class DeathHelper {
 
         createBody(block.getLocation(), ch, killer.orNull());
 
-        ch.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get().updateEntry(ch);
+        ch.getRound().getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get().updateEntry(ch);
     }
 
     private void cancelEvent(final Challenger ch) {
@@ -148,7 +148,7 @@ public final class DeathHelper {
     }
 
     private void storeBody(Location loc, Challenger ch, Challenger killer) {
-        List<Body> bodies = ch.getRound().getMetadata().<List<Body>>get(MetadataTag.BODY_LIST).orNull();
+        List<Body> bodies = ch.getRound().getMetadata().<List<Body>>get(MetadataKey.Round.BODY_LIST).orNull();
         if (bodies == null) {
             bodies = new ArrayList<>();
         }
@@ -180,8 +180,8 @@ public final class DeathHelper {
                 System.currentTimeMillis(),
                 expiry
         ));
-        ch.getRound().getMetadata().set(MetadataTag.BODY_LIST, bodies);
-        ch.getMetadata().set(MetadataTag.BODY, body);
+        ch.getRound().getMetadata().set(MetadataKey.Round.BODY_LIST, bodies);
+        ch.getMetadata().set(MetadataKey.Player.BODY, body);
     }
 
 }

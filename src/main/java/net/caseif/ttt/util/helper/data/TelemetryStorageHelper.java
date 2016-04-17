@@ -25,7 +25,7 @@
 package net.caseif.ttt.util.helper.data;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.constant.MetadataKey;
 
 import net.caseif.flint.round.Round;
 import org.jnbt.ByteTag;
@@ -55,9 +55,9 @@ public class TelemetryStorageHelper {
     private static final String KEY_ROUND_PLAYERS = "plc";
 
     public static void pushRound(Round round) {
-        int duration = round.getMetadata().<Integer>get(Constants.MetadataTag.ROUND_DURATION).get();
-        byte result = round.getMetadata().<Byte>get(Constants.MetadataTag.ROUND_RESULT).get();
-        int players = round.getMetadata().<Integer>get(Constants.MetadataTag.ROUND_PLAYER_COUNT).get();
+        int duration = round.getMetadata().<Integer>get(MetadataKey.Round.ROUND_DURATION).get();
+        byte result = round.getMetadata().<Byte>get(MetadataKey.Round.ROUND_RESULT).get();
+        int players = round.getMetadata().<Integer>get(MetadataKey.Round.ROUND_PLAYER_COUNT).get();
 
         File store = getStoreFile();
 
@@ -90,6 +90,7 @@ public class TelemetryStorageHelper {
         return new RoundSummaryStats(readAndPopStore());
     }
 
+    @SuppressWarnings("try")
     private static List<CompoundTag> loadStore() {
         File store = getStoreFile();
 

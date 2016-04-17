@@ -25,8 +25,8 @@
 package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.Color;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -124,7 +124,7 @@ public final class BanHelper {
                         loc = TTTCore.locale.getLocalizable("info.personal.ban.temp.until").withReplacements(
                                 hour + ":" + min + ":" + sec, month + "/" + day + "/" + year + ".");
                     }
-                    loc.withPrefix(Constants.Color.ERROR);
+                    loc.withPrefix(Color.ERROR);
                     loc.sendTo(Bukkit.getPlayer(uuid));
                     return true;
                 }

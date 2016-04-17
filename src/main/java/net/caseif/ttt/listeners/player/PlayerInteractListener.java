@@ -25,15 +25,14 @@
 package net.caseif.ttt.listeners.player;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.helper.event.InteractHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.rosetta.Localizable;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -80,7 +79,7 @@ public class PlayerInteractListener implements Listener {
         for (HumanEntity he : event.getViewers()) {
             Player p = (Player) he;
             Optional<Challenger> ch = TTTCore.mg.getChallenger(p.getUniqueId());
-            if (ch.isPresent() && ch.get().getMetadata().has(Constants.MetadataTag.SEARCHING_BODY)) {
+            if (ch.isPresent() && ch.get().getMetadata().has(MetadataKey.Player.SEARCHING_BODY)) {
                 event.setCancelled(true);
             }
         }
@@ -89,8 +88,8 @@ public class PlayerInteractListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
         Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
-        if (ch.isPresent() && ch.get().getMetadata().has(Constants.MetadataTag.SEARCHING_BODY)) {
-            ch.get().getMetadata().remove(Constants.MetadataTag.SEARCHING_BODY);
+        if (ch.isPresent() && ch.get().getMetadata().has(MetadataKey.Player.SEARCHING_BODY)) {
+            ch.get().getMetadata().remove(MetadataKey.Player.SEARCHING_BODY);
         }
     }
 
@@ -105,7 +104,7 @@ public class PlayerInteractListener implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
             event.setCancelled(true);
-            TTTCore.locale.getLocalizable("info.personal.status.no-drop").withPrefix(Constants.Color.ERROR)
+            TTTCore.locale.getLocalizable("info.personal.status.no-drop").withPrefix(Color.ERROR)
                     .sendTo(event.getPlayer());
         }
     }
@@ -115,7 +114,7 @@ public class PlayerInteractListener implements Listener {
         Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
         if (ch.isPresent()) {
             if (ch.get().isSpectating()) {
-                boolean spec = ch.get().getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR);
+                boolean spec = ch.get().getMetadata().has(MetadataKey.Player.PURE_SPECTATOR);
 
                 Localizable prefix = TTTCore.locale.getLocalizable(spec ? "fragment.spectator" : "fragment.dead");
                 ChatColor color = spec ? ChatColor.GRAY : ChatColor.RED;
@@ -134,9 +133,9 @@ public class PlayerInteractListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
         Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
-        if (ch.isPresent() && ch.get().getMetadata().has(Constants.MetadataTag.WATCH_GAME_MODE)) {
+        if (ch.isPresent() && ch.get().getMetadata().has(MetadataKey.Player.WATCH_GAME_MODE)) {
             event.setCancelled(true);
-            ch.get().getMetadata().remove(Constants.MetadataTag.WATCH_GAME_MODE);
+            ch.get().getMetadata().remove(MetadataKey.Player.WATCH_GAME_MODE);
         }
     }
 

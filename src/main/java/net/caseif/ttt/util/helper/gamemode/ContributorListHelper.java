@@ -25,7 +25,8 @@
 package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.ContributorType;
 
 import org.bukkit.entity.Player;
 
@@ -106,12 +107,12 @@ public final class ContributorListHelper {
     public String getContributorString(Player player) {
         UUID uuid = player.getUniqueId();
         String str = "";
-        if (hasRole(uuid, Constants.Contributor.DEVELOPER)) {
+        if (hasRole(uuid, ContributorType.DEVELOPER)) {
             str += ", " + TTTCore.locale.getLocalizable("fragment.special.dev")
-                    .withPrefix(Constants.Color.TRAITOR).localizeFor(player) + "," + Constants.Color.INFO;
-        } else if (hasRole(uuid, Constants.Contributor.ALPHA_TESTER)) {
+                    .withPrefix(Color.TRAITOR).localizeFor(player) + "," + Color.INFO;
+        } else if (hasRole(uuid, ContributorType.ALPHA_TESTER)) {
             str += ", " + TTTCore.locale.getLocalizable("fragment.special.tester.alpha")
-                    .withPrefix(Constants.Color.TRAITOR).localizeFor(player) + "," + Constants.Color.INFO;
+                    .withPrefix(Color.TRAITOR).localizeFor(player) + "," + Color.INFO;
         }
         return str;
     }

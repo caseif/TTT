@@ -26,7 +26,7 @@ package net.caseif.ttt.command.handler.arena;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.io.FileHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;

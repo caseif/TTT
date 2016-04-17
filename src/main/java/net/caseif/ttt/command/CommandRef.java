@@ -26,7 +26,7 @@ package net.caseif.ttt.command;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.constant.Color;
 
 import net.caseif.rosetta.Localizable;
 import org.bukkit.command.CommandSender;
@@ -122,7 +122,7 @@ public class CommandRef {
      */
     private boolean assertPermission(CommandSender sender) {
         if (getPermission() != null && !sender.hasPermission(getPermission())) {
-            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Constants.Color.ERROR)
+            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR)
                     .sendTo(sender);
             return false;
         }
@@ -131,7 +131,7 @@ public class CommandRef {
 
     private boolean assertPlayer(CommandSender sender) {
         if (!isConsoleAllowed() && !(sender instanceof Player)) {
-            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Constants.Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR).sendTo(sender);
             return false;
         }
         return true;
@@ -139,7 +139,7 @@ public class CommandRef {
 
     private boolean assertArgumentCount(CommandSender sender, String[] args) {
         if (args.length < getArgCount()) {
-            TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Constants.Color.ERROR)
+            TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
                     .sendTo(sender);
             return false;
         }

@@ -28,7 +28,7 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.CommandManager;
 import net.caseif.ttt.command.CommandRef;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.helper.data.DataVerificationHelper;
 
 import org.bukkit.ChatColor;

@@ -27,9 +27,11 @@ package net.caseif.ttt.listeners.minigame;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.use.JoinCommand;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 import net.caseif.ttt.util.helper.platform.BungeeHelper;
@@ -51,46 +53,46 @@ public class ChallengerListener {
 
     @Subscribe
     public void onChallengerJoinRound(ChallengerJoinRoundEvent event) {
-        if (event.getRound().getLifecycleStage() == Constants.Stage.PLAYING
-                || event.getRound().getLifecycleStage() == Constants.Stage.ROUND_OVER) {
+        if (event.getRound().getLifecycleStage() == Stage.PLAYING
+                || event.getRound().getLifecycleStage() == Stage.ROUND_OVER) {
             event.getChallenger().setSpectating(true);
             PlayerHelper.watchPlayerGameMode(event.getChallenger());
-            event.getChallenger().getMetadata().set(Constants.MetadataTag.PURE_SPECTATOR, true);
+            event.getChallenger().getMetadata().set(MetadataKey.Player.PURE_SPECTATOR, true);
         }
 
         Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
         pl.setHealth(pl.getMaxHealth());
         pl.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 
-        if (!event.getChallenger().getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
+        if (!event.getChallenger().getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)) {
             pl.setGameMode(GameMode.SURVIVAL);
             KarmaHelper.applyKarma(event.getChallenger());
 
-            if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_RESTARTING)) {
+            if (!event.getRound().getMetadata().has(MetadataKey.Round.ROUND_RESTARTING)) {
                 RoundHelper.broadcast(event.getRound(),
-                        TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Constants.Color.INFO)
+                        TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO)
                                 .withReplacements(event.getChallenger().getName()
                                         + TTTCore.clh.getContributorString(pl)));
                 if (TTTCore.config.get(ConfigKey.OPERATING_MODE) != OperatingMode.DEDICATED
                         || BungeeHelper.hasSupport()) {
-                    TTTCore.locale.getLocalizable("info.personal.arena.join.leave-tip").withPrefix(Constants.Color.INFO)
-                            .withReplacements(Constants.Color.FLAIR + "/ttt leave" + Constants.Color.INFO).sendTo(pl);
+                    TTTCore.locale.getLocalizable("info.personal.arena.join.leave-tip").withPrefix(Color.INFO)
+                            .withReplacements(Color.FLAIR + "/ttt leave" + Color.INFO).sendTo(pl);
                 }
             }
 
-            if (event.getRound().getLifecycleStage() == Constants.Stage.WAITING
+            if (event.getRound().getLifecycleStage() == Stage.WAITING
                     && event.getRound().getChallengers().size() >= TTTCore.config.get(ConfigKey.MINIMUM_PLAYERS)) {
                 event.getRound().nextLifecycleStage();
             }
         }
 
-        if (!event.getRound().getMetadata().has(Constants.MetadataTag.SCOREBOARD_MANAGER)) {
+        if (!event.getRound().getMetadata().has(MetadataKey.Round.SCOREBOARD_MANAGER)) {
             event.getRound().getMetadata()
-                    .set(Constants.MetadataTag.SCOREBOARD_MANAGER, new ScoreboardManager(event.getRound()));
+                    .set(MetadataKey.Round.SCOREBOARD_MANAGER, new ScoreboardManager(event.getRound()));
         }
 
         ScoreboardManager sm = event.getRound().getMetadata()
-                .<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get();
+                .<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get();
         sm.applyScoreboard(event.getChallenger());
         sm.updateEntry(event.getChallenger());
     }
@@ -101,7 +103,7 @@ public class ChallengerListener {
             Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
             pl.setScoreboard(TTTCore.getPlugin().getServer().getScoreboardManager().getNewScoreboard());
 
-            if (event.getChallenger().getMetadata().has(Constants.MetadataTag.SEARCHING_BODY)) {
+            if (event.getChallenger().getMetadata().has(MetadataKey.Player.SEARCHING_BODY)) {
                 pl.closeInventory();
             }
 
@@ -112,24 +114,24 @@ public class ChallengerListener {
         }
 
         if (!event.getRound().isEnding()) {
-            if (!event.getChallenger().getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
+            if (!event.getChallenger().getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)) {
                 KarmaHelper.saveKarma(event.getChallenger());
                 RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
-                        .withPrefix(Constants.Color.INFO).withReplacements(event.getChallenger().getName(),
-                                Constants.Color.ARENA + event.getChallenger().getRound().getArena().getName()
-                                        + Constants.Color.INFO));
+                        .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
+                                Color.ARENA + event.getChallenger().getRound().getArena().getName()
+                                        + Color.INFO));
 
-                if (event.getRound().getLifecycleStage() == Constants.Stage.PREPARING
+                if (event.getRound().getLifecycleStage() == Stage.PREPARING
                         && event.getRound().getChallengers().size() <= 1) {
-                    event.getRound().setLifecycleStage(Constants.Stage.WAITING, true);
+                    event.getRound().setLifecycleStage(Stage.WAITING, true);
                     RoundHelper.broadcast(event.getRound(),
                             TTTCore.locale.getLocalizable("info.global.round.status.starting.stopped")
-                                    .withPrefix(Constants.Color.ERROR));
+                                    .withPrefix(Color.ERROR));
                 }
             }
         }
 
-        event.getRound().getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get()
+        event.getRound().getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get()
                 .remove(event.getChallenger());
 
         if (event.getRound().getChallengers().isEmpty()) {
@@ -145,7 +147,7 @@ public class ChallengerListener {
             // lazy way of doing this, but it works
             new JoinCommand(player, new String[]{"join", event.getLobbySign().getArena().getId()}).handle();
         } else {
-            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Constants.Color.ERROR).sendTo(player);
+            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR).sendTo(player);
         }
     }
 

@@ -26,10 +26,10 @@ package net.caseif.ttt.command.handler.use;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.gamemode.BanHelper;
 
 import com.google.common.base.Optional;

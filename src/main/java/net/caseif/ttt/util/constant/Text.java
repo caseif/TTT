@@ -22,33 +22,22 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt.command.handler.use;
+package net.caseif.ttt.util.constant;
 
-import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.constant.Color;
-import net.caseif.ttt.util.constant.Stage;
+public class Text {
 
-import net.caseif.flint.arena.Arena;
-import org.bukkit.command.CommandSender;
+    public static final String DIVIDER;
 
-public class ListArenasCommand extends CommandHandler {
-
-    public ListArenasCommand(CommandSender sender, String[] args) {
-        super(sender, args);
+    static {
+        final int dividerLength = 36;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < dividerLength; i++) {
+            sb.append("-");
+        }
+        DIVIDER = sb.toString();
     }
 
-    @Override
-    public void handle() {
-        TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
-        for (Arena arena : TTTCore.mg.getArenas()) {
-            sender.sendMessage("    " + Color.LABEL + arena.getId() + ": "
-                    + Color.FLAIR + TTTCore.locale.getLocalizable("fragment.stage."
-                    + (arena.getRound().isPresent()
-                    ? arena.getRound().get().getLifecycleStage().getId()
-                    : Stage.WAITING.getId()))
-                    .localizeFor(sender).toUpperCase());
-        }
+    private Text() {
     }
 
 }

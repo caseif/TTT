@@ -24,10 +24,10 @@
 
 package net.caseif.ttt.listeners.player;
 
-import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
+import static net.caseif.ttt.util.constant.PluginInfo.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.TTTBootstrap;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.constant.Color;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

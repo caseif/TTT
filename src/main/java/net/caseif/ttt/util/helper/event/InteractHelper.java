@@ -27,11 +27,11 @@ package net.caseif.ttt.util.helper.event;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Body;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.Constants.MetadataTag;
-import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Role;
+import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.data.CollectionsHelper;
 import net.caseif.ttt.util.helper.platform.InventoryHelper;
 
@@ -77,7 +77,7 @@ public final class InteractHelper {
             return;
         }
 
-        List<Body> bodies = opener.getRound().getMetadata().<List<Body>>get(MetadataTag.BODY_LIST).orNull();
+        List<Body> bodies = opener.getRound().getMetadata().<List<Body>>get(MetadataKey.Round.BODY_LIST).orNull();
         if (bodies == null) {
             return;
         }
@@ -131,10 +131,10 @@ public final class InteractHelper {
 
                 body.setFound();
                 if (bodyPlayer.isPresent() && bodyPlayer.get().getRound() == body.getRound()) {
-                    bodyPlayer.get().getMetadata().set(MetadataTag.BODY_FOUND, true);
+                    bodyPlayer.get().getMetadata().set(MetadataKey.Player.BODY_FOUND, true);
 
                     ScoreboardManager sm = body.getRound().getMetadata()
-                            .<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get();
+                            .<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get();
                     sm.updateEntry(bodyPlayer.get());
                 }
 
@@ -199,8 +199,8 @@ public final class InteractHelper {
 
             Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
             if (!ch.isPresent() || ch.get().isSpectating()
-                    || (ch.get().getRound().getLifecycleStage() == Constants.Stage.WAITING
-                    || ch.get().getRound().getLifecycleStage() == Constants.Stage.PREPARING)) {
+                    || (ch.get().getRound().getLifecycleStage() == Stage.WAITING
+                    || ch.get().getRound().getLifecycleStage() == Stage.PREPARING)) {
                 return;
             }
 
@@ -306,7 +306,7 @@ public final class InteractHelper {
         }
 
         player.openInventory(inv);
-        TTTCore.mg.getChallenger(player.getUniqueId()).get().getMetadata().set(MetadataTag.SEARCHING_BODY, true);
+        TTTCore.mg.getChallenger(player.getUniqueId()).get().getMetadata().set(MetadataKey.Player.SEARCHING_BODY, true);
     }
 
 }

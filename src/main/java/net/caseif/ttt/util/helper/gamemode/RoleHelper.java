@@ -25,9 +25,10 @@
 package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.helper.data.DataVerificationHelper;
 
 import com.google.common.collect.Lists;
@@ -80,25 +81,25 @@ public final class RoleHelper {
         String color;
         String roleFrag;
         if (!ch.getTeam().isPresent()) {
-            color = Constants.Color.FADED;
+            color = Color.FADED;
             roleFrag = "unassigned";
         } else if (ch.getTeam().get().getId().equals(Role.TRAITOR)) {
-            color = Constants.Color.TRAITOR;
+            color = Color.TRAITOR;
             roleFrag = Role.TRAITOR;
         } else if (ch.getMetadata().has(Role.DETECTIVE)) {
-            color = Constants.Color.DETECTIVE;
+            color = Color.DETECTIVE;
             roleFrag = Role.DETECTIVE;
         } else {
-            color = Constants.Color.INNOCENT;
+            color = Color.INNOCENT;
             roleFrag = Role.INNOCENT;
         }
 
         String roleMsg = TTTCore.locale.getLocalizable("fragment." + roleFrag).withPrefix(color).localizeFor(sender)
                 .toUpperCase();
 
-        if (ch.isSpectating() && !ch.getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
+        if (ch.isSpectating() && !ch.getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)) {
             roleMsg += TTTCore.locale.getLocalizable("fragment.deceased")
-                    .withPrefix(" " + Constants.Color.FADED + "(").localizeFor(sender) + ")";
+                    .withPrefix(" " + Color.FADED + "(").localizeFor(sender) + ")";
         }
 
         return roleMsg;

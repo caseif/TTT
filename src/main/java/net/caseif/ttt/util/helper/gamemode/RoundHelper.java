@@ -26,10 +26,10 @@ package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
-import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.Constants.MetadataTag;
-import net.caseif.ttt.util.Constants.Role;
 import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.helper.platform.TitleHelper;
 
 import net.caseif.flint.challenger.Challenger;
@@ -77,7 +77,7 @@ public final class RoundHelper {
     public static void startRound(Round round) {
         RoleHelper.assignRoles(round);
         ScoreboardManager sm
-                = round.getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get();
+                = round.getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get();
         sm.updateAllEntries();
         for (Challenger ch : round.getTeam(Role.TRAITOR).get().getChallengers()) {
             sm.applyScoreboard(ch);
@@ -132,7 +132,7 @@ public final class RoundHelper {
             }
         }
 
-        round.getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get().updateAllEntries();
+        round.getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get().updateAllEntries();
 
         broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
                 .withPrefix(Color.INFO));
@@ -143,7 +143,7 @@ public final class RoundHelper {
         KarmaHelper.saveKarma(round);
 
         if (sendWinMessages) {
-            boolean tVic = round.getMetadata().has(MetadataTag.TRAITOR_VICTORY);
+            boolean tVic = round.getMetadata().has(MetadataKey.Round.TRAITOR_VICTORY);
             String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
 
             Localizable msg = TTTCore.locale.getLocalizable("info.global.round.event.end."

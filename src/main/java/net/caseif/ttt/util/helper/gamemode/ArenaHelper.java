@@ -24,8 +24,8 @@
 
 package net.caseif.ttt.util.helper.gamemode;
 
-import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_ROUND_TALLY;
-import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_START_TIME;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_ROUND_TALLY;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_START_TIME;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.config.ConfigKey;

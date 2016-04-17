@@ -24,16 +24,16 @@
 
 package net.caseif.ttt.command.handler.arena;
 
-import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_ROUND_TALLY;
-import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_START_TIME;
-import static net.caseif.ttt.util.Constants.Text.DIVIDER;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_ROUND_TALLY;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_START_TIME;
+import static net.caseif.ttt.util.constant.Text.DIVIDER;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.Stage;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;
@@ -82,7 +82,7 @@ public class ArenaInfoCommand extends CommandHandler {
                             TTTCore.locale.getLocalizable("fragment.stage." + round.getLifecycleStage().getId())
                                     .withPrefix(Color.FLAIR).localizeFor(sender).toUpperCase()
                     ).sendTo(sender);
-            if (round.getLifecycleStage() != Constants.Stage.WAITING) {
+            if (round.getLifecycleStage() != Stage.WAITING) {
                 TTTCore.locale.getLocalizable("info.personal.arena-info.time").withPrefix(Color.INFO)
                         .withReplacements(
                                 TTTCore.locale.getLocalizable("fragment.seconds"

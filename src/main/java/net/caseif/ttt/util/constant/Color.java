@@ -22,33 +22,35 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt.command.handler.use;
+package net.caseif.ttt.util.constant;
 
+import net.caseif.ttt.TTTBootstrap;
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.constant.Color;
-import net.caseif.ttt.util.constant.Stage;
 
-import net.caseif.flint.arena.Arena;
-import org.bukkit.command.CommandSender;
+import org.bukkit.ChatColor;
 
-public class ListArenasCommand extends CommandHandler {
+// message colors
+public class Color {
 
-    public ListArenasCommand(CommandSender sender, String[] args) {
-        super(sender, args);
-    }
+    public static final String INFO = (TTTBootstrap.STEEL && TTTCore.HALLOWEEN
+            ? ChatColor.GOLD
+            : ChatColor.DARK_AQUA).toString();
+    public static final String ERROR = ChatColor.RED.toString();
 
-    @Override
-    public void handle() {
-        TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
-        for (Arena arena : TTTCore.mg.getArenas()) {
-            sender.sendMessage("    " + Color.LABEL + arena.getId() + ": "
-                    + Color.FLAIR + TTTCore.locale.getLocalizable("fragment.stage."
-                    + (arena.getRound().isPresent()
-                    ? arena.getRound().get().getLifecycleStage().getId()
-                    : Stage.WAITING.getId()))
-                    .localizeFor(sender).toUpperCase());
-        }
+    public static final String FADED = ChatColor.GRAY.toString();
+    public static final String FLAIR = (TTTBootstrap.STEEL && TTTCore.HALLOWEEN
+            ? ChatColor.DARK_AQUA
+            : ChatColor.GOLD).toString();
+    public static final String LABEL = ChatColor.GREEN.toString();
+    public static final String SPECIAL = ChatColor.LIGHT_PURPLE.toString();
+
+    public static final String ARENA = ChatColor.AQUA.toString();
+
+    public static final String DETECTIVE = ChatColor.BLUE.toString();
+    public static final String INNOCENT = ChatColor.DARK_GREEN.toString();
+    public static final String TRAITOR = ChatColor.DARK_RED.toString();
+
+    private Color() {
     }
 
 }

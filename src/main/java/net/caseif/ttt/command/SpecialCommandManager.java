@@ -24,10 +24,10 @@
 
 package net.caseif.ttt.command;
 
-import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
+import static net.caseif.ttt.util.constant.PluginInfo.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.TTTBootstrap;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.constant.Color;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -39,10 +39,10 @@ public class SpecialCommandManager implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (label.equalsIgnoreCase("ttt")) {
             if (sender.hasPermission("ttt.build.warn")) {
-                TTTBootstrap.locale.getLocalizable("error.plugin.flint").withPrefix(Constants.Color.ERROR)
+                TTTBootstrap.locale.getLocalizable("error.plugin.flint").withPrefix(Color.ERROR)
                         .withReplacements(MIN_FLINT_VERSION + "").sendTo(sender);
             } else {
-                TTTBootstrap.locale.getLocalizable("error.plugin.disabled").withPrefix(Constants.Color.ERROR)
+                TTTBootstrap.locale.getLocalizable("error.plugin.disabled").withPrefix(Color.ERROR)
                         .sendTo(sender);
             }
             return true;

@@ -28,8 +28,8 @@ import static com.google.common.base.Preconditions.checkState;
 import static net.caseif.ttt.TTTCore.getPlugin;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.Color;
 
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
@@ -113,9 +113,9 @@ public class BungeeHelper implements PluginMessageListener{
                 if (servers.contains(TTTCore.config.get(ConfigKey.RETURN_SERVER))) {
                     sendPluginMessage("Connect", TTTCore.config.get(ConfigKey.RETURN_SERVER), player);
                 } else {
-                    TTTCore.locale.getLocalizable("error.bungee.configuration").withPrefix(Constants.Color.ERROR)
+                    TTTCore.locale.getLocalizable("error.bungee.configuration").withPrefix(Color.ERROR)
                             .sendTo(player);
-                    TTTCore.locale.getLocalizable("error.report").withPrefix(Constants.Color.ERROR).sendTo(player);
+                    TTTCore.locale.getLocalizable("error.report").withPrefix(Color.ERROR).sendTo(player);
                 }
 
             }

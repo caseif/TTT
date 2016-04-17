@@ -26,7 +26,7 @@ package net.caseif.ttt.command.handler.round;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.helper.gamemode.RoleHelper;
 
 import com.google.common.base.Optional;

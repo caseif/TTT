@@ -24,10 +24,10 @@
 
 package net.caseif.ttt.listeners.wizard;
 
-import static net.caseif.ttt.util.Constants.Text.DIVIDER;
+import static net.caseif.ttt.util.constant.Text.DIVIDER;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 

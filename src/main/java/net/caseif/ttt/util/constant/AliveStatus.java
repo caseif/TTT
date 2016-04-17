@@ -22,33 +22,15 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt.command.handler.use;
+package net.caseif.ttt.util.constant;
 
-import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.constant.Color;
-import net.caseif.ttt.util.constant.Stage;
+public class AliveStatus {
 
-import net.caseif.flint.arena.Arena;
-import org.bukkit.command.CommandSender;
+    public static final String ALIVE = "alive";
+    public static final String MIA = "mia";
+    public static final String CONFIRMED_DEAD = "dead";
 
-public class ListArenasCommand extends CommandHandler {
-
-    public ListArenasCommand(CommandSender sender, String[] args) {
-        super(sender, args);
-    }
-
-    @Override
-    public void handle() {
-        TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
-        for (Arena arena : TTTCore.mg.getArenas()) {
-            sender.sendMessage("    " + Color.LABEL + arena.getId() + ": "
-                    + Color.FLAIR + TTTCore.locale.getLocalizable("fragment.stage."
-                    + (arena.getRound().isPresent()
-                    ? arena.getRound().get().getLifecycleStage().getId()
-                    : Stage.WAITING.getId()))
-                    .localizeFor(sender).toUpperCase());
-        }
+    private AliveStatus() {
     }
 
 }

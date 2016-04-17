@@ -24,9 +24,9 @@
 
 package net.caseif.ttt.util;
 
-import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_ROUND_TALLY;
-import static net.caseif.ttt.util.Constants.MetadataTag.ARENA_START_TIME;
-import static net.caseif.ttt.util.Constants.MetadataTag.ROUND_RESTARTING;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_ROUND_TALLY;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_START_TIME;
+import static net.caseif.ttt.util.constant.MetadataKey.Round.ROUND_RESTARTING;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.config.ConfigKey;

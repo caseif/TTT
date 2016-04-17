@@ -25,7 +25,7 @@
 package net.caseif.ttt.util.helper.platform;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.constant.MetadataKey;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.component.exception.OrphanedComponentException;
@@ -70,12 +70,12 @@ public final class PlayerHelper {
     // override the player's gamemode when they change worlds. This method prevents that
     // from happening.
     public static void watchPlayerGameMode(final Challenger challenger) {
-        challenger.getMetadata().set(Constants.MetadataTag.WATCH_GAME_MODE, true);
+        challenger.getMetadata().set(MetadataKey.Player.WATCH_GAME_MODE, true);
         Bukkit.getScheduler().runTaskLater(TTTCore.getPlugin(), new Runnable() {
             @Override
             public void run() {
                 try {
-                    challenger.getMetadata().remove(Constants.MetadataTag.WATCH_GAME_MODE);
+                    challenger.getMetadata().remove(MetadataKey.Player.WATCH_GAME_MODE);
                 } catch (OrphanedComponentException ignored) {
                 }
             }

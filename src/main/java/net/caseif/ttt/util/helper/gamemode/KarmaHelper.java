@@ -27,10 +27,10 @@ package net.caseif.ttt.util.helper.gamemode;
 import static net.caseif.ttt.util.helper.gamemode.RoleHelper.isTraitor;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.Constants.MetadataTag;
 import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Stage;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
@@ -62,7 +62,7 @@ public final class KarmaHelper {
     }
 
     public static void saveKarma(Challenger challenger) {
-        if (challenger.getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
+        if (challenger.getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)) {
             return; // we don't want to save karma for a player that's simply spectating
         }
 
@@ -112,7 +112,7 @@ public final class KarmaHelper {
     public static void allocateKarma(Round round) {
         for (Challenger challenger : round.getChallengers()) {
             addKarma(challenger, TTTCore.config.get(ConfigKey.KARMA_ROUND_INCREMENT));
-            if (!challenger.getMetadata().has(MetadataTag.TEAM_KILLED)) {
+            if (!challenger.getMetadata().has(MetadataKey.Player.TEAM_KILLED)) {
                 int karmaHeal = TTTCore.config.get(ConfigKey.KARMA_CLEAN_BONUS);
                 if (getKarma(challenger) > BASE_KARMA) {
                     if ((TTTCore.config.get(ConfigKey.KARMA_MAX) - BASE_KARMA) > 0) {
@@ -185,8 +185,8 @@ public final class KarmaHelper {
     }
 
     public static int getKarma(Challenger mp) {
-        return mp.getMetadata().has(MetadataTag.KARMA)
-                ? mp.getMetadata().<Integer>get(MetadataTag.KARMA).get()
+        return mp.getMetadata().has(MetadataKey.Player.KARMA)
+                ? mp.getMetadata().<Integer>get(MetadataKey.Player.KARMA).get()
                 : TTTCore.config.get(ConfigKey.KARMA_STARTING);
     }
 
@@ -207,19 +207,19 @@ public final class KarmaHelper {
         if (damageRed <= 0) {
             damageRed = minDamageRed;
         }
-        challenger.getMetadata().set(MetadataTag.DAMAGE_REDUCTION, damageRed);
+        challenger.getMetadata().set(MetadataKey.Player.DAMAGE_REDUCTION, damageRed);
     }
 
     public static double getDamageReduction(Challenger challenger) {
-        return challenger.getMetadata().has(MetadataTag.DAMAGE_REDUCTION)
-                ? challenger.getMetadata().<Double>get(MetadataTag.DAMAGE_REDUCTION).get()
+        return challenger.getMetadata().has(MetadataKey.Player.DAMAGE_REDUCTION)
+                ? challenger.getMetadata().<Double>get(MetadataKey.Player.DAMAGE_REDUCTION).get()
                 : 1;
     }
 
     public static void applyKarma(Challenger challenger) {
         int karma = Math.max(getKarma(challenger.getUniqueId()), TTTCore.config.get(ConfigKey.KARMA_LOW_AUTOKICK));
-        challenger.getMetadata().set(MetadataTag.KARMA, karma);
-        challenger.getMetadata().set(MetadataTag.DISPLAY_KARMA, karma);
+        challenger.getMetadata().set(MetadataKey.Player.KARMA, karma);
+        challenger.getMetadata().set(MetadataKey.Player.DISPLAY_KARMA, karma);
     }
 
     public static void resetKarma(UUID uuid) {
@@ -227,7 +227,7 @@ public final class KarmaHelper {
     }
 
     private static void addKarma(Challenger challenger, int amount) {
-        if (challenger.getRound().getLifecycleStage() == Constants.Stage.ROUND_OVER) {
+        if (challenger.getRound().getLifecycleStage() == Stage.ROUND_OVER) {
             return;
         }
 
@@ -241,7 +241,7 @@ public final class KarmaHelper {
             karma = TTTCore.config.get(ConfigKey.KARMA_MAX);
         }
 
-        challenger.getMetadata().set(MetadataTag.KARMA, karma);
+        challenger.getMetadata().set(MetadataKey.Player.KARMA, karma);
 
         if (karma < TTTCore.config.get(ConfigKey.KARMA_LOW_AUTOKICK)) {
             handleKick(challenger);
@@ -255,7 +255,7 @@ public final class KarmaHelper {
 
     private static void subtractKarma(Challenger challenger, int amount) {
         addKarma(challenger, -amount);
-        challenger.getMetadata().set(MetadataTag.TEAM_KILLED, true);
+        challenger.getMetadata().set(MetadataKey.Player.TEAM_KILLED, true);
     }
 
 }

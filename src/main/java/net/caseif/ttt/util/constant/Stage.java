@@ -22,33 +22,32 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt.command.handler.use;
+package net.caseif.ttt.util.constant;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.constant.Color;
-import net.caseif.ttt.util.constant.Stage;
+import net.caseif.ttt.util.config.ConfigKey;
 
-import net.caseif.flint.arena.Arena;
-import org.bukkit.command.CommandSender;
+import net.caseif.flint.round.LifecycleStage;
 
-public class ListArenasCommand extends CommandHandler {
+// lifecycle stages
+public class Stage {
 
-    public ListArenasCommand(CommandSender sender, String[] args) {
-        super(sender, args);
+    public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
+    public static LifecycleStage PREPARING;
+    public static LifecycleStage PLAYING;
+    public static LifecycleStage ROUND_OVER;
+
+    static {
+        initialize();
     }
 
-    @Override
-    public void handle() {
-        TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
-        for (Arena arena : TTTCore.mg.getArenas()) {
-            sender.sendMessage("    " + Color.LABEL + arena.getId() + ": "
-                    + Color.FLAIR + TTTCore.locale.getLocalizable("fragment.stage."
-                    + (arena.getRound().isPresent()
-                    ? arena.getRound().get().getLifecycleStage().getId()
-                    : Stage.WAITING.getId()))
-                    .localizeFor(sender).toUpperCase());
-        }
+    private Stage() {
+    }
+
+    public static void initialize() {
+        PREPARING = new LifecycleStage("preparing", TTTCore.config.get(ConfigKey.PREPTIME_SECONDS));
+        PLAYING = new LifecycleStage("playing", TTTCore.config.get(ConfigKey.ROUNDTIME_SECONDS));
+        ROUND_OVER = new LifecycleStage("round_over", TTTCore.config.get(ConfigKey.POSTTIME_SECONDS));
     }
 
 }

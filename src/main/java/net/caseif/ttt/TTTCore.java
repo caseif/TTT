@@ -24,12 +24,10 @@
 
 package net.caseif.ttt;
 
-import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
+import static net.caseif.ttt.util.constant.PluginInfo.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.command.CommandManager;
 import net.caseif.ttt.listeners.ListenerManager;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.Constants.Stage;
 import net.caseif.ttt.util.TelemetryRunner;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
@@ -37,6 +35,7 @@ import net.caseif.ttt.util.compatibility.LegacyMglibStorageDeleter;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.config.TTTConfig;
+import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 import net.caseif.ttt.util.helper.platform.BungeeHelper;
@@ -175,7 +174,7 @@ public class TTTCore {
         locale.setDefaultLocale(TTTCore.config.get(ConfigKey.LOCALE));
 
         mg.setConfigValue(ConfigNode.MAX_PLAYERS, TTTCore.config.get(ConfigKey.MAXIMUM_PLAYERS));
-        Constants.Stage.initialize();
+        Stage.initialize();
         mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
                 ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING, Stage.ROUND_OVER));
 

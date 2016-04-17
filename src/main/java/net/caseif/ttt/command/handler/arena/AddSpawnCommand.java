@@ -28,7 +28,7 @@ import static net.caseif.ttt.util.helper.data.DataVerificationHelper.isInt;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.constant.Color;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;

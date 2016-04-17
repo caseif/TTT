@@ -24,9 +24,9 @@
 
 package net.caseif.ttt;
 
-import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
-import static net.caseif.ttt.util.Constants.STEEL_CURSEFORGE_PROJECT_ID;
-import static net.caseif.ttt.util.Constants.TTT_CURSEFORGE_PROJECT_ID;
+import static net.caseif.ttt.util.constant.PluginInfo.MIN_FLINT_VERSION;
+import static net.caseif.ttt.util.constant.PluginInfo.STEEL_CURSEFORGE_PROJECT_ID;
+import static net.caseif.ttt.util.constant.PluginInfo.TTT_CURSEFORGE_PROJECT_ID;
 
 import net.caseif.ttt.command.SpecialCommandManager;
 import net.caseif.ttt.listeners.ListenerManager;

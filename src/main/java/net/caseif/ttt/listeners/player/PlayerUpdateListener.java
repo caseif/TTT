@@ -25,8 +25,9 @@
 package net.caseif.ttt.listeners.player;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.event.DeathHelper;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
@@ -79,8 +80,8 @@ public class PlayerUpdateListener implements Listener {
         if (event.getEntityType() == EntityType.PLAYER) {
             Optional<Challenger> victim = TTTCore.mg.getChallenger(event.getEntity().getUniqueId());
             if (victim.isPresent()
-                    && (victim.get().getRound().getLifecycleStage() == Constants.Stage.WAITING
-                    || victim.get().getRound().getLifecycleStage() == Constants.Stage.PREPARING)) {
+                    && (victim.get().getRound().getLifecycleStage() == Stage.WAITING
+                    || victim.get().getRound().getLifecycleStage() == Stage.PREPARING)) {
                 event.setCancelled(true);
                 if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {
                     Bukkit.getPlayer(victim.get().getUniqueId()).teleport(
@@ -100,8 +101,8 @@ public class PlayerUpdateListener implements Listener {
                             : (Player) ((Projectile) ed.getDamager()).getShooter();
                     Optional<Challenger> damagerCh = TTTCore.mg.getChallenger(damager.getUniqueId());
                     if (damagerCh.isPresent()) {
-                        if ((damagerCh.get().getRound().getLifecycleStage() == Constants.Stage.WAITING
-                                || damagerCh.get().getRound().getLifecycleStage() == Constants.Stage.PREPARING)
+                        if ((damagerCh.get().getRound().getLifecycleStage() == Stage.WAITING
+                                || damagerCh.get().getRound().getLifecycleStage() == Stage.PREPARING)
                                 || !victim.isPresent()
                                 || damagerCh.get().isSpectating()) {
                             event.setCancelled(true);
@@ -118,7 +119,7 @@ public class PlayerUpdateListener implements Listener {
                         }
 
                         Optional<Double> reduc = damagerCh.get().getMetadata()
-                                .get(Constants.MetadataTag.DAMAGE_REDUCTION);
+                                .get(MetadataKey.Player.DAMAGE_REDUCTION);
                         if (reduc.isPresent()) {
                             event.setDamage((int) (event.getDamage() * reduc.get()));
                         }

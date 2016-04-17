@@ -26,10 +26,13 @@ package net.caseif.ttt.listeners.minigame;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
-import net.caseif.ttt.util.Constants;
 import net.caseif.ttt.util.RoundRestartDaemon;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Role;
+import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoleHelper;
@@ -58,30 +61,30 @@ public class RoundListener {
 
     @Subscribe
     public void onRoundChangeLifecycleStage(RoundChangeLifecycleStageEvent event) {
-        if (event.getStageAfter() == Constants.Stage.PREPARING) {
+        if (event.getStageAfter() == Stage.PREPARING) {
             RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
-                    .withPrefix(Constants.Color.INFO));
-        } else if (event.getStageAfter() == Constants.Stage.PLAYING) {
+                    .withPrefix(Color.INFO));
+        } else if (event.getStageAfter() == Stage.PLAYING) {
             RoundHelper.startRound(event.getRound());
             if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
-                event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_PLAYER_COUNT,
+                event.getRound().getMetadata().set(MetadataKey.Round.ROUND_PLAYER_COUNT,
                         event.getRound().getChallengers().size());
             }
-        } else if (event.getStageAfter() == Constants.Stage.ROUND_OVER) {
-            RoundHelper.closeRound(event.getRound(), event.getStageBefore() == Constants.Stage.PLAYING);
+        } else if (event.getStageAfter() == Stage.ROUND_OVER) {
+            RoundHelper.closeRound(event.getRound(), event.getStageBefore() == Stage.PLAYING);
             if (ArenaHelper.shouldArenaCycle(event.getRound().getArena())) {
                 RoundHelper.broadcast(event.getRound(),
                         TTTCore.locale.getLocalizable("info.global.arena.status.map-change")
-                                .withPrefix(Constants.Color.INFO));
+                                .withPrefix(Color.INFO));
             }
 
             if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
-                if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_DURATION)) {
+                if (!event.getRound().getMetadata().has(MetadataKey.Round.ROUND_DURATION)) {
                     event.getRound().getMetadata()
-                            .set(Constants.MetadataTag.ROUND_DURATION, event.getStageBefore().getDuration());
+                            .set(MetadataKey.Round.ROUND_DURATION, event.getStageBefore().getDuration());
                 }
-                if (!event.getRound().getMetadata().has(Constants.MetadataTag.ROUND_RESULT)) {
-                    event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, 2);
+                if (!event.getRound().getMetadata().has(MetadataKey.Round.ROUND_RESULT)) {
+                    event.getRound().getMetadata().set(MetadataKey.Round.ROUND_RESULT, 2);
                 }
                 TelemetryStorageHelper.pushRound(event.getRound());
             }
@@ -93,10 +96,10 @@ public class RoundListener {
     public void onRoundTick(RoundTimerTickEvent event) {
         Round r = event.getRound();
 
-        r.getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get().updateTitle();
+        r.getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get().updateTitle();
 
-        if (r.getLifecycleStage() != Constants.Stage.WAITING) {
-            if (event.getRound().getLifecycleStage() == Constants.Stage.PLAYING) {
+        if (r.getLifecycleStage() != Stage.WAITING) {
+            if (event.getRound().getLifecycleStage() == Stage.PLAYING) {
                 // check if game is over
                 boolean iLeft = false;
                 boolean tLeft = false;
@@ -115,7 +118,7 @@ public class RoundListener {
 
                     // manage DNA scanners
                     Player tracker = TTTCore.getPlugin().getServer().getPlayer(ch.getName());
-                    if (ch.getMetadata().has(Constants.Role.DETECTIVE) && ch.getMetadata().has("tracking")) {
+                    if (ch.getMetadata().has(Role.DETECTIVE) && ch.getMetadata().has("tracking")) {
                         // update every n secconds
                         if (ch.getRound().getTime() % TTTCore.config.get(ConfigKey.SCANNER_CHARGE_TIME) == 0) {
                             Player killer = TTTCore.getPlugin().getServer()
@@ -125,7 +128,7 @@ public class RoundListener {
                                 tracker.setCompassTarget(killer.getLocation());
                             } else {
                                 TTTCore.locale.getLocalizable("error.round.trackee-left")
-                                        .withPrefix(Constants.Color.ERROR).sendTo(tracker);
+                                        .withPrefix(Color.ERROR).sendTo(tracker);
                                 ch.getMetadata().remove("tracking");
                                 tracker.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
                             }
@@ -144,16 +147,16 @@ public class RoundListener {
 
                 if (!(tLeft && iLeft)) {
                     if (tLeft) {
-                        event.getRound().getMetadata().set(Constants.MetadataTag.TRAITOR_VICTORY, true);
+                        event.getRound().getMetadata().set(MetadataKey.Round.TRAITOR_VICTORY, true);
                     }
 
                     if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
-                        event.getRound().getMetadata().set(Constants.MetadataTag.ROUND_RESULT, (byte) (tLeft ? 1 : 0));
+                        event.getRound().getMetadata().set(MetadataKey.Round.ROUND_RESULT, (byte) (tLeft ? 1 : 0));
                         event.getRound().getMetadata()
-                                .set(Constants.MetadataTag.ROUND_DURATION, (int) event.getRound().getTime());
+                                .set(MetadataKey.Round.ROUND_DURATION, (int) event.getRound().getTime());
                     }
 
-                    event.getRound().setLifecycleStage(Constants.Stage.ROUND_OVER, true);
+                    event.getRound().setLifecycleStage(Stage.ROUND_OVER, true);
                 }
             }
         }
@@ -161,8 +164,8 @@ public class RoundListener {
 
     @Subscribe
     public void onRoundEnd(RoundEndEvent event) {
-        if (event.getRound().getLifecycleStage() != Constants.Stage.ROUND_OVER) {
-            RoundHelper.closeRound(event.getRound(), event.getRound().getLifecycleStage() == Constants.Stage.PLAYING);
+        if (event.getRound().getLifecycleStage() != Stage.ROUND_OVER) {
+            RoundHelper.closeRound(event.getRound(), event.getRound().getLifecycleStage() == Stage.PLAYING);
         }
 
         for (Entity ent : Bukkit.getWorld(event.getRound().getArena().getWorld()).getEntities()) {
@@ -171,7 +174,7 @@ public class RoundListener {
             }
         }
 
-        event.getRound().getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get()
+        event.getRound().getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get()
                 .uninitialize();
 
         if (event.isNatural()
@@ -184,7 +187,7 @@ public class RoundListener {
 
     @Subscribe
     public void onStageChange(RoundChangeLifecycleStageEvent event) {
-        if (event.getStageBefore() == Constants.Stage.PREPARING && event.getStageAfter() == Constants.Stage.WAITING) {
+        if (event.getStageBefore() == Stage.PREPARING && event.getStageAfter() == Stage.WAITING) {
             for (Challenger ch : event.getRound().getChallengers()) {
                 Bukkit.getPlayer(ch.getUniqueId())
                         .setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
@@ -194,9 +197,9 @@ public class RoundListener {
                 event.getRound().removeTeam(team);
             }
 
-            event.getRound().getMetadata().<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get()
+            event.getRound().getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get()
                     .updateAllEntries();
-        } else if (event.getStageAfter() == Constants.Stage.ROUND_OVER) {
+        } else if (event.getStageAfter() == Stage.ROUND_OVER) {
             event.getRound().setConfigValue(ConfigNode.WITHHOLD_SPECTATOR_CHAT, false);
         }
     }

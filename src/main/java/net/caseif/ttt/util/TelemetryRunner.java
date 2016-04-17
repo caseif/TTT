@@ -25,8 +25,8 @@
 package net.caseif.ttt.util;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants.TelemetryKey;
 import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.TelemetryKey;
 import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 import net.caseif.ttt.util.helper.math.ByteHelper;
 

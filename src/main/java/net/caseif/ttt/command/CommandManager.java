@@ -49,14 +49,13 @@ import net.caseif.ttt.command.handler.round.StartCommand;
 import net.caseif.ttt.command.handler.use.JoinCommand;
 import net.caseif.ttt.command.handler.use.LeaveCommand;
 import net.caseif.ttt.command.handler.use.ListArenasCommand;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.constant.Color;
 
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
