@@ -33,6 +33,7 @@ import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.NmsHelper;
+import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -111,13 +112,8 @@ public final class DeathHelper {
             player.teleport(loc);
         }
 
-        // delay the gamemode change to avoid conflicts with other plugins (*cough* Multiverse *cough*)
-        Bukkit.getScheduler().runTask(TTTCore.getPlugin(), new Runnable() {
-            @Override
-            public void run() {
-                ch.setSpectating(true);
-            }
-        });
+        ch.setSpectating(true);
+        PlayerHelper.watchPlayerGameMode(ch);
 
         player.setHealth(player.getMaxHealth());
     }

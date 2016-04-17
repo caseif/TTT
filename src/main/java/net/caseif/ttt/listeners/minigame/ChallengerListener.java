@@ -34,6 +34,7 @@ import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 import net.caseif.ttt.util.helper.platform.BungeeHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
+import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.event.lobby.PlayerClickLobbySignEvent;
@@ -53,6 +54,7 @@ public class ChallengerListener {
         if (event.getRound().getLifecycleStage() == Constants.Stage.PLAYING
                 || event.getRound().getLifecycleStage() == Constants.Stage.ROUND_OVER) {
             event.getChallenger().setSpectating(true);
+            PlayerHelper.watchPlayerGameMode(event.getChallenger());
             event.getChallenger().getMetadata().set(Constants.MetadataTag.PURE_SPECTATOR, true);
         }
 

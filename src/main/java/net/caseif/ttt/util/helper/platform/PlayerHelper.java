@@ -24,6 +24,11 @@
 
 package net.caseif.ttt.util.helper.platform;
 
+import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.Constants;
+
+import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.component.exception.OrphanedComponentException;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -59,6 +64,22 @@ public final class PlayerHelper {
         } catch (IllegalAccessException | InvocationTargetException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    // Unfortunately, other plugins *cough* Multiverse *cough* sometimes feel the need to
+    // override the player's gamemode when they change worlds. This method prevents that
+    // from happening.
+    public static void watchPlayerGameMode(final Challenger challenger) {
+        challenger.getMetadata().set(Constants.MetadataTag.WATCH_GAME_MODE, true);
+        Bukkit.getScheduler().runTaskLater(TTTCore.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    challenger.getMetadata().remove(Constants.MetadataTag.WATCH_GAME_MODE);
+                } catch (OrphanedComponentException ignored) {
+                }
+            }
+        }, 2L);
     }
 
 }

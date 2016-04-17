@@ -31,7 +31,9 @@ import net.caseif.ttt.util.helper.event.InteractHelper;
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.rosetta.Localizable;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -43,6 +45,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
@@ -125,6 +128,15 @@ public class PlayerInteractListener implements Listener {
 
                 event.getRecipients().clear();
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
+        Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
+        if (ch.isPresent() && ch.get().getMetadata().has(Constants.MetadataTag.WATCH_GAME_MODE)) {
+            event.setCancelled(true);
+            ch.get().getMetadata().remove(Constants.MetadataTag.WATCH_GAME_MODE);
         }
     }
 
