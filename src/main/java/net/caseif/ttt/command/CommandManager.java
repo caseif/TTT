@@ -35,6 +35,7 @@ import net.caseif.ttt.command.handler.arena.RemoveArenaCommand;
 import net.caseif.ttt.command.handler.arena.RemoveSpawnCommand;
 import net.caseif.ttt.command.handler.misc.DefaultCommand;
 import net.caseif.ttt.command.handler.misc.HelpCommand;
+import net.caseif.ttt.command.handler.misc.XyzzyCommand;
 import net.caseif.ttt.command.handler.player.BanCommand;
 import net.caseif.ttt.command.handler.player.KickCommand;
 import net.caseif.ttt.command.handler.player.PardonCommand;
@@ -98,6 +99,7 @@ public class CommandManager implements CommandExecutor {
 
         // misc
         addRef(map, "help", HelpCommand.class, null, "{command}", 1, true, "?");
+        addRef(map, "xyzzy", XyzzyCommand.class, null, "", 1, true);
 
         commands = ImmutableMap.copyOf(map);
     }

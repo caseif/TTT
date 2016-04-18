@@ -115,6 +115,9 @@ public class HelpCommand extends CommandHandler {
     private List<CommandRef> getAvailableCommands() {
         Set<CommandRef> cmds = new LinkedHashSet<>();
         for (CommandRef ref : CommandManager.commands.values()) {
+            if (ref.getLabel().equals("xyzzy")) {
+                continue;
+            }
             if (ref.getPermission() == null || sender.hasPermission(ref.getPermission())) {
                 cmds.add(ref);
             }
