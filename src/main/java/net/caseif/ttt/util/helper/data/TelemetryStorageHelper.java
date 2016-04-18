@@ -155,14 +155,14 @@ public class TelemetryStorageHelper {
         return new File(TTTCore.getPlugin().getDataFolder(), STORE_FILE_NAME);
     }
 
-    private static class RoundSummary {
+    static class RoundSummary {
 
         private final int duration;
         // for reference: 0=inno, 1=traitor, 2=stalemate
         private final byte result;
         private final int playerCount;
 
-        private RoundSummary(int duration, byte result, int playerCount) {
+        RoundSummary(int duration, byte result, int playerCount) {
             this.duration = duration;
             this.result = result;
             this.playerCount = playerCount;
@@ -204,7 +204,7 @@ public class TelemetryStorageHelper {
         private final int traitorWins;
         private final int forfeits;
 
-        private RoundSummaryStats(List<RoundSummary> rounds) {
+        RoundSummaryStats(List<RoundSummary> rounds) {
             this.roundCount = rounds.size();
 
             int durationSum = 0;
@@ -224,7 +224,7 @@ public class TelemetryStorageHelper {
                 for (RoundSummary round : rounds) {
                     stdDevSum += Math.pow(round.getDuration() - durationMean, 2);
                 }
-                durationStdDev = stdDevSum / roundCount;
+                durationStdDev = (float) Math.sqrt(stdDevSum / (roundCount - 1));
             } else {
                 durationStdDev = 0f;
             }
