@@ -27,8 +27,6 @@ package net.caseif.ttt.command.handler.misc;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.constant.Color;
-import net.caseif.ttt.util.constant.PluginInfo;
-import net.caseif.ttt.util.helper.data.CollectionsHelper;
 
 import org.bukkit.command.CommandSender;
 
