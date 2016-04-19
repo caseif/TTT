@@ -67,7 +67,7 @@ public class ArenaInfoCommand extends CommandHandler {
 
         sender.sendMessage(DIVIDER);
         TTTCore.locale.getLocalizable("info.personal.arena-info.header").withPrefix(Color.LABEL)
-                .withReplacements(Color.ARENA + arena.getName()).sendTo(sender);
+                .withReplacements(Color.FLAIR + arena.getName()).sendTo(sender);
         TTTCore.locale.getLocalizable("info.personal.arena-info.has-round").withPrefix(Color.INFO)
                 .withReplacements(
                         TTTCore.locale.getLocalizable(arena.getRound().isPresent() ? "fragment.yes" : "fragment.no")

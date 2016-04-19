@@ -54,18 +54,18 @@ public class PrepareCommand extends CommandHandler {
                 if (round.getChallengers().size() > 1) {
                     round.setLifecycleStage(Stage.PREPARING, true);
                     TTTCore.locale.getLocalizable("info.personal.arena.set-stage.preparing.success")
-                            .withPrefix(Color.INFO).withReplacements(Color.ARENA + arena.get().getName() + Color.ERROR)
+                            .withPrefix(Color.INFO).withReplacements(Color.FLAIR + arena.get().getName() + Color.ERROR)
                             .sendTo(sender);
                 } else {
                     TTTCore.locale.getLocalizable("error.arena.too-few-players").withPrefix(Color.ERROR).sendTo(sender);
                 }
             } else {
                 TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR)
-                        .withReplacements(Color.ARENA + arenaName + Color.ERROR).sendTo(sender);
+                        .withReplacements(Color.FLAIR + arenaName + Color.ERROR).sendTo(sender);
             }
         } else {
             TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR)
-                    .withReplacements(Color.ARENA + arenaName + Color.ERROR).sendTo(sender);
+                    .withReplacements(Color.FLAIR + arenaName + Color.ERROR).sendTo(sender);
         }
     }
 

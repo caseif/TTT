@@ -44,8 +44,6 @@ public class Color {
     public static final String LABEL = ChatColor.GREEN.toString();
     public static final String SPECIAL = ChatColor.LIGHT_PURPLE.toString();
 
-    public static final String ARENA = ChatColor.AQUA.toString();
-
     public static final String DETECTIVE = ChatColor.BLUE.toString();
     public static final String INNOCENT = ChatColor.DARK_GREEN.toString();
     public static final String TRAITOR = ChatColor.DARK_RED.toString();

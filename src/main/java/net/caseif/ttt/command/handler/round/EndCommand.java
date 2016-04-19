@@ -50,14 +50,14 @@ public class EndCommand extends CommandHandler {
         Optional<Arena> arena = TTTCore.mg.getArena(arenaName);
         if (!arena.isPresent()) {
             TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR)
-                    .withReplacements(Color.ARENA + arenaName + Color.ERROR).sendTo(sender);
+                    .withReplacements(Color.FLAIR + arenaName + Color.ERROR).sendTo(sender);
             return;
         }
 
         if (!arena.get().getRound().isPresent()
                 || arena.get().getRound().get().getLifecycleStage() == Stage.WAITING) {
             TTTCore.locale.getLocalizable("error.arena.no-round").withPrefix(Color.ERROR)
-                    .withReplacements(Color.ARENA + arenaName + Color.ERROR).sendTo(sender);
+                    .withReplacements(Color.FLAIR + arenaName + Color.ERROR).sendTo(sender);
             return;
         }
 

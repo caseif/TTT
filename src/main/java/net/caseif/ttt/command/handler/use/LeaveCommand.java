@@ -63,7 +63,7 @@ public class LeaveCommand extends CommandHandler {
             String roundName = ch.get().getRound().getArena().getName();
             ch.get().removeFromRound();
             TTTCore.locale.getLocalizable("info.personal.arena.leave.success").withPrefix(Color.INFO)
-                    .withReplacements(Color.ARENA + roundName + Color.INFO).sendTo(sender);
+                    .withReplacements(Color.FLAIR + roundName + Color.INFO).sendTo(sender);
         } else {
             TTTCore.locale.getLocalizable("error.round.outside").withPrefix(Color.ERROR).sendTo(sender);
         }

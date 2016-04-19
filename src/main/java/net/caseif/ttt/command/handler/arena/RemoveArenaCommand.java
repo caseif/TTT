@@ -45,7 +45,7 @@ public class RemoveArenaCommand extends CommandHandler {
             ArenaHelper.updateShuffledArenas();
 
             TTTCore.locale.getLocalizable("info.personal.arena.remove.success").withPrefix(Color.INFO)
-                    .withReplacements(Color.ARENA + name + Color.INFO).sendTo(sender);
+                    .withReplacements(Color.FLAIR + name + Color.INFO).sendTo(sender);
         } catch (IllegalArgumentException ex) {
             TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
         }

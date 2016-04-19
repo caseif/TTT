@@ -118,7 +118,7 @@ public class ChallengerListener {
                 KarmaHelper.saveKarma(event.getChallenger());
                 RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                         .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
-                                Color.ARENA + event.getChallenger().getRound().getArena().getName()
+                                Color.FLAIR + event.getChallenger().getRound().getArena().getName()
                                         + Color.INFO));
 
                 if (event.getRound().getLifecycleStage() == Stage.PREPARING
