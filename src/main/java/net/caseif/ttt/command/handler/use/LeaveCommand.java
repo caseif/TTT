@@ -21,11 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.command.handler.use;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.helper.platform.BungeeHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -40,6 +44,20 @@ public class LeaveCommand extends CommandHandler {
 
     @Override
     public void handle() {
+        if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED
+                && !(sender.hasPermission("ttt.admin") && args.length >= 2 && args[1].equalsIgnoreCase("force"))) {
+            if (BungeeHelper.hasSupport() && !TTTCore.config.get(ConfigKey.RETURN_SERVER).isEmpty()) {
+                TTTCore.locale.getLocalizable("info.personal.bungee.connecting").withPrefix(Color.INFO).sendTo(sender);
+                trySendForceLeaveTip();
+                BungeeHelper.sendPlayerToReturnServer((Player) sender);
+                return;
+            } else {
+                TTTCore.locale.getLocalizable("error.round.leave-dedicated").withPrefix(Color.ERROR).sendTo(sender);
+                trySendForceLeaveTip();
+                return;
+            }
+        }
+
         Optional<Challenger> ch = TTTCore.mg.getChallenger(((Player) sender).getUniqueId());
         if (ch.isPresent()) {
             String roundName = ch.get().getRound().getArena().getName();
@@ -48,6 +66,13 @@ public class LeaveCommand extends CommandHandler {
                     .withReplacements(Color.ARENA + roundName + Color.INFO).sendTo(sender);
         } else {
             TTTCore.locale.getLocalizable("error.round.outside").withPrefix(Color.ERROR).sendTo(sender);
+        }
+    }
+
+    private void trySendForceLeaveTip() {
+        if (sender.hasPermission("ttt.admin")) {
+            TTTCore.locale.getLocalizable("error.round.leave-dedicated-force").withPrefix(Color.ERROR)
+                    .withReplacements(Color.FLAIR + "/ttt leave force").sendTo(sender);
         }
     }
 

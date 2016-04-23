@@ -21,12 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.util.helper.platform;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.Role;
 
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.challenger.Challenger;
@@ -41,8 +44,11 @@ import org.bukkit.entity.Player;
  */
 public final class TitleHelper {
 
+    private TitleHelper() {
+    }
+
     public static void sendStatusTitle(Player player, String role) {
-        if (TTTCore.config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
+        if (TTTCore.config.get(ConfigKey.SEND_TITLES) && TitleUtil.areTitlesSupported()) {
             if (player == null) {
                 throw new IllegalArgumentException("Player cannot be null!");
             }
@@ -51,20 +57,20 @@ public final class TitleHelper {
                     .localizeFor(player);
             String color;
             switch (role) {
-                case Constants.Role.INNOCENT: {
-                    color = Constants.Color.INNOCENT;
+                case Role.INNOCENT: {
+                    color = Color.INNOCENT;
                     break;
                 }
-                case Constants.Role.DETECTIVE: {
-                    color = Constants.Color.DETECTIVE;
+                case Role.DETECTIVE: {
+                    color = Color.DETECTIVE;
                     break;
                 }
                 default: {
-                    color = Constants.Color.TRAITOR;
+                    color = Color.TRAITOR;
                     break;
                 }
             }
-            if (TTTCore.config.LARGE_STATUS_TITLES) {
+            if (TTTCore.config.get(ConfigKey.LARGE_STATUS_TITLES)) {
                 TitleUtil.sendTitle(player, title, ChatColor.getByChar(color.charAt(1)));
             } else {
                 TitleUtil.sendTitle(player, "", ChatColor.RESET, title, ChatColor.getByChar(color.charAt(1)));
@@ -73,16 +79,16 @@ public final class TitleHelper {
     }
 
     public static void sendVictoryTitle(Round round, boolean traitorVictory) {
-        if (TTTCore.config.SEND_TITLES && TitleUtil.areTitlesSupported()) {
+        if (TTTCore.config.get(ConfigKey.SEND_TITLES) && TitleUtil.areTitlesSupported()) {
             checkNotNull(round, "Round cannot be null!");
             Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.end."
-                    + (traitorVictory ? Constants.Role.TRAITOR : Constants.Role.INNOCENT) + ".min");
+                    + (traitorVictory ? Role.TRAITOR : Role.INNOCENT) + ".min");
             ChatColor color = ChatColor.getByChar(
-                    (traitorVictory ? Constants.Color.TRAITOR : Constants.Color.INNOCENT).charAt(1)
+                    (traitorVictory ? Color.TRAITOR : Color.INNOCENT).charAt(1)
             );
             for (Challenger ch : round.getChallengers()) {
                 Player pl = Bukkit.getPlayer(ch.getUniqueId());
-                if (TTTCore.config.LARGE_VICTORY_TITLES) {
+                if (TTTCore.config.get(ConfigKey.LARGE_VICTORY_TITLES)) {
                     TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), loc.localizeFor(pl),
                             color);
                 } else {

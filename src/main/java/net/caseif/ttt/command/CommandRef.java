@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.command;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.constant.Color;
 
 import net.caseif.rosetta.Localizable;
 import org.bukkit.command.CommandSender;
@@ -46,21 +47,22 @@ public class CommandRef {
     private String usage;
     private int argCount;
     private boolean consoleAllowed;
+    private String[] aliases;
 
     public CommandRef(String cmd, Class<? extends CommandHandler> handlerClass, Localizable desc, String perm,
-                      String usage, int argCount, boolean consoleAllowed) {
+                      String usage, int argCount, boolean consoleAllowed, String... aliases) {
         this.cmd = cmd;
         try {
             this.constructor = handlerClass.getConstructor(CommandSender.class, String[].class);
         } catch (NoSuchMethodException ex) {
             throw new AssertionError(ex);
-
         }
         this.description = desc;
         this.permission = perm;
         this.usage = usage;
         this.argCount = argCount;
         this.consoleAllowed = consoleAllowed;
+        this.aliases = aliases;
     }
 
     public String getLabel() {
@@ -91,6 +93,10 @@ public class CommandRef {
         return consoleAllowed;
     }
 
+    public String[] getAliases() {
+        return aliases;
+    }
+
     public void invoke(CommandSender sender, String[] args) {
         if (!doAssertions(sender, args)) {
             return;
@@ -116,7 +122,7 @@ public class CommandRef {
      */
     private boolean assertPermission(CommandSender sender) {
         if (getPermission() != null && !sender.hasPermission(getPermission())) {
-            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Constants.Color.ERROR)
+            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR)
                     .sendTo(sender);
             return false;
         }
@@ -125,7 +131,7 @@ public class CommandRef {
 
     private boolean assertPlayer(CommandSender sender) {
         if (!isConsoleAllowed() && !(sender instanceof Player)) {
-            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Constants.Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR).sendTo(sender);
             return false;
         }
         return true;
@@ -133,7 +139,7 @@ public class CommandRef {
 
     private boolean assertArgumentCount(CommandSender sender, String[] args) {
         if (args.length < getArgCount()) {
-            TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Constants.Color.ERROR)
+            TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
                     .sendTo(sender);
             return false;
         }

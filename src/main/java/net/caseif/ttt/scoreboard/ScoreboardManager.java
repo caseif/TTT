@@ -21,17 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.scoreboard;
 
-import static net.caseif.ttt.util.helper.misc.MiscHelper.fromNullableString;
+import static net.caseif.ttt.util.helper.data.DataVerificationHelper.fromNullableString;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.Constants.AliveStatus;
-import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.Constants.MetadataTag;
-import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.helper.misc.MiscHelper;
+import net.caseif.ttt.util.constant.AliveStatus;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Role;
+import net.caseif.ttt.util.constant.Stage;
+import net.caseif.ttt.util.helper.gamemode.RoleHelper;
 
 import com.google.common.collect.ImmutableMap;
 import net.caseif.flint.challenger.Challenger;
@@ -117,18 +118,18 @@ public class ScoreboardManager {
     }
 
     private void applyTeam(Challenger ch) {
-        String role = MiscHelper.isTraitor(ch) ? Role.TRAITOR
+        String role = RoleHelper.isTraitor(ch) ? Role.TRAITOR
                 : ch.getMetadata().has(Role.DETECTIVE) ? Role.DETECTIVE
                 : Role.INNOCENT;
         String alive = !ch.isSpectating() ? AliveStatus.ALIVE
-                : ch.getMetadata().has(MetadataTag.BODY_FOUND) ? AliveStatus.CONFIRMED_DEAD
+                : ch.getMetadata().has(MetadataKey.Player.BODY_FOUND) ? AliveStatus.CONFIRMED_DEAD
                 : AliveStatus.MIA;
         String teamName = role.charAt(0) + "" + alive.charAt(0);
-        ch.getMetadata().set(MetadataTag.TEAM_NAME, teamName);
+        ch.getMetadata().set(MetadataKey.Player.TEAM_NAME, teamName);
     }
 
     public void applyScoreboard(Challenger ch) {
-        Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(MiscHelper.isTraitor(ch) ? tBoard : iBoard);
+        Bukkit.getPlayer(ch.getUniqueId()).setScoreboard(RoleHelper.isTraitor(ch) ? tBoard : iBoard);
     }
 
     public void updateAllEntries() {
@@ -141,11 +142,11 @@ public class ScoreboardManager {
     private void updateEntry(Challenger ch, Scoreboard sb) {
         assert ch.getRound() == getRound();
 
-        if (ch.getMetadata().has(MetadataTag.PURE_SPECTATOR)) {
+        if (ch.getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)) {
             return;
         }
 
-        String teamName = ch.getMetadata().<String>get(MetadataTag.TEAM_NAME).get();
+        String teamName = ch.getMetadata().<String>get(MetadataKey.Player.TEAM_NAME).get();
         if (sb.getTeam(teamName) == null) {
             registerTeams(sb, sb == tBoard);
         }
@@ -166,7 +167,7 @@ public class ScoreboardManager {
             }
         }
         sb.getObjective(OBJECTIVE_ID).getScore(ch.getName())
-                .setScore(ch.getMetadata().<Integer>get(MetadataTag.DISPLAY_KARMA).or(1000));
+                .setScore(ch.getMetadata().<Integer>get(MetadataKey.Player.DISPLAY_KARMA).or(1000));
     }
 
     public void updateEntry(Challenger ch) {
@@ -195,7 +196,7 @@ public class ScoreboardManager {
         title.append(TTTCore.locale.getLocalizable("fragment.stage." + round.getLifecycleStage().getId())
                 .localize().toUpperCase());
 
-        if (round.getLifecycleStage() != Constants.Stage.WAITING) {
+        if (round.getLifecycleStage() != Stage.WAITING) {
             title.append(" - ");
 
             long time = round.getRemainingTime();

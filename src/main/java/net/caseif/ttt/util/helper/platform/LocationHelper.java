@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.util.helper.platform;
 
 import net.caseif.flint.util.physical.Location3D;
@@ -33,9 +34,12 @@ import org.bukkit.WorldCreator;
  *
  * <p>Disclaimer: copy-pasted directly from Steel.</p>
  *
- * @author Max Roncacé
+ * @author Max Roncace
  */
-public class LocationHelper {
+public final class LocationHelper {
+
+    private LocationHelper() {
+    }
 
     public static Location3D convert(Location location) {
         return new Location3D(location.getWorld().getName(), location.getX(), location.getY(), location.getZ());

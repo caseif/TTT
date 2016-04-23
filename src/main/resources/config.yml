@@ -27,6 +27,11 @@ maximum-players: 32
 # Whether players may join rounds in-progress as spectators.
 allow-join-as-spectator: true
 
+# When true, victory messages (e.g. "The traitors won!" will be broadcast to all players on the server.
+#   (Note: this was the standard behavior until v0.10.)
+# When false, they will only be sent to players who were in the particular round.
+broadcast-win-messages-to-server: false
+
 ##############################
 # Traitor/Detective Settings #
 ##############################
@@ -64,7 +69,6 @@ send-titles: true
 # If false (default), subtitles will be sent instead.
 # Setting this to true may cause the title to obstruct the player's screen.
 large-status-titles: false
-
 
 # Whether status titles (event.g. "The traitors won!") should be sent as full-sized titles.
 # If false (default), subtitles will be sent instead.
@@ -162,6 +166,49 @@ karma-round-to-one: true
 # Whether karma changes should be logged to the console. Note that this will typically cause massive log spam.
 karma-debug: false
 
+###########################
+# Operating Mode Settings #
+###########################
+
+# The operating mode of the plugin. Three options are available:
+#     standard - Players may join rounds at will, and will be ejected from the round when it ends.
+#     continuous - Players may join rounds at will, but will not be ejected when it ends.
+#                  Instead, the arena will reset to its initial state and a new round will begin.
+#     dedicated - Only one round will exist on the server, which players will be entered into upon connecting.
+#                 After a time or round limit (whichever comes first), the server will switch to a new arena.
+# If the set value is not valid, it will default to 'standard'.
+operating-mode: standard
+
+# The mode by which new arenas are selected in dedicated mode. Three options are available:
+#     shuffle - Arenas will be selected in a fixed order determined by performing a random shuffle upon the arena list.
+#               This order may change between restarts.
+#     sequential - Arenas will be selected in a fixed order determined by the engine.
+#     random - Arenas will be selected completely randomly.
+# If the set value is not valid, it will default to 'sequential'.
+#
+# NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
+map-cycle-mode: shuffle
+
+# The round limit for each arena in dedicated mode.
+# After this number of rounds have taken place, the server will switch to a new arena.
+# Set to -1 for no limit.
+#
+# NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
+map-cycle-round-limit: 6
+
+# The time limit in minutes for a given arena in dedicated mode.
+# After this limit is reached, the server will switch to a new arena.
+# Set to -1 for no limit.
+#
+# NOTE: this option will have no effect if 'operating-mode' is not set to 'dedicated'.
+map-cycle-time-limit: 30
+
+# The server to return players to upon using the `/ttt leave` command in a dedicated server.
+# This will only take effect if
+#   a) the server is part of a BungeeCord network
+#   b) the 'operating-mode' config key is set to 'dedicated'
+return-server: ''
+
 ###################
 # Plugin Settings #
 ###################
@@ -176,6 +223,9 @@ locale: en_US
 
 # Whether the plugin should update itself (highly recommended).
 enable-auto-update: true
+
+# Whether the plugin is allowed to submit anonymous usage information to a private telemetry server.
+enable-telemetry: true
 
 # Whether the plugin is allowed to submit anonymous usage information to MCStats.
 enable-metrics: true

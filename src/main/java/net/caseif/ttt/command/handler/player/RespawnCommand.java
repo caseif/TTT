@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.command.handler.player;
 
-import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
-import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.Constants.MetadataTag;
+import net.caseif.ttt.util.Body;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 
@@ -66,24 +67,25 @@ public class RespawnCommand extends CommandHandler {
             return;
         }
         if (!ch.get().isSpectating()
-                || ch.get().getMetadata().has(MetadataTag.PURE_SPECTATOR)
-                || !ch.get().getMetadata().has(MetadataTag.BODY)) {
+                || ch.get().getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)
+                || !ch.get().getMetadata().has(MetadataKey.Player.BODY)) {
             TTTCore.locale.getLocalizable("error.round.not-dead").withPrefix(Color.ERROR).sendTo(sender);
             return;
         }
 
-        Location loc = LocationHelper.convert(ch.get().getMetadata().<Body>get(MetadataTag.BODY).get().getLocation());
+        Location loc
+                = LocationHelper.convert(ch.get().getMetadata().<Body>get(MetadataKey.Player.BODY).get().getLocation());
         loc.getBlock().setType(Material.AIR);
         pl.teleport(loc);
 
         Metadata meta = ch.get().getMetadata();
-        Body body = meta.<Body>get(MetadataTag.BODY).orNull();
-        meta.remove(MetadataTag.BODY);
-        meta.remove(MetadataTag.BODY_FOUND);
+        Body body = meta.<Body>get(MetadataKey.Player.BODY).orNull();
+        meta.remove(MetadataKey.Player.BODY);
+        meta.remove(MetadataKey.Player.BODY_FOUND);
         if (body != null) {
-            List<Body> bodies = ch.get().getRound().getMetadata().<List<Body>>get(MetadataTag.BODY_LIST).get();
+            List<Body> bodies = ch.get().getRound().getMetadata().<List<Body>>get(MetadataKey.Round.BODY_LIST).get();
             bodies.remove(body);
-            ch.get().getRound().getMetadata().set(MetadataTag.BODY_LIST, bodies);
+            ch.get().getRound().getMetadata().set(MetadataKey.Round.BODY_LIST, bodies);
         }
 
         ch.get().setSpectating(false);
@@ -93,7 +95,7 @@ public class RespawnCommand extends CommandHandler {
         pl.setHealth(pl.getMaxHealth());
         pl.setFoodLevel(20);
 
-        ch.get().getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get()
+        ch.get().getRound().getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get()
                 .updateEntry(ch.get());
 
         TTTCore.locale.getLocalizable("info.personal.respawn").withPrefix(Color.INFO).sendTo(pl);

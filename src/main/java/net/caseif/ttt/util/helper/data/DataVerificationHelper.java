@@ -21,27 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util.helper.misc;
 
-import net.caseif.ttt.util.Constants.Role;
+package net.caseif.ttt.util.helper.data;
 
-import net.caseif.flint.challenger.Challenger;
+/**
+ * Static utility class for data type verification and similar functionality.
+ */
+public final class DataVerificationHelper {
 
-import java.util.ArrayList;
-import java.util.List;
-
-//TODO: organize these methods into other helper classes
-public class MiscHelper {
-
-    /**
-     * Determines whether a given {@link Challenger challenger} is marked as a
-     * Traitor.
-     *
-     * @param player the player to check
-     * @return whether the player is a traitor
-     */
-    public static boolean isTraitor(Challenger player) {
-        return player.getTeam().isPresent() && player.getTeam().get().getId().equals(Role.TRAITOR);
+    private DataVerificationHelper() {
     }
 
     public static String fromNullableString(String nullable) {
@@ -70,41 +58,6 @@ public class MiscHelper {
 
     public static int clamp(int val, int min, int max) {
         return Math.max(min, Math.min(max, val));
-    }
-
-    public static String prettyList(List<?> list) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < list.size(); i++) {
-            sb.append(list.get(i).toString());
-            if (i < list.size() - 2) {
-                sb.append(", ");
-            } else if (i == list.size() - 2) {
-                if (list.size() > 2) {
-                    sb.append(",");
-                }
-                sb.append(" and ");
-            }
-        }
-        return sb.toString();
-    }
-
-    public static List<String> formatLore(String str) {
-        final int lineLength = 36;
-        List<String> list = new ArrayList<>();
-        String current = "";
-        for (String s : str.split(" ")) {
-            if (current.length() + s.trim().length() + 1 > lineLength) {
-                list.add(current);
-                current = "";
-            } else if (!current.isEmpty()) {
-                current += " ";
-            }
-            current += s.trim();
-        }
-        if (!current.isEmpty()) {
-            list.add(current);
-        }
-        return list;
     }
 
 }

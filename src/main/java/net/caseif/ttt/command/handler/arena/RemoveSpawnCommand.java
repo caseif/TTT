@@ -21,13 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.command.handler.arena;
 
-import static net.caseif.ttt.util.helper.misc.MiscHelper.isInt;
+import static net.caseif.ttt.util.helper.data.DataVerificationHelper.isInt;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.constant.Color;
 
 import net.caseif.flint.arena.Arena;
 import net.caseif.flint.util.physical.Location3D;

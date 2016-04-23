@@ -21,18 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.util.helper.platform;
 
-import static net.caseif.ttt.util.helper.misc.MiscHelper.isDouble;
+package net.caseif.ttt.util.config;
+
+import static net.caseif.ttt.util.helper.data.DataVerificationHelper.isDouble;
 
 import net.caseif.ttt.TTTBootstrap;
-import net.caseif.ttt.util.helper.misc.FileHelper;
+import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.helper.io.FileHelper;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.BufferedReader;
@@ -43,68 +46,21 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Static utility class for config-related functionality.
  */
-public final class ConfigHelper {
+public final class TTTConfig {
 
     private static final ImmutableMap<String, String> LEGACY_NODES;
 
-    // Round structure
-    public final int PREPTIME_SECONDS;
-    public final int ROUNDTIME_SECONDS;
-    public final int POSTTIME_SECONDS;
-    public final int MINIMUM_PLAYERS;
-    public final int MAXIMUM_PLAYERS;
-    public final boolean ALLOW_JOIN_AS_SPECTATOR;
+    private final FileConfiguration config;
 
-    // Traitor/Detective settings
-    public final double TRAITOR_PCT;
-    public final double DETECTIVE_PCT;
-    public final int DETECTIVE_MIN_PLAYERS;
-    public final int SCANNER_CHARGE_TIME;
-    public final int KILLER_DNA_RANGE;
-    public final int KILLER_DNA_BASETIME;
-
-    // Title settings
-    public final boolean SEND_TITLES;
-    public final boolean LARGE_STATUS_TITLES;
-    public final boolean LARGE_VICTORY_TITLES;
-
-    // Weapon settings
-    public final Material CROWBAR_ITEM;
-    public final Material GUN_ITEM;
-    public final int CROWBAR_DAMAGE;
-    public final boolean REQUIRE_AMMO_FOR_GUNS;
-    public final int INITIAL_AMMO;
-
-    // Karma settings
-    public final boolean KARMA_STRICT;
-    public final int KARMA_STARTING;
-    public final int KARMA_MAX;
-    public final double KARMA_RATIO;
-    public final int KARMA_KILL_PENALTY;
-    public final int KARMA_ROUND_INCREMENT;
-    public final int KARMA_CLEAN_BONUS;
-    public final double KARMA_CLEAN_HALF;
-    public final int KARMA_TRAITORDMG_RATIO;
-    public final int KARMA_TRAITORKILL_BONUS;
-    public final int KARMA_LOW_AUTOKICK;
-    public final boolean KARMA_LOW_BAN;
-    public final int KARMA_LOW_BAN_MINUTES;
-    public final boolean KARMA_PERSIST;
-    public final boolean KARMA_DAMAGE_REDUCTION;
-    public final boolean KARMA_ROUND_TO_ONE;
-    public final boolean KARMA_DEBUG;
-
-    // Plugin settings
-    public final boolean VERBOSE_LOGGING;
-    public final String LOCALE;
-    public final boolean ENABLE_AUTO_UPDATE;
-    public final boolean ENABLE_METRICS;
+    private final Map<ConfigKey<?>, Object> map = new HashMap<>();
 
     static {
         LEGACY_NODES = ImmutableMap.<String, String>builder()
@@ -131,63 +87,40 @@ public final class ConfigHelper {
                 .build();
     }
 
-    public ConfigHelper() {
-        // Round settings
-        PREPTIME_SECONDS = getInt("preptime-seconds");
-        ROUNDTIME_SECONDS = getInt("roundtime-seconds");
-        POSTTIME_SECONDS = getInt("posttime-seconds");
-        MINIMUM_PLAYERS = getInt("minimum-players");
-        MAXIMUM_PLAYERS = getInt("maximum-players");
-        ALLOW_JOIN_AS_SPECTATOR = getBoolean("allow-join-as-spectator");
+    public TTTConfig(FileConfiguration config) {
+        this.config = config;
 
-        // Traitor/Detective settings
-        TRAITOR_PCT = getDouble("traitor-pct");
-        DETECTIVE_PCT = getDouble("detective-pct");
-        DETECTIVE_MIN_PLAYERS = getInt("detective-min-players");
-        SCANNER_CHARGE_TIME = getInt("scanner-charge-time");
-        KILLER_DNA_RANGE = getInt("killer-dna-range");
-        KILLER_DNA_BASETIME = getInt("killer-dna-basetime");
-
-        // Title settings
-        SEND_TITLES = getBoolean("send-titles");
-        LARGE_STATUS_TITLES = getBoolean("large-status-titles");
-        LARGE_VICTORY_TITLES = getBoolean("large-victory-titles");
-
-        // Weapon settings
-        CROWBAR_ITEM = getMaterial("crowbar-item", Material.IRON_SWORD);
-        GUN_ITEM = getMaterial("gun-item", Material.IRON_BARDING);
-        CROWBAR_DAMAGE = getInt("crowbar-damage");
-        REQUIRE_AMMO_FOR_GUNS = getBoolean("require-ammo-for-guns");
-        INITIAL_AMMO = getInt("initial-ammo");
-
-        // Karma settings
-        KARMA_STRICT = getBoolean("karma-strict");
-        KARMA_STARTING = getInt("karma-starting");
-        KARMA_MAX = getInt("karma-max");
-        KARMA_RATIO = getDouble("karma-ratio");
-        KARMA_KILL_PENALTY = getInt("karma-kill-penalty");
-        KARMA_ROUND_INCREMENT = getInt("karma-round-increment");
-        KARMA_CLEAN_BONUS = getInt("karma-clean-bonus");
-        KARMA_CLEAN_HALF = getDouble("karma-clean-half");
-        KARMA_TRAITORDMG_RATIO = getInt("karma-traitordmg-ratio");
-        KARMA_TRAITORKILL_BONUS = getInt("karma-traitorkill-bonus");
-        KARMA_LOW_AUTOKICK = getInt("karma-low-autokick");
-        KARMA_LOW_BAN = getBoolean("karma-low-ban");
-        KARMA_LOW_BAN_MINUTES = getInt("karma-low-ban-minutes");
-        KARMA_PERSIST = getBoolean("karma-persist");
-        KARMA_DAMAGE_REDUCTION = getBoolean("karma-damage-reduction");
-        KARMA_ROUND_TO_ONE = getBoolean("karma-round-to-one");
-        KARMA_DEBUG = getBoolean("karma-debug");
-
-        // Plugin settings
-        VERBOSE_LOGGING = getBoolean("verbose-logging");
-        ENABLE_AUTO_UPDATE = getBoolean("enable-auto-update");
-        ENABLE_METRICS = getBoolean("enable-metrics");
-        LOCALE = getString("locale");
+        for (ConfigKey<?> key : ConfigKey.getAllKeys()) {
+            set(key);
+        }
     }
 
-    public static String getString(String key) {
-        String value = TTTBootstrap.INSTANCE.getConfig().getString(key);
+    @SuppressWarnings("unchecked")
+    public <T> T get(ConfigKey<T> key) {
+        return (T) map.get(key);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void set(ConfigKey<?> key) {
+        if (key.getType() == Integer.class) {
+            map.put(key, getInt(key.getConfigKey()));
+        } else if (key.getType() == Double.class) {
+            map.put(key, getDouble(key.getConfigKey()));
+        } else if (key.getType() == Boolean.class) {
+            map.put(key, getBoolean(key.getConfigKey()));
+        } else if (key.getType() == String.class) {
+            map.put(key, getString(key.getConfigKey()));
+        } else if (key.getType() == Material.class) {
+            map.put(key, getMaterial(key.getConfigKey(), ((ConfigKey<Material>) key).getDefault()));
+        } else if (key.getType() == OperatingMode.class) {
+            map.put(key, getOperatingMode(key.getConfigKey(), ((ConfigKey<OperatingMode>) key).getDefault()));
+        } else if (key.getType() == CycleMode.class) {
+            map.put(key, getCycleMode(key.getConfigKey(), ((ConfigKey<CycleMode>) key).getDefault()));
+        }
+    }
+
+    private String getString(String key) {
+        String value = config.getString(key);
         if (value != null) {
             if (value.contains("Â§")) { // fix encoding mistakes on Windoofs
                 value = value.replace("Â§", "§");
@@ -197,28 +130,54 @@ public final class ConfigHelper {
         return "";
     }
 
-    public static boolean getBoolean(String key) {
-        return TTTBootstrap.INSTANCE.getConfig().getBoolean(key);
+    private boolean getBoolean(String key) {
+        return config.getBoolean(key);
     }
 
-    public static int getInt(String key) {
-        return TTTBootstrap.INSTANCE.getConfig().getInt(key);
+    private int getInt(String key) {
+        return config.getInt(key);
     }
 
-    public static double getDouble(String key) {
-        return TTTBootstrap.INSTANCE.getConfig().getDouble(key);
+    private double getDouble(String key) {
+        return config.getDouble(key);
     }
 
-    public static Material getMaterial(String key, Material fallback) {
-        Material m = Material.getMaterial(TTTBootstrap.INSTANCE.getConfig().getString(key));
+    private Material getMaterial(String key, Material fallback) {
+        Material m = Material.getMaterial(config.getString(key));
         return m != null ? m : fallback;
     }
 
-    private static String getModernKey(String legacyKey) {
-        return LEGACY_NODES.get(legacyKey);
+    private OperatingMode getOperatingMode(String key, OperatingMode fallback) {
+        OperatingMode mode;
+        try {
+            mode = OperatingMode.valueOf(getString(key).toUpperCase());
+            if (mode == OperatingMode.DEDICATED && TTTCore.mg.getArenas().size() == 0) {
+                mode = OperatingMode.STANDARD;
+
+                TTTCore.log.warning(TTTCore.locale.getLocalizable("error.plugin.dedicated-no-arenas").localize());
+                TTTCore.log.warning(TTTCore.locale.getLocalizable("error.plugin.dedicated-fallback").localize());
+            }
+        } catch (IllegalArgumentException ex) {
+            TTTCore.getPlugin().getLogger().warning(TTTCore.locale.getLocalizable("error.plugin.config.fallback")
+                            .withReplacements(key, fallback.toString()).localize());
+            mode = OperatingMode.STANDARD;
+        }
+        return mode;
     }
 
-    private static Set<String> getLegacyKeys(final String modernKey) {
+    private CycleMode getCycleMode(String key, CycleMode fallback) {
+        CycleMode mode;
+        try {
+            mode = CycleMode.valueOf(getString(key).toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            TTTCore.getPlugin().getLogger().warning(TTTCore.locale.getLocalizable("error.plugin.config.fallback")
+                    .withReplacements(key, fallback.toString()).localize());
+            mode = CycleMode.SHUFFLE;
+        }
+        return mode;
+    }
+
+    private Set<String> getLegacyKeys(final String modernKey) {
         return new HashSet<>(Collections2.filter(LEGACY_NODES.keySet(), new Predicate<String>() {
             @Override
             public boolean apply(String key) {
@@ -227,7 +186,7 @@ public final class ConfigHelper {
         }));
     }
 
-    public static void addMissingKeys() throws InvalidConfigurationException, IOException {
+    public void addMissingKeys() throws InvalidConfigurationException, IOException {
         BufferedReader stockConfig
                 = new BufferedReader(new InputStreamReader(TTTBootstrap.class.getResourceAsStream("/config.yml")));
         File userConfigFile = new File(TTTBootstrap.INSTANCE.getDataFolder(), "config.yml");
@@ -301,4 +260,5 @@ public final class ConfigHelper {
         w.append(sb.toString());
         w.flush();
     }
+
 }

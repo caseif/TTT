@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.util.compatibility;
 
 import net.caseif.ttt.TTTCore;
@@ -30,7 +31,10 @@ import java.io.File;
 /**
  * Handles deletion of obsolete storage files.
  */
-public class LegacyMglibStorageDeleter {
+public final class LegacyMglibStorageDeleter {
+
+    private LegacyMglibStorageDeleter() {
+    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void deleteObsoleteStorage() {

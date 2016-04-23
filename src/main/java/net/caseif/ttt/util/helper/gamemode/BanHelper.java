@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
+import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.Color;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -44,12 +46,14 @@ import java.util.UUID;
  */
 public final class BanHelper {
 
+    private BanHelper() {
+    }
+
     /**
      * Bans the player by the specified UUID from using TTT for a set amount of time.
      *
      * @param player  the UUID of the player to ban
-     * @param minutes the length of time to ban the player for.
-     * @return whether the player was successfully banned
+     * @param minutes the length of time to ban the player for
      */
     public static void ban(UUID player, int minutes) throws InvalidConfigurationException, IOException {
         File f = new File(TTTCore.getPlugin().getDataFolder(), "bans.yml");
@@ -75,7 +79,7 @@ public final class BanHelper {
         if (y.contains(uuid.toString())) {
             y.set(uuid.toString(), null);
             y.save(f);
-            if (TTTCore.config.VERBOSE_LOGGING) {
+            if (TTTCore.config.get(ConfigKey.VERBOSE_LOGGING)) {
                 TTTCore.log.info(TTTCore.locale.getLocalizable("info.personal.pardon")
                         .withReplacements(p != null ? p.getName() : uuid.toString()).localize());
             }
@@ -120,7 +124,7 @@ public final class BanHelper {
                         loc = TTTCore.locale.getLocalizable("info.personal.ban.temp.until").withReplacements(
                                 hour + ":" + min + ":" + sec, month + "/" + day + "/" + year + ".");
                     }
-                    loc.withPrefix(Constants.Color.ERROR);
+                    loc.withPrefix(Color.ERROR);
                     loc.sendTo(Bukkit.getPlayer(uuid));
                     return true;
                 }

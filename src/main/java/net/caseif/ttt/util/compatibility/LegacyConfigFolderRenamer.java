@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.util.compatibility;
 
 import net.caseif.ttt.TTTCore;
@@ -32,9 +33,12 @@ import java.io.File;
 /**
  * Static utility class for maintaining compatibility with the old data folder.
  *
- * @author Max Roncacé
+ * @author Max Roncace
  */
-public class LegacyConfigFolderRenamer {
+public final class LegacyConfigFolderRenamer {
+
+    private LegacyConfigFolderRenamer() {
+    }
 
     public static void renameLegacyFolder() {
         final File old = new File(Bukkit.getWorldContainer() + File.separator + "plugins", "Trouble In Terrorist Town");

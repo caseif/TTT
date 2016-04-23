@@ -21,13 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
-import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.Constants.MetadataTag;
-import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.helper.platform.TitleHelper;
 
 import net.caseif.flint.challenger.Challenger;
@@ -42,7 +44,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 /**
  * Static-utility class for round-related methods.
  */
-public class RoundHelper {
+public final class RoundHelper {
 
     private static final ItemStack ITEM_CROWBAR;
     private static final ItemStack ITEM_GUN;
@@ -50,17 +52,17 @@ public class RoundHelper {
     private static final ItemStack ITEM_DNA_SCANNER;
 
     static {
-        ITEM_CROWBAR = new ItemStack(TTTCore.config.CROWBAR_ITEM, 1);
+        ITEM_CROWBAR = new ItemStack(TTTCore.config.get(ConfigKey.CROWBAR_ITEM), 1);
         ItemMeta cbMeta = ITEM_CROWBAR.getItemMeta();
         cbMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.crowbar.name").localize());
         ITEM_CROWBAR.setItemMeta(cbMeta);
 
-        ITEM_GUN = new ItemStack(TTTCore.config.GUN_ITEM, 1);
+        ITEM_GUN = new ItemStack(TTTCore.config.get(ConfigKey.GUN_ITEM), 1);
         ItemMeta gunMeta = ITEM_GUN.getItemMeta();
         gunMeta.setDisplayName(Color.INFO + TTTCore.locale.getLocalizable("item.gun.name").localize());
         ITEM_GUN.setItemMeta(gunMeta);
 
-        ITEM_AMMO = new ItemStack(Material.ARROW, TTTCore.config.INITIAL_AMMO);
+        ITEM_AMMO = new ItemStack(Material.ARROW, TTTCore.config.get(ConfigKey.INITIAL_AMMO));
 
         ITEM_DNA_SCANNER = new ItemStack(Material.COMPASS, 1);
         ItemMeta dnaMeta = ITEM_DNA_SCANNER.getItemMeta();
@@ -68,11 +70,14 @@ public class RoundHelper {
         ITEM_DNA_SCANNER.setItemMeta(dnaMeta);
     }
 
+    private RoundHelper() {
+    }
+
     @SuppressWarnings("deprecation")
     public static void startRound(Round round) {
         RoleHelper.assignRoles(round);
         ScoreboardManager sm
-                = round.getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get();
+                = round.getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get();
         sm.updateAllEntries();
         for (Challenger ch : round.getTeam(Role.TRAITOR).get().getChallengers()) {
             sm.applyScoreboard(ch);
@@ -115,35 +120,46 @@ public class RoundHelper {
                 TitleHelper.sendStatusTitle(pl, Role.TRAITOR);
             }
 
-            if (TTTCore.config.KARMA_DAMAGE_REDUCTION) {
+            if (TTTCore.config.get(ConfigKey.KARMA_DAMAGE_REDUCTION)) {
                 KarmaHelper.applyDamageReduction(ch);
                 double reduc = KarmaHelper.getDamageReduction(ch);
                 String percentage = reduc < 1
                         ? (int) (reduc * 100) + "%"
-                        : TTTCore.locale.getLocalizable("fragment.full")
-                        .localizeFor(pl);
+                        : TTTCore.locale.getLocalizable("fragment.full").localizeFor(pl);
                 TTTCore.locale.getLocalizable("info.personal.status.karma-damage")
                         .withPrefix(Color.INFO).withReplacements(KarmaHelper.getKarma(ch) + "", percentage)
                         .sendTo(pl);
             }
         }
 
-        round.getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get().updateAllEntries();
+        round.getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get().updateAllEntries();
 
         broadcast(round, TTTCore.locale.getLocalizable("info.global.round.event.started")
                 .withPrefix(Color.INFO));
     }
 
-    public static void closeRound(Round round) {
+    public static void closeRound(Round round, boolean sendWinMessages) {
         KarmaHelper.allocateKarma(round);
         KarmaHelper.saveKarma(round);
 
-        boolean tVic = round.getMetadata().has(MetadataTag.TRAITOR_VICTORY);
-        String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
-        TTTCore.locale.getLocalizable("info.global.round.event.end." + (tVic ? Role.TRAITOR : Role.INNOCENT))
-                .withPrefix(color)
-                .withReplacements(Color.ARENA + round.getArena().getName() + color).broadcast();
-        TitleHelper.sendVictoryTitle(round, tVic);
+        if (sendWinMessages) {
+            boolean tVic = round.getMetadata().has(MetadataKey.Round.TRAITOR_VICTORY);
+            String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
+
+            Localizable msg = TTTCore.locale.getLocalizable("info.global.round.event.end."
+                    + (tVic ? Role.TRAITOR : Role.INNOCENT))
+                    .withPrefix(color)
+                    .withReplacements(Color.ARENA + round.getArena().getName() + color);
+            if (TTTCore.config.get(ConfigKey.BROADCAST_WIN_MESSAGES_TO_SERVER)) {
+                msg.broadcast();
+            } else {
+                for (Challenger ch : round.getChallengers()) {
+                    msg.sendTo(Bukkit.getPlayer(ch.getUniqueId()));
+                }
+            }
+
+            TitleHelper.sendVictoryTitle(round, tVic);
+        }
     }
 
     public static void distributeItems(Round round) {

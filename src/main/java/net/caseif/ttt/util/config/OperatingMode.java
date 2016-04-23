@@ -21,28 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.command.handler.misc;
 
-import net.caseif.ttt.TTTBootstrap;
-import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
+package net.caseif.ttt.util.config;
 
-import org.bukkit.command.CommandSender;
+/**
+ * Represents an available operating mode for the plugin.
+ *
+ * @author Max Roncace
+ */
+public enum OperatingMode {
 
-public class ReloadCommand extends CommandHandler {
-
-    public ReloadCommand(CommandSender sender, String[] args) {
-        super(sender, args);
-    }
-
-    @Override
-    public void handle() {
-        TTTBootstrap.INSTANCE.reloadConfig();
-        TTTCore.config = new ConfigHelper();
-        TTTCore.getInstance().applyConfigOptions();
-        TTTCore.locale.getLocalizable("info.plugin.reloaded").withPrefix(Constants.Color.INFO).sendTo(sender);
-    }
+    /**
+     * The standard operating mode. Players may join rounds at will, and will be
+     * ejected from a round upon it ending.
+     */
+    STANDARD,
+    /**
+     * An operating mode more faithful to the original gamemode. Players may
+     * join rounds at will, but will not be ejected upon the round ending.
+     * Instead, the arena will reset to its initial state and a new round will
+     * begin.
+     */
+    CONTINUOUS,
+    /**
+     * An operating mode intended for configurations in which an entire server
+     * is dedicated to the minigame. Only one round will exist on the server at
+     * a given time, and players will be automatically entered into it upon
+     * connecting. This mode also enables the {@link CycleMode arena cycling}
+     * functionality.
+     */
+    DEDICATED
 
 }

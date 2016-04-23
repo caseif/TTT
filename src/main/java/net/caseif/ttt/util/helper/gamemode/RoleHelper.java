@@ -21,12 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.util.helper.gamemode;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.helper.misc.MiscHelper;
+import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Role;
+import net.caseif.ttt.util.helper.data.DataVerificationHelper;
 
 import com.google.common.collect.Lists;
 import net.caseif.flint.challenger.Challenger;
@@ -40,7 +43,10 @@ import java.util.List;
 /**
  * Static utility class for role-related functionality.
  */
-public class RoleHelper {
+public final class RoleHelper {
+
+    private RoleHelper() {
+    }
 
     public static void assignRoles(Round round) {
         int players = round.getChallengers().size();
@@ -50,17 +56,18 @@ public class RoleHelper {
             ch.setTeam(iTeam);
         }
 
-        int tLimit = MiscHelper.clamp((int) (players * TTTCore.config.TRAITOR_PCT), 1, players - 1);
-        tLimit = MiscHelper.clamp(tLimit, 1, players - 1);
+        int tLimit = DataVerificationHelper.clamp((int) (players * TTTCore.config.get(ConfigKey.TRAITOR_PCT)), 1,
+                players - 1);
+        tLimit = DataVerificationHelper.clamp(tLimit, 1, players - 1);
         List<Challenger> tList = Lists.newArrayList(round.getChallengers());
         Collections.shuffle(tList);
         for (int i = 0; i < tLimit; i++) {
             tList.get(i).setTeam(tTeam);
         }
 
-        int dLimit = (int) (players * TTTCore.config.DETECTIVE_PCT);
-        dLimit = MiscHelper.clamp(dLimit, 0, iTeam.getChallengers().size());
-        if (players >= TTTCore.config.DETECTIVE_MIN_PLAYERS && dLimit == 0) {
+        int dLimit = (int) (players * TTTCore.config.get(ConfigKey.DETECTIVE_PCT));
+        dLimit = DataVerificationHelper.clamp(dLimit, 0, iTeam.getChallengers().size());
+        if (players >= TTTCore.config.get(ConfigKey.DETECTIVE_MIN_PLAYERS) && dLimit == 0) {
             dLimit = 1;
         }
         List<Challenger> dList = Lists.newArrayList(iTeam.getChallengers());
@@ -74,27 +81,39 @@ public class RoleHelper {
         String color;
         String roleFrag;
         if (!ch.getTeam().isPresent()) {
-            color = Constants.Color.FADED;
+            color = Color.FADED;
             roleFrag = "unassigned";
         } else if (ch.getTeam().get().getId().equals(Role.TRAITOR)) {
-            color = Constants.Color.TRAITOR;
+            color = Color.TRAITOR;
             roleFrag = Role.TRAITOR;
         } else if (ch.getMetadata().has(Role.DETECTIVE)) {
-            color = Constants.Color.DETECTIVE;
+            color = Color.DETECTIVE;
             roleFrag = Role.DETECTIVE;
         } else {
-            color = Constants.Color.INNOCENT;
+            color = Color.INNOCENT;
             roleFrag = Role.INNOCENT;
         }
 
         String roleMsg = TTTCore.locale.getLocalizable("fragment." + roleFrag).withPrefix(color).localizeFor(sender)
                 .toUpperCase();
 
-        if (ch.isSpectating() && !ch.getMetadata().has(Constants.MetadataTag.PURE_SPECTATOR)) {
+        if (ch.isSpectating() && !ch.getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)) {
             roleMsg += TTTCore.locale.getLocalizable("fragment.deceased")
-                    .withPrefix(" " + Constants.Color.FADED + "(").localizeFor(sender) + ")";
+                    .withPrefix(" " + Color.FADED + "(").localizeFor(sender) + ")";
         }
 
         return roleMsg;
     }
+
+    /**
+     * Determines whether a given {@link Challenger challenger} is marked as a
+     * Traitor.
+     *
+     * @param player the player to check
+     * @return whether the player is a traitor
+     */
+    public static boolean isTraitor(Challenger player) {
+        return player.getTeam().isPresent() && player.getTeam().get().getId().equals(Role.TRAITOR);
+    }
+
 }

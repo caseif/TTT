@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.command.handler.arena;
 
-import static net.caseif.ttt.listeners.WizardListener.WIZARDS;
-import static net.caseif.ttt.listeners.WizardListener.WIZARD_INFO;
+import static net.caseif.ttt.listeners.wizard.WizardListener.WIZARDS;
+import static net.caseif.ttt.listeners.wizard.WizardListener.WIZARD_INFO;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.constant.Color;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,13 +46,11 @@ public class CreateArenaCommand extends CommandHandler {
             WIZARDS.put(((Player) sender).getUniqueId(), 0);
             WIZARD_INFO.put(((Player) sender).getUniqueId(), new Object[4]);
             TTTCore.locale.getLocalizable("info.personal.arena.create.welcome").withPrefix(Color.INFO).sendTo(sender);
-            TTTCore.locale.getLocalizable("info.personal.arena.create.exit-note")
-                    .withPrefix(Color.INFO).withReplacements(Color.FLAIR
-                    + TTTCore.locale.getLocalizable("info.personal.arena.create.cancel-keyword").localizeFor(sender)
-                    + Color.INFO).sendTo(sender);
+            TTTCore.locale.getLocalizable("info.personal.arena.create.exit-note").withPrefix(Color.INFO)
+                    .withReplacements(TTTCore.locale.getLocalizable("info.personal.arena.create.cancel-keyword")
+                            .withPrefix(Color.FLAIR).withSuffix(Color.INFO)).sendTo(sender);
         } else {
-            TTTCore.locale.getLocalizable("error.arena.create.already")
-                    .withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.create.already").withPrefix(Color.ERROR).sendTo(sender);
         }
     }
 

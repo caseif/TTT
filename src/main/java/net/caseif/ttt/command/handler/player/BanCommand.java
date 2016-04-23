@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.command.handler.player;
 
-import static net.caseif.ttt.util.helper.misc.MiscHelper.isInt;
+import static net.caseif.ttt.util.helper.data.DataVerificationHelper.isInt;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
 import net.caseif.ttt.util.UUIDFetcher;
+import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.helper.gamemode.BanHelper;
 
 import org.bukkit.Bukkit;
@@ -84,7 +85,7 @@ public class BanCommand extends CommandHandler {
                 if (pl != null) {
                     TTTCore.locale.getLocalizable("info.personal.ban.temp").withPrefix(Color.ERROR)
                             .withReplacements(TTTCore.locale.getLocalizable("fragment.minutes"
-                                    + (time == 1 ? ".singular" : "")).withReplacements(time + "").localizeFor(pl))
+                                    + (time == 1 ? ".singular" : "")).withReplacements(time + ""))
                             .sendTo(pl);
                 }
                 TTTCore.locale.getLocalizable("info.personal.ban.other.temp").withPrefix(Color.INFO)

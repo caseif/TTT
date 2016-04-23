@@ -21,16 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.util.helper.event;
 
-import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.Constants.MetadataTag;
-import net.caseif.ttt.util.Constants.Role;
-import net.caseif.ttt.util.helper.misc.MiscHelper;
+import net.caseif.ttt.util.Body;
+import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Role;
+import net.caseif.ttt.util.constant.Stage;
+import net.caseif.ttt.util.helper.data.CollectionsHelper;
 import net.caseif.ttt.util.helper.platform.InventoryHelper;
 
 import com.google.common.base.Optional;
@@ -58,7 +60,10 @@ import java.util.List;
  *
  * @author Max Roncace
  */
-public class InteractHelper {
+public final class InteractHelper {
+
+    private InteractHelper() {
+    }
 
     public static void handleEvent(PlayerInteractEvent event, Challenger opener) {
         // handle body checking
@@ -72,7 +77,7 @@ public class InteractHelper {
             return;
         }
 
-        List<Body> bodies = opener.getRound().getMetadata().<List<Body>>get(MetadataTag.BODY_LIST).orNull();
+        List<Body> bodies = opener.getRound().getMetadata().<List<Body>>get(MetadataKey.Round.BODY_LIST).orNull();
         if (bodies == null) {
             return;
         }
@@ -126,10 +131,10 @@ public class InteractHelper {
 
                 body.setFound();
                 if (bodyPlayer.isPresent() && bodyPlayer.get().getRound() == body.getRound()) {
-                    bodyPlayer.get().getMetadata().set(MetadataTag.BODY_FOUND, true);
+                    bodyPlayer.get().getMetadata().set(MetadataKey.Player.BODY_FOUND, true);
 
                     ScoreboardManager sm = body.getRound().getMetadata()
-                            .<ScoreboardManager>get(Constants.MetadataTag.SCOREBOARD_MANAGER).get();
+                            .<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get();
                     sm.updateEntry(bodyPlayer.get());
                 }
 
@@ -138,8 +143,8 @@ public class InteractHelper {
                         = TTTCore.locale.getLocalizable("info.global.round.event.body-find." + body.getRole());
                 for (Challenger c : body.getRound().getChallengers()) {
                     Player pl = Bukkit.getPlayer(c.getUniqueId());
-                    pl.sendMessage(loc.withReplacements(event.getPlayer().getName(),
-                            body.getName()).localizeFor(pl) + " " + roleMsg.localizeFor(pl));
+                    loc.withReplacements(event.getPlayer().getName(), body.getName())
+                            .withSuffix(" " + roleMsg.localizeFor(pl)).sendTo(pl);
                 }
             }
         }
@@ -194,15 +199,15 @@ public class InteractHelper {
 
             Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
             if (!ch.isPresent() || ch.get().isSpectating()
-                    || (ch.get().getRound().getLifecycleStage() == Constants.Stage.WAITING
-                    || ch.get().getRound().getLifecycleStage() == Constants.Stage.PREPARING)) {
+                    || (ch.get().getRound().getLifecycleStage() == Stage.WAITING
+                    || ch.get().getRound().getLifecycleStage() == Stage.PREPARING)) {
                 return;
             }
 
             event.setCancelled(true);
             if (event.getPlayer().getInventory().contains(Material.ARROW)
-                    || !TTTCore.config.REQUIRE_AMMO_FOR_GUNS) {
-                if (TTTCore.config.REQUIRE_AMMO_FOR_GUNS) {
+                    || !TTTCore.config.get(ConfigKey.REQUIRE_AMMO_FOR_GUNS)) {
+                if (TTTCore.config.get(ConfigKey.REQUIRE_AMMO_FOR_GUNS)) {
                     InventoryHelper.removeArrow(event.getPlayer().getInventory());
                     event.getPlayer().updateInventory();
                 }
@@ -276,7 +281,7 @@ public class InteractHelper {
             nf.setMinimumIntegerDigits(2);
             String deathTime = nf.format(deathSeconds / 60) + ":" + nf.format(deathSeconds % 60);
             clockMeta.setDisplayName(deathTime);
-            clockMeta.setLore(MiscHelper.formatLore(
+            clockMeta.setLore(CollectionsHelper.formatLore(
                     TTTCore.locale.getLocalizable("item.deathclock.desc").withReplacements(deathTime)
                             .withReplacements(deathTime).localizeFor(player)
             ));
@@ -293,7 +298,7 @@ public class InteractHelper {
             ItemStack dna = new ItemStack(Material.LEASH, 1);
             ItemMeta dnaMeta = dna.getItemMeta();
             dnaMeta.setDisplayName(TTTCore.locale.getLocalizable("item.dna.name").localizeFor(player));
-            dnaMeta.setLore(MiscHelper.formatLore(
+            dnaMeta.setLore(CollectionsHelper.formatLore(
                     TTTCore.locale.getLocalizable("item.dna.desc").withReplacements(decayTime).localizeFor(player)
             ));
             dna.setItemMeta(dnaMeta);
@@ -301,7 +306,7 @@ public class InteractHelper {
         }
 
         player.openInventory(inv);
-        TTTCore.mg.getChallenger(player.getUniqueId()).get().getMetadata().set(MetadataTag.SEARCHING_BODY, true);
+        TTTCore.mg.getChallenger(player.getUniqueId()).get().getMetadata().set(MetadataKey.Player.SEARCHING_BODY, true);
     }
 
 }

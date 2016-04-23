@@ -21,16 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.util.helper.event;
 
-import net.caseif.ttt.Body;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
-import net.caseif.ttt.util.Constants.MetadataTag;
-import net.caseif.ttt.util.Constants.Role;
+import net.caseif.ttt.util.Body;
+import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.NmsHelper;
+import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -44,8 +47,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,10 +54,7 @@ import java.util.UUID;
 /**
  * Utility class for player death-related functionality.
  */
-public class DeathHelper {
-
-    private static Field fieldRbHelper;
-    private static Method logBlockChange;
+public final class DeathHelper {
 
     private final PlayerDeathEvent event;
     private final Player player;
@@ -100,10 +98,10 @@ public class DeathHelper {
 
         createBody(block.getLocation(), ch, killer.orNull());
 
-        ch.getRound().getMetadata().<ScoreboardManager>get(MetadataTag.SCOREBOARD_MANAGER).get().updateEntry(ch);
+        ch.getRound().getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get().updateEntry(ch);
     }
 
-    private void cancelEvent(Challenger ch) {
+    private void cancelEvent(final Challenger ch) {
         Location loc = player.getLocation(); // sending the packet resets the location
 
         if (event != null) {
@@ -113,7 +111,10 @@ public class DeathHelper {
             NmsHelper.sendRespawnPacket(player);
             player.teleport(loc);
         }
+
         ch.setSpectating(true);
+        PlayerHelper.watchPlayerGameMode(ch);
+
         player.setHealth(player.getMaxHealth());
     }
 
@@ -147,7 +148,7 @@ public class DeathHelper {
     }
 
     private void storeBody(Location loc, Challenger ch, Challenger killer) {
-        List<Body> bodies = ch.getRound().getMetadata().<List<Body>>get(MetadataTag.BODY_LIST).orNull();
+        List<Body> bodies = ch.getRound().getMetadata().<List<Body>>get(MetadataKey.Round.BODY_LIST).orNull();
         if (bodies == null) {
             bodies = new ArrayList<>();
         }
@@ -156,9 +157,10 @@ public class DeathHelper {
         if (killer != null) {
             double dist = player.getLocation().toVector()
                     .distance(Bukkit.getPlayer(killer.getUniqueId()).getLocation().toVector());
-            if (dist <= TTTCore.config.KILLER_DNA_RANGE) {
+            if (dist <= TTTCore.config.get(ConfigKey.KILLER_DNA_RANGE)) {
                 final double a = 0.2268; // copied from the official gamemode and scaled to account for different units
-                int decayTime = TTTCore.config.KILLER_DNA_BASETIME - (int) Math.floor(a * Math.pow(dist, 2));
+                int decayTime
+                        = TTTCore.config.get(ConfigKey.KILLER_DNA_BASETIME) - (int) Math.floor(a * Math.pow(dist, 2));
                 if (decayTime > 0) {
                     expiry = System.currentTimeMillis() + (decayTime * 1000);
                 }
@@ -178,8 +180,8 @@ public class DeathHelper {
                 System.currentTimeMillis(),
                 expiry
         ));
-        ch.getRound().getMetadata().set(MetadataTag.BODY_LIST, bodies);
-        ch.getMetadata().set(MetadataTag.BODY, body);
+        ch.getRound().getMetadata().set(MetadataKey.Round.BODY_LIST, bodies);
+        ch.getMetadata().set(MetadataKey.Player.BODY, body);
     }
 
 }

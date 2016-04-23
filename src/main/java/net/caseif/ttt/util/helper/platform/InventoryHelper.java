@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.util.helper.platform;
 
 import org.bukkit.Material;
@@ -30,7 +31,10 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Static utility class for inventory-related functionality.
  */
-public class InventoryHelper {
+public final class InventoryHelper {
+
+    private InventoryHelper() {
+    }
 
     public static void removeArrow(Inventory inv) {
         for (int i = 0; i < inv.getContents().length; i++) {

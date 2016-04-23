@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.util.compatibility;
 
 import net.caseif.ttt.TTTCore;
@@ -44,9 +45,12 @@ import java.util.ArrayList;
 /**
  * Static utility class for maintaining compatibility with MGLib's storage format.
  *
- * @author Max Roncacé
+ * @author Max Roncace
  */
-public class LegacyMglibStorageConverter {
+public final class LegacyMglibStorageConverter {
+
+    private LegacyMglibStorageConverter() {
+    }
 
     public static void convertArenaStore() {
         File arenaStore = new File(TTTCore.getPlugin().getDataFolder(), "arenas.yml");

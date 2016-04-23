@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.command.handler.round;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
-import net.caseif.ttt.util.Constants.MetadataTag;
-import net.caseif.ttt.util.Constants.Stage;
-import net.caseif.ttt.util.helper.gamemode.RoundHelper;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Stage;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;
@@ -63,17 +63,16 @@ public class EndCommand extends CommandHandler {
 
         if (args.length > 2) {
             if (args[2].equalsIgnoreCase("t")) {
-                arena.get().getRound().get().getMetadata().set(MetadataTag.TRAITOR_VICTORY, true);
+                arena.get().getRound().get().getMetadata().set(MetadataKey.Round.TRAITOR_VICTORY, true);
             } else if (!args[2].equalsIgnoreCase("i")) {
                 printInvalidArgsError();
                 return;
             }
         }
 
+        arena.get().getRound().get().setLifecycleStage(Stage.ROUND_OVER, true);
         if (force) {
-            arena.get().getRound().get().end();
-        } else {
-            arena.get().getRound().get().setLifecycleStage(Stage.ROUND_OVER, true);
+            arena.get().getRound().get().setTime(Stage.ROUND_OVER.getDuration() + 1);
         }
     }
 

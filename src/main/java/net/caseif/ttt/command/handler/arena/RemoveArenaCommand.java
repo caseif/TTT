@@ -21,11 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt.command.handler.arena;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 
 import org.bukkit.command.CommandSender;
 
@@ -40,6 +42,8 @@ public class RemoveArenaCommand extends CommandHandler {
         String name = args[1];
         try {
             TTTCore.mg.removeArena(name);
+            ArenaHelper.updateShuffledArenas();
+
             TTTCore.locale.getLocalizable("info.personal.arena.remove.success").withPrefix(Color.INFO)
                     .withReplacements(Color.ARENA + name + Color.INFO).sendTo(sender);
         } catch (IllegalArgumentException ex) {

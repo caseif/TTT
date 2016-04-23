@@ -5,15 +5,15 @@ plugins {
     id 'idea'
     id 'checkstyle'
 
-    id 'com.github.hierynomus.license' version '0.11.0'
-    id 'com.github.johnrengelman.shadow' version '1.2.0'
+    id 'net.minecrell.licenser' version '0.1.5'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
-defaultTasks 'clean', 'licenseFormat', 'build', 'shadowJar'
+defaultTasks 'clean', 'updateLicenses', 'build', 'shadowJar'
 
 // Project information
 group = 'net.caseif.ttt'
-version = '0.9.6'
+version = '0.10.0'
 
 // Extended project information
 ext.projectName = 'ttt'
@@ -54,17 +54,19 @@ repositories {
     }
     maven {
         name = 'sponge'
-        url = 'http://repo.spongepowered.org/maven'
+        url = 'https://repo.spongepowered.org/maven'
     }
 }
 
 ext {
     bukkit = 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
     flint = 'net.caseif.flint:flint:1.1'
-    rosetta = 'net.caseif.rosetta:rosetta:1.0.1'
+    rosetta = 'net.caseif.rosetta:rosetta:1.1.1'
     crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.2'
+    jtelemetry = 'net.caseif.jtelemetry:jtelemetry:1.1.0'
     updater = 'net.gravitydevelopment.updater:updater:2.3'
     metrics = 'org.mcstats.bukkit:metrics:R8-SNAPSHOT'
+    jnbt = 'org.jnbt:jnbt:1.1'
 }
 
 // Project dependencies
@@ -73,8 +75,10 @@ dependencies {
     compile flint
     compile rosetta
     compile crosstitles
+    compile jtelemetry
     compile updater
     compile metrics
+    compile jnbt
 
     checkstyle 'org.spongepowered:checkstyle:6.1.1-sponge1'
 }
@@ -98,15 +102,19 @@ shadowJar {
     dependencies {
         include dependency(rosetta)
         include dependency(crosstitles)
+        include dependency(jtelemetry)
         include dependency(updater)
         include dependency(metrics)
+        include dependency(jnbt)
     }
     classifier = ''
 
     relocate('net.caseif.rosetta', 'net.caseif.ttt.lib.net.caseif.rosetta')
     relocate('net.caseif.crosstitles', 'net.caseif.ttt.lib.net.caseif.crosstitles')
+    relocate('net.caseif.jtelemetry', 'net.caseif.ttt.lib.net.caseif.jtelemetry')
     relocate('net.gravitydevelopment.updater', 'net.caseif.ttt.lib.net.gravitydevelopment.updater')
     relocate('org.mcstats', 'net.caseif.ttt.lib.org.mcstats')
+    relocate('org.jnbt', 'net.caseif.ttt.lib.org.jnbt')
 }
 
 task sourceJar(type: Jar) {
@@ -122,20 +130,8 @@ artifacts {
 
 // License header formatting
 license {
-    header file('LICENSE')
-    excludes([
-            '**/*.properties',
-            '**/*.txt',
-            '**/*.yml',
-            '**/Metrics.java',
-            '**/LICENSE'
-    ])
-    sourceSets = project.sourceSets
+    include '**/*.java'
     ignoreFailures false
-    strictCheck true
-    mapping {
-        java = 'SLASHSTAR_STYLE'
-    }
 }
 
 // check code style
@@ -155,5 +151,5 @@ tasks.withType(Checkstyle) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.8'
+    gradleVersion = '2.12'
 }

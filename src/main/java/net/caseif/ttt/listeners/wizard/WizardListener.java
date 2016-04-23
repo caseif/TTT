@@ -21,10 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.listeners;
+
+package net.caseif.ttt.listeners.wizard;
+
+import static net.caseif.ttt.util.constant.Text.DIVIDER;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.Constants.Color;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.collect.BiMap;
@@ -46,20 +50,9 @@ import java.util.UUID;
 /**
  * Listener for wizard-related events.
  *
- * @author Max Roncacé
+ * @author Max Roncace
  */
 public class WizardListener implements Listener {
-
-    private static final String DIVIDER;
-
-    static {
-        final int dividerLength = 36;
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < dividerLength; i++) {
-            sb.append("-");
-        }
-        DIVIDER = sb.toString();
-    }
 
     public static BiMap<UUID, Integer> WIZARDS = HashBiMap.create();
     public static BiMap<UUID, Object[]> WIZARD_INFO = HashBiMap.create();
@@ -121,6 +114,7 @@ public class WizardListener implements Listener {
                         }
                         TTTCore.mg.createArena((String) info[Stage.WIZARD_ID], spawn,
                                 boundary);
+                        ArenaHelper.updateShuffledArenas();
                         event.getPlayer().sendMessage(DIVIDER);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(Color.INFO)
                                 .withReplacements(Color.FLAIR + "/ttt join "
@@ -172,7 +166,8 @@ public class WizardListener implements Listener {
                             TTTCore.locale.getLocalizable("info.personal.arena.create.bound-2")
                                     .withPrefix(Color.INFO)
                                     .withReplacements(Color.FLAIR + "(x=" + c.getX() + ", z=" + c.getZ() + ")"
-                                            + Color.INFO, Color.FLAIR
+                                            + Color.INFO,
+                                            Color.FLAIR
                                             + TTTCore.locale.getLocalizable("info.personal.arena.create.ok-keyword")
                                             .localizeFor(event.getPlayer()) + Color.INFO)
                                     .sendTo(event.getPlayer());

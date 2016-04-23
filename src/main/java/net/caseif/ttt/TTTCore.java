@@ -21,31 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.caseif.ttt;
 
-import static net.caseif.ttt.util.Constants.MIN_FLINT_VERSION;
+import static net.caseif.ttt.util.constant.PluginInfo.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.command.CommandManager;
-import net.caseif.ttt.listeners.MinigameListener;
-import net.caseif.ttt.listeners.PlayerListener;
-import net.caseif.ttt.listeners.WizardListener;
-import net.caseif.ttt.listeners.WorldListener;
-import net.caseif.ttt.util.Constants;
-import net.caseif.ttt.util.Constants.Stage;
+import net.caseif.ttt.listeners.ListenerManager;
+import net.caseif.ttt.util.TelemetryRunner;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageDeleter;
+import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.util.config.OperatingMode;
+import net.caseif.ttt.util.config.TTTConfig;
+import net.caseif.ttt.util.constant.Stage;
+import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
-import net.caseif.ttt.util.helper.platform.ConfigHelper;
+import net.caseif.ttt.util.helper.platform.BungeeHelper;
+import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
 import com.google.common.collect.ImmutableSet;
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.FlintCore;
+import net.caseif.flint.arena.Arena;
 import net.caseif.flint.arena.SpawningMode;
 import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.minigame.Minigame;
 import net.caseif.rosetta.LocaleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -58,8 +63,8 @@ import java.util.logging.Logger;
 /**
  * Minecraft port of Trouble In Terrorist Town.
  *
- * @author Maxim Roncacé
- * @version 0.9.1
+ * @author Maxim Roncace
+ * @version 0.10.0
  */
 public class TTTCore {
 
@@ -70,12 +75,16 @@ public class TTTCore {
     public static Logger log;
     public static Logger kLog;
     private static JavaPlugin plugin;
-    public static LocaleManager locale;
-    public static ConfigHelper config;
 
+    public static LocaleManager locale;
+    public static TTTConfig config;
     public static ContributorListHelper clh;
+    private static TelemetryRunner telRunner;
 
     public static final boolean HALLOWEEN;
+
+    // dedicated mode stuff
+    private static Arena dedicatedArena;
 
     static {
         Calendar cal = Calendar.getInstance();
@@ -97,17 +106,33 @@ public class TTTCore {
         kLog = Logger.getLogger("TTT Karma Debug");
         kLog.setParent(log);
 
-        config = new ConfigHelper();
+        // register plugin with Flint
+        mg = FlintCore.registerPlugin(plugin.getName());
+
+        config = new TTTConfig(plugin.getConfig());
 
         if (FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
             TTTBootstrap.INSTANCE.fail();
             return;
         }
 
+        if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
+            ArenaHelper.applyNextArena();
+            if (PlayerHelper.getOnlinePlayers().size() > 0) {
+                Bukkit.getScheduler().runTask(getPlugin(), new Runnable() {
+                    @Override
+                    public void run() {
+                        BungeeHelper.initialize();
+                    }
+                });
+            }
+        }
+
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
 
-        // register plugin with Flint
-        mg = FlintCore.registerPlugin(plugin.getName());
+        if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
+            telRunner = new TelemetryRunner();
+        }
 
         mg.setConfigValue(ConfigNode.FORBIDDEN_COMMANDS, ImmutableSet.of("kit", "msg", "pm", "r", "me", "back"));
 
@@ -117,10 +142,7 @@ public class TTTCore {
         mg.setConfigValue(ConfigNode.SPAWNING_MODE, SpawningMode.RANDOM);
 
         // register events and commands
-        mg.getEventBus().register(new MinigameListener());
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), plugin);
-        Bukkit.getPluginManager().registerEvents(new WizardListener(), plugin);
-        Bukkit.getPluginManager().registerEvents(new WorldListener(), plugin);
+        ListenerManager.registerEventListeners();
         plugin.getCommand("ttt").setExecutor(new CommandManager());
 
         // check if config should be overwritten
@@ -128,7 +150,7 @@ public class TTTCore {
             plugin.saveDefaultConfig();
         } else {
             try {
-                ConfigHelper.addMissingKeys();
+                config.addMissingKeys();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 log.severe("Failed to write new config keys!");
@@ -140,28 +162,42 @@ public class TTTCore {
 
         File invDir = new File(plugin.getDataFolder() + File.separator + "inventories");
         invDir.mkdir();
+
+        if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
+            for (Player pl : PlayerHelper.getOnlinePlayers()) {
+                getDedicatedArena().getOrCreateRound().addChallenger(pl.getUniqueId());
+            }
+        }
     }
 
     public void applyConfigOptions() {
-        locale.setDefaultLocale(config.LOCALE);
+        locale.setDefaultLocale(TTTCore.config.get(ConfigKey.LOCALE));
 
-        mg.setConfigValue(ConfigNode.MAX_PLAYERS, TTTCore.config.MAXIMUM_PLAYERS);
-        Constants.Stage.initialize();
+        mg.setConfigValue(ConfigNode.MAX_PLAYERS, TTTCore.config.get(ConfigKey.MAXIMUM_PLAYERS));
+        Stage.initialize();
         mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
                 ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING, Stage.ROUND_OVER));
 
-        if (TTTCore.config.SEND_TITLES && !TitleUtil.areTitlesSupported()) {
+        if (TTTCore.config.get(ConfigKey.SEND_TITLES) && !TitleUtil.areTitlesSupported()) {
             logWarning("error.plugin.title-support");
         }
     }
 
     public void deinitialize() {
-        // uninitialize static variables so as not to cause memory leaks when reloading
-        if (TTTCore.config.VERBOSE_LOGGING) {
+        if (TTTCore.config.get(ConfigKey.VERBOSE_LOGGING)) {
             logInfo("info.plugin.disable", plugin.toString());
         }
-        locale = null;
+
+        // uninitialize static variables so as not to cause memory leaks when reloading
+        INSTANCE = null;
+        mg = null;
+        log = null;
+        kLog = null;
         plugin = null;
+        locale = null;
+        config = null;
+        clh = null;
+        dedicatedArena = null;
     }
 
     public static TTTCore getInstance() {
@@ -172,10 +208,18 @@ public class TTTCore {
         return plugin;
     }
 
+    public static Arena getDedicatedArena() {
+        return dedicatedArena;
+    }
+
+    public static void setDedicatedArena(Arena arena) {
+        dedicatedArena = arena;
+    }
+
     public void createFile(String s) {
         File f = new File(TTTCore.plugin.getDataFolder(), s);
         if (!f.exists()) {
-            if (TTTCore.config.VERBOSE_LOGGING) {
+            if (TTTCore.config.get(ConfigKey.VERBOSE_LOGGING)) {
                 logInfo("info.plugin.compatibility.creating-file", s);
             }
             try {

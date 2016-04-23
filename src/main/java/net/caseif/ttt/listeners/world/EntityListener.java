@@ -21,7 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.caseif.ttt.listeners;
+
+package net.caseif.ttt.listeners.world;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
@@ -32,31 +33,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 /**
- * Listener for world-related events.
+ * Listener for entity events.
  */
-public class WorldListener implements Listener {
-
-    @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event) {
-        if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
-            event.setCancelled(true);
-        }
-    }
+public class EntityListener implements Listener {
 
     @EventHandler
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
