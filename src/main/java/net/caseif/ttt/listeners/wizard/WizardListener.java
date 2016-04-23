@@ -197,10 +197,10 @@ public class WizardListener implements Listener {
     }
 
     private class Stage {
-        public static final int WIZARD_ID = 0;
-        public static final int WIZARD_FIRST_BOUND = 1;
-        public static final int WIZARD_SECOND_BOUND = 2;
-        public static final int WIZARD_SPAWN_POINT = 3;
+        private static final int WIZARD_ID = 0;
+        private static final int WIZARD_FIRST_BOUND = 1;
+        private static final int WIZARD_SECOND_BOUND = 2;
+        private static final int WIZARD_SPAWN_POINT = 3;
     }
 
 }
