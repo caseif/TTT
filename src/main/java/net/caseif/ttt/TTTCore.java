@@ -39,7 +39,6 @@ import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 import net.caseif.ttt.util.helper.platform.BungeeHelper;
-import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
 import com.google.common.collect.ImmutableSet;
 import net.caseif.crosstitles.TitleUtil;
@@ -118,7 +117,7 @@ public class TTTCore {
 
         if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
             ArenaHelper.applyNextArena();
-            if (PlayerHelper.getOnlinePlayers().size() > 0) {
+            if (Bukkit.getOnlinePlayers().size() > 0) {
                 Bukkit.getScheduler().runTask(getPlugin(), new Runnable() {
                     @Override
                     public void run() {
@@ -164,7 +163,7 @@ public class TTTCore {
         invDir.mkdir();
 
         if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
-            for (Player pl : PlayerHelper.getOnlinePlayers()) {
+            for (Player pl : Bukkit.getOnlinePlayers()) {
                 getDedicatedArena().getOrCreateRound().addChallenger(pl.getUniqueId());
             }
         }

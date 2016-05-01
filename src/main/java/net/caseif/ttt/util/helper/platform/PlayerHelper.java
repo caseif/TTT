@@ -30,41 +30,11 @@ import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.component.exception.OrphanedComponentException;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Static utility class for player-related functionality.
  */
 public final class PlayerHelper {
-
-    private static final Method getOnlinePlayers;
-    private static final boolean newGopMethod;
-
-    static {
-        try {
-            getOnlinePlayers = Server.class.getMethod("getOnlinePlayers");
-            newGopMethod = getOnlinePlayers.getReturnType().equals(Collection.class);
-        } catch (NoSuchMethodException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Collection<? extends Player> getOnlinePlayers() {
-        try {
-            return newGopMethod
-                    ? (Collection<? extends Player>) getOnlinePlayers.invoke(Bukkit.getServer())
-                    : Arrays.asList((Player[]) getOnlinePlayers.invoke(Bukkit.getServer()));
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
 
     // Unfortunately, other plugins *cough* Multiverse *cough* sometimes feel the need to
     // override the player's gamemode when they change worlds. This method prevents that
