@@ -13,7 +13,7 @@ defaultTasks 'clean', 'updateLicenses', 'build', 'shadowJar'
 
 // Project information
 group = 'net.caseif.ttt'
-version = '0.10.0'
+version = '0.11.0-SNAPSHOT'
 
 // Extended project information
 ext.projectName = 'ttt'
@@ -151,5 +151,5 @@ tasks.withType(Checkstyle) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.12'
+    gradleVersion = '2.13'
 }
