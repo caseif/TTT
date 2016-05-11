@@ -1,0 +1,31 @@
+## Important
+If your issue is a feature request, you may blank this template and write your issue from scratch. Be sure to include as much detail as possible in your request.
+
+If your issue is a bug report, please read the following before proceeding with creating your issue.
+
+If your issue is along the lines of the plugin failing to work entirely, please post to [the SpigotMC thread](https://www.spigotmc.org/threads/ttt.52854/) instead.
+
+Otherwise, please fill out the below template. You may blank this line and everything above it.
+
+## TTT Version
+Enter TTT version here.
+
+## Steel Version
+Enter Steel version here.
+
+## Full output of `/version` command
+Enter `/version` output here.
+
+## Description of issue
+Enter description here.
+
+## Steps to replicate issue
+Please enter the steps taken to produce this bug here.
+
+## Does the issue occur consistently?
+(That is, can you replicate the issue every time you take the steps described above?)
+
+Yes/No
+
+## Console Errors?
+If you're receiving console errors from TTT, please upload them to [Pastebin](https://pastebin.com/) and enter the link here.
