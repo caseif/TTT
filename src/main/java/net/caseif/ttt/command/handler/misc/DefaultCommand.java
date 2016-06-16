@@ -27,7 +27,6 @@ package net.caseif.ttt.command.handler.misc;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.constant.Color;
-import net.caseif.ttt.util.constant.PluginInfo;
 import net.caseif.ttt.util.helper.data.CollectionsHelper;
 
 import org.bukkit.command.CommandSender;
@@ -41,8 +40,7 @@ public class DefaultCommand extends CommandHandler {
     @Override
     public void handle() {
         TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(Color.SPECIAL)
-                .withReplacements(TTTCore.getPlugin().getDescription().getVersion()
-                                + " \"" + PluginInfo.CODENAME + "\"",
+                .withReplacements(TTTCore.getPlugin().getDescription().getVersion(),
                         CollectionsHelper.prettyList(TTTCore.getPlugin().getDescription().getAuthors()))
                 .sendTo(sender);
         TTTCore.locale.getLocalizable("info.command.usage.help").withPrefix(Color.INFO).sendTo(sender);
