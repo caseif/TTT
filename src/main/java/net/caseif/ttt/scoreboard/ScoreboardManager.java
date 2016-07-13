@@ -50,7 +50,7 @@ public class ScoreboardManager {
 
     private static final String OBJECTIVE_ID = "ttt";
 
-    private static final boolean SECONDARY_ENTRY_SUPPORT;
+    private static final boolean FULL_ENTRY_SUPPORT;
     private static final ImmutableMap<String, String> LIFE_STATUS_PREFIXES = ImmutableMap.<String, String>builder()
             .put(AliveStatus.ALIVE, "")
             .put(AliveStatus.MIA, "§7")
@@ -68,7 +68,7 @@ public class ScoreboardManager {
             support = true;
         } catch (NoSuchMethodException ignored) {
         }
-        SECONDARY_ENTRY_SUPPORT = support;
+        FULL_ENTRY_SUPPORT = support;
     }
 
     public ScoreboardManager(Round round) {
@@ -151,7 +151,7 @@ public class ScoreboardManager {
             registerTeams(sb, sb == tBoard);
         }
         for (Team team : sb.getTeams()) {
-            if (SECONDARY_ENTRY_SUPPORT) {
+            if (FULL_ENTRY_SUPPORT) {
                 if (team.getName().equals(teamName) && !team.hasEntry(ch.getName())) {
                     team.addEntry(ch.getName());
                 } else if (!team.getName().equals(teamName) && team.hasEntry(ch.getName())) {

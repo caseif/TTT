@@ -44,8 +44,8 @@ import java.util.UUID;
 
 /**
  * Daemon used to restart rounds after they've ended when the server is
- * operating in {@link OperatingMode#CONTINUOUS} or {OperatingMode#DEDICATED}
- * mode.
+ * operating in {@link OperatingMode#CONTINUOUS} or
+ * {@link OperatingMode#DEDICATED} mode.
  */
 public class RoundRestartDaemon extends BukkitRunnable {
 

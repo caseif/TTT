@@ -43,32 +43,10 @@ import java.util.Collection;
  */
 public final class PlayerHelper {
 
-    private static final Method getOnlinePlayers;
-    private static final boolean newGopMethod;
-
-    static {
-        try {
-            getOnlinePlayers = Server.class.getMethod("getOnlinePlayers");
-            newGopMethod = getOnlinePlayers.getReturnType().equals(Collection.class);
-        } catch (NoSuchMethodException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Collection<? extends Player> getOnlinePlayers() {
-        try {
-            return newGopMethod
-                    ? (Collection<? extends Player>) getOnlinePlayers.invoke(Bukkit.getServer())
-                    : Arrays.asList((Player[]) getOnlinePlayers.invoke(Bukkit.getServer()));
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    // Unfortunately, other plugins *cough* Multiverse *cough* sometimes feel the need to
-    // override the player's gamemode when they change worlds. This method prevents that
-    // from happening.
+    // Unfortunately, other plugins *cough* Multiverse *cough* sometimes feel
+    // the need to override the player's gamemode when they change worlds. This
+    // method flags players while this is occuring so another plugin component
+    // can prevent this behavior.
     public static void watchPlayerGameMode(final Challenger challenger) {
         challenger.getMetadata().set(MetadataKey.Player.WATCH_GAME_MODE, true);
         Bukkit.getScheduler().runTaskLater(TTTCore.getPlugin(), new Runnable() {
