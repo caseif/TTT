@@ -39,8 +39,8 @@ import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 import net.caseif.ttt.util.helper.platform.BungeeHelper;
-import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
+import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.ImmutableSet;
 import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.FlintCore;
@@ -115,6 +115,9 @@ public class TTTCore {
             TTTBootstrap.INSTANCE.fail();
             return;
         }
+
+        checkJavaVersion();
+        checkBukkitVersion();
 
         if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
             ArenaHelper.applyNextArena();
@@ -290,6 +293,23 @@ public class TTTCore {
         LegacyMglibStorageConverter.convertLobbyStore();
 
         LegacyMglibStorageDeleter.deleteObsoleteStorage();
+    }
+
+    private void checkJavaVersion() {
+        try {
+            if (Float.parseFloat(StandardSystemProperty.JAVA_CLASS_VERSION.value()) < 52.0) {
+                logWarning("error.plugin.old-java");
+            }
+        } catch (NumberFormatException ignored) {
+            logWarning("error.plugin.unknown-java");
+        }
+    }
+
+    private void checkBukkitVersion() {
+        String ver = Bukkit.class.getPackage().getSpecificationVersion();
+        if (ver.startsWith("1.8") && !ver.startsWith("1.8.8")) {
+            logWarning("error.plugin.old-bukkit-1.8");
+        }
     }
 
 }
