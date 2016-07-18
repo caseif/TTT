@@ -39,10 +39,10 @@ public class SpecialCommandManager implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (label.equalsIgnoreCase("ttt")) {
             if (sender.hasPermission("ttt.build.warn")) {
-                TTTBootstrap.locale.getLocalizable("error.plugin.flint").withPrefix(Color.ERROR)
+                TTTBootstrap.locale.getLocalizable("error.plugin.flint").withPrefix(Color.ALERT)
                         .withReplacements(MIN_FLINT_VERSION + "").sendTo(sender);
             } else {
-                TTTBootstrap.locale.getLocalizable("error.plugin.disabled").withPrefix(Color.ERROR)
+                TTTBootstrap.locale.getLocalizable("error.plugin.disabled").withPrefix(Color.ALERT)
                         .sendTo(sender);
             }
             return true;

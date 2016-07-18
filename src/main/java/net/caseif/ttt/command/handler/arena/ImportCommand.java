@@ -49,7 +49,7 @@ public class ImportCommand extends CommandHandler {
     @Override
     public void handle() {
         if (TTTCore.mg.getArena(args[1].toLowerCase()).isPresent()) {
-            TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(Color.ERROR)
+            TTTCore.locale.getLocalizable("error.arena.already-exists").withPrefix(Color.ALERT)
                     .sendTo(sender);
             return;
         }
@@ -79,7 +79,7 @@ public class ImportCommand extends CommandHandler {
             }
         }
         // this executes only if something goes wrong loading the world
-        TTTCore.locale.getLocalizable("error.plugin.world-load").withPrefix(Color.ERROR).sendTo(sender);
+        TTTCore.locale.getLocalizable("error.plugin.world-load").withPrefix(Color.ALERT).sendTo(sender);
     }
 
 }

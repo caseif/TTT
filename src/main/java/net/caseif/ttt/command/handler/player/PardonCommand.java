@@ -58,7 +58,7 @@ public class PardonCommand extends CommandHandler {
             } catch (UUIDFetcher.UUIDException ignored) {
             }
             if (uuid == null) {
-                TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ALERT).sendTo(sender);
                 return;
             }
         }
@@ -70,12 +70,12 @@ public class PardonCommand extends CommandHandler {
                 TTTCore.locale.getLocalizable("info.personal.pardon.other").withPrefix(Color.INFO)
                         .withReplacements(name).sendTo(sender);
             } else {
-                TTTCore.locale.getLocalizable("error.plugin.pardon.absent").withPrefix(Color.ERROR)
+                TTTCore.locale.getLocalizable("error.plugin.pardon.absent").withPrefix(Color.ALERT)
                         .withReplacements(name).sendTo(sender);
             }
         } catch (InvalidConfigurationException | IOException ex) {
             ex.printStackTrace();
-            TTTCore.locale.getLocalizable("error.plugin.pardon").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.plugin.pardon").withPrefix(Color.ALERT).sendTo(sender);
         }
     }
 

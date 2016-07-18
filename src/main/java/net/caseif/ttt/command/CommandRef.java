@@ -47,10 +47,11 @@ public class CommandRef {
     private String usage;
     private int argCount;
     private boolean consoleAllowed;
+    private boolean hidden;
     private String[] aliases;
 
     public CommandRef(String cmd, Class<? extends CommandHandler> handlerClass, Localizable desc, String perm,
-                      String usage, int argCount, boolean consoleAllowed, String... aliases) {
+                      String usage, int argCount, boolean consoleAllowed, boolean hidden, String... aliases) {
         this.cmd = cmd;
         try {
             this.constructor = handlerClass.getConstructor(CommandSender.class, String[].class);
@@ -62,7 +63,13 @@ public class CommandRef {
         this.usage = usage;
         this.argCount = argCount;
         this.consoleAllowed = consoleAllowed;
+        this.hidden = hidden;
         this.aliases = aliases;
+    }
+
+    public CommandRef(String cmd, Class<? extends CommandHandler> handlerClass, Localizable desc, String perm,
+                      String usage, int argCount, boolean consoleAllowed, String... aliases) {
+        this(cmd, handlerClass, desc, perm, usage, argCount, consoleAllowed, false, aliases);
     }
 
     public String getLabel() {
@@ -91,6 +98,10 @@ public class CommandRef {
 
     public boolean isConsoleAllowed() {
         return consoleAllowed;
+    }
+
+    public boolean isHidden() {
+        return hidden;
     }
 
     public String[] getAliases() {
@@ -122,7 +133,7 @@ public class CommandRef {
      */
     private boolean assertPermission(CommandSender sender) {
         if (getPermission() != null && !sender.hasPermission(getPermission())) {
-            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR)
+            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ALERT)
                     .sendTo(sender);
             return false;
         }
@@ -131,7 +142,7 @@ public class CommandRef {
 
     private boolean assertPlayer(CommandSender sender) {
         if (!isConsoleAllowed() && !(sender instanceof Player)) {
-            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ALERT).sendTo(sender);
             return false;
         }
         return true;
@@ -139,7 +150,7 @@ public class CommandRef {
 
     private boolean assertArgumentCount(CommandSender sender, String[] args) {
         if (args.length < getArgCount()) {
-            TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR)
+            TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ALERT)
                     .sendTo(sender);
             return false;
         }

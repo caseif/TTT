@@ -176,7 +176,7 @@ public final class KarmaHelper {
             } catch (InvalidConfigurationException | IOException ex) {
                 ex.printStackTrace();
                 TTTCore.log.severe(TTTCore.locale.getLocalizable("error.plugin.ban")
-                        .withPrefix(Color.ERROR + "").withReplacements(player.getName()).localize());
+                        .withPrefix(Color.ALERT + "").withReplacements(player.getName()).localize());
             }
         } else {
             TTTCore.locale.getLocalizable("info.personal.kick.karma").withPrefix(Color.INFO)

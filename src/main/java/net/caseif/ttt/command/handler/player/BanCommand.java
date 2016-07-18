@@ -54,7 +54,7 @@ public class BanCommand extends CommandHandler {
             if (isInt(args[2])) {
                 time = Integer.parseInt(args[2]);
             } else {
-                TTTCore.locale.getLocalizable("error.admin.ban.invalid-time").withPrefix(Color.ERROR).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.admin.ban.invalid-time").withPrefix(Color.ALERT).sendTo(sender);
                 return;
             }
         }
@@ -70,20 +70,20 @@ public class BanCommand extends CommandHandler {
                 } catch (UUIDFetcher.UUIDException ignored) {
                 }
                 if (uuid == null) {
-                    TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ERROR).sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ALERT).sendTo(sender);
                     return;
                 }
             }
             BanHelper.ban(uuid, time);
             if (time == -1) {
                 if (pl != null) {
-                    TTTCore.locale.getLocalizable("info.personal.ban.perm").withPrefix(Color.ERROR).sendTo(pl);
+                    TTTCore.locale.getLocalizable("info.personal.ban.perm").withPrefix(Color.ALERT).sendTo(pl);
                 }
                 TTTCore.locale.getLocalizable("info.personal.ban.other.perm").withPrefix(Color.INFO)
                         .withReplacements(name).sendTo(sender);
             } else {
                 if (pl != null) {
-                    TTTCore.locale.getLocalizable("info.personal.ban.temp").withPrefix(Color.ERROR)
+                    TTTCore.locale.getLocalizable("info.personal.ban.temp").withPrefix(Color.ALERT)
                             .withReplacements(TTTCore.locale.getLocalizable("fragment.minutes"
                                     + (time == 1 ? ".singular" : "")).withReplacements(time + ""))
                             .sendTo(pl);
@@ -95,7 +95,7 @@ public class BanCommand extends CommandHandler {
                         ).sendTo(sender);
             }
         } catch (InvalidConfigurationException | IOException ex) {
-            TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.plugin.ban").withPrefix(Color.ALERT).sendTo(sender);
             ex.printStackTrace();
         }
     }

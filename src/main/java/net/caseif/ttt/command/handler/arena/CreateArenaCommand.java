@@ -48,9 +48,9 @@ public class CreateArenaCommand extends CommandHandler {
             TTTCore.locale.getLocalizable("info.personal.arena.create.welcome").withPrefix(Color.INFO).sendTo(sender);
             TTTCore.locale.getLocalizable("info.personal.arena.create.exit-note").withPrefix(Color.INFO)
                     .withReplacements(TTTCore.locale.getLocalizable("info.personal.arena.create.cancel-keyword")
-                            .withPrefix(Color.FLAIR).withSuffix(Color.INFO)).sendTo(sender);
+                            .withPrefix(Color.EM).withSuffix(Color.INFO)).sendTo(sender);
         } else {
-            TTTCore.locale.getLocalizable("error.arena.create.already").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.create.already").withPrefix(Color.ALERT).sendTo(sender);
         }
     }
 

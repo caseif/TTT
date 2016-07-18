@@ -35,6 +35,7 @@ import com.google.common.collect.Lists;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.challenger.Team;
 import net.caseif.flint.round.Round;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -81,7 +82,7 @@ public final class RoleHelper {
         String color;
         String roleFrag;
         if (!ch.getTeam().isPresent()) {
-            color = Color.FADED;
+            color = ChatColor.GRAY.toString();
             roleFrag = "unassigned";
         } else if (ch.getTeam().get().getId().equals(Role.TRAITOR)) {
             color = Color.TRAITOR;
@@ -99,7 +100,7 @@ public final class RoleHelper {
 
         if (ch.isSpectating() && !ch.getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)) {
             roleMsg += TTTCore.locale.getLocalizable("fragment.deceased")
-                    .withPrefix(" " + Color.FADED + "(").localizeFor(sender) + ")";
+                    .withPrefix(" " + ChatColor.GRAY + "(").localizeFor(sender) + ")";
         }
 
         return roleMsg;

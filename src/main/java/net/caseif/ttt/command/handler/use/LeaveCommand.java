@@ -52,7 +52,7 @@ public class LeaveCommand extends CommandHandler {
                 BungeeHelper.sendPlayerToReturnServer((Player) sender);
                 return;
             } else {
-                TTTCore.locale.getLocalizable("error.round.leave-dedicated").withPrefix(Color.ERROR).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.round.leave-dedicated").withPrefix(Color.ALERT).sendTo(sender);
                 trySendForceLeaveTip();
                 return;
             }
@@ -63,16 +63,16 @@ public class LeaveCommand extends CommandHandler {
             String roundName = ch.get().getRound().getArena().getName();
             ch.get().removeFromRound();
             TTTCore.locale.getLocalizable("info.personal.arena.leave.success").withPrefix(Color.INFO)
-                    .withReplacements(Color.FLAIR + roundName + Color.INFO).sendTo(sender);
+                    .withReplacements(Color.EM + roundName + Color.INFO).sendTo(sender);
         } else {
-            TTTCore.locale.getLocalizable("error.round.outside").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.round.outside").withPrefix(Color.ALERT).sendTo(sender);
         }
     }
 
     private void trySendForceLeaveTip() {
         if (sender.hasPermission("ttt.admin")) {
-            TTTCore.locale.getLocalizable("error.round.leave-dedicated-force").withPrefix(Color.ERROR)
-                    .withReplacements(Color.FLAIR + "/ttt leave force").sendTo(sender);
+            TTTCore.locale.getLocalizable("error.round.leave-dedicated-force").withPrefix(Color.ALERT)
+                    .withReplacements(Color.EM + "/ttt leave force").sendTo(sender);
         }
     }
 

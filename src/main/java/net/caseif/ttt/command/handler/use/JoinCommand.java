@@ -60,7 +60,7 @@ public class JoinCommand extends CommandHandler {
                 ? Optional.of(TTTCore.getDedicatedArena()) // default to dedicated arena
                 : TTTCore.mg.getArena(args[1]); // otherwise get the arena from the arg
         if (!arena.isPresent()) {
-            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }
 
@@ -68,25 +68,25 @@ public class JoinCommand extends CommandHandler {
 
         if ((round.getLifecycleStage() == Stage.PLAYING || round.getLifecycleStage() == Stage.ROUND_OVER)
                 && !TTTCore.config.get(ConfigKey.ALLOW_JOIN_AS_SPECTATOR)) {
-            TTTCore.locale.getLocalizable("error.round.in-progress").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.round.in-progress").withPrefix(Color.ALERT).sendTo(sender);
         }
 
         JoinResult result = round.addChallenger(((Player) sender).getUniqueId());
         if (result.getStatus() != JoinResult.Status.SUCCESS) {
             switch (result.getStatus()) {
                 case ALREADY_IN_ROUND: {
-                    TTTCore.locale.getLocalizable("error.round.inside").withPrefix(Color.ERROR).sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.round.inside").withPrefix(Color.ALERT).sendTo(sender);
                     break;
                 }
                 case INTERNAL_ERROR: {
                     throw new RuntimeException(result.getThrowable()); // sender is notified of internal error
                 }
                 case PLAYER_OFFLINE: {
-                    TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR).sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ALERT).sendTo(sender);
                     break;
                 }
                 case ROUND_FULL: {
-                    TTTCore.locale.getLocalizable("error.round.full").withPrefix(Color.ERROR).sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.round.full").withPrefix(Color.ALERT).sendTo(sender);
                     break;
                 }
                 default: {

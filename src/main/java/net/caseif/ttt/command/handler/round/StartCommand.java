@@ -48,24 +48,24 @@ public class StartCommand extends CommandHandler {
             if (arena.get().getRound().isPresent()) {
                 Round round = arena.get().getRound().get();
                 if (round.getLifecycleStage() == Stage.PLAYING || round.getLifecycleStage() == Stage.ROUND_OVER) {
-                    TTTCore.locale.getLocalizable("error.round.started").withPrefix(Color.ERROR).sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.round.started").withPrefix(Color.ALERT).sendTo(sender);
                     return;
                 }
                 if (round.getChallengers().size() > 1) {
                     round.setLifecycleStage(Stage.PLAYING, true);
                     TTTCore.locale.getLocalizable("info.personal.arena.set-stage.playing.success")
                             .withPrefix(Color.INFO)
-                            .withReplacements(Color.FLAIR + arena.get().getName() + Color.INFO).sendTo(sender);
+                            .withReplacements(Color.EM + arena.get().getName() + Color.INFO).sendTo(sender);
                 } else {
-                    TTTCore.locale.getLocalizable("error.arena.too-few-players").withPrefix(Color.ERROR).sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.arena.too-few-players").withPrefix(Color.ALERT).sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR)
-                        .withReplacements(Color.FLAIR + arena.get().getName() + Color.INFO).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ALERT)
+                        .withReplacements(Color.EM + arena.get().getName() + Color.INFO).sendTo(sender);
             }
         } else {
-            TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR)
-                    .withReplacements(Color.FLAIR + arenaName + Color.INFO).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ALERT)
+                    .withReplacements(Color.EM + arenaName + Color.INFO).sendTo(sender);
         }
     }
 }

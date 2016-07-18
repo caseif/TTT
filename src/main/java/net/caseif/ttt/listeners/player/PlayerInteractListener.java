@@ -104,7 +104,7 @@ public class PlayerInteractListener implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
             event.setCancelled(true);
-            TTTCore.locale.getLocalizable("info.personal.status.no-drop").withPrefix(Color.ERROR)
+            TTTCore.locale.getLocalizable("info.personal.status.no-drop").withPrefix(Color.ALERT)
                     .sendTo(event.getPlayer());
         }
     }

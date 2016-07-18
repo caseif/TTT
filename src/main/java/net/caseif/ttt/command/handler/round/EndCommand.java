@@ -49,15 +49,15 @@ public class EndCommand extends CommandHandler {
         String arenaName = args[1];
         Optional<Arena> arena = TTTCore.mg.getArena(arenaName);
         if (!arena.isPresent()) {
-            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR)
-                    .withReplacements(Color.FLAIR + arenaName + Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT)
+                    .withReplacements(Color.EM + arenaName + Color.ALERT).sendTo(sender);
             return;
         }
 
         if (!arena.get().getRound().isPresent()
                 || arena.get().getRound().get().getLifecycleStage() == Stage.WAITING) {
-            TTTCore.locale.getLocalizable("error.arena.no-round").withPrefix(Color.ERROR)
-                    .withReplacements(Color.FLAIR + arenaName + Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.no-round").withPrefix(Color.ALERT)
+                    .withReplacements(Color.EM + arenaName + Color.ALERT).sendTo(sender);
             return;
         }
 

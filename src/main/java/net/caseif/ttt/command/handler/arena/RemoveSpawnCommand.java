@@ -44,7 +44,7 @@ public class RemoveSpawnCommand extends CommandHandler {
     @Override
     public void handle() {
         if (!TTTCore.mg.getArena(args[1]).isPresent()) {
-            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }
         Arena arena = TTTCore.mg.getArena(args[1]).get();
@@ -58,7 +58,7 @@ public class RemoveSpawnCommand extends CommandHandler {
                 y = ((Player) sender).getLocation().getBlockY();
                 z = ((Player) sender).getLocation().getBlockZ();
             } else {
-                TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ALERT).sendTo(sender);
                 return;
             }
         } else if (args.length == 3) {
@@ -82,16 +82,16 @@ public class RemoveSpawnCommand extends CommandHandler {
             if (index != Integer.MAX_VALUE) {
                 arena.removeSpawnPoint(index);
                 TTTCore.locale.getLocalizable("info.personal.arena.removespawn.index").withPrefix(Color.INFO)
-                        .withReplacements(Color.LABEL + index + Color.INFO,
-                                Color.FLAIR + arena.getName() + Color.INFO).sendTo(sender);
+                        .withReplacements(Color.EM + index + Color.INFO,
+                                Color.EM + arena.getName() + Color.INFO).sendTo(sender);
             } else {
                 arena.removeSpawnPoint(new Location3D(arena.getWorld(), x, y, z));
                 TTTCore.locale.getLocalizable("info.personal.arena.removespawn.coords").withPrefix(Color.INFO)
-                        .withReplacements(Color.LABEL + "(" + x + ", " + y + ", " + z + ")" + Color.INFO,
-                                Color.FLAIR + arena.getName() + Color.INFO).sendTo(sender);
+                        .withReplacements(Color.EM + "(" + x + ", " + y + ", " + z + ")" + Color.INFO,
+                                Color.EM + arena.getName() + Color.INFO).sendTo(sender);
             }
         } catch (IllegalArgumentException ex) {
-            TTTCore.locale.getLocalizable("error.arena.removespawn.missing").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.removespawn.missing").withPrefix(Color.ALERT).sendTo(sender);
         }
     }
 

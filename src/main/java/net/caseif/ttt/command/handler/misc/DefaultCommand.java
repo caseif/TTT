@@ -39,7 +39,7 @@ public class DefaultCommand extends CommandHandler {
 
     @Override
     public void handle() {
-        TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(Color.SPECIAL)
+        TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(Color.INFO)
                 .withReplacements(TTTCore.getPlugin().getDescription().getVersion(),
                         CollectionsHelper.prettyList(TTTCore.getPlugin().getDescription().getAuthors()))
                 .sendTo(sender);

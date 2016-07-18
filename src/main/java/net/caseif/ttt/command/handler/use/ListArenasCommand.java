@@ -30,6 +30,7 @@ import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.Stage;
 
 import net.caseif.flint.arena.Arena;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class ListArenasCommand extends CommandHandler {
@@ -42,8 +43,8 @@ public class ListArenasCommand extends CommandHandler {
     public void handle() {
         TTTCore.locale.getLocalizable("info.personal.arena.list").withPrefix(Color.INFO).sendTo(sender);
         for (Arena arena : TTTCore.mg.getArenas()) {
-            sender.sendMessage("    " + Color.LABEL + arena.getId() + ": "
-                    + Color.FLAIR + TTTCore.locale.getLocalizable("fragment.stage."
+            sender.sendMessage("    " + Color.SECONDARY + arena.getId() + ": "
+                    + ChatColor.WHITE + TTTCore.locale.getLocalizable("fragment.stage."
                     + (arena.getRound().isPresent()
                     ? arena.getRound().get().getLifecycleStage().getId()
                     : Stage.WAITING.getId()))

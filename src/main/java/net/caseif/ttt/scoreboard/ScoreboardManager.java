@@ -192,7 +192,7 @@ public class ScoreboardManager {
 
     private void updateTitle(Objective obj) {
         StringBuilder title = new StringBuilder();
-        title.append(Color.LABEL);
+        title.append(Color.SECONDARY);
         title.append(TTTCore.locale.getLocalizable("fragment.stage." + round.getLifecycleStage().getId())
                 .localize().toUpperCase());
 

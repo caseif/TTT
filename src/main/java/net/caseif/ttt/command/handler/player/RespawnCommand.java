@@ -57,19 +57,19 @@ public class RespawnCommand extends CommandHandler {
         @SuppressWarnings("deprecation")
         Player pl = Bukkit.getPlayer(name);
         if (pl == null) {
-            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }
 
         Optional<Challenger> ch = TTTCore.mg.getChallenger(pl.getUniqueId());
         if (!ch.isPresent()) {
-            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }
         if (!ch.get().isSpectating()
                 || ch.get().getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)
                 || !ch.get().getMetadata().has(MetadataKey.Player.BODY)) {
-            TTTCore.locale.getLocalizable("error.round.not-dead").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.round.not-dead").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }
 

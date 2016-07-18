@@ -42,7 +42,7 @@ public abstract class CommandHandler {
     public abstract void handle();
 
     protected void printInvalidArgsError() {
-        TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ERROR).sendTo(sender);
+        TTTCore.locale.getLocalizable("error.command.invalid-args").withPrefix(Color.ALERT).sendTo(sender);
     }
 
 }

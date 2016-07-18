@@ -48,24 +48,24 @@ public class PrepareCommand extends CommandHandler {
             if (arena.get().getRound().isPresent()) {
                 Round round = arena.get().getRound().get();
                 if (round.getLifecycleStage() != Stage.WAITING) {
-                    TTTCore.locale.getLocalizable("error.round.started").withPrefix(Color.ERROR).sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.round.started").withPrefix(Color.ALERT).sendTo(sender);
                     return;
                 }
                 if (round.getChallengers().size() > 1) {
                     round.setLifecycleStage(Stage.PREPARING, true);
                     TTTCore.locale.getLocalizable("info.personal.arena.set-stage.preparing.success")
-                            .withPrefix(Color.INFO).withReplacements(Color.FLAIR + arena.get().getName() + Color.ERROR)
+                            .withPrefix(Color.INFO).withReplacements(Color.EM + arena.get().getName() + Color.ALERT)
                             .sendTo(sender);
                 } else {
-                    TTTCore.locale.getLocalizable("error.arena.too-few-players").withPrefix(Color.ERROR).sendTo(sender);
+                    TTTCore.locale.getLocalizable("error.arena.too-few-players").withPrefix(Color.ALERT).sendTo(sender);
                 }
             } else {
-                TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR)
-                        .withReplacements(Color.FLAIR + arenaName + Color.ERROR).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ALERT)
+                        .withReplacements(Color.EM + arenaName + Color.ALERT).sendTo(sender);
             }
         } else {
-            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR)
-                    .withReplacements(Color.FLAIR + arenaName + Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT)
+                    .withReplacements(Color.EM + arenaName + Color.ALERT).sendTo(sender);
         }
     }
 

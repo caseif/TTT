@@ -149,7 +149,7 @@ public final class RoundHelper {
             Localizable msg = TTTCore.locale.getLocalizable("info.global.round.event.end."
                     + (tVic ? Role.TRAITOR : Role.INNOCENT))
                     .withPrefix(color)
-                    .withReplacements(Color.FLAIR + round.getArena().getName() + color);
+                    .withReplacements(Color.EM + round.getArena().getName() + color);
             if (TTTCore.config.get(ConfigKey.BROADCAST_WIN_MESSAGES_TO_SERVER)) {
                 msg.broadcast();
             } else {

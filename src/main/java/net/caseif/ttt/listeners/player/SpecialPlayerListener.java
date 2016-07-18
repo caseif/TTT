@@ -38,7 +38,7 @@ public class SpecialPlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (event.getPlayer().hasPermission("ttt.build.warn")) {
-            TTTBootstrap.locale.getLocalizable("error.plugin.flint").withPrefix(Color.ERROR)
+            TTTBootstrap.locale.getLocalizable("error.plugin.flint").withPrefix(Color.ALERT)
                     .withReplacements(MIN_FLINT_VERSION + "").sendTo(event.getPlayer());
         }
     }

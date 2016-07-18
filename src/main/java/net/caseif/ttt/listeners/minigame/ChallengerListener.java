@@ -76,7 +76,7 @@ public class ChallengerListener {
                 if (TTTCore.config.get(ConfigKey.OPERATING_MODE) != OperatingMode.DEDICATED
                         || BungeeHelper.hasSupport()) {
                     TTTCore.locale.getLocalizable("info.personal.arena.join.leave-tip").withPrefix(Color.INFO)
-                            .withReplacements(Color.FLAIR + "/ttt leave" + Color.INFO).sendTo(pl);
+                            .withReplacements(Color.EM + "/ttt leave" + Color.INFO).sendTo(pl);
                 }
             }
 
@@ -118,7 +118,7 @@ public class ChallengerListener {
                 KarmaHelper.saveKarma(event.getChallenger());
                 RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                         .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
-                                Color.FLAIR + event.getChallenger().getRound().getArena().getName()
+                                Color.EM + event.getChallenger().getRound().getArena().getName()
                                         + Color.INFO));
 
                 if (event.getRound().getLifecycleStage() == Stage.PREPARING
@@ -126,7 +126,7 @@ public class ChallengerListener {
                     event.getRound().setLifecycleStage(Stage.WAITING, true);
                     RoundHelper.broadcast(event.getRound(),
                             TTTCore.locale.getLocalizable("info.global.round.status.starting.stopped")
-                                    .withPrefix(Color.ERROR));
+                                    .withPrefix(Color.ALERT));
                 }
             }
         }
@@ -147,7 +147,7 @@ public class ChallengerListener {
             // lazy way of doing this, but it works
             new JoinCommand(player, new String[]{"join", event.getLobbySign().getArena().getId()}).handle();
         } else {
-            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR).sendTo(player);
+            TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ALERT).sendTo(player);
         }
     }
 

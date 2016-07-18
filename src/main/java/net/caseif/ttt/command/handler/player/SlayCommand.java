@@ -49,26 +49,26 @@ public class SlayCommand extends CommandHandler {
         @SuppressWarnings("deprecation")
         Player pl = Bukkit.getPlayer(name);
         if (pl == null) {
-            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR)
+            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ALERT)
                     .sendTo(sender);
             return;
         }
 
         Optional<Challenger> ch = TTTCore.mg.getChallenger(pl.getUniqueId());
         if (!ch.isPresent()) {
-            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ERROR)
+            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ALERT)
                     .sendTo(sender);
             return;
         }
 
         if (ch.get().getRound().getLifecycleStage() == Stage.WAITING
                 || ch.get().getRound().getLifecycleStage() == Stage.PREPARING) {
-            TTTCore.locale.getLocalizable("error.round.not-started").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.round.not-started").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }
 
         new DeathHelper(pl).handleEvent();
-        TTTCore.locale.getLocalizable("info.personal.slay").withPrefix(Color.ERROR).sendTo(pl);
+        TTTCore.locale.getLocalizable("info.personal.slay").withPrefix(Color.ALERT).sendTo(pl);
         TTTCore.locale.getLocalizable("info.personal.slay.other").withPrefix(Color.INFO)
                 .withReplacements(ch.get().getName()).sendTo(sender);
     }

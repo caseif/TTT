@@ -99,13 +99,14 @@ public class CommandManager implements CommandExecutor {
 
         // misc
         addRef(map, "help", HelpCommand.class, null, "{command}", 1, true, "?");
-        addRef(map, "xyzzy", XyzzyCommand.class, null, "", 1, true);
+        addRef(map, "xyzzy", XyzzyCommand.class, null, "", 1, true, true);
 
         commands = ImmutableMap.copyOf(map);
     }
 
     private static void addRef(Map<String, CommandRef> map, String cmd, Class<? extends CommandHandler> clazz,
-                               String perm, String usage, int minArgs, boolean consoleAllowed, String... aliases) {
+                               String perm, String usage, int minArgs, boolean consoleAllowed, boolean hidden,
+                               String... aliases) {
         cmd = cmd.toLowerCase();
         CommandRef cr = new CommandRef(cmd, clazz, TTTCore.locale.getLocalizable("info.command.desc." + cmd),
                 perm != null ? "ttt." + perm : null, "/ttt " + cmd + " " + usage, minArgs, consoleAllowed, aliases);
@@ -113,6 +114,11 @@ public class CommandManager implements CommandExecutor {
         for (String alias : aliases) {
             map.put(alias, cr);
         }
+    }
+
+    private static void addRef(Map<String, CommandRef> map, String cmd, Class<? extends CommandHandler> clazz,
+                               String perm, String usage, int minArgs, boolean consoleAllowed, String... aliases) {
+        addRef(map, cmd, clazz, perm, usage, minArgs, consoleAllowed, false, aliases);
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -128,7 +134,7 @@ public class CommandManager implements CommandExecutor {
                 commands.get(subCmd).invoke(sender, args);
             } else {
                 TTTCore.locale.getLocalizable("error.command.invalid-args")
-                        .withPrefix(Color.ERROR).sendTo(sender);
+                        .withPrefix(Color.ALERT).sendTo(sender);
             }
 
             return true;

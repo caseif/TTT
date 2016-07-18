@@ -56,7 +56,7 @@ public class AddSpawnCommand extends CommandHandler {
                 y = ((Player) sender).getLocation().getBlockY();
                 z = ((Player) sender).getLocation().getBlockZ();
             } else {
-                TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ERROR).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.command.ingame").withPrefix(Color.ALERT).sendTo(sender);
                 return;
             }
         } else if (args.length == 5) { // use 3 provided coords
@@ -76,18 +76,18 @@ public class AddSpawnCommand extends CommandHandler {
         if (arena.isPresent()) {
             Location3D loc = new Location3D(w != null ? w.getName() : null, x, y, z);
             if (w != null && !arena.get().getWorld().equals(w.getName())) {
-                TTTCore.locale.getLocalizable("error.arena.invalid-location").withPrefix(Color.ERROR).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.arena.invalid-location").withPrefix(Color.ALERT).sendTo(sender);
                 return;
             }
             if (!arena.get().getBoundary().contains(loc)) {
-                TTTCore.locale.getLocalizable("error.arena.create.bad-spawn").withPrefix(Color.ERROR).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.arena.create.bad-spawn").withPrefix(Color.ALERT).sendTo(sender);
                 return;
             }
             arena.get().addSpawnPoint(loc);
             TTTCore.locale.getLocalizable("info.personal.arena.addspawn").withPrefix(Color.INFO)
                     .withReplacements("(" + x + ", " + y + ", " + z + ")", arena.get().getName()).sendTo(sender);
         } else {
-            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT).sendTo(sender);
         }
     }
 

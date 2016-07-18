@@ -46,17 +46,17 @@ public class KickCommand extends CommandHandler {
         @SuppressWarnings("deprecation")
         Player pl = Bukkit.getPlayer(name);
         if (pl == null) {
-            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }
         Optional<Challenger> ch = TTTCore.mg.getChallenger(pl.getUniqueId());
         if (ch.isPresent()) {
             ch.get().removeFromRound();
-            TTTCore.locale.getLocalizable("info.personal.kick").withPrefix(Color.ERROR).sendTo(pl);
+            TTTCore.locale.getLocalizable("info.personal.kick").withPrefix(Color.ALERT).sendTo(pl);
             TTTCore.locale.getLocalizable("info.personal.kick.other").withPrefix(Color.INFO)
                     .withReplacements(ch.get().getName()).sendTo(sender);
         } else {
-            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ALERT).sendTo(sender);
         }
     }
 

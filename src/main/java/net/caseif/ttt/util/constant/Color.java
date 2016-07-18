@@ -24,25 +24,15 @@
 
 package net.caseif.ttt.util.constant;
 
-import net.caseif.ttt.TTTBootstrap;
-import net.caseif.ttt.TTTCore;
-
 import org.bukkit.ChatColor;
 
 // message colors
 public class Color {
 
-    public static final String INFO = (TTTBootstrap.STEEL && TTTCore.HALLOWEEN
-            ? ChatColor.GOLD
-            : ChatColor.DARK_AQUA).toString();
-    public static final String ERROR = ChatColor.RED.toString();
-
-    public static final String FADED = ChatColor.GRAY.toString();
-    public static final String FLAIR = (TTTBootstrap.STEEL && TTTCore.HALLOWEEN
-            ? ChatColor.DARK_AQUA
-            : ChatColor.GOLD).toString();
-    public static final String LABEL = ChatColor.GREEN.toString();
-    public static final String SPECIAL = ChatColor.LIGHT_PURPLE.toString();
+    public static final String INFO = ChatColor.DARK_AQUA.toString();
+    public static final String SECONDARY = ChatColor.GREEN.toString();
+    public static final String ALERT = ChatColor.RED.toString();
+    public static final String EM = ChatColor.GOLD.toString();
 
     public static final String DETECTIVE = ChatColor.BLUE.toString();
     public static final String INNOCENT = ChatColor.DARK_GREEN.toString();

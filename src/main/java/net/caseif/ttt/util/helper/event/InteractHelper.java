@@ -153,19 +153,19 @@ public final class InteractHelper {
     public static void doDnaCheck(Body body, Challenger ch, Player pl) {
         if (!body.isFound()) {
             TTTCore.locale.getLocalizable("info.personal.status.dna-id")
-                    .withPrefix(Color.ERROR).sendTo(pl);
+                    .withPrefix(Color.ALERT).sendTo(pl);
             return;
         }
 
         if (!body.getKiller().isPresent() || body.getExpiry() == -1) {
             TTTCore.locale.getLocalizable("info.personal.status.no-dna")
-                    .withPrefix(Color.ERROR).sendTo(pl);
+                    .withPrefix(Color.ALERT).sendTo(pl);
             return;
         }
 
         if (System.currentTimeMillis() > body.getExpiry()) {
             TTTCore.locale.getLocalizable("info.personal.status.dna-decayed")
-                    .withPrefix(Color.ERROR).sendTo(pl);
+                    .withPrefix(Color.ALERT).sendTo(pl);
             return;
         }
 
@@ -180,7 +180,7 @@ public final class InteractHelper {
                     .sendTo(pl);
         } else {
             TTTCore.locale.getLocalizable("error.round.killer-left")
-                    .withPrefix(Color.ERROR).sendTo(pl);
+                    .withPrefix(Color.ALERT).sendTo(pl);
         }
     }
 
@@ -214,7 +214,7 @@ public final class InteractHelper {
                 event.getPlayer().launchProjectile(Arrow.class);
             } else {
                 TTTCore.locale.getLocalizable("info.personal.status.no-ammo")
-                        .withPrefix(Color.ERROR).sendTo(event.getPlayer());
+                        .withPrefix(Color.ALERT).sendTo(event.getPlayer());
             }
         }
     }

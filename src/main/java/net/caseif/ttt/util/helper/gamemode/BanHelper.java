@@ -124,7 +124,7 @@ public final class BanHelper {
                         loc = TTTCore.locale.getLocalizable("info.personal.ban.temp.until").withReplacements(
                                 hour + ":" + min + ":" + sec, month + "/" + day + "/" + year + ".");
                     }
-                    loc.withPrefix(Color.ERROR);
+                    loc.withPrefix(Color.ALERT);
                     loc.sendTo(Bukkit.getPlayer(uuid));
                     return true;
                 }

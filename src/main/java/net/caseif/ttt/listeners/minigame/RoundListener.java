@@ -128,7 +128,7 @@ public class RoundListener {
                                 tracker.setCompassTarget(killer.getLocation());
                             } else {
                                 TTTCore.locale.getLocalizable("error.round.trackee-left")
-                                        .withPrefix(Color.ERROR).sendTo(tracker);
+                                        .withPrefix(Color.ALERT).sendTo(tracker);
                                 ch.getMetadata().remove("tracking");
                                 tracker.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
                             }

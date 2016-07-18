@@ -31,6 +31,7 @@ import net.caseif.ttt.util.constant.Color;
 import com.google.common.base.Optional;
 import net.caseif.flint.arena.Arena;
 import net.caseif.flint.util.physical.Location3D;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.Map;
@@ -45,15 +46,15 @@ public class ListSpawnsCommand extends CommandHandler {
     public void handle() {
         Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
         if (!arena.isPresent()) {
-            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }
         Map<Integer, Location3D> spawns = arena.get().getSpawnPoints();
         TTTCore.locale.getLocalizable("info.personal.arena.listspawns").withPrefix(Color.INFO)
-                .withReplacements(Color.FLAIR + arena.get().getName() + Color.INFO).sendTo(sender);
+                .withReplacements(Color.EM + arena.get().getName() + Color.INFO).sendTo(sender);
         for (Map.Entry<Integer, Location3D> spawn : spawns.entrySet()) {
             Location3D l = spawn.getValue();
-            sender.sendMessage(Color.LABEL + "    " + spawn.getKey() + ": " + Color.FLAIR
+            sender.sendMessage(Color.SECONDARY + "    " + spawn.getKey() + ": " + ChatColor.WHITE
                     + "(" + l.getX() + ", " + l.getY() + ", " + l.getZ() + ")");
         }
     }

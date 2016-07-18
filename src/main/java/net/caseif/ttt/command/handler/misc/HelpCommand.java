@@ -60,7 +60,7 @@ public class HelpCommand extends CommandHandler {
             int pageCount = (int) Math.ceil((float) availableCommands.size() / COMMANDS_PER_PAGE);
 
             if (pageIndex > pageCount || pageIndex <= 0) {
-                TTTCore.locale.getLocalizable("error.command.help.bad-page").withPrefix(Color.ERROR).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.command.help.bad-page").withPrefix(Color.ALERT).sendTo(sender);
                 return;
             }
 
@@ -77,7 +77,7 @@ public class HelpCommand extends CommandHandler {
 
             printFooter(pageIndex, pageCount);
         } else { // assume they're querying a specific command
-            if (!CommandManager.commands.containsKey(args[1])) {
+            if (!CommandManager.commands.containsKey(args[1]) || CommandManager.commands.get(args[1]).isHidden()) {
                 printInvalidArgsError();
                 return;
             }
@@ -87,7 +87,7 @@ public class HelpCommand extends CommandHandler {
             if (cmdRef.getPermission() == null || sender.hasPermission(cmdRef.getPermission())) {
                 printDescription(cmdRef);
             } else {
-                TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ERROR).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ALERT).sendTo(sender);
             }
         }
     }
@@ -95,11 +95,11 @@ public class HelpCommand extends CommandHandler {
     private void printDescription(CommandRef cmdRef) {
         assert cmdRef != null;
 
-        cmdRef.getDescription().withPrefix(Color.LABEL + "/ttt " + cmdRef.getLabel() + " " + Color.INFO).sendTo(sender);
+        cmdRef.getDescription().withPrefix(Color.INFO + "/ttt " + cmdRef.getLabel() + " " + ChatColor.WHITE).sendTo(sender);
 
         TTTCore.locale.getLocalizable("fragment.usage")
-                .withPrefix("    " + Color.FLAIR + ChatColor.ITALIC)
-                .withReplacements("" + Color.SPECIAL + ChatColor.ITALIC + cmdRef.getUsage())
+                .withPrefix("    " + Color.SECONDARY + ChatColor.ITALIC)
+                .withReplacements("" + ChatColor.WHITE + ChatColor.ITALIC + cmdRef.getUsage())
                 .sendTo(sender);
         if (cmdRef.getAliases().length > 0) {
             StringBuilder aliasStr = new StringBuilder();
@@ -107,15 +107,15 @@ public class HelpCommand extends CommandHandler {
                 aliasStr.append(alias).append(", ");
             }
             aliasStr.delete(aliasStr.length() - 2, aliasStr.length());
-            TTTCore.locale.getLocalizable("fragment.aliases").withPrefix("    " + Color.FLAIR + ChatColor.ITALIC)
-                    .withReplacements(Color.SPECIAL + ChatColor.ITALIC + aliasStr.toString()).sendTo(sender);
+            TTTCore.locale.getLocalizable("fragment.aliases").withPrefix("    " + Color.SECONDARY + ChatColor.ITALIC)
+                    .withReplacements("" + ChatColor.WHITE + ChatColor.ITALIC + aliasStr.toString()).sendTo(sender);
         }
     }
 
     private List<CommandRef> getAvailableCommands() {
         Set<CommandRef> cmds = new LinkedHashSet<>();
         for (CommandRef ref : CommandManager.commands.values()) {
-            if (ref.getLabel().equals("xyzzy")) {
+            if (ref.isHidden()) {
                 continue;
             }
             if (ref.getPermission() == null || sender.hasPermission(ref.getPermission())) {
@@ -128,7 +128,7 @@ public class HelpCommand extends CommandHandler {
     private void printHeader(int pageIndex, int pageCount) {
         sender.sendMessage("");
         TTTCore.locale.getLocalizable("info.help.available-cmds").withPrefix(Color.INFO).sendTo(sender);
-        TTTCore.locale.getLocalizable("info.help.page").withPrefix(DIVIDER + " " + Color.FLAIR)
+        TTTCore.locale.getLocalizable("info.help.page").withPrefix(DIVIDER + " " + Color.EM)
                 .withSuffix(ChatColor.WHITE + " " + DIVIDER).withReplacements(pageIndex + " / " + pageCount)
                 .sendTo(sender);
     }
@@ -136,7 +136,7 @@ public class HelpCommand extends CommandHandler {
     private void printFooter(int pageIndex, int pageCount) {
         if (pageIndex < pageCount) {
             TTTCore.locale.getLocalizable("info.help.next-page").withPrefix(Color.INFO)
-                    .withReplacements(Color.FLAIR + "/ttt help " + (pageIndex + 1) + Color.INFO).sendTo(sender);
+                    .withReplacements(Color.EM + "/ttt help " + (pageIndex + 1) + Color.INFO).sendTo(sender);
         }
     }
 

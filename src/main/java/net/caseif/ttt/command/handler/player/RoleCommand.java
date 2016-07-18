@@ -48,21 +48,21 @@ public class RoleCommand extends CommandHandler {
         @SuppressWarnings("deprecation")
         Player pl = Bukkit.getPlayer(name);
         if (pl == null) {
-            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ERROR)
+            TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ALERT)
                     .sendTo(sender);
             return;
         }
 
         Optional<Challenger> ch = TTTCore.mg.getChallenger(pl.getUniqueId());
         if (!ch.isPresent()) {
-            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ERROR)
+            TTTCore.locale.getLocalizable("error.round.no-such-player").withPrefix(Color.ALERT)
                     .sendTo(sender);
             return;
         }
 
         String prefix = TTTCore.locale.getLocalizable("fragment.in-arena").withPrefix(Color.INFO)
-                .withReplacements(Color.LABEL + pl.getName() + Color.INFO,
-                        Color.FLAIR + ch.get().getRound().getArena().getName() + Color.INFO).localizeFor(sender);
+                .withReplacements(Color.EM + pl.getName() + Color.INFO,
+                        Color.EM + ch.get().getRound().getArena().getName() + Color.INFO).localizeFor(sender);
 
         sender.sendMessage(prefix + " " + RoleHelper.genRoleMessage(sender, ch.get()));
     }

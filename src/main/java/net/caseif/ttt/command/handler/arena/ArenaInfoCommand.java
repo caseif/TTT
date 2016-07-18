@@ -53,41 +53,41 @@ public class ArenaInfoCommand extends CommandHandler {
     @Override
     public void handle() {
         if (args.length == 1 && TTTCore.config.get(ConfigKey.OPERATING_MODE) != OperatingMode.DEDICATED) {
-            TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.command.too-few-args").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }
 
         String arenaName = args.length > 1 ? args[1] : TTTCore.getDedicatedArena().getName();
         Optional<Arena> arenaOpt = TTTCore.mg.getArena(arenaName);
         if (!arenaOpt.isPresent()) {
-            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }
         Arena arena = arenaOpt.get();
 
         sender.sendMessage(DIVIDER);
-        TTTCore.locale.getLocalizable("info.personal.arena-info.header").withPrefix(Color.LABEL)
-                .withReplacements(Color.FLAIR + arena.getName()).sendTo(sender);
+        TTTCore.locale.getLocalizable("info.personal.arena-info.header").withPrefix(Color.INFO)
+                .withReplacements(Color.EM + arena.getName()).sendTo(sender);
         TTTCore.locale.getLocalizable("info.personal.arena-info.has-round").withPrefix(Color.INFO)
                 .withReplacements(
                         TTTCore.locale.getLocalizable(arena.getRound().isPresent() ? "fragment.yes" : "fragment.no")
-                                .withPrefix(Color.FLAIR)
+                                .withPrefix(Color.EM)
                 ).sendTo(sender);
         if (arena.getRound().isPresent()) {
             Round round = arena.getRound().get();
             TTTCore.locale.getLocalizable("info.personal.arena-info.player-count").withPrefix(Color.INFO)
-                    .withReplacements(Color.FLAIR + round.getChallengers().size()).sendTo(sender);
+                    .withReplacements(Color.EM + round.getChallengers().size()).sendTo(sender);
             TTTCore.locale.getLocalizable("info.personal.arena-info.stage").withPrefix(Color.INFO)
                     .withReplacements(
                             TTTCore.locale.getLocalizable("fragment.stage." + round.getLifecycleStage().getId())
-                                    .withPrefix(Color.FLAIR).localizeFor(sender).toUpperCase()
+                                    .withPrefix(Color.EM).localizeFor(sender).toUpperCase()
                     ).sendTo(sender);
             if (round.getLifecycleStage() != Stage.WAITING) {
                 TTTCore.locale.getLocalizable("info.personal.arena-info.time").withPrefix(Color.INFO)
                         .withReplacements(
                                 TTTCore.locale.getLocalizable("fragment.seconds"
                                         + (round.getRemainingTime() == 1 ? ".singular" : ""))
-                                .withPrefix(Color.FLAIR).withReplacements(round.getRemainingTime() + "")
+                                .withPrefix(Color.EM).withReplacements(round.getRemainingTime() + "")
                         ).sendTo(sender);
             }
         }
@@ -99,12 +99,12 @@ public class ArenaInfoCommand extends CommandHandler {
             TTTCore.locale.getLocalizable("info.personal.arena-info.map-change-time").withPrefix(Color.INFO)
                     .withReplacements(
                             TTTCore.locale.getLocalizable("fragment.minutes" + (remainingTime == 1 ? ".singular" : ""))
-                                    .withPrefix(Color.FLAIR).withReplacements(remainingTime + "")
+                                    .withPrefix(Color.EM).withReplacements(remainingTime + "")
                     ).sendTo(sender);
             int remainingRounds = TTTCore.config.get(ConfigKey.MAP_CYCLE_ROUND_LIMIT)
                     - arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get();
             TTTCore.locale.getLocalizable("info.personal.arena-info.map-change-rounds").withPrefix(Color.INFO)
-                    .withReplacements(Color.FLAIR + remainingRounds).sendTo(sender);
+                    .withReplacements(Color.EM + remainingRounds).sendTo(sender);
 
             if (remainingTime == 0 || remainingRounds == 0) {
                 TTTCore.locale.getLocalizable("info.personal.arena-info.map-change-after-current")

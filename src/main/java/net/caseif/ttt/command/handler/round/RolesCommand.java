@@ -46,21 +46,21 @@ public class RolesCommand extends CommandHandler{
         Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
 
         if (!arena.isPresent()) {
-            TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ERROR)
-                    .withReplacements(Color.FLAIR + arenaName + Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT)
+                    .withReplacements(Color.EM + arenaName + Color.ALERT).sendTo(sender);
             return;
         }
 
         if (!arena.get().getRound().isPresent()) {
-            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ERROR)
-                    .withReplacements(Color.FLAIR + arenaName + Color.ERROR).sendTo(sender);
+            TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ALERT)
+                    .withReplacements(Color.EM + arenaName + Color.ALERT).sendTo(sender);
             return;
         }
 
         TTTCore.locale.getLocalizable("fragment.in-arena-all").withPrefix(Color.INFO)
-                .withReplacements(Color.FLAIR + arena.get().getName() + Color.INFO).sendTo(sender);
+                .withReplacements(Color.EM + arena.get().getName() + Color.INFO).sendTo(sender);
         for (Challenger ch : arena.get().getRound().get().getChallengers()) {
-            sender.sendMessage("    " + Color.LABEL + ch.getName() + ": "
+            sender.sendMessage("    " + Color.SECONDARY + ch.getName() + ": "
                     + RoleHelper.genRoleMessage(sender, ch));
         }
     }
