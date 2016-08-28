@@ -95,7 +95,8 @@ public class HelpCommand extends CommandHandler {
     private void printDescription(CommandRef cmdRef) {
         assert cmdRef != null;
 
-        cmdRef.getDescription().withPrefix(Color.INFO + "/ttt " + cmdRef.getLabel() + " " + ChatColor.WHITE).sendTo(sender);
+        cmdRef.getDescription().withPrefix(Color.INFO + "/ttt " + cmdRef.getLabel() + " " + ChatColor.WHITE)
+                .sendTo(sender);
 
         TTTCore.locale.getLocalizable("fragment.usage")
                 .withPrefix("    " + Color.SECONDARY + ChatColor.ITALIC)

@@ -43,11 +43,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -159,7 +161,7 @@ public final class TTTConfig {
             }
         } catch (IllegalArgumentException ex) {
             TTTCore.getPlugin().getLogger().warning(TTTCore.locale.getLocalizable("error.plugin.config.fallback")
-                            .withReplacements(key, fallback.toString()).localize());
+                    .withReplacements(key, fallback.toString()).localize());
             mode = OperatingMode.STANDARD;
         }
         return mode;
@@ -186,6 +188,7 @@ public final class TTTConfig {
         }));
     }
 
+    // this is essentially a ghetto-ass YAML parser that doesn't support nesting in any form
     public void addMissingKeys() throws InvalidConfigurationException, IOException {
         BufferedReader stockConfig
                 = new BufferedReader(new InputStreamReader(TTTBootstrap.class.getResourceAsStream("/config.yml")));
@@ -197,11 +200,36 @@ public final class TTTConfig {
         String line;
         // Before reading this code, understand that this method reconstructs the user config from scratch using the
         // internal config as a foundation and substituting in user-changed values where possible.
+        String currentList = null;
+        StringBuilder buffer = null; // if this is null while we're in a list, the list isn't present in user config
         while ((line = stockConfig.readLine()) != null) { // iterate the lines of the internal config file
-            if (!line.startsWith("#")) { // check that the line's not a comment
-                if (line.contains(":")) { // check that it's not a list item or something
+            line = line.trim();
+            if (!line.startsWith("#") && !line.isEmpty()) { // check that the line's not a comment or spacer
+                if (currentList != null && !line.startsWith("-")) { // implying we've read through the entire list
+                    if (buffer != null) { // list is in user config - we need to write the user values manually
+                        for (String item : userConfig.getStringList(currentList)) {
+                            sb.append("- ").append(item).append(newlineChar);
+                        }
+                        sb.append(buffer);
+                    }
+                    currentList = null;
+                    buffer = null;
+                }
+                if (buffer != null) { // list is already in user config - don't need to read the stock values
+                    continue;
+                }
+                if (currentList == null && line.contains(":")) { // rudimentary validation
                     //TODO: this method doesn't support nested keys, but it doesn't need to atm anyway
                     String key = line.split(":")[0]; // derive the key
+                    if (TTTCore.getPlugin().getConfig().isList(key)) {
+                        currentList = key;
+                        if (userConfig.isList(key)) {
+                            buffer = new StringBuilder();
+                        }
+                        sb.append(line).append('\n');
+                        continue;
+                    }
+
                     String internalValue = line.substring(key.length() + 1, line.length()).trim(); // derive the value
                     // get the value of the key as defined in the user config
                     String userValue = null;
@@ -209,9 +237,9 @@ public final class TTTConfig {
                         userValue = userConfig.getString(key.trim());
                     } else {
                         Set<String> legacyKeys = getLegacyKeys(key.trim());
-                        for (String leg : legacyKeys) {
-                            if (userConfig.contains(leg)) {
-                                userValue = userConfig.getString(leg);
+                        for (String lgcy : legacyKeys) {
+                            if (userConfig.contains(lgcy)) {
+                                userValue = userConfig.getString(lgcy);
                                 break;
                             }
                         }
@@ -243,7 +271,7 @@ public final class TTTConfig {
                     }
                     if (!equal) { // if they're not effectively equal, reconstruct the line using the user-defined value
                         if (isDouble(userValue)) {
-                            // clean the value-to-write up if it's a double
+                            // clean up the value-to-write if it's a double
                             userValue = BigDecimal.valueOf(Double.parseDouble(userValue))
                                     .stripTrailingZeros().toPlainString();
                         }
@@ -253,7 +281,7 @@ public final class TTTConfig {
                 }
             }
             // just copy the line directly if it hasn't already been reconstructed
-            sb.append(line).append(newlineChar);
+            (buffer != null ? buffer : sb).append(line).append(newlineChar);
         }
         FileHelper.copyFile(userConfigFile, new File(userConfigFile.getParentFile(), "config.yml.old"));
         FileWriter w = new FileWriter(userConfigFile);
