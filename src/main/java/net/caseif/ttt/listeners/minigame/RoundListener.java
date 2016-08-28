@@ -30,6 +30,7 @@ import net.caseif.ttt.util.RoundRestartDaemon;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.CommandRegex;
 import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.constant.Stage;
@@ -52,6 +53,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -64,12 +66,14 @@ public class RoundListener {
         if (event.getStageAfter() == Stage.PREPARING) {
             RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
                     .withPrefix(Color.INFO));
+            runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_PREPARE), event.getRound());
         } else if (event.getStageAfter() == Stage.PLAYING) {
             RoundHelper.startRound(event.getRound());
             if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
                 event.getRound().getMetadata().set(MetadataKey.Round.ROUND_PLAYER_COUNT,
                         event.getRound().getChallengers().size());
             }
+            runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_START), event.getRound());
         } else if (event.getStageAfter() == Stage.ROUND_OVER) {
             RoundHelper.closeRound(event.getRound(), event.getStageBefore() == Stage.PLAYING);
             if (ArenaHelper.shouldArenaCycle(event.getRound().getArena())) {
@@ -88,6 +92,7 @@ public class RoundListener {
                 }
                 TelemetryStorageHelper.pushRound(event.getRound());
             }
+            runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_COOLDOWN), event.getRound());
         }
     }
 
@@ -177,6 +182,8 @@ public class RoundListener {
         event.getRound().getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get()
                 .uninitialize();
 
+        runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_END), event.getRound());
+
         if (event.isNatural()
                 && (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.CONTINUOUS
                 || TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED)) {
@@ -201,6 +208,20 @@ public class RoundListener {
                     .updateAllEntries();
         } else if (event.getStageAfter() == Stage.ROUND_OVER) {
             event.getRound().setConfigValue(ConfigNode.WITHHOLD_SPECTATOR_CHAT, false);
+        }
+    }
+
+    private void runCommands(List<String> commands, Round round) {
+        for (String cmd : commands) {
+            cmd = CommandRegex.ARENA_WILDCARD.matcher(cmd).replaceAll(round.getArena().getId());
+            if (CommandRegex.PLAYER_WILDCARD.matcher(cmd).find()) {
+                for (Challenger ch : round.getChallengers()) {
+                    String chCmd = CommandRegex.PLAYER_WILDCARD.matcher(cmd).replaceAll(ch.getName());
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), chCmd);
+                }
+            } else {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+            }
         }
     }
 

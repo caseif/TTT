@@ -30,6 +30,7 @@ import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.config.OperatingMode;
 import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.CommandRegex;
 import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
@@ -39,12 +40,16 @@ import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
 import com.google.common.eventbus.Subscribe;
+
+import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.event.lobby.PlayerClickLobbySignEvent;
 import net.caseif.flint.event.round.challenger.ChallengerJoinRoundEvent;
 import net.caseif.flint.event.round.challenger.ChallengerLeaveRoundEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 /**
  * Listener for challenger events.
@@ -95,6 +100,8 @@ public class ChallengerListener {
                 .<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get();
         sm.applyScoreboard(event.getChallenger());
         sm.updateEntry(event.getChallenger());
+
+        runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_JOIN), event.getChallenger());
     }
 
     @Subscribe
@@ -137,6 +144,8 @@ public class ChallengerListener {
         if (event.getRound().getChallengers().isEmpty()) {
             event.getRound().end();
         }
+
+        runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_LEAVE), event.getChallenger());
     }
 
     // doesn't technically fit but nbd
@@ -148,6 +157,14 @@ public class ChallengerListener {
             new JoinCommand(player, new String[]{"join", event.getLobbySign().getArena().getId()}).handle();
         } else {
             TTTCore.locale.getLocalizable("error.perms.generic").withPrefix(Color.ALERT).sendTo(player);
+        }
+    }
+
+    private void runCommands(List<String> commands, Challenger challenger) {
+        for (String cmd : commands) {
+            cmd = CommandRegex.PLAYER_WILDCARD.matcher(cmd).replaceAll(challenger.getName());
+            cmd = CommandRegex.ARENA_WILDCARD.matcher(cmd).replaceAll(challenger.getRound().getArena().getId());
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
         }
     }
 

@@ -231,7 +231,11 @@ public final class TTTConfig {
                         if (userConfig.isList(key)) {
                             buffer = new StringBuilder();
                         }
-                        sb.append(line).append('\n');
+                        if (TTTCore.getPlugin().getConfig().getList(key).isEmpty()) {
+                            sb.append(line).append('\n');
+                        } else {
+                            sb.append(key).append(":\n");
+                        }
                         continue;
                     }
 
