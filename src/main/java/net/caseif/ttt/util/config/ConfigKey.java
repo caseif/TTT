@@ -27,6 +27,7 @@ package net.caseif.ttt.util.config;
 import org.bukkit.Material;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ConfigKey<T> {
@@ -52,6 +53,27 @@ public class ConfigKey<T> {
     public static final ConfigKey<Integer> SCANNER_CHARGE_TIME = new ConfigKey<>(Integer.class, "scanner-charge-time");
     public static final ConfigKey<Integer> KILLER_DNA_RANGE = new ConfigKey<>(Integer.class, "killer-dna-range");
     public static final ConfigKey<Integer> KILLER_DNA_BASETIME = new ConfigKey<>(Integer.class, "killer-dna-basetime");
+
+    // Command settings
+    // I am aware that these definitions are disgusting, thank you based Java
+    @SuppressWarnings("unchecked")
+    public static final ConfigKey<List<String>> COMMANDS_ON_JOIN
+            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-join-commands");
+    @SuppressWarnings("unchecked")
+    public static final ConfigKey<List<String>> COMMANDS_ON_LEAVE
+            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-leave-commands");
+    @SuppressWarnings("unchecked")
+    public static final ConfigKey<List<String>> COMMANDS_ON_PREPARE
+            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-prepare-commands");
+    @SuppressWarnings("unchecked")
+    public static final ConfigKey<List<String>> COMMANDS_ON_START
+            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-start-commands");
+    @SuppressWarnings("unchecked")
+    public static final ConfigKey<List<String>> COMMANDS_ON_COOLDOWN
+            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-cooldown-commands");
+    @SuppressWarnings("unchecked")
+    public static final ConfigKey<List<String>> COMMANDS_ON_END
+            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-end-commands");
 
     // Title settings
     public static final ConfigKey<Boolean> SEND_TITLES = new ConfigKey<>(Boolean.class, "send-titles");

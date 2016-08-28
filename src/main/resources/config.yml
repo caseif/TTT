@@ -57,6 +57,38 @@ killer-dna-range: 10
 # When the killer is further, the time will be decreased.
 killer-dna-basetime: 100
 
+####################
+# Command Settings #
+####################
+
+# TTT can run commands on certain timing events. These commands may be defined below as YAML lists.
+# All commands will be executed following the conclusion of their respective events.
+# All commands may include the sequence %a, which will be replaced with the ID of the arena involved in the event.
+
+# Join and leave commands are run once per event. They may include the sequence %p, which will be replaced with the
+# username of the player involved in the event.
+
+# Commands executed when a player joins a round.
+round-join-commands: []
+
+# Commands executed when a player leaves a round.
+round-leave-commands: []
+
+# Lifecycle commands will be run once per event if they do not include the sequence %p. If they do, they will be
+# executed once per player in the round involved in the event.
+
+# Commands executed when the round enters its preparation stage.
+round-prepare-commands: []
+
+# Commands executed when the round enters its playing stage following preparation.
+round-start-commands: []
+
+# Commands executed when the round enters its cooldown stage.
+round-cooldown-commands: []
+
+# Commands executed when the round has concluded its cooldown stage.
+round-end-commands: []
+
 ##################
 # Title Settings #
 ##################

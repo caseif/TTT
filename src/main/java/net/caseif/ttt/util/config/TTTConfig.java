@@ -43,7 +43,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -112,6 +111,8 @@ public final class TTTConfig {
             map.put(key, getBoolean(key.getConfigKey()));
         } else if (key.getType() == String.class) {
             map.put(key, getString(key.getConfigKey()));
+        } else if (key.getType() == List.class) {
+            map.put(key, getList(key.getConfigKey()));
         } else if (key.getType() == Material.class) {
             map.put(key, getMaterial(key.getConfigKey(), ((ConfigKey<Material>) key).getDefault()));
         } else if (key.getType() == OperatingMode.class) {
@@ -142,6 +143,10 @@ public final class TTTConfig {
 
     private double getDouble(String key) {
         return config.getDouble(key);
+    }
+
+    private List<?> getList(String key) {
+        return config.getList(key);
     }
 
     private Material getMaterial(String key, Material fallback) {
