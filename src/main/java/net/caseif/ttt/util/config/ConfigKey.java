@@ -35,11 +35,16 @@ public class ConfigKey<T> {
     private static final Set<ConfigKey<?>> keys = new HashSet<>();
 
     // Round settings
+    public static final ConfigKey<Integer> MINIMUM_PLAYERS = new ConfigKey<>(Integer.class, "minimum-players");
+    public static final ConfigKey<Integer> MAXIMUM_PLAYERS = new ConfigKey<>(Integer.class, "maximum-players");
     public static final ConfigKey<Integer> PREPTIME_SECONDS = new ConfigKey<>(Integer.class, "preptime-seconds");
     public static final ConfigKey<Integer> ROUNDTIME_SECONDS = new ConfigKey<>(Integer.class, "roundtime-seconds");
     public static final ConfigKey<Integer> POSTTIME_SECONDS = new ConfigKey<>(Integer.class, "posttime-seconds");
-    public static final ConfigKey<Integer> MINIMUM_PLAYERS = new ConfigKey<>(Integer.class, "minimum-players");
-    public static final ConfigKey<Integer> MAXIMUM_PLAYERS = new ConfigKey<>(Integer.class, "maximum-players");
+    public static final ConfigKey<Boolean> HASTE = new ConfigKey<>(Boolean.class, "haste");
+    public static final ConfigKey<Integer> HASTE_STARTING_SECONDS
+            = new ConfigKey<>(Integer.class, "haste-starting-seconds");
+    public static final ConfigKey<Integer> HASTE_SECONDS_PER_DEATH
+            = new ConfigKey<>(Integer.class, "haste-seconds-per-death");
     public static final ConfigKey<Boolean> ALLOW_JOIN_AS_SPECTATOR
             = new ConfigKey<>(Boolean.class, "allow-join-as-spectator");
     public static final ConfigKey<Boolean> BROADCAST_WIN_MESSAGES_TO_SERVER

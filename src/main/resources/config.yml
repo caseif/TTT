@@ -9,20 +9,30 @@
 # Round Settings #
 ##################
 
-# The duration of the "preparation" period, before roles are assigned and the round fully starts.
-preptime-seconds: 60
-
-# The duration of rounds after the preparation period.
-roundtime-seconds: 360
-
-# The duration of the period after the round has ended but before it has reset.
-posttime-seconds: 15
-
 # The number of players required for a round to automtically enter its preparation period.
 minimum-players: 3
 
 # The maximum number of players permitted in a round (set to -1 for no limit).
 maximum-players: 32
+
+# The duration of the "preparation" period, before roles are assigned and the round fully starts.
+preptime-seconds: 60
+
+# The duration of the round after the preparation period when Haste Mode is disabled.
+roundtime-seconds: 360
+
+# The duration of the period after the round has ended but before it has reset.
+posttime-seconds: 15
+
+# Whether to enable Haste Mode. In Haste Mode, the initial round time is short. Every death increases it by some amount.
+# Puts pressure on traitors to keep things moving, which is more interesting for the innocent players.
+haste: true
+
+# Replaces roundtime-seconds when Haste Mode is on. Sets the initial time limit.
+haste-starting-seconds: 240
+
+# The number of seconds to be added to the round time for each innocent death while in Haste Mode.
+haste-seconds-per-death: 30
 
 # Whether players may join rounds in-progress as spectators.
 allow-join-as-spectator: true
@@ -61,7 +71,7 @@ killer-dna-basetime: 100
 # Command Settings #
 ####################
 
-# TTT can run commands on certain timing events. These commands may be defined below as YAML lists.
+# TTT can run commands on certain events. These commands may be defined below as YAML lists.
 # All commands will be executed following the conclusion of their respective events.
 # All commands may include the sequence %a, which will be replaced with the ID of the arena involved in the event.
 
