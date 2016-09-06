@@ -116,16 +116,10 @@ public class PlayerInteractListener implements Listener {
             if (ch.get().isSpectating()) {
                 boolean spec = ch.get().getMetadata().has(MetadataKey.Player.PURE_SPECTATOR);
 
-                Localizable prefix = TTTCore.locale.getLocalizable(spec ? "fragment.spectator" : "fragment.dead");
+                Localizable prefixLabel = TTTCore.locale.getLocalizable(spec ? "fragment.spectator" : "fragment.dead");
                 ChatColor color = spec ? ChatColor.GRAY : ChatColor.RED;
-
-                for (Player pl : event.getRecipients()) {
-                    pl.sendMessage(color + "[" + prefix.localizeFor(pl).toUpperCase() + "]" + ChatColor.WHITE
-                            + "<" + event.getPlayer().getDisplayName() + "> "
-                            + event.getMessage());
-                }
-
-                event.getRecipients().clear();
+                String prefix = color + "[" + prefixLabel.localize().toUpperCase() + "]" + ChatColor.RESET;
+                event.setFormat(prefix + event.getFormat());
             }
         }
     }
