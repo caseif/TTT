@@ -86,7 +86,7 @@ public final class InteractHelper {
                 continue;
             }
 
-            if (opener.getMetadata().has(Role.DETECTIVE) && !opener.isSpectating()) { // handle DNA scanning
+            if (opener.getMetadata().containsKey(Role.DETECTIVE) && !opener.isSpectating()) { // handle DNA scanning
                 if (event.getPlayer().getItemInHand() != null
                         && event.getPlayer().getItemInHand().getType() == Material.COMPASS
                         && event.getPlayer().getItemInHand().getItemMeta() != null

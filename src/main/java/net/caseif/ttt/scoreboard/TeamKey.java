@@ -27,8 +27,8 @@ package net.caseif.ttt.scoreboard;
 import com.google.common.base.Objects;
 
 /**
- * Represents a hashable object used to denote the properties of a {@link Team}
- * in a map.
+ * Represents a hashable object used to denote the properties of a
+ * {@link net.caseif.flint.challenger.Team} in a round.
  */
 class TeamKey {
 

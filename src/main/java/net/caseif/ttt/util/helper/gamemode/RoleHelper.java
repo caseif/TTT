@@ -87,7 +87,7 @@ public final class RoleHelper {
         } else if (ch.getTeam().get().getId().equals(Role.TRAITOR)) {
             color = Color.TRAITOR;
             roleFrag = Role.TRAITOR;
-        } else if (ch.getMetadata().has(Role.DETECTIVE)) {
+        } else if (ch.getMetadata().containsKey(Role.DETECTIVE)) {
             color = Color.DETECTIVE;
             roleFrag = Role.DETECTIVE;
         } else {
@@ -98,7 +98,7 @@ public final class RoleHelper {
         String roleMsg = TTTCore.locale.getLocalizable("fragment." + roleFrag).withPrefix(color).localizeFor(sender)
                 .toUpperCase();
 
-        if (ch.isSpectating() && !ch.getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)) {
+        if (ch.isSpectating() && !ch.getMetadata().containsKey(MetadataKey.Player.PURE_SPECTATOR)) {
             roleMsg += TTTCore.locale.getLocalizable("fragment.deceased")
                     .withPrefix(" " + ChatColor.GRAY + "(").localizeFor(sender) + ")";
         }

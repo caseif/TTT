@@ -67,8 +67,8 @@ public class RespawnCommand extends CommandHandler {
             return;
         }
         if (!ch.get().isSpectating()
-                || ch.get().getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)
-                || !ch.get().getMetadata().has(MetadataKey.Player.BODY)) {
+                || ch.get().getMetadata().containsKey(MetadataKey.Player.PURE_SPECTATOR)
+                || !ch.get().getMetadata().containsKey(MetadataKey.Player.BODY)) {
             TTTCore.locale.getLocalizable("error.round.not-dead").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }

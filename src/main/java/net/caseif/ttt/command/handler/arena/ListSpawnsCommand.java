@@ -51,7 +51,7 @@ public class ListSpawnsCommand extends CommandHandler {
         }
         Map<Integer, Location3D> spawns = arena.get().getSpawnPoints();
         TTTCore.locale.getLocalizable("info.personal.arena.listspawns").withPrefix(Color.INFO)
-                .withReplacements(Color.EM + arena.get().getName() + Color.INFO).sendTo(sender);
+                .withReplacements(Color.EM + arena.get().getDisplayName() + Color.INFO).sendTo(sender);
         for (Map.Entry<Integer, Location3D> spawn : spawns.entrySet()) {
             Location3D l = spawn.getValue();
             sender.sendMessage(Color.SECONDARY + "    " + spawn.getKey() + ": " + ChatColor.WHITE

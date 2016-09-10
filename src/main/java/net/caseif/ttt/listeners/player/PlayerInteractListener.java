@@ -79,7 +79,7 @@ public class PlayerInteractListener implements Listener {
         for (HumanEntity he : event.getViewers()) {
             Player p = (Player) he;
             Optional<Challenger> ch = TTTCore.mg.getChallenger(p.getUniqueId());
-            if (ch.isPresent() && ch.get().getMetadata().has(MetadataKey.Player.SEARCHING_BODY)) {
+            if (ch.isPresent() && ch.get().getMetadata().containsKey(MetadataKey.Player.SEARCHING_BODY)) {
                 event.setCancelled(true);
             }
         }
@@ -88,7 +88,7 @@ public class PlayerInteractListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
         Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
-        if (ch.isPresent() && ch.get().getMetadata().has(MetadataKey.Player.SEARCHING_BODY)) {
+        if (ch.isPresent() && ch.get().getMetadata().containsKey(MetadataKey.Player.SEARCHING_BODY)) {
             ch.get().getMetadata().remove(MetadataKey.Player.SEARCHING_BODY);
         }
     }
@@ -114,7 +114,7 @@ public class PlayerInteractListener implements Listener {
         Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
         if (ch.isPresent()) {
             if (ch.get().isSpectating()) {
-                boolean spec = ch.get().getMetadata().has(MetadataKey.Player.PURE_SPECTATOR);
+                boolean spec = ch.get().getMetadata().containsKey(MetadataKey.Player.PURE_SPECTATOR);
 
                 Localizable prefixLabel = TTTCore.locale.getLocalizable(spec ? "fragment.spectator" : "fragment.dead");
                 ChatColor color = spec ? ChatColor.GRAY : ChatColor.RED;
@@ -127,7 +127,7 @@ public class PlayerInteractListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
         Optional<Challenger> ch = TTTCore.mg.getChallenger(event.getPlayer().getUniqueId());
-        if (ch.isPresent() && ch.get().getMetadata().has(MetadataKey.Player.WATCH_GAME_MODE)) {
+        if (ch.isPresent() && ch.get().getMetadata().containsKey(MetadataKey.Player.WATCH_GAME_MODE)) {
             event.setCancelled(true);
             ch.get().getMetadata().remove(MetadataKey.Player.WATCH_GAME_MODE);
         }

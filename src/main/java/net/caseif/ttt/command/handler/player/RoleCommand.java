@@ -62,7 +62,7 @@ public class RoleCommand extends CommandHandler {
 
         String prefix = TTTCore.locale.getLocalizable("fragment.in-arena").withPrefix(Color.INFO)
                 .withReplacements(Color.EM + pl.getName() + Color.INFO,
-                        Color.EM + ch.get().getRound().getArena().getName() + Color.INFO).localizeFor(sender);
+                        Color.EM + ch.get().getRound().getArena().getDisplayName() + Color.INFO).localizeFor(sender);
 
         sender.sendMessage(prefix + " " + RoleHelper.genRoleMessage(sender, ch.get()));
     }

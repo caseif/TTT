@@ -83,12 +83,12 @@ public class RemoveSpawnCommand extends CommandHandler {
                 arena.removeSpawnPoint(index);
                 TTTCore.locale.getLocalizable("info.personal.arena.removespawn.index").withPrefix(Color.INFO)
                         .withReplacements(Color.EM + index + Color.INFO,
-                                Color.EM + arena.getName() + Color.INFO).sendTo(sender);
+                                Color.EM + arena.getDisplayName() + Color.INFO).sendTo(sender);
             } else {
                 arena.removeSpawnPoint(new Location3D(arena.getWorld(), x, y, z));
                 TTTCore.locale.getLocalizable("info.personal.arena.removespawn.coords").withPrefix(Color.INFO)
                         .withReplacements(Color.EM + "(" + x + ", " + y + ", " + z + ")" + Color.INFO,
-                                Color.EM + arena.getName() + Color.INFO).sendTo(sender);
+                                Color.EM + arena.getDisplayName() + Color.INFO).sendTo(sender);
             }
         } catch (IllegalArgumentException ex) {
             TTTCore.locale.getLocalizable("error.arena.removespawn.missing").withPrefix(Color.ALERT).sendTo(sender);

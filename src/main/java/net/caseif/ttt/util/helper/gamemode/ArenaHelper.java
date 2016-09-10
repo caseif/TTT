@@ -88,10 +88,10 @@ public final class ArenaHelper {
         int timeLimit = TTTCore.config.get(ConfigKey.MAP_CYCLE_TIME_LIMIT);
         int roundLimit = TTTCore.config.get(ConfigKey.MAP_CYCLE_ROUND_LIMIT);
 
-        if (!arena.getMetadata().has(ARENA_START_TIME)) {
+        if (!arena.getMetadata().containsKey(ARENA_START_TIME)) {
             arena.getMetadata().set(ARENA_START_TIME, System.currentTimeMillis());
         }
-        if (!arena.getMetadata().has(ARENA_ROUND_TALLY)) {
+        if (!arena.getMetadata().containsKey(ARENA_ROUND_TALLY)) {
             arena.getMetadata().set(ARENA_ROUND_TALLY, 1);
         }
 

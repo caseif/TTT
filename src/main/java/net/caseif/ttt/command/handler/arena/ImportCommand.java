@@ -31,6 +31,7 @@ import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.io.FileHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
 
+import net.caseif.flint.arena.Arena;
 import net.caseif.flint.util.physical.Boundary;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -66,11 +67,8 @@ public class ImportCommand extends CommandHandler {
                 World w = Bukkit.createWorld(new WorldCreator(worldName));
                 if (w != null) {
                     Location l = w.getSpawnLocation();
-                    TTTCore.mg.createArena(
-                            worldName,
-                            LocationHelper.convert(l),
-                            Boundary.INFINITE
-                    );
+                    TTTCore.mg.createBuilder(Arena.class).id(worldName).spawnPoints(LocationHelper.convert(l))
+                            .boundary(Boundary.INFINITE).build();
                     ArenaHelper.updateShuffledArenas();
                     TTTCore.locale.getLocalizable("info.personal.arena.import.success").withPrefix(Color.INFO)
                             .sendTo(sender);

@@ -69,11 +69,11 @@ public class ChallengerListener {
         pl.setHealth(pl.getMaxHealth());
         pl.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 
-        if (!event.getChallenger().getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)) {
+        if (!event.getChallenger().getMetadata().containsKey(MetadataKey.Player.PURE_SPECTATOR)) {
             pl.setGameMode(GameMode.SURVIVAL);
             KarmaHelper.applyKarma(event.getChallenger());
 
-            if (!event.getRound().getMetadata().has(MetadataKey.Round.ROUND_RESTARTING)) {
+            if (!event.getRound().getMetadata().containsKey(MetadataKey.Round.ROUND_RESTARTING)) {
                 RoundHelper.broadcast(event.getRound(),
                         TTTCore.locale.getLocalizable("info.global.arena.event.join").withPrefix(Color.INFO)
                                 .withReplacements(event.getChallenger().getName()
@@ -91,7 +91,7 @@ public class ChallengerListener {
             }
         }
 
-        if (!event.getRound().getMetadata().has(MetadataKey.Round.SCOREBOARD_MANAGER)) {
+        if (!event.getRound().getMetadata().containsKey(MetadataKey.Round.SCOREBOARD_MANAGER)) {
             event.getRound().getMetadata()
                     .set(MetadataKey.Round.SCOREBOARD_MANAGER, new ScoreboardManager(event.getRound()));
         }
@@ -104,13 +104,14 @@ public class ChallengerListener {
         runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_JOIN), event.getChallenger());
     }
 
+    @SuppressWarnings("deprecation")
     @Subscribe
     public void onChallengerLeaveRound(ChallengerLeaveRoundEvent event) {
         try {
             Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
             pl.setScoreboard(TTTCore.getPlugin().getServer().getScoreboardManager().getNewScoreboard());
 
-            if (event.getChallenger().getMetadata().has(MetadataKey.Player.SEARCHING_BODY)) {
+            if (event.getChallenger().getMetadata().containsKey(MetadataKey.Player.SEARCHING_BODY)) {
                 pl.closeInventory();
             }
 
@@ -121,11 +122,11 @@ public class ChallengerListener {
         }
 
         if (!event.getRound().isEnding()) {
-            if (!event.getChallenger().getMetadata().has(MetadataKey.Player.PURE_SPECTATOR)) {
+            if (!event.getChallenger().getMetadata().containsKey(MetadataKey.Player.PURE_SPECTATOR)) {
                 KarmaHelper.saveKarma(event.getChallenger());
                 RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.arena.event.leave")
                         .withPrefix(Color.INFO).withReplacements(event.getChallenger().getName(),
-                                Color.EM + event.getChallenger().getRound().getArena().getName()
+                                Color.EM + event.getChallenger().getRound().getArena().getDisplayName()
                                         + Color.INFO));
 
                 if (event.getRound().getLifecycleStage() == Stage.PREPARING

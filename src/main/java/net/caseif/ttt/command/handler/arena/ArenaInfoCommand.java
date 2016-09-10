@@ -57,7 +57,7 @@ public class ArenaInfoCommand extends CommandHandler {
             return;
         }
 
-        String arenaName = args.length > 1 ? args[1] : TTTCore.getDedicatedArena().getName();
+        String arenaName = args.length > 1 ? args[1] : TTTCore.getDedicatedArena().getDisplayName();
         Optional<Arena> arenaOpt = TTTCore.mg.getArena(arenaName);
         if (!arenaOpt.isPresent()) {
             TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT).sendTo(sender);
@@ -67,7 +67,7 @@ public class ArenaInfoCommand extends CommandHandler {
 
         sender.sendMessage(DIVIDER);
         TTTCore.locale.getLocalizable("info.personal.arena-info.header").withPrefix(Color.INFO)
-                .withReplacements(Color.EM + arena.getName()).sendTo(sender);
+                .withReplacements(Color.EM + arena.getDisplayName()).sendTo(sender);
         TTTCore.locale.getLocalizable("info.personal.arena-info.has-round").withPrefix(Color.INFO)
                 .withReplacements(
                         TTTCore.locale.getLocalizable(arena.getRound().isPresent() ? "fragment.yes" : "fragment.no")

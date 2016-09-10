@@ -174,7 +174,7 @@ public final class DeathHelper {
                 ch.getUniqueId(),
                 ch.getName(),
                 killer != null ? killer.getUniqueId() : null,
-                ch.getMetadata().has(Role.DETECTIVE)
+                ch.getMetadata().containsKey(Role.DETECTIVE)
                         ? Role.DETECTIVE
                         : (ch.getTeam().isPresent() ? ch.getTeam().get().getId() : null),
                 System.currentTimeMillis(),

@@ -33,6 +33,8 @@ import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+
+import net.caseif.flint.arena.Arena;
 import net.caseif.flint.util.physical.Boundary;
 import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.block.Block;
@@ -112,8 +114,8 @@ public class WizardListener implements Listener {
                                     .sendTo(event.getPlayer());
                             break;
                         }
-                        TTTCore.mg.createArena((String) info[Stage.WIZARD_ID], spawn,
-                                boundary);
+                        TTTCore.mg.createBuilder(Arena.class).id((String) info[Stage.WIZARD_ID]).spawnPoints(spawn)
+                                .boundary(boundary).build();
                         ArenaHelper.updateShuffledArenas();
                         event.getPlayer().sendMessage(DIVIDER);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.success").withPrefix(Color.INFO)

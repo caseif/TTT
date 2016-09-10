@@ -119,10 +119,10 @@ public class ScoreboardManager {
 
     private void applyTeam(Challenger ch) {
         String role = RoleHelper.isTraitor(ch) ? Role.TRAITOR
-                : ch.getMetadata().has(Role.DETECTIVE) ? Role.DETECTIVE
+                : ch.getMetadata().containsKey(Role.DETECTIVE) ? Role.DETECTIVE
                 : Role.INNOCENT;
         String alive = !ch.isSpectating() ? AliveStatus.ALIVE
-                : ch.getMetadata().has(MetadataKey.Player.BODY_FOUND) ? AliveStatus.CONFIRMED_DEAD
+                : ch.getMetadata().containsKey(MetadataKey.Player.BODY_FOUND) ? AliveStatus.CONFIRMED_DEAD
                 : AliveStatus.MIA;
         String teamName = role.charAt(0) + "" + alive.charAt(0);
         ch.getMetadata().set(MetadataKey.Player.TEAM_NAME, teamName);

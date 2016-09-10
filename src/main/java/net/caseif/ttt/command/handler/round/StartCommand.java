@@ -55,13 +55,13 @@ public class StartCommand extends CommandHandler {
                     round.setLifecycleStage(Stage.PLAYING, true);
                     TTTCore.locale.getLocalizable("info.personal.arena.set-stage.playing.success")
                             .withPrefix(Color.INFO)
-                            .withReplacements(Color.EM + arena.get().getName() + Color.INFO).sendTo(sender);
+                            .withReplacements(Color.EM + arena.get().getDisplayName() + Color.INFO).sendTo(sender);
                 } else {
                     TTTCore.locale.getLocalizable("error.arena.too-few-players").withPrefix(Color.ALERT).sendTo(sender);
                 }
             } else {
                 TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ALERT)
-                        .withReplacements(Color.EM + arena.get().getName() + Color.INFO).sendTo(sender);
+                        .withReplacements(Color.EM + arena.get().getDisplayName() + Color.INFO).sendTo(sender);
             }
         } else {
             TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ALERT)

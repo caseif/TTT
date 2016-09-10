@@ -60,7 +60,7 @@ public class LeaveCommand extends CommandHandler {
 
         Optional<Challenger> ch = TTTCore.mg.getChallenger(((Player) sender).getUniqueId());
         if (ch.isPresent()) {
-            String roundName = ch.get().getRound().getArena().getName();
+            String roundName = ch.get().getRound().getArena().getDisplayName();
             ch.get().removeFromRound();
             TTTCore.locale.getLocalizable("info.personal.arena.leave.success").withPrefix(Color.INFO)
                     .withReplacements(Color.EM + roundName + Color.INFO).sendTo(sender);

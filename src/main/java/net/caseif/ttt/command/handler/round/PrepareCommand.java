@@ -54,7 +54,7 @@ public class PrepareCommand extends CommandHandler {
                 if (round.getChallengers().size() > 1) {
                     round.setLifecycleStage(Stage.PREPARING, true);
                     TTTCore.locale.getLocalizable("info.personal.arena.set-stage.preparing.success")
-                            .withPrefix(Color.INFO).withReplacements(Color.EM + arena.get().getName() + Color.ALERT)
+                            .withPrefix(Color.INFO).withReplacements(Color.EM + arena.get().getDisplayName() + Color.ALERT)
                             .sendTo(sender);
                 } else {
                     TTTCore.locale.getLocalizable("error.arena.too-few-players").withPrefix(Color.ALERT).sendTo(sender);

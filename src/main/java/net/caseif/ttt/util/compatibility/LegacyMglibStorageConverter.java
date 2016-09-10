@@ -24,6 +24,8 @@
 
 package net.caseif.ttt.util.compatibility;
 
+import static com.sun.org.apache.xerces.internal.impl.xpath.regex.CaseInsensitiveMap.get;
+
 import net.caseif.ttt.TTTCore;
 
 import com.google.common.base.Optional;
@@ -107,10 +109,10 @@ public final class LegacyMglibStorageConverter {
                     if (arenaId.contains("-converted")) {
                         TTTCore.log.warning("Converted arena \"" + finalId + "\" with new ID \"" + arenaId + "\"");
                     }
-                    Arena arena = TTTCore.mg.createArena(finalId, displayName, spawnPoints.get(0), Boundary.INFINITE);
-                    for (int i = 1; i < spawnPoints.size(); i++) {
-                        arena.addSpawnPoint(spawnPoints.get(i));
-                    }
+                    Location3D[] spawnArr = new Location3D[spawnPoints.size()];
+                    spawnPoints.toArray(spawnArr);
+                    Arena arena = TTTCore.mg.createBuilder(Arena.class).id(finalId).displayName(displayName)
+                            .spawnPoints(spawnArr).boundary(Boundary.INFINITE).build();
                     count++;
                 }
                 TTTCore.log.info("Successfully converted " + count + " legacy arenas");

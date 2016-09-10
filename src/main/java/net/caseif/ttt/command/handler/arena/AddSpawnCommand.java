@@ -85,7 +85,7 @@ public class AddSpawnCommand extends CommandHandler {
             }
             arena.get().addSpawnPoint(loc);
             TTTCore.locale.getLocalizable("info.personal.arena.addspawn").withPrefix(Color.INFO)
-                    .withReplacements("(" + x + ", " + y + ", " + z + ")", arena.get().getName()).sendTo(sender);
+                    .withReplacements("(" + x + ", " + y + ", " + z + ")", arena.get().getDisplayName()).sendTo(sender);
         } else {
             TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT).sendTo(sender);
         }

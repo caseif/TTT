@@ -143,13 +143,13 @@ public final class RoundHelper {
         KarmaHelper.saveKarma(round);
 
         if (sendWinMessages) {
-            boolean tVic = round.getMetadata().has(MetadataKey.Round.TRAITOR_VICTORY);
+            boolean tVic = round.getMetadata().containsKey(MetadataKey.Round.TRAITOR_VICTORY);
             String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
 
             Localizable msg = TTTCore.locale.getLocalizable("info.global.round.event.end."
                     + (tVic ? Role.TRAITOR : Role.INNOCENT))
                     .withPrefix(color)
-                    .withReplacements(Color.EM + round.getArena().getName() + color);
+                    .withReplacements(Color.EM + round.getArena().getDisplayName() + color);
             if (TTTCore.config.get(ConfigKey.BROADCAST_WIN_MESSAGES_TO_SERVER)) {
                 msg.broadcast();
             } else {
@@ -173,7 +173,7 @@ public final class RoundHelper {
         assert pl != null;
         pl.getInventory().clear();
         pl.getInventory().addItem(ITEM_CROWBAR, ITEM_GUN, ITEM_AMMO);
-        if (chal.getMetadata().has(Role.DETECTIVE)) {
+        if (chal.getMetadata().containsKey(Role.DETECTIVE)) {
             pl.getInventory().addItem(ITEM_DNA_SCANNER);
         }
     }

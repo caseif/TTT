@@ -83,11 +83,11 @@ public class RoundListener {
             }
 
             if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
-                if (!event.getRound().getMetadata().has(MetadataKey.Round.ROUND_DURATION)) {
+                if (!event.getRound().getMetadata().containsKey(MetadataKey.Round.ROUND_DURATION)) {
                     event.getRound().getMetadata()
                             .set(MetadataKey.Round.ROUND_DURATION, event.getStageBefore().getDuration());
                 }
-                if (!event.getRound().getMetadata().has(MetadataKey.Round.ROUND_RESULT)) {
+                if (!event.getRound().getMetadata().containsKey(MetadataKey.Round.ROUND_RESULT)) {
                     event.getRound().getMetadata().set(MetadataKey.Round.ROUND_RESULT, 2);
                 }
                 TelemetryStorageHelper.pushRound(event.getRound());
