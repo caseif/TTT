@@ -24,6 +24,7 @@
 
 package net.caseif.ttt;
 
+import static net.caseif.ttt.util.constant.PluginInfo.FLINT_MAJOR_VERSION;
 import static net.caseif.ttt.util.constant.PluginInfo.MIN_FLINT_VERSION;
 import static net.caseif.ttt.util.constant.PluginInfo.STEEL_CURSEFORGE_PROJECT_ID;
 import static net.caseif.ttt.util.constant.PluginInfo.TTT_CURSEFORGE_PROJECT_ID;
@@ -77,10 +78,22 @@ public class TTTBootstrap extends JavaPlugin {
         return super.getFile();
     }
 
-    public void fail() {
+    public void failMinor() {
         locale.setDefaultLocale(getConfig().getString("locale"));
         getLogger().warning(locale.getLocalizable("error.plugin.flint")
                 .withReplacements(MIN_FLINT_VERSION + "").localize());
+        fail();
+    }
+
+    public void failMajor() {
+        locale.setDefaultLocale(getConfig().getString("locale"));
+        getLogger().warning(locale.getLocalizable("error.plugin.flint.major")
+                .withReplacements(Bukkit.getPluginManager().getPlugin("Steel").getDescription().getVersion(),
+                        FLINT_MAJOR_VERSION + "").localize());
+        fail();
+    }
+
+    private void fail() {
         ListenerManager.registerSpecialEventListeners();
         getCommand("ttt").setExecutor(new SpecialCommandManager());
     }

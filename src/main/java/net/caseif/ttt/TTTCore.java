@@ -24,6 +24,7 @@
 
 package net.caseif.ttt;
 
+import static net.caseif.ttt.util.constant.PluginInfo.FLINT_MAJOR_VERSION;
 import static net.caseif.ttt.util.constant.PluginInfo.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.command.CommandManager;
@@ -111,8 +112,12 @@ public class TTTCore {
 
         config = new TTTConfig(plugin.getConfig());
 
+        if (FlintCore.getMajorVersion() != FLINT_MAJOR_VERSION) {
+            TTTBootstrap.INSTANCE.failMajor();
+        }
+
         if (FlintCore.getApiRevision() < MIN_FLINT_VERSION) {
-            TTTBootstrap.INSTANCE.fail();
+            TTTBootstrap.INSTANCE.failMinor();
             return;
         }
 

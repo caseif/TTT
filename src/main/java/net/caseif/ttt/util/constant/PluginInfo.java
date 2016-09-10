@@ -26,7 +26,8 @@ package net.caseif.ttt.util.constant;
 
 public class PluginInfo {
 
-    public static final int MIN_FLINT_VERSION = 2;
+    public static final int MIN_FLINT_VERSION = 4;
+    public static final int FLINT_MAJOR_VERSION = 1;
     public static final int TTT_CURSEFORGE_PROJECT_ID = 52474;
     public static final int STEEL_CURSEFORGE_PROJECT_ID = 95203;
 
