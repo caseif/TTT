@@ -24,23 +24,16 @@
 
 package net.caseif.ttt.util;
 
-import net.gravitydevelopment.updater.Updater;
+import net.caseif.ttt.lib.net.gravitydevelopment.updater.Updater;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.lang.reflect.Field;
 
 public class FreshUpdater extends Updater {
 
     public FreshUpdater(Plugin plugin, int id, File file, UpdateType type, UpdateCallback callback, boolean announce) {
         super(plugin, id, file, type, callback, announce);
-        try {
-            Field updateFolder = Updater.class.getDeclaredField("updateFolder");
-            updateFolder.setAccessible(true);
-            updateFolder.set(this, file.getParentFile());
-        } catch (NoSuchFieldException | IllegalAccessException ex) {
-            ex.printStackTrace();
-        }
+        this.updateFolder = file.getParentFile();
     }
 
 }
