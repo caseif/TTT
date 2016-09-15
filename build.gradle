@@ -45,10 +45,6 @@ repositories {
         url 'http://repo.caseif.net/content/groups/public/'
     }
     maven {
-        name = 'gravity'
-        url 'http://repo.gravitydevelopment.net'
-    }
-    maven {
         name = 'mcstats'
         url 'http://repo.mcstats.org/content/repositories/public'
     }
@@ -64,7 +60,6 @@ ext {
     rosetta = 'net.caseif.rosetta:rosetta:1.1.3'
     crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.2'
     jtelemetry = 'net.caseif.jtelemetry:jtelemetry:1.1.0'
-    updater = 'net.gravitydevelopment.updater:updater:2.3'
     metrics = 'org.mcstats.bukkit:metrics:R8-SNAPSHOT'
     jnbt = 'org.jnbt:jnbt:1.1'
 }
@@ -76,7 +71,6 @@ dependencies {
     compile rosetta
     compile crosstitles
     compile jtelemetry
-    compile updater
     compile metrics
     compile jnbt
 
@@ -103,7 +97,6 @@ shadowJar {
         include dependency(rosetta)
         include dependency(crosstitles)
         include dependency(jtelemetry)
-        include dependency(updater)
         include dependency(metrics)
         include dependency(jnbt)
     }
@@ -112,7 +105,6 @@ shadowJar {
     relocate('net.caseif.rosetta', 'net.caseif.ttt.lib.net.caseif.rosetta')
     relocate('net.caseif.crosstitles', 'net.caseif.ttt.lib.net.caseif.crosstitles')
     relocate('net.caseif.jtelemetry', 'net.caseif.ttt.lib.net.caseif.jtelemetry')
-    relocate('net.gravitydevelopment.updater', 'net.caseif.ttt.lib.net.gravitydevelopment.updater')
     relocate('org.mcstats', 'net.caseif.ttt.lib.org.mcstats')
     relocate('org.jnbt', 'net.caseif.ttt.lib.org.jnbt')
 }

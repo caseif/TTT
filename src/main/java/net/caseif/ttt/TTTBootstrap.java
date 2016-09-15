@@ -30,11 +30,11 @@ import static net.caseif.ttt.util.constant.PluginInfo.STEEL_CURSEFORGE_PROJECT_I
 import static net.caseif.ttt.util.constant.PluginInfo.TTT_CURSEFORGE_PROJECT_ID;
 
 import net.caseif.ttt.command.SpecialCommandManager;
+import net.caseif.ttt.lib.net.gravitydevelopment.updater.Updater;
 import net.caseif.ttt.listeners.ListenerManager;
 import net.caseif.ttt.util.FreshUpdater;
 
 import net.caseif.rosetta.LocaleManager;
-import net.gravitydevelopment.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
