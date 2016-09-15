@@ -5,6 +5,7 @@
     <!-- global suppressions -->
     <suppress checks="AbbreviationAsWordInName" files="^src[\\/](main|test)[\\/]java"/>
     <suppress checks="JavadocMethod" files="^src[\\/](main|test)[\\/]java"/>
+    <suppress checks=".*" files="Updater\.java"/>
 
     <!-- specific suppressions -->
     <suppress checks="Indentation" files="package-info\.java"/>
