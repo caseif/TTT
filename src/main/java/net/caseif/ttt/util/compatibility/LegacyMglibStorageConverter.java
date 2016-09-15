@@ -24,8 +24,6 @@
 
 package net.caseif.ttt.util.compatibility;
 
-import static com.sun.org.apache.xerces.internal.impl.xpath.regex.CaseInsensitiveMap.get;
-
 import net.caseif.ttt.TTTCore;
 
 import com.google.common.base.Optional;
