@@ -24,6 +24,9 @@
 
 package net.caseif.ttt.listeners.minigame;
 
+import static net.caseif.ttt.util.helper.gamemode.RoleHelper.isTraitor;
+
+import com.google.common.base.Predicate;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.RoundRestartDaemon;
@@ -61,19 +64,61 @@ import java.util.UUID;
  */
 public class RoundListener {
 
+    private static final Predicate<Challenger> PRED_WIN = new Predicate<Challenger>() {
+        @Override
+        public boolean apply(Challenger chal) {
+            return isTraitor(chal) == chal.getRound().getMetadata().containsKey(MetadataKey.Round.TRAITOR_VICTORY);
+        }
+    };
+
+    private static final Predicate<Challenger> PRED_LOSE = new Predicate<Challenger>() {
+        @Override
+        public boolean apply(Challenger chal) {
+            return !PRED_WIN.apply(chal);
+        }
+    };
+
+    private static final Predicate<Challenger> PRED_I = new Predicate<Challenger>() {
+        @Override
+        public boolean apply(Challenger chal) {
+            return !isTraitor(chal);
+        }
+    };
+
+    private static final Predicate<Challenger> PRED_IND = new Predicate<Challenger>() {
+        @Override
+        public boolean apply(Challenger chal) {
+            return !isTraitor(chal) && !chal.getMetadata().containsKey(Role.DETECTIVE);
+        }
+    };
+
+    private static final Predicate<Challenger> PRED_D = new Predicate<Challenger>() {
+        @Override
+        public boolean apply(Challenger chal) {
+            return chal.getMetadata().containsKey(Role.DETECTIVE);
+        }
+    };
+
+    private static final Predicate<Challenger> PRED_T = new Predicate<Challenger>() {
+        @Override
+        public boolean apply(Challenger chal) {
+            return isTraitor(chal);
+        }
+    };
+
     @Subscribe
     public void onRoundChangeLifecycleStage(RoundChangeLifecycleStageEvent event) {
         if (event.getStageAfter() == Stage.PREPARING) {
             RoundHelper.broadcast(event.getRound(), TTTCore.locale.getLocalizable("info.global.round.event.starting")
                     .withPrefix(Color.INFO));
-            runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_PREPARE), event.getRound());
+            runCommands(TTTCore.config.get(ConfigKey.PREPARE_CMDS), event.getRound());
         } else if (event.getStageAfter() == Stage.PLAYING) {
             RoundHelper.startRound(event.getRound());
             if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
                 event.getRound().getMetadata().set(MetadataKey.Round.ROUND_PLAYER_COUNT,
                         event.getRound().getChallengers().size());
             }
-            runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_START), event.getRound());
+            runCommands(TTTCore.config.get(ConfigKey.START_CMDS), event.getRound());
         } else if (event.getStageAfter() == Stage.ROUND_OVER) {
             RoundHelper.closeRound(event.getRound(), event.getStageBefore() == Stage.PLAYING);
             if (ArenaHelper.shouldArenaCycle(event.getRound().getArena())) {
@@ -92,7 +137,10 @@ public class RoundListener {
                 }
                 TelemetryStorageHelper.pushRound(event.getRound());
             }
-            runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_COOLDOWN), event.getRound());
+            runCommands(TTTCore.config.get(ConfigKey.COOLDOWN_CMDS), event.getRound());
+            if (!TTTCore.config.get(ConfigKey.EXEC_AFTER_COOLDOWN)) {
+                runWinLoseCmds(event.getRound());
+            }
         }
     }
 
@@ -111,7 +159,7 @@ public class RoundListener {
                 for (Challenger ch : event.getRound().getChallengers()) {
                     if (!(tLeft && iLeft)) {
                         if (!ch.isSpectating()) {
-                            if (RoleHelper.isTraitor(ch)) {
+                            if (isTraitor(ch)) {
                                 tLeft = true;
                             } else {
                                 iLeft = true;
@@ -182,7 +230,10 @@ public class RoundListener {
         event.getRound().getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get()
                 .uninitialize();
 
-        runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_END), event.getRound());
+        runCommands(TTTCore.config.get(ConfigKey.END_CMDS), event.getRound());
+        if (TTTCore.config.get(ConfigKey.EXEC_AFTER_COOLDOWN)) {
+            runWinLoseCmds(event.getRound());
+        }
 
         if (event.isNatural()
                 && (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.CONTINUOUS
@@ -212,17 +263,43 @@ public class RoundListener {
     }
 
     private void runCommands(List<String> commands, Round round) {
+        runCommands(commands, round, false);
+    }
+
+    @SafeVarargs
+    private final void runCommands(List<String> commands, Round round, boolean requireParam,
+                                   Predicate<Challenger>... preds) {
         for (String cmd : commands) {
             cmd = CommandRegex.ARENA_WILDCARD.matcher(cmd).replaceAll(round.getArena().getId());
             if (CommandRegex.PLAYER_WILDCARD.matcher(cmd).find()) {
                 for (Challenger ch : round.getChallengers()) {
+                    for (Predicate<Challenger> pred : preds) {
+                        if (!pred.apply(ch)) {
+                            continue;
+                        }
+                    }
                     String chCmd = CommandRegex.PLAYER_WILDCARD.matcher(cmd).replaceAll(ch.getName());
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), chCmd);
                 }
-            } else {
+            } else if (!requireParam) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
             }
         }
+    }
+
+    // ew
+    private void runWinLoseCmds(Round round) {
+        runCommands(TTTCore.config.get(ConfigKey.WIN_CMDS), round, true, PRED_WIN);
+        runCommands(TTTCore.config.get(ConfigKey.WIN_I_CMDS), round, true, PRED_WIN, PRED_I);
+        runCommands(TTTCore.config.get(ConfigKey.WIN_IND_CMDS), round, true, PRED_WIN, PRED_IND);
+        runCommands(TTTCore.config.get(ConfigKey.WIN_D_CMDS), round, true, PRED_WIN, PRED_D);
+        runCommands(TTTCore.config.get(ConfigKey.WIN_T_CMDS), round, true, PRED_WIN, PRED_T);
+
+        runCommands(TTTCore.config.get(ConfigKey.LOSE_CMDS), round, true, PRED_LOSE);
+        runCommands(TTTCore.config.get(ConfigKey.LOSE_I_CMDS), round, true, PRED_LOSE, PRED_I);
+        runCommands(TTTCore.config.get(ConfigKey.LOSE_IND_CMDS), round, true, PRED_LOSE, PRED_IND);
+        runCommands(TTTCore.config.get(ConfigKey.LOSE_D_CMDS), round, true, PRED_LOSE, PRED_D);
+        runCommands(TTTCore.config.get(ConfigKey.LOSE_T_CMDS), round, true, PRED_LOSE, PRED_T);
     }
 
 }

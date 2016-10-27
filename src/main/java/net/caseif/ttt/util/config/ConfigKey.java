@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("unchecked")
 public class ConfigKey<T> {
 
     private static final Set<ConfigKey<?>> keys = new HashSet<>();
@@ -61,24 +62,39 @@ public class ConfigKey<T> {
 
     // Command settings
     // I am aware that these definitions are disgusting, thank you based Java
-    @SuppressWarnings("unchecked")
-    public static final ConfigKey<List<String>> COMMANDS_ON_JOIN
-            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-join-commands");
-    @SuppressWarnings("unchecked")
-    public static final ConfigKey<List<String>> COMMANDS_ON_LEAVE
-            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-leave-commands");
-    @SuppressWarnings("unchecked")
-    public static final ConfigKey<List<String>> COMMANDS_ON_PREPARE
-            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-prepare-commands");
-    @SuppressWarnings("unchecked")
-    public static final ConfigKey<List<String>> COMMANDS_ON_START
-            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-start-commands");
-    @SuppressWarnings("unchecked")
-    public static final ConfigKey<List<String>> COMMANDS_ON_COOLDOWN
-            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-cooldown-commands");
-    @SuppressWarnings("unchecked")
-    public static final ConfigKey<List<String>> COMMANDS_ON_END
-            = new ConfigKey<>((Class<List<String>>) (Class<?>) List.class, "round-end-commands");
+    public static final ConfigKey<List<String>> JOIN_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-join-cmds");
+    public static final ConfigKey<List<String>> LEAVE_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-leave-cmds");
+    public static final ConfigKey<List<String>> WIN_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-win-cmds");
+    public static final ConfigKey<List<String>> WIN_I_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-win-innocent-cmds");
+    public static final ConfigKey<List<String>> WIN_IND_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-win-innocentnd-cmds");
+    public static final ConfigKey<List<String>> WIN_D_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-win-detective-cmds");
+    public static final ConfigKey<List<String>> WIN_T_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-win-traitor-cmds");
+    public static final ConfigKey<List<String>> LOSE_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-lose-cmds");
+    public static final ConfigKey<List<String>> LOSE_I_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-lose-innocent-cmds");
+    public static final ConfigKey<List<String>> LOSE_IND_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-lose-innocentnd-cmds");
+    public static final ConfigKey<List<String>> LOSE_D_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-lose-detective-cmds");
+    public static final ConfigKey<List<String>> LOSE_T_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-lose-traitor-cmds");
+    public static final ConfigKey<Boolean> EXEC_AFTER_COOLDOWN = new ConfigKey<>(Boolean.class, "exec-after-cooldown");
+    public static final ConfigKey<List<String>> PREPARE_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "round-prepare-cmds");
+    public static final ConfigKey<List<String>> START_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "round-start-cmds");
+    public static final ConfigKey<List<String>> COOLDOWN_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "round-cooldown-cmds");
+    public static final ConfigKey<List<String>> END_CMDS
+            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "round-end-cmds");
 
     // Title settings
     public static final ConfigKey<Boolean> SEND_TITLES = new ConfigKey<>(Boolean.class, "send-titles");

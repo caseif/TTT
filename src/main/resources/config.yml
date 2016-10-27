@@ -75,29 +75,62 @@ killer-dna-basetime: 100
 # All commands will be executed following the conclusion of their respective events.
 # All commands may include the sequence %a, which will be replaced with the ID of the arena involved in the event.
 
-# Join and leave commands are run once per event. They may include the sequence %p, which will be replaced with the
+# Join and leave commands are run once per event. They *must* include the sequence %p, which will be replaced with the
 # username of the player involved in the event.
 
 # Commands executed when a player joins a round.
-round-join-commands: []
+player-join-cmds: []
 
 # Commands executed when a player leaves a round.
-round-leave-commands: []
+player-leave-cmds: []
+
+# End status commands will be run once per player in the round involved in the event. They *must* include the
+# sequence %p, which will be replaced with the respective username of each player involved the event.
+
+# Commands executed upon all players who win a round.
+player-win-cmds: []
+
+# Commands executed upon all players who lose a round.
+player-lose-cmds: []
+
+# In the interest of not documenting each key individually:
+#
+# player-win-x-cmds: executed upon players who win a round.
+# player-lose-x-cmds: executed upon players who win a round.
+#
+# player-x-innocent-cmds: executed upon players who win/lose a round as an innocent, including detectives.
+# player-x-innocentnd-cmds: executed upon players who win/lose a round as an innocent, *not* including detectives.
+# player-x-detective-cmds: executed upon players who win/lose a round as a detective.
+# player-x-traitor-cmds: executed upon players who win/lose a round as a traitor.
+
+player-win-innocent-cmds: []
+player-win-innocentnd-cmds: []
+player-win-detective-cmds: []
+player-win-traitor-cmds: []
+player-lose-innocent-cmds: []
+player-lose-innocentnd-cmds: []
+player-lose-detective-cmds: []
+player-lose-traitor-cmds: []
+
+# If true, the above end status commands will be executed after the cooldown period. If false, they will be executed
+# upon starting the cooldown period, before players are removed from the arena.
+exec-after-cooldown: true
 
 # Lifecycle commands will be run once per event if they do not include the sequence %p. If they do, they will be
-# executed once per player in the round involved in the event.
+# run once per player in the round involved in the event, and the sequence will be replaced with each respective player
+# name.
 
 # Commands executed when the round enters its preparation stage.
-round-prepare-commands: []
+round-prepare-cmds: []
 
 # Commands executed when the round enters its playing stage following preparation.
-round-start-commands: []
+round-start-cmds: []
 
 # Commands executed when the round enters its cooldown stage.
-round-cooldown-commands: []
+round-cooldown-cmds: []
 
 # Commands executed when the round has concluded its cooldown stage.
-round-end-commands: []
+round-end-cmds: []
 
 ##################
 # Title Settings #

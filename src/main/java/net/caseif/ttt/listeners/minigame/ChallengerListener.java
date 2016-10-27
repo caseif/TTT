@@ -101,7 +101,7 @@ public class ChallengerListener {
         sm.applyScoreboard(event.getChallenger());
         sm.updateEntry(event.getChallenger());
 
-        runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_JOIN), event.getChallenger());
+        runCommands(TTTCore.config.get(ConfigKey.JOIN_CMDS), event.getChallenger());
     }
 
     @SuppressWarnings("deprecation")
@@ -146,7 +146,7 @@ public class ChallengerListener {
             event.getRound().end();
         }
 
-        runCommands(TTTCore.config.get(ConfigKey.COMMANDS_ON_LEAVE), event.getChallenger());
+        runCommands(TTTCore.config.get(ConfigKey.LEAVE_CMDS), event.getChallenger());
     }
 
     // doesn't technically fit but nbd
