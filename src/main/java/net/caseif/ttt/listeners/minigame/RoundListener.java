@@ -26,7 +26,6 @@ package net.caseif.ttt.listeners.minigame;
 
 import static net.caseif.ttt.util.helper.gamemode.RoleHelper.isTraitor;
 
-import com.google.common.base.Predicate;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.RoundRestartDaemon;
@@ -39,9 +38,9 @@ import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
-import net.caseif.ttt.util.helper.gamemode.RoleHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 
+import com.google.common.base.Predicate;
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.challenger.Team;
@@ -272,10 +271,11 @@ public class RoundListener {
         for (String cmd : commands) {
             cmd = CommandRegex.ARENA_WILDCARD.matcher(cmd).replaceAll(round.getArena().getId());
             if (CommandRegex.PLAYER_WILDCARD.matcher(cmd).find()) {
+                outer:
                 for (Challenger ch : round.getChallengers()) {
                     for (Predicate<Challenger> pred : preds) {
                         if (!pred.apply(ch)) {
-                            continue;
+                            continue outer;
                         }
                     }
                     String chCmd = CommandRegex.PLAYER_WILDCARD.matcher(cmd).replaceAll(ch.getName());

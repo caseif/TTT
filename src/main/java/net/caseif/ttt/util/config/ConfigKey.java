@@ -24,13 +24,14 @@
 
 package net.caseif.ttt.util.config;
 
+import com.google.common.reflect.TypeToken;
 import org.bukkit.Material;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"serial", "unchecked"})
 public class ConfigKey<T> {
 
     private static final Set<ConfigKey<?>> keys = new HashSet<>();
@@ -61,40 +62,39 @@ public class ConfigKey<T> {
     public static final ConfigKey<Integer> KILLER_DNA_BASETIME = new ConfigKey<>(Integer.class, "killer-dna-basetime");
 
     // Command settings
-    // I am aware that these definitions are disgusting, thank you based Java
     public static final ConfigKey<List<String>> JOIN_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-join-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-join-cmds");
     public static final ConfigKey<List<String>> LEAVE_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-leave-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-leave-cmds");
     public static final ConfigKey<List<String>> WIN_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-win-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-win-cmds");
     public static final ConfigKey<List<String>> WIN_I_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-win-innocent-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-win-innocent-cmds");
     public static final ConfigKey<List<String>> WIN_IND_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-win-innocentnd-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-win-innocentnd-cmds");
     public static final ConfigKey<List<String>> WIN_D_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-win-detective-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-win-detective-cmds");
     public static final ConfigKey<List<String>> WIN_T_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-win-traitor-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-win-traitor-cmds");
     public static final ConfigKey<List<String>> LOSE_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-lose-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-lose-cmds");
     public static final ConfigKey<List<String>> LOSE_I_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-lose-innocent-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-lose-innocent-cmds");
     public static final ConfigKey<List<String>> LOSE_IND_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-lose-innocentnd-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-lose-innocentnd-cmds");
     public static final ConfigKey<List<String>> LOSE_D_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-lose-detective-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-lose-detective-cmds");
     public static final ConfigKey<List<String>> LOSE_T_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "player-lose-traitor-cmds");
-    public static final ConfigKey<Boolean> EXEC_AFTER_COOLDOWN = new ConfigKey<>(Boolean.class, "exec-after-cooldown");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-lose-traitor-cmds");
+    public static final ConfigKey<Boolean> EXEC_AFTER_COOLDOWN = new ConfigKey<>(Boolean.class, "");
     public static final ConfigKey<List<String>> PREPARE_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "round-prepare-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "round-prepare-cmds");
     public static final ConfigKey<List<String>> START_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "round-start-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "round-start-cmds");
     public static final ConfigKey<List<String>> COOLDOWN_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "round-cooldown-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "round-cooldown-cmds");
     public static final ConfigKey<List<String>> END_CMDS
-            = new ConfigKey<>((Class<List<String>>) (Object) List.class, "round-end-cmds");
+            = new ConfigKey<>(new TypeToken<List<String>>(){}, "round-end-cmds");
 
     // Title settings
     public static final ConfigKey<Boolean> SEND_TITLES = new ConfigKey<>(Boolean.class, "send-titles");
@@ -154,11 +154,11 @@ public class ConfigKey<T> {
     public static final ConfigKey<Boolean> ENABLE_TELEMETRY = new ConfigKey<>(Boolean.class, "enable-telemetry");
     public static final ConfigKey<Boolean> ENABLE_METRICS = new ConfigKey<>(Boolean.class, "enable-metrics");
 
-    private Class<T> type;
+    private TypeToken<T> type;
     private String configKey;
     private T defaultValue;
 
-    private ConfigKey(Class<T> type, String configKey, T defaultValue) {
+    private ConfigKey(TypeToken<T> type, String configKey, T defaultValue) {
         this.type = type;
         this.configKey = configKey;
         this.defaultValue = defaultValue;
@@ -166,11 +166,19 @@ public class ConfigKey<T> {
         keys.add(this);
     }
 
+    private ConfigKey(TypeToken<T> type, String configKey) {
+        this(type, configKey, null);
+    }
+
+    private ConfigKey(Class<T> type, String configKey, T defaultValue) {
+        this(TypeToken.of(type), configKey, defaultValue);
+    }
+
     private ConfigKey(Class<T> type, String configKey) {
         this(type, configKey, null);
     }
 
-    Class<T> getType() {
+    TypeToken<T> getType() {
         return type;
     }
 

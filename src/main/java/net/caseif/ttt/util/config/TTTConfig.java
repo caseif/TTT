@@ -103,21 +103,21 @@ public final class TTTConfig {
 
     @SuppressWarnings("unchecked")
     private void set(ConfigKey<?> key) {
-        if (key.getType() == Integer.class) {
+        if (key.getType().getRawType() == Integer.class) {
             map.put(key, getInt(key.getConfigKey()));
-        } else if (key.getType() == Double.class) {
+        } else if (key.getType().getRawType() == Double.class) {
             map.put(key, getDouble(key.getConfigKey()));
-        } else if (key.getType() == Boolean.class) {
+        } else if (key.getType().getRawType() == Boolean.class) {
             map.put(key, getBoolean(key.getConfigKey()));
-        } else if (key.getType() == String.class) {
+        } else if (key.getType().getRawType() == String.class) {
             map.put(key, getString(key.getConfigKey()));
-        } else if (key.getType() == List.class) {
+        } else if (key.getType().getRawType() == List.class) {
             map.put(key, getList(key.getConfigKey()));
-        } else if (key.getType() == Material.class) {
+        } else if (key.getType().getRawType() == Material.class) {
             map.put(key, getMaterial(key.getConfigKey(), ((ConfigKey<Material>) key).getDefault()));
-        } else if (key.getType() == OperatingMode.class) {
+        } else if (key.getType().getRawType() == OperatingMode.class) {
             map.put(key, getOperatingMode(key.getConfigKey(), ((ConfigKey<OperatingMode>) key).getDefault()));
-        } else if (key.getType() == CycleMode.class) {
+        } else if (key.getType().getRawType() == CycleMode.class) {
             map.put(key, getCycleMode(key.getConfigKey(), ((ConfigKey<CycleMode>) key).getDefault()));
         }
     }
