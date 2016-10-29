@@ -29,6 +29,7 @@ import static net.caseif.ttt.util.constant.PluginInfo.MIN_FLINT_VERSION;
 
 import net.caseif.ttt.command.CommandManager;
 import net.caseif.ttt.listeners.ListenerManager;
+import net.caseif.ttt.lobby.StatusLobbySignPopulator;
 import net.caseif.ttt.util.TelemetryRunner;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
@@ -143,6 +144,8 @@ public class TTTCore {
         }
 
         mg.setConfigValue(ConfigNode.FORBIDDEN_COMMANDS, ImmutableSet.of("kit", "msg", "pm", "r", "me", "back"));
+        mg.setConfigValue(ConfigNode.STATUS_LOBBY_SIGN_POPULATOR,
+                new StatusLobbySignPopulator(mg.getConfigValue(ConfigNode.STATUS_LOBBY_SIGN_POPULATOR)));
 
         applyConfigOptions();
 

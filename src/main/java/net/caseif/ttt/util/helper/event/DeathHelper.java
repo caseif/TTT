@@ -24,6 +24,8 @@
 
 package net.caseif.ttt.util.helper.event;
 
+import static net.caseif.ttt.util.helper.gamemode.RoleHelper.isTraitor;
+
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Body;
@@ -85,6 +87,11 @@ public final class DeathHelper {
         if (killer.isPresent()) {
             // set killer's karma
             KarmaHelper.applyKillKarma(killer.get(), ch);
+            if (isTraitor(killer.get()) && !isTraitor(chOpt.get())) {
+                killer.get().getRound().getMetadata().set(MetadataKey.Round.HASTE_TIME,
+                        killer.get().getRound().getMetadata().<Integer>get(MetadataKey.Round.HASTE_TIME).or(0)
+                                + TTTCore.config.get(ConfigKey.HASTE_SECONDS_PER_DEATH));
+            }
         }
 
         Block block = loc.getBlock();
