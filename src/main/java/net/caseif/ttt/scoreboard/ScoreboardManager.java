@@ -24,9 +24,11 @@
 
 package net.caseif.ttt.scoreboard;
 
+import static net.caseif.ttt.lobby.StatusLobbySignPopulator.SIGN_HASTE_SWITCH_PERIOD;
 import static net.caseif.ttt.util.helper.data.DataVerificationHelper.fromNullableString;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.constant.AliveStatus;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.MetadataKey;
@@ -38,6 +40,7 @@ import com.google.common.collect.ImmutableMap;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -186,11 +189,11 @@ public class ScoreboardManager {
     }
 
     public void updateTitle() {
-        updateTitle(iBoard.getObjective(OBJECTIVE_ID));
-        updateTitle(tBoard.getObjective(OBJECTIVE_ID));
+        updateTitle(iBoard.getObjective(OBJECTIVE_ID), false);
+        updateTitle(tBoard.getObjective(OBJECTIVE_ID), true);
     }
 
-    private void updateTitle(Objective obj) {
+    private void updateTitle(Objective obj, boolean t) {
         StringBuilder title = new StringBuilder();
         title.append(Color.SECONDARY);
         title.append(TTTCore.locale.getLocalizable("fragment.stage." + round.getLifecycleStage().getId())
@@ -200,12 +203,27 @@ public class ScoreboardManager {
             title.append(" - ");
 
             long time = round.getRemainingTime();
+            boolean hasteDisp = round.getLifecycleStage() == Stage.PLAYING && TTTCore.config.get(ConfigKey.HASTE)
+                    && System.currentTimeMillis() % (SIGN_HASTE_SWITCH_PERIOD * 1000 * 2)
+                    < SIGN_HASTE_SWITCH_PERIOD * 1000;
+            long dispTime = hasteDisp && t
+                    ? time
+                    : time - this.getRound().getMetadata().<Integer>get(MetadataKey.Round.HASTE_TIME).or(0);
             NumberFormat nf = NumberFormat.getIntegerInstance();
             nf.setMinimumIntegerDigits(2);
             final int secondsPerMinute = 60;
-            String minutes = nf.format(time / secondsPerMinute);
-            String seconds = nf.format(time % secondsPerMinute);
-            title.append(minutes).append(":").append(seconds);
+            String minutes = nf.format(dispTime / secondsPerMinute);
+            String seconds = nf.format(dispTime % secondsPerMinute);
+            if (hasteDisp) {
+                title.append(ChatColor.RED.toString());
+                if (t) {
+                    title.append(minutes).append(":").append(seconds);
+                } else {
+                    title.append(TTTCore.locale.getLocalizable("fragment.haste-mode").localize());
+                }
+            } else {
+                title.append(minutes).append(":").append(seconds);
+            }
         }
         obj.setDisplayName(title.toString());
     }

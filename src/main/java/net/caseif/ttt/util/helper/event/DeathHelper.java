@@ -91,6 +91,8 @@ public final class DeathHelper {
                 killer.get().getRound().getMetadata().set(MetadataKey.Round.HASTE_TIME,
                         killer.get().getRound().getMetadata().<Integer>get(MetadataKey.Round.HASTE_TIME).or(0)
                                 + TTTCore.config.get(ConfigKey.HASTE_SECONDS_PER_DEATH));
+                killer.get().getRound().setTime(killer.get().getRound().getTime()
+                        - TTTCore.config.get(ConfigKey.HASTE_SECONDS_PER_DEATH));
             }
         }
 
