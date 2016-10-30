@@ -28,6 +28,7 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.constant.Stage;
+import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 
 import net.caseif.flint.lobby.LobbySign;
 import net.caseif.flint.lobby.populator.LobbySignPopulator;
@@ -59,20 +60,7 @@ public class StatusLobbySignPopulator implements LobbySignPopulator {
         if (!sign.getArena().getRound().isPresent()) {
             return "";
         }
-        if (!TTTCore.config.get(ConfigKey.HASTE)
-                || sign.getArena().getRound().get().getLifecycleStage() != Stage.PLAYING
-                || sign.getArena().getRound().get().getRemainingTime() == -1) {
-            return defaultPop.third(sign);
-        }
-        if (System.currentTimeMillis() % (SIGN_HASTE_SWITCH_PERIOD * 1000 * 2)
-                < SIGN_HASTE_SWITCH_PERIOD * 1000) {
-            long seconds = sign.getArena().getRound().get().getRemainingTime();
-            seconds -= sign.getArena().getRound().get().getMetadata().<Integer>get(MetadataKey.Round.HASTE_TIME).or(0);
-            return ChatColor.DARK_PURPLE + ""
-                    + seconds / 60 + ":" + (seconds % 60 >= 10 ? seconds % 60 : "0" + seconds % 60);
-        } else {
-            return ChatColor.RED + TTTCore.locale.getLocalizable("fragment.haste-mode").localize();
-        }
+        return RoundHelper.getTimeDisplay(sign.getArena().getRound().get(), false, ChatColor.DARK_PURPLE);
     }
 
     @Override

@@ -24,22 +24,28 @@
 
 package net.caseif.ttt.util.helper.gamemode;
 
+import static net.caseif.ttt.lobby.StatusLobbySignPopulator.SIGN_HASTE_SWITCH_PERIOD;
+
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.constant.Role;
+import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.platform.TitleHelper;
 
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
 import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.text.NumberFormat;
 
 /**
  * Static-utility class for round-related methods.
@@ -191,4 +197,44 @@ public final class RoundHelper {
             localizable.sendTo(pl);
         }
     }
+
+    public static String getTimeDisplay(Round round, boolean t, ChatColor defaultColor) {
+        StringBuilder timeStr = new StringBuilder();
+
+        long time = round.getRemainingTime();
+        boolean indefinite = round.getLifecycleStage().getDuration() == -1;
+        boolean hasteDisp = round.getLifecycleStage() == Stage.PLAYING
+                && !indefinite
+                && TTTCore.config.get(ConfigKey.HASTE)
+                && System.currentTimeMillis() % (SIGN_HASTE_SWITCH_PERIOD * 1000 * 2) < SIGN_HASTE_SWITCH_PERIOD * 1000;
+        long dispTime = (hasteDisp && t) || round.getLifecycleStage() != Stage.PLAYING
+                ? time
+                : indefinite
+                ? round.getTime()
+                : time - round.getMetadata().<Integer>get(MetadataKey.Round.HASTE_TIME).or(0);
+        NumberFormat nf = NumberFormat.getIntegerInstance();
+        nf.setMinimumIntegerDigits(2);
+        final int secondsPerMinute = 60;
+        String minutes = nf.format(dispTime / secondsPerMinute);
+        String seconds = nf.format(dispTime % secondsPerMinute);
+        if (hasteDisp) {
+            timeStr.append(ChatColor.RED.toString());
+            if (t) {
+                timeStr.append(minutes).append(":").append(seconds);
+            } else {
+                timeStr.append(TTTCore.locale.getLocalizable("fragment.haste-mode").localize());
+            }
+        } else {
+            if (defaultColor != null) {
+                timeStr.append(defaultColor.toString());
+            }
+            if (round.getLifecycleStage() == Stage.PLAYING && dispTime <= 0) {
+                timeStr.append(TTTCore.locale.getLocalizable("fragment.overtime").localize());
+            } else {
+                timeStr.append(minutes).append(":").append(seconds);
+            }
+        }
+        return timeStr.toString();
+    }
+
 }

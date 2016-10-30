@@ -35,6 +35,7 @@ import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.gamemode.RoleHelper;
+import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 
 import com.google.common.collect.ImmutableMap;
 import net.caseif.flint.challenger.Challenger;
@@ -201,29 +202,7 @@ public class ScoreboardManager {
 
         if (round.getLifecycleStage() != Stage.WAITING) {
             title.append(" - ");
-
-            long time = round.getRemainingTime();
-            boolean hasteDisp = round.getLifecycleStage() == Stage.PLAYING && TTTCore.config.get(ConfigKey.HASTE)
-                    && System.currentTimeMillis() % (SIGN_HASTE_SWITCH_PERIOD * 1000 * 2)
-                    < SIGN_HASTE_SWITCH_PERIOD * 1000;
-            long dispTime = hasteDisp && t
-                    ? time
-                    : time - this.getRound().getMetadata().<Integer>get(MetadataKey.Round.HASTE_TIME).or(0);
-            NumberFormat nf = NumberFormat.getIntegerInstance();
-            nf.setMinimumIntegerDigits(2);
-            final int secondsPerMinute = 60;
-            String minutes = nf.format(dispTime / secondsPerMinute);
-            String seconds = nf.format(dispTime % secondsPerMinute);
-            if (hasteDisp) {
-                title.append(ChatColor.RED.toString());
-                if (t) {
-                    title.append(minutes).append(":").append(seconds);
-                } else {
-                    title.append(TTTCore.locale.getLocalizable("fragment.haste-mode").localize());
-                }
-            } else {
-                title.append(minutes).append(":").append(seconds);
-            }
+            title.append(RoundHelper.getTimeDisplay(round, t, null));
         }
         obj.setDisplayName(title.toString());
     }
