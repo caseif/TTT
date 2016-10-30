@@ -24,11 +24,9 @@
 
 package net.caseif.ttt.scoreboard;
 
-import static net.caseif.ttt.lobby.StatusLobbySignPopulator.SIGN_HASTE_SWITCH_PERIOD;
 import static net.caseif.ttt.util.helper.data.DataVerificationHelper.fromNullableString;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.constant.AliveStatus;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.MetadataKey;
@@ -41,7 +39,6 @@ import com.google.common.collect.ImmutableMap;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;

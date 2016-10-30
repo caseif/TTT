@@ -201,17 +201,22 @@ public final class RoundHelper {
     public static String getTimeDisplay(Round round, boolean t, ChatColor defaultColor) {
         StringBuilder timeStr = new StringBuilder();
 
-        long time = round.getRemainingTime();
         boolean indefinite = round.getLifecycleStage().getDuration() == -1;
         boolean hasteDisp = round.getLifecycleStage() == Stage.PLAYING
                 && !indefinite
                 && TTTCore.config.get(ConfigKey.HASTE)
                 && System.currentTimeMillis() % (SIGN_HASTE_SWITCH_PERIOD * 1000 * 2) < SIGN_HASTE_SWITCH_PERIOD * 1000;
-        long dispTime = (hasteDisp && t) || round.getLifecycleStage() != Stage.PLAYING
-                ? time
-                : indefinite
-                ? round.getTime()
-                : time - round.getMetadata().<Integer>get(MetadataKey.Round.HASTE_TIME).or(0);
+        long dispTime;
+        if (indefinite) {
+            dispTime = round.getTime();
+        } else {
+            if (hasteDisp || round.getLifecycleStage() != Stage.PLAYING) {
+                dispTime = round.getRemainingTime();
+            } else {
+                dispTime = round.getRemainingTime()
+                        - round.getMetadata().<Integer>get(MetadataKey.Round.HASTE_TIME).or(0);
+            }
+        }
         NumberFormat nf = NumberFormat.getIntegerInstance();
         nf.setMinimumIntegerDigits(2);
         final int secondsPerMinute = 60;
