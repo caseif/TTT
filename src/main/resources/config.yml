@@ -140,12 +140,12 @@ round-end-cmds: []
 # This will not do anything on Minecraft versions prior to 1.8.
 send-titles: true
 
-# Whether status titles (event.g. "You are a traitor!") should be sent as full-sized titles.
+# Whether status titles (e.g. "You are a traitor!") should be sent as full-sized titles.
 # If false (default), subtitles will be sent instead.
 # Setting this to true may cause the title to obstruct the player's screen.
 large-status-titles: false
 
-# Whether status titles (event.g. "The traitors won!") should be sent as full-sized titles.
+# Whether status titles (e.g. "The traitors won!") should be sent as full-sized titles.
 # If false (default), subtitles will be sent instead.
 # Setting this to true may cause the title to obstruct the player's screen and additionally may
 # cause the title to not fit on the screen for certain locales (such as de_DE).
