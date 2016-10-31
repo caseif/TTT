@@ -39,6 +39,7 @@ import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
+import net.caseif.ttt.util.helper.platform.TitleHelper;
 
 import com.google.common.base.Predicate;
 import com.google.common.eventbus.Subscribe;
@@ -209,6 +210,8 @@ public class RoundListener {
                     }
 
                     event.getRound().setLifecycleStage(Stage.ROUND_OVER, true);
+                    TitleHelper.sendVictoryTitle(event.getRound(),
+                            event.getRound().getMetadata().<Boolean>get(MetadataKey.Round.TRAITOR_VICTORY).or(false));
                 }
             }
         }

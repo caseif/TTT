@@ -163,8 +163,6 @@ public final class RoundHelper {
                     msg.sendTo(Bukkit.getPlayer(ch.getUniqueId()));
                 }
             }
-
-            TitleHelper.sendVictoryTitle(round, tVic);
         }
     }
 
