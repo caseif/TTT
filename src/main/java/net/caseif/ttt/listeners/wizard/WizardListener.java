@@ -33,7 +33,6 @@ import net.caseif.ttt.util.helper.platform.LocationHelper;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
 import net.caseif.flint.arena.Arena;
 import net.caseif.flint.util.physical.Boundary;
 import net.caseif.flint.util.physical.Location3D;

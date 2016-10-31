@@ -30,13 +30,6 @@ import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.component.exception.OrphanedComponentException;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Static utility class for player-related functionality.

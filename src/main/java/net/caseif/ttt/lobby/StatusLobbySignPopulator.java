@@ -24,15 +24,10 @@
 
 package net.caseif.ttt.lobby;
 
-import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.config.ConfigKey;
-import net.caseif.ttt.util.constant.MetadataKey;
-import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 
 import net.caseif.flint.lobby.LobbySign;
 import net.caseif.flint.lobby.populator.LobbySignPopulator;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 public class StatusLobbySignPopulator implements LobbySignPopulator {

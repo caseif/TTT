@@ -40,7 +40,6 @@ import net.caseif.ttt.util.helper.platform.LocationHelper;
 import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
 import com.google.common.eventbus.Subscribe;
-
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.event.lobby.PlayerClickLobbySignEvent;
 import net.caseif.flint.event.round.challenger.ChallengerJoinRoundEvent;
