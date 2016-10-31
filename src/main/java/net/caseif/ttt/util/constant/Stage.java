@@ -46,7 +46,9 @@ public class Stage {
 
     public static void initialize() {
         PREPARING = new LifecycleStage("preparing", TTTCore.config.get(ConfigKey.PREPTIME_SECONDS));
-        PLAYING = new LifecycleStage("playing", TTTCore.config.get(ConfigKey.ROUNDTIME_SECONDS));
+        PLAYING = new LifecycleStage("playing", TTTCore.config.get(ConfigKey.HASTE)
+                ? TTTCore.config.get(ConfigKey.HASTE_STARTING_SECONDS)
+                : TTTCore.config.get(ConfigKey.ROUNDTIME_SECONDS));
         ROUND_OVER = new LifecycleStage("round_over", TTTCore.config.get(ConfigKey.POSTTIME_SECONDS));
     }
 

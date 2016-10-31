@@ -203,7 +203,7 @@ public final class RoundHelper {
         boolean hasteDisp = round.getLifecycleStage() == Stage.PLAYING
                 && !indefinite
                 && TTTCore.config.get(ConfigKey.HASTE)
-                && System.currentTimeMillis() % (SIGN_HASTE_SWITCH_PERIOD * 1000 * 2) < SIGN_HASTE_SWITCH_PERIOD * 1000;
+                && System.currentTimeMillis() % (SIGN_HASTE_SWITCH_PERIOD * 1000 * 2) >= SIGN_HASTE_SWITCH_PERIOD * 1000;
         long dispTime;
         if (indefinite) {
             dispTime = round.getTime();
