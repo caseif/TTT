@@ -112,9 +112,11 @@ player-lose-innocentnd-cmds: []
 player-lose-detective-cmds: []
 player-lose-traitor-cmds: []
 
-# If true, the above end status commands will be executed after the cooldown period. If false, they will be executed
-# upon starting the cooldown period, before players are removed from the arena.
-exec-after-cooldown: true
+# If true, the above end status commands will be executed before the cooldown period. If false, they will be executed
+# after the end of the cooldown period, just before players are removed from the arena.
+# It is recommended to keep the default value since players may leave during the cooldown period and thus not be
+# affected by defined comamnds.
+exec-before-cooldown: true
 
 # Lifecycle commands will be run once per event if they do not include the sequence %p. If they do, they will be
 # run once per player in the round involved in the event, and the sequence will be replaced with each respective player
@@ -196,7 +198,9 @@ karma-ratio: 0.001
 # All karma penalties are based on damage dealt. The kill penalty is just an extra amount of "damage" dealt
 # when you kill someone. So if this was 100, and you headshot someone with a rifle, it would penalise you as
 # if you dealt 200 damage.
-karma-kill-penalty: 15
+#
+# Note that in Minecraft, the maximum amount of health one may have is 20 (10 hearts).
+karma-kill-penalty: 3
 
 # The amount of karma allocated to each player on round end.
 karma-round-increment: 5
@@ -214,9 +218,12 @@ karma-clean-half: 0.25
 # The ratio used in the formula used to determine the karma reward to innocents for damaging a traitor (0-1).
 karma-traitordmg-ratio: 0.0003
 
-# The amount of karma given to an innocent upon killing a traitor.
-# (This will be scaled by traitordmg-ratio and the victim's karma.)
-karma-traitorkill-bonus: 40
+# Scalar for the amount of karma given to an innocent upon killing a traitor.
+# This is similar to karma-kill-penalty: it will reward the player with the amount of karma that would be deducted if
+# doing this much damage to a teammate.
+#
+# Note that in Minecraft, the maximum amount of health one may have is 20 (10 hearts).
+karma-traitorkill-bonus: 8
 
 # Players will be kicked from the round once they reach or go under this karma level. (Set to -1 for no autokick.)
 karma-low-autokick: 450

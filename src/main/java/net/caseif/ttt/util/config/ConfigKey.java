@@ -86,7 +86,8 @@ public class ConfigKey<T> {
             = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-lose-detective-cmds");
     public static final ConfigKey<List<String>> LOSE_T_CMDS
             = new ConfigKey<>(new TypeToken<List<String>>(){}, "player-lose-traitor-cmds");
-    public static final ConfigKey<Boolean> EXEC_AFTER_COOLDOWN = new ConfigKey<>(Boolean.class, "");
+    public static final ConfigKey<Boolean> EXEC_BEFORE_COOLDOWN
+            = new ConfigKey<>(Boolean.class, "exec-before-cooldown");
     public static final ConfigKey<List<String>> PREPARE_CMDS
             = new ConfigKey<>(new TypeToken<List<String>>(){}, "round-prepare-cmds");
     public static final ConfigKey<List<String>> START_CMDS

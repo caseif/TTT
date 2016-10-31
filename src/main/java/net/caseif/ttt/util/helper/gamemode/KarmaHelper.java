@@ -130,28 +130,36 @@ public final class KarmaHelper {
         }
     }
 
+    private static int getDamagePenalty(double damage, int victimKarma) {
+        return tryRound(victimKarma * damage * TTTCore.config.get(ConfigKey.KARMA_RATIO));
+    }
+
+    private static int getKillPenalty(int victimKarma) {
+        return getDamagePenalty(TTTCore.config.get(ConfigKey.KARMA_KILL_PENALTY), victimKarma);
+    }
+
+    private static int getDamageReward(double damage) {
+        return tryRound(TTTCore.config.get(ConfigKey.KARMA_MAX) * damage
+                * TTTCore.config.get(ConfigKey.KARMA_TRAITORDMG_RATIO));
+    }
+
+    private static int getKillReward() {
+        return getDamageReward(TTTCore.config.get(ConfigKey.KARMA_TRAITORKILL_BONUS));
+    }
+
     public static void applyDamageKarma(Challenger damager, Challenger victim, double damage) {
-        if (damager != null && victim != null) {
-            // team damage
-            if (isTraitor(damager) == isTraitor(victim)) {
-                int penalty = (int) (getKarma(victim) * (damage * TTTCore.config.get(ConfigKey.KARMA_RATIO)));
-                subtractKarma(damager, penalty);
-            } else if (!isTraitor(damager) && isTraitor(victim)) {
-                // innocent damaging traitor
-                int reward = (int) (TTTCore.config.get(ConfigKey.KARMA_MAX) * damage
-                        * TTTCore.config.get(ConfigKey.KARMA_TRAITORDMG_RATIO));
-                addKarma(damager, reward);
-            }
+        if (isTraitor(damager) == isTraitor(victim)) { // team damage
+            subtractKarma(damager, getDamagePenalty(damage, getKarma(victim)));
+        } else if (!isTraitor(damager)) { // isTraitor(victim) is implicitly true - innocent damaging traitor
+            addKarma(damager, getDamageReward(damage));
         }
     }
 
     public static void applyKillKarma(Challenger killer, Challenger victim) {
-        if (isTraitor(killer) == isTraitor(killer)) {
-            applyDamageKarma(killer, victim, TTTCore.config.get(ConfigKey.KARMA_KILL_PENALTY));
-        } else if (!isTraitor(killer)) { // isTraitor(victim) is implied to be true
-            int reward = TTTCore.config.get(ConfigKey.KARMA_TRAITORKILL_BONUS)
-                    * TTTCore.config.get(ConfigKey.KARMA_TRAITORDMG_RATIO) * getKarma(victim);
-            addKarma(killer, reward);
+        if (isTraitor(killer) == isTraitor(killer)) { // team kill
+            subtractKarma(killer, getKillPenalty(getKarma(victim)));
+        } else if (!isTraitor(killer)) { // isTraitor(victim) is implicitly true - innocent damaging traitor
+            addKarma(killer, getKillReward());
         }
     }
 
@@ -260,6 +268,14 @@ public final class KarmaHelper {
     private static void subtractKarma(Challenger challenger, int amount) {
         addKarma(challenger, -amount);
         challenger.getMetadata().set(MetadataKey.Player.TEAM_KILLED, true);
+    }
+
+    private static int tryRound(double penetration) {
+        int val = (int) penetration;
+        if (val == 0 && TTTCore.config.get(ConfigKey.KARMA_ROUND_TO_ONE)) {
+            return 1;
+        }
+        return val;
     }
 
 }
