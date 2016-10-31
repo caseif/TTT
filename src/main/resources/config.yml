@@ -93,6 +93,7 @@ player-win-cmds: []
 # Commands executed upon all players who lose a round.
 player-lose-cmds: []
 
+# The following keys define commands which will be executed at the start of the cooldown period.
 # In the interest of not documenting each key individually:
 #
 # player-win-x-cmds: executed upon players who win a round.
@@ -111,12 +112,6 @@ player-lose-innocent-cmds: []
 player-lose-innocentnd-cmds: []
 player-lose-detective-cmds: []
 player-lose-traitor-cmds: []
-
-# If true, the above end status commands will be executed before the cooldown period. If false, they will be executed
-# after the end of the cooldown period, just before players are removed from the arena.
-# It is recommended to keep the default value since players may leave during the cooldown period and thus not be
-# affected by defined comamnds.
-exec-before-cooldown: true
 
 # Lifecycle commands will be run once per event if they do not include the sequence %p. If they do, they will be
 # run once per player in the round involved in the event, and the sequence will be replaced with each respective player

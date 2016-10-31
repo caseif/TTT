@@ -139,9 +139,7 @@ public class RoundListener {
                 TelemetryStorageHelper.pushRound(event.getRound());
             }
             runCommands(TTTCore.config.get(ConfigKey.COOLDOWN_CMDS), event.getRound());
-            if (TTTCore.config.get(ConfigKey.EXEC_BEFORE_COOLDOWN)) {
-                runWinLoseCmds(event.getRound());
-            }
+            runWinLoseCmds(event.getRound());
         }
     }
 
@@ -232,9 +230,6 @@ public class RoundListener {
                 .uninitialize();
 
         runCommands(TTTCore.config.get(ConfigKey.END_CMDS), event.getRound());
-        if (!TTTCore.config.get(ConfigKey.EXEC_BEFORE_COOLDOWN)) {
-            runWinLoseCmds(event.getRound());
-        }
 
         if (event.isNatural()
                 && (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.CONTINUOUS
