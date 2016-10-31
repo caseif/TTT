@@ -67,7 +67,8 @@ public class RoundListener {
     private static final Predicate<Challenger> PRED_WIN = new Predicate<Challenger>() {
         @Override
         public boolean apply(Challenger chal) {
-            return isTraitor(chal) == chal.getRound().getMetadata().containsKey(MetadataKey.Round.TRAITOR_VICTORY);
+            return isTraitor(chal)
+                    == chal.getRound().getMetadata().<Boolean>get(MetadataKey.Round.TRAITOR_VICTORY).or(false);
         }
     };
 
@@ -210,8 +211,6 @@ public class RoundListener {
                     }
 
                     event.getRound().setLifecycleStage(Stage.ROUND_OVER, true);
-                    TitleHelper.sendVictoryTitle(event.getRound(),
-                            event.getRound().getMetadata().<Boolean>get(MetadataKey.Round.TRAITOR_VICTORY).or(false));
                 }
             }
         }

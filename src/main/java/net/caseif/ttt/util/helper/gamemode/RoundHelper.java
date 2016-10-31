@@ -149,7 +149,7 @@ public final class RoundHelper {
         KarmaHelper.saveKarma(round);
 
         if (sendWinMessages) {
-            boolean tVic = round.getMetadata().containsKey(MetadataKey.Round.TRAITOR_VICTORY);
+            boolean tVic = round.getMetadata().<Boolean>get(MetadataKey.Round.TRAITOR_VICTORY).or(false);
             String color = (tVic ? Color.TRAITOR : Color.INNOCENT);
 
             Localizable msg = TTTCore.locale.getLocalizable("info.global.round.event.end."
@@ -164,6 +164,8 @@ public final class RoundHelper {
                 }
             }
         }
+        TitleHelper.sendVictoryTitle(round,
+                round.getMetadata().<Boolean>get(MetadataKey.Round.TRAITOR_VICTORY).or(false));
     }
 
     public static void distributeItems(Round round) {

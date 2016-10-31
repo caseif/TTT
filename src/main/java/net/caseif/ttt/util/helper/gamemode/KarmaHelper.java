@@ -111,7 +111,7 @@ public final class KarmaHelper {
 
     public static void allocateKarma(Round round) {
         for (Challenger challenger : round.getChallengers()) {
-            addKarma(challenger, TTTCore.config.get(ConfigKey.KARMA_ROUND_INCREMENT));
+            addKarma(challenger, TTTCore.config.get(ConfigKey.KARMA_ROUND_INCREMENT), true);
             if (!challenger.getMetadata().containsKey(MetadataKey.Player.TEAM_KILLED)) {
                 int karmaHeal = TTTCore.config.get(ConfigKey.KARMA_CLEAN_BONUS);
                 if (getKarma(challenger) > BASE_KARMA) {
@@ -125,7 +125,7 @@ public final class KarmaHelper {
                         );
                     }
                 }
-                addKarma(challenger, karmaHeal);
+                addKarma(challenger, karmaHeal, true);
             }
         }
     }
@@ -227,7 +227,11 @@ public final class KarmaHelper {
     }
 
     private static void addKarma(Challenger challenger, int amount) {
-        if (challenger.getRound().getLifecycleStage() == Stage.ROUND_OVER) {
+        addKarma(challenger, amount, false);
+    }
+
+    private static void addKarma(Challenger challenger, int amount, boolean force) {
+        if (!force && challenger.getRound().getLifecycleStage() == Stage.ROUND_OVER) {
             return;
         }
 
