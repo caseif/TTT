@@ -39,6 +39,7 @@ import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.util.physical.Boundary;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -150,6 +151,19 @@ public final class DeathHelper {
     }
 
     private void createBody(Location loc, Challenger ch, Challenger killer) {
+        Boundary bound = ch.getRound().getArena().getBoundary();
+        if (!bound.contains(LocationHelper.convert(loc))) {
+            double x = loc.getX() > bound.getUpperBound().getX() ? bound.getUpperBound().getX()
+                    : loc.getX() < bound.getLowerBound().getX() ? bound.getLowerBound().getX()
+                    : loc.getX();
+            double y = loc.getY() > bound.getUpperBound().getY() ? bound.getUpperBound().getY()
+                    : loc.getY() < bound.getLowerBound().getY() ? bound.getLowerBound().getY()
+                    : loc.getY();
+            double z = loc.getZ() > bound.getUpperBound().getZ() ? bound.getUpperBound().getZ()
+                    : loc.getZ() < bound.getLowerBound().getZ() ? bound.getLowerBound().getZ()
+                    : loc.getZ();
+            loc = new Location(loc.getWorld(), x, y, z);
+        }
         loc.getBlock().setType(((loc.getBlockX() + loc.getBlockY()) % 2 == 0)
                 ? Material.TRAPPED_CHEST
                 : Material.CHEST);
