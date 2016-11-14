@@ -156,7 +156,7 @@ public final class KarmaHelper {
     }
 
     public static void applyKillKarma(Challenger killer, Challenger victim) {
-        if (isTraitor(killer) == isTraitor(killer)) { // team kill
+        if (isTraitor(killer) == isTraitor(victim)) { // team kill
             subtractKarma(killer, getKillPenalty(getKarma(victim)));
         } else if (!isTraitor(killer)) { // isTraitor(victim) is implicitly true - innocent damaging traitor
             addKarma(killer, getKillReward());
