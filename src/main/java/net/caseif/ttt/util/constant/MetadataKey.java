@@ -31,6 +31,8 @@ public class MetadataKey {
         public static final String START_TIME = "startTime";
         public static final String ROUND_TALLY = "roundTally";
         public static final String PROPERTY_CAT = "prop";
+        public static final String PROPERTY_MIN_PLAYERS = "min-players";
+        public static final String PROPERTY_MAX_PLAYERS = "max-players";
 
         private Arena() {
         }

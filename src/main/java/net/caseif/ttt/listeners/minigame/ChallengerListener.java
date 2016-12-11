@@ -85,7 +85,8 @@ public class ChallengerListener {
             }
 
             if (event.getRound().getLifecycleStage() == Stage.WAITING
-                    && event.getRound().getChallengers().size() >= TTTCore.config.get(ConfigKey.MINIMUM_PLAYERS)) {
+                    && event.getRound().getChallengers().size()
+                    >= event.getRound().getMetadata().<Integer>get(MetadataKey.Arena.PROPERTY_MIN_PLAYERS).get()) {
                 event.getRound().nextLifecycleStage();
             }
         }

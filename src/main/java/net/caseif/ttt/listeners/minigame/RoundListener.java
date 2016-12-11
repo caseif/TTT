@@ -40,6 +40,7 @@ import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
@@ -47,7 +48,9 @@ import net.caseif.flint.challenger.Team;
 import net.caseif.flint.config.ConfigNode;
 import net.caseif.flint.event.round.RoundChangeLifecycleStageEvent;
 import net.caseif.flint.event.round.RoundEndEvent;
+import net.caseif.flint.event.round.RoundTimerStartEvent;
 import net.caseif.flint.event.round.RoundTimerTickEvent;
+import net.caseif.flint.metadata.persist.PersistentMetadata;
 import net.caseif.flint.round.Round;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -139,6 +142,26 @@ public class RoundListener {
             }
             runCommands(TTTCore.config.get(ConfigKey.COOLDOWN_CMDS), event.getRound());
             runWinLoseCmds(event.getRound());
+        }
+    }
+
+    // not sure if this is the right event to listen to - need to review this
+    @Subscribe
+    public void onRoundTimerStart(RoundTimerStartEvent event) {
+        event.getRound().getMetadata().set(MetadataKey.Arena.PROPERTY_MIN_PLAYERS,
+                TTTCore.config.get(ConfigKey.MINIMUM_PLAYERS));
+
+        PersistentMetadata md = event.getRound().getArena().getPersistentMetadata();
+        if (md.containsKey(MetadataKey.Arena.PROPERTY_CAT)) {
+            PersistentMetadata props = md.<PersistentMetadata>get(MetadataKey.Arena.PROPERTY_CAT).get();
+            if (props.containsKey(MetadataKey.Arena.PROPERTY_MAX_PLAYERS)) {
+                event.getRound().setConfigValue(ConfigNode.MAX_PLAYERS,
+                                props.<Integer>get(MetadataKey.Arena.PROPERTY_MAX_PLAYERS).get());
+            }
+            if (props.containsKey(MetadataKey.Arena.PROPERTY_MIN_PLAYERS)) {
+                event.getRound().getMetadata().set(MetadataKey.Arena.PROPERTY_MIN_PLAYERS,
+                        props.get(MetadataKey.Arena.PROPERTY_MIN_PLAYERS).get());
+            }
         }
     }
 

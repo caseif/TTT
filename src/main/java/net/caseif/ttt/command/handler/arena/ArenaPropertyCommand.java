@@ -30,12 +30,18 @@ import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.MetadataKey;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import net.caseif.flint.arena.Arena;
 import net.caseif.flint.metadata.persist.PersistentMetadata;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class ArenaPropertyCommand extends CommandHandler {
+
+    private static final ImmutableMap<String, Class<?>> VALID_PROPERTIES = ImmutableMap.<String, Class<?>>of(
+            MetadataKey.Arena.PROPERTY_MIN_PLAYERS, Integer.class,
+            MetadataKey.Arena.PROPERTY_MAX_PLAYERS, Integer.class
+    );
 
     public ArenaPropertyCommand(CommandSender sender, String[] args) {
         super(sender, args);
@@ -54,10 +60,16 @@ public class ArenaPropertyCommand extends CommandHandler {
             return;
         }
 
-        String propKey = args[2];
+        String propKey = args[2].toLowerCase();
+
+        if (!VALID_PROPERTIES.containsKey((propKey))) {
+            TTTCore.locale.getLocalizable("error.arena.setprop.invalid")
+                    .withReplacements(Color.EM + propKey + Color.INFO).sendTo(sender);
+        }
 
         Optional<PersistentMetadata> propStruct
                 = arena.get().getPersistentMetadata().get(MetadataKey.Arena.PROPERTY_CAT);
+
         if (args.length == 3) {
             Optional<?> prop;
             if (!propStruct.isPresent() || (prop = propStruct.get().get(propKey)).isPresent()) {
@@ -72,10 +84,21 @@ public class ArenaPropertyCommand extends CommandHandler {
                         .of(arena.get().getPersistentMetadata().createStructure(MetadataKey.Arena.PROPERTY_CAT));
             }
 
-            propStruct.get().set(propKey.toLowerCase(), args[3]);
+            Object value;
+            if (VALID_PROPERTIES.get(propKey) == Integer.class) {
+                try {
+                    propStruct.get().set(propKey, value = Integer.parseInt(args[3]));
+                } catch (NumberFormatException ex) {
+                    TTTCore.locale.getLocalizable("error.arena.setprop.invalid-type")
+                            .withReplacements(Color.EM + propKey + Color.INFO).sendTo(sender);
+                    return;
+                }
+            } else {
+                value = null; // should never execute
+            }
 
             TTTCore.locale.getLocalizable("info.personal.arena.setprop.success")
-                    .withReplacements(Color.EM + propKey + Color.INFO, Color.EM + args[3] + Color.INFO,
+                    .withReplacements(Color.EM + propKey + Color.INFO, Color.EM + value + Color.INFO,
                             Color.EM + arena.get().getId() + Color.INFO).sendTo(sender);
         }
     }
