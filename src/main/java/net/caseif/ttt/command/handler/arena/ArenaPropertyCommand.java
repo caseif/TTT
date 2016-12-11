@@ -56,14 +56,14 @@ public class ArenaPropertyCommand extends CommandHandler {
 
         Optional<Arena> arena = TTTCore.mg.getArena(args[1]);
         if (!arena.isPresent()) {
-            TTTCore.locale.getLocalizable("error.arena.dne").sendTo(sender);
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT).sendTo(sender);
             return;
         }
 
         String propKey = args[2].toLowerCase();
 
         if (!VALID_PROPERTIES.containsKey((propKey))) {
-            TTTCore.locale.getLocalizable("error.arena.setprop.invalid")
+            TTTCore.locale.getLocalizable("error.arena.setprop.invalid").withPrefix(Color.ALERT)
                     .withReplacements(Color.EM + propKey + Color.INFO).sendTo(sender);
         }
 
@@ -74,7 +74,8 @@ public class ArenaPropertyCommand extends CommandHandler {
             Optional<?> prop;
             if (!propStruct.isPresent() || (prop = propStruct.get().get(propKey)).isPresent()) {
                 sender.sendMessage(Color.INFO + propKey + ": " + ChatColor.DARK_GRAY + ChatColor.ITALIC
-                        + TTTCore.locale.getLocalizable("fragment.not-set").localizeFor(sender));
+                        + TTTCore.locale.getLocalizable("fragment.not-set").withPrefix(Color.ALERT)
+                        .localizeFor(sender));
                 return;
             }
             sender.sendMessage(Color.INFO + propKey + ": " + Color.SECONDARY + prop.get().toString());
@@ -89,7 +90,7 @@ public class ArenaPropertyCommand extends CommandHandler {
                 try {
                     propStruct.get().set(propKey, value = Integer.parseInt(args[3]));
                 } catch (NumberFormatException ex) {
-                    TTTCore.locale.getLocalizable("error.arena.setprop.invalid-type")
+                    TTTCore.locale.getLocalizable("error.arena.setprop.invalid-type").withPrefix(Color.ALERT)
                             .withReplacements(Color.EM + propKey + Color.INFO).sendTo(sender);
                     return;
                 }
@@ -97,7 +98,7 @@ public class ArenaPropertyCommand extends CommandHandler {
                 value = null; // should never execute
             }
 
-            TTTCore.locale.getLocalizable("info.personal.arena.setprop.success")
+            TTTCore.locale.getLocalizable("info.personal.arena.setprop.success").withPrefix(Color.INFO)
                     .withReplacements(Color.EM + propKey + Color.INFO, Color.EM + value + Color.INFO,
                             Color.EM + arena.get().getId() + Color.INFO).sendTo(sender);
         }

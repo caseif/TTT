@@ -60,6 +60,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -84,6 +87,8 @@ public class TTTCore {
     private static TelemetryRunner telRunner;
 
     public static final boolean HALLOWEEN;
+
+    public static final Map<UUID, String> ARENA_EDITORS = new HashMap<>();
 
     // dedicated mode stuff
     private static Arena dedicatedArena;

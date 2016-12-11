@@ -33,6 +33,7 @@ public class MetadataKey {
         public static final String PROPERTY_CAT = "prop";
         public static final String PROPERTY_MIN_PLAYERS = "min-players";
         public static final String PROPERTY_MAX_PLAYERS = "max-players";
+        public static final String EDITOR = "editor";
 
         private Arena() {
         }
