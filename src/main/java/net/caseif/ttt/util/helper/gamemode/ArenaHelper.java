@@ -24,8 +24,8 @@
 
 package net.caseif.ttt.util.helper.gamemode;
 
-import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_ROUND_TALLY;
-import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_START_TIME;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.ROUND_TALLY;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.START_TIME;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.config.ConfigKey;
@@ -55,8 +55,8 @@ public final class ArenaHelper {
 
     public static void applyNextArena() {
         TTTCore.setDedicatedArena(ArenaHelper.getNextArena());
-        TTTCore.getDedicatedArena().getMetadata().set(ARENA_START_TIME, System.currentTimeMillis());
-        TTTCore.getDedicatedArena().getMetadata().set(ARENA_ROUND_TALLY, 1);
+        TTTCore.getDedicatedArena().getMetadata().set(START_TIME, System.currentTimeMillis());
+        TTTCore.getDedicatedArena().getMetadata().set(ROUND_TALLY, 1);
     }
 
     private static Arena getNextArena() {
@@ -88,18 +88,18 @@ public final class ArenaHelper {
         int timeLimit = TTTCore.config.get(ConfigKey.MAP_CYCLE_TIME_LIMIT);
         int roundLimit = TTTCore.config.get(ConfigKey.MAP_CYCLE_ROUND_LIMIT);
 
-        if (!arena.getMetadata().containsKey(ARENA_START_TIME)) {
-            arena.getMetadata().set(ARENA_START_TIME, System.currentTimeMillis());
+        if (!arena.getMetadata().containsKey(START_TIME)) {
+            arena.getMetadata().set(START_TIME, System.currentTimeMillis());
         }
-        if (!arena.getMetadata().containsKey(ARENA_ROUND_TALLY)) {
-            arena.getMetadata().set(ARENA_ROUND_TALLY, 1);
+        if (!arena.getMetadata().containsKey(ROUND_TALLY)) {
+            arena.getMetadata().set(ROUND_TALLY, 1);
         }
 
         if (timeLimit >= 0 && (TTTCore.config.get(ConfigKey.MAP_CYCLE_TIME_LIMIT) >= 0)
-                && (System.currentTimeMillis() - arena.getMetadata().<Long>get(ARENA_START_TIME).get())
+                && (System.currentTimeMillis() - arena.getMetadata().<Long>get(START_TIME).get())
                 >= (timeLimit * 60 * 1000)) { // I realize that was super-ugly
             return true; // time limit reached
-        } else if (roundLimit >= 0 && arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get() - 1 >= roundLimit) {
+        } else if (roundLimit >= 0 && arena.getMetadata().<Integer>get(ROUND_TALLY).get() - 1 >= roundLimit) {
             return true; // round limit reached
         }
 

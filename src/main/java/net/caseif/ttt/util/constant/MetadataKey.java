@@ -28,8 +28,9 @@ public class MetadataKey {
 
     public static class Arena {
 
-        public static final String ARENA_START_TIME = "startTime";
-        public static final String ARENA_ROUND_TALLY = "roundTally";
+        public static final String START_TIME = "startTime";
+        public static final String ROUND_TALLY = "roundTally";
+        public static final String PROPERTY_CAT = "prop";
 
         private Arena() {
         }

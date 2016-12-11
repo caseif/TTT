@@ -24,8 +24,8 @@
 
 package net.caseif.ttt.util;
 
-import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_ROUND_TALLY;
-import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_START_TIME;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.ROUND_TALLY;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.START_TIME;
 import static net.caseif.ttt.util.constant.MetadataKey.Round.ROUND_RESTARTING;
 
 import net.caseif.ttt.TTTCore;
@@ -64,7 +64,7 @@ public class RoundRestartDaemon extends BukkitRunnable {
         this.arena = round.getArena();
 
         if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
-            arena.getMetadata().set(ARENA_ROUND_TALLY, arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get() + 1);
+            arena.getMetadata().set(ROUND_TALLY, arena.getMetadata().<Integer>get(ROUND_TALLY).get() + 1);
             this.willCycle = ArenaHelper.shouldArenaCycle(arena);
         } else {
             this.willCycle = false;
@@ -96,8 +96,8 @@ public class RoundRestartDaemon extends BukkitRunnable {
     }
 
     private void cycleArena() {
-        this.arena.getMetadata().remove(ARENA_START_TIME);
-        this.arena.getMetadata().remove(ARENA_ROUND_TALLY);
+        this.arena.getMetadata().remove(START_TIME);
+        this.arena.getMetadata().remove(ROUND_TALLY);
         ArenaHelper.applyNextArena();
         this.arena = TTTCore.getDedicatedArena();
     }

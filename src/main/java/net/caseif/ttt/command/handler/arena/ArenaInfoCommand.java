@@ -24,8 +24,8 @@
 
 package net.caseif.ttt.command.handler.arena;
 
-import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_ROUND_TALLY;
-import static net.caseif.ttt.util.constant.MetadataKey.Arena.ARENA_START_TIME;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.ROUND_TALLY;
+import static net.caseif.ttt.util.constant.MetadataKey.Arena.START_TIME;
 import static net.caseif.ttt.util.constant.Text.DIVIDER;
 
 import net.caseif.ttt.TTTCore;
@@ -92,7 +92,7 @@ public class ArenaInfoCommand extends CommandHandler {
             }
         }
         if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
-            long elapsed = System.currentTimeMillis() - arena.getMetadata().<Long>get(ARENA_START_TIME).get();
+            long elapsed = System.currentTimeMillis() - arena.getMetadata().<Long>get(START_TIME).get();
             long remainingTime
                     = Math.max(0, TTTCore.config.get(ConfigKey.MAP_CYCLE_TIME_LIMIT) - (elapsed / 1000 / 60));
 
@@ -102,7 +102,7 @@ public class ArenaInfoCommand extends CommandHandler {
                                     .withPrefix(Color.EM).withReplacements(remainingTime + "")
                     ).sendTo(sender);
             int remainingRounds = TTTCore.config.get(ConfigKey.MAP_CYCLE_ROUND_LIMIT)
-                    - arena.getMetadata().<Integer>get(ARENA_ROUND_TALLY).get();
+                    - arena.getMetadata().<Integer>get(ROUND_TALLY).get();
             TTTCore.locale.getLocalizable("info.personal.arena-info.map-change-rounds").withPrefix(Color.INFO)
                     .withReplacements(Color.EM + remainingRounds).sendTo(sender);
 
