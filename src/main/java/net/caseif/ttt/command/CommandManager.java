@@ -26,7 +26,15 @@ package net.caseif.ttt.command;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.command.handler.arena.*;
+import net.caseif.ttt.command.handler.arena.AddSpawnCommand;
+import net.caseif.ttt.command.handler.arena.ArenaInfoCommand;
+import net.caseif.ttt.command.handler.arena.ArenaPropertyCommand;
+import net.caseif.ttt.command.handler.arena.CreateArenaCommand;
+import net.caseif.ttt.command.handler.arena.EditArenaCommand;
+import net.caseif.ttt.command.handler.arena.ImportCommand;
+import net.caseif.ttt.command.handler.arena.ListSpawnsCommand;
+import net.caseif.ttt.command.handler.arena.RemoveArenaCommand;
+import net.caseif.ttt.command.handler.arena.RemoveSpawnCommand;
 import net.caseif.ttt.command.handler.misc.DefaultCommand;
 import net.caseif.ttt.command.handler.misc.HelpCommand;
 import net.caseif.ttt.command.handler.misc.XyzzyCommand;
@@ -117,6 +125,7 @@ public class CommandManager implements CommandExecutor {
         addRef(map, cmd, clazz, perm, usage, minArgs, consoleAllowed, false, aliases);
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (label.equalsIgnoreCase("ttt")) {
             if (args.length == 0) {
