@@ -26,17 +26,15 @@ package net.caseif.ttt.command.handler.player;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.UUIDFetcher;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.helper.gamemode.BanHelper;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.entity.Player;
 
 import java.io.IOException;
-import java.util.UUID;
 
 public class PardonCommand extends CommandHandler {
 
@@ -48,24 +46,16 @@ public class PardonCommand extends CommandHandler {
     public void handle() {
         String name = args[1];
         @SuppressWarnings("deprecation")
-        Player pl = Bukkit.getPlayer(name);
-        UUID uuid = null;
-        if (pl != null) {
-            uuid = pl.getUniqueId();
-        } else {
-            try {
-                uuid = UUIDFetcher.getUUIDOf(name);
-            } catch (UUIDFetcher.UUIDException ignored) {
-            }
-            if (uuid == null) {
-                TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ALERT).sendTo(sender);
-                return;
-            }
+        OfflinePlayer pl = Bukkit.getOfflinePlayer(name);
+        if (pl == null) {
+            TTTCore.locale.getLocalizable("error.admin.ban.invalid-player").withPrefix(Color.ALERT)
+                    .withReplacements(name).sendTo(sender);
+            return;
         }
         try {
-            if (BanHelper.pardon(uuid)) {
-                if (pl != null) {
-                    TTTCore.locale.getLocalizable("info.personal.pardon").withPrefix(Color.INFO).sendTo(pl);
+            if (BanHelper.pardon(pl.getUniqueId())) {
+                if (pl.isOnline()) {
+                    TTTCore.locale.getLocalizable("info.personal.pardon").withPrefix(Color.INFO).sendTo(pl.getPlayer());
                 }
                 TTTCore.locale.getLocalizable("info.personal.pardon.other").withPrefix(Color.INFO)
                         .withReplacements(name).sendTo(sender);

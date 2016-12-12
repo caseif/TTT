@@ -190,6 +190,10 @@ public class ScoreboardManager {
     }
 
     private void updateTitle(Objective obj, boolean t) {
+        obj.setDisplayName(getTitle(t));
+    }
+
+    private String getTitle(boolean t) {
         StringBuilder title = new StringBuilder();
         title.append(Color.SECONDARY);
         title.append(TTTCore.locale.getLocalizable("fragment.stage." + round.getLifecycleStage().getId())
@@ -199,7 +203,7 @@ public class ScoreboardManager {
             title.append(" - ");
             title.append(RoundHelper.getTimeDisplay(round, t, null));
         }
-        obj.setDisplayName(title.toString());
+        return title.toString();
     }
 
     public void uninitialize() {

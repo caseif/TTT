@@ -28,6 +28,7 @@ public class TelemetryKey {
 
     public static final String UUID = "uuid";
     public static final String VERSION = "version";
+    public static final String PLATFORM = "platform";
     public static final String FLINT_API = "flintApi";
     public static final String OPERATING_MODE = "opMode";
     public static final String ARENA_COUNT = "arenas";
