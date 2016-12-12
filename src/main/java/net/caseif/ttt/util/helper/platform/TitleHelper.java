@@ -31,7 +31,6 @@ import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.Role;
 
-import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.challenger.Challenger;
 import net.caseif.flint.round.Round;
 import net.caseif.rosetta.Localizable;
@@ -47,8 +46,9 @@ public final class TitleHelper {
     private TitleHelper() {
     }
 
+    @SuppressWarnings("deprecation")
     public static void sendStatusTitle(Player player, String role) {
-        if (TTTCore.config.get(ConfigKey.SEND_TITLES) && TitleUtil.areTitlesSupported()) {
+        if (TTTCore.config.get(ConfigKey.SEND_TITLES)) {
             if (player == null) {
                 throw new IllegalArgumentException("Player cannot be null!");
             }
@@ -71,15 +71,16 @@ public final class TitleHelper {
                 }
             }
             if (TTTCore.config.get(ConfigKey.LARGE_STATUS_TITLES)) {
-                TitleUtil.sendTitle(player, title, ChatColor.getByChar(color.charAt(1)));
+                player.sendTitle(ChatColor.getByChar(color.charAt(1)) + title, "");
             } else {
-                TitleUtil.sendTitle(player, "", ChatColor.RESET, title, ChatColor.getByChar(color.charAt(1)));
+                player.sendTitle("", ChatColor.getByChar(color.charAt(1)) + title);
             }
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static void sendVictoryTitle(Round round, boolean traitorVictory) {
-        if (TTTCore.config.get(ConfigKey.SEND_TITLES) && TitleUtil.areTitlesSupported()) {
+        if (TTTCore.config.get(ConfigKey.SEND_TITLES)) {
             checkNotNull(round, "Round cannot be null!");
             Localizable loc = TTTCore.locale.getLocalizable("info.global.round.event.end."
                     + (traitorVictory ? Role.TRAITOR : Role.INNOCENT) + ".min");
@@ -89,11 +90,9 @@ public final class TitleHelper {
             for (Challenger ch : round.getChallengers()) {
                 Player pl = Bukkit.getPlayer(ch.getUniqueId());
                 if (TTTCore.config.get(ConfigKey.LARGE_VICTORY_TITLES)) {
-                    TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), loc.localizeFor(pl),
-                            color);
+                    Bukkit.getPlayer(ch.getUniqueId()).sendTitle(color + loc.localizeFor(pl), "");
                 } else {
-                    TitleUtil.sendTitle(Bukkit.getPlayer(ch.getUniqueId()), "", ChatColor.RESET, loc.localizeFor(pl),
-                            color);
+                    Bukkit.getPlayer(ch.getUniqueId()).sendTitle("", color + loc.localizeFor(pl));
                 }
             }
         }

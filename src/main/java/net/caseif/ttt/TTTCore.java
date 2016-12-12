@@ -44,7 +44,6 @@ import net.caseif.ttt.util.helper.platform.BungeeHelper;
 
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.ImmutableSet;
-import net.caseif.crosstitles.TitleUtil;
 import net.caseif.flint.FlintCore;
 import net.caseif.flint.arena.Arena;
 import net.caseif.flint.arena.SpawningMode;
@@ -193,10 +192,6 @@ public class TTTCore {
         Stage.initialize();
         mg.setConfigValue(ConfigNode.DEFAULT_LIFECYCLE_STAGES,
                 ImmutableSet.of(Stage.WAITING, Stage.PREPARING, Stage.PLAYING, Stage.ROUND_OVER));
-
-        if (TTTCore.config.get(ConfigKey.SEND_TITLES) && !TitleUtil.areTitlesSupported()) {
-            logWarning("error.plugin.title-support");
-        }
     }
 
     public void deinitialize() {
