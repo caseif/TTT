@@ -63,7 +63,7 @@ public class ArenaPropertyCommand extends CommandHandler {
         String propKey = args[2].toLowerCase();
 
         if (!VALID_PROPERTIES.containsKey((propKey))) {
-            TTTCore.locale.getLocalizable("error.arena.setprop.invalid").withPrefix(Color.ALERT)
+            TTTCore.locale.getLocalizable("error.arena.setprop.invalid-key").withPrefix(Color.ALERT)
                     .withReplacements(Color.EM + propKey + Color.INFO).sendTo(sender);
         }
 

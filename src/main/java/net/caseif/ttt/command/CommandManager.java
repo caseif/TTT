@@ -30,6 +30,7 @@ import net.caseif.ttt.command.handler.arena.AddSpawnCommand;
 import net.caseif.ttt.command.handler.arena.ArenaInfoCommand;
 import net.caseif.ttt.command.handler.arena.ArenaPropertyCommand;
 import net.caseif.ttt.command.handler.arena.CreateArenaCommand;
+import net.caseif.ttt.command.handler.arena.DoneCommand;
 import net.caseif.ttt.command.handler.arena.EditArenaCommand;
 import net.caseif.ttt.command.handler.arena.ImportCommand;
 import net.caseif.ttt.command.handler.arena.ListSpawnsCommand;
@@ -78,7 +79,8 @@ public class CommandManager implements CommandExecutor {
         addRef(map, "arenainfo", ArenaInfoCommand.class, "admin", "[arena name]", 1, true);
         addRef(map, "arenaprop", ArenaPropertyCommand.class, "superadmin", "[arena name] [property] [value]", 3, true);
         addRef(map, "createarena", CreateArenaCommand.class, "superadmin", "", 1, false, "carena");
-        addRef(map, "editarena", EditArenaCommand.class, "superadmin", "", 1, false);
+        addRef(map, "editarena", EditArenaCommand.class, "superadmin", "", 2, false);
+        addRef(map, "done", DoneCommand.class, "superadmin", "", 1, false);
         addRef(map, "import", ImportCommand.class, "superadmin", "[arena name]", 2, true);
         addRef(map, "removearena", RemoveArenaCommand.class, "superadmin", "[arena name]", 2, true, "rarena");
         addRef(map, "listspawns", ListSpawnsCommand.class, "superadmin", "[arena name]", 2, true);

@@ -22,36 +22,33 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt.util.constant;
+package net.caseif.ttt.command.handler.arena;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.config.ConfigKey;
+import net.caseif.ttt.command.handler.CommandHandler;
+import net.caseif.ttt.util.constant.Color;
 
-import net.caseif.flint.round.LifecycleStage;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-// lifecycle stages
-public class Stage {
+public class DoneCommand extends CommandHandler {
 
-    public static final LifecycleStage WAITING = new LifecycleStage("waiting", -1);
-    public static LifecycleStage PREPARING;
-    public static LifecycleStage PLAYING;
-    public static LifecycleStage ROUND_OVER;
-
-    public static final LifecycleStage EDITING = new LifecycleStage("editing", -1);
-
-    static {
-        initialize();
+    public DoneCommand(CommandSender sender, String[] args) {
+        super(sender, args);
     }
 
-    private Stage() {
-    }
-
-    public static void initialize() {
-        PREPARING = new LifecycleStage("preparing", TTTCore.config.get(ConfigKey.PREPTIME_SECONDS));
-        PLAYING = new LifecycleStage("playing", TTTCore.config.get(ConfigKey.HASTE)
-                ? TTTCore.config.get(ConfigKey.HASTE_STARTING_SECONDS)
-                : TTTCore.config.get(ConfigKey.ROUNDTIME_SECONDS));
-        ROUND_OVER = new LifecycleStage("round_over", TTTCore.config.get(ConfigKey.POSTTIME_SECONDS));
+    @SuppressWarnings("deprecation")
+    @Override
+    public void handle() {
+        String arenaId;
+        if ((arenaId = TTTCore.ARENA_EDITORS.remove(((Player) sender).getUniqueId())) != null) {
+            assert TTTCore.mg.getArena(arenaId).isPresent();
+            TTTCore.mg.getArena(arenaId).get().getRound().get().end();
+            TTTCore.locale.getLocalizable("info.personal.arena.done-editing").withPrefix(Color.ALERT)
+                    .withReplacements(Color.EM + arenaId + Color.ALERT).sendTo(sender);
+        } else {
+            TTTCore.locale.getLocalizable("error.arena.not-editing").withPrefix(Color.ALERT).sendTo(sender);
+        }
     }
 
 }

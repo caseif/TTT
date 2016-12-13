@@ -28,8 +28,11 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.MetadataKey;
+import net.caseif.ttt.util.constant.Stage;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import net.caseif.flint.arena.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -48,7 +51,7 @@ public class EditArenaCommand extends CommandHandler {
         if (TTTCore.ARENA_EDITORS.containsKey(((Player) sender).getUniqueId())) {
             TTTCore.locale.getLocalizable("error.arena.already-editing").withPrefix(Color.ALERT)
                     .withReplacements(Color.EM + TTTCore.ARENA_EDITORS.get(((Player) sender).getUniqueId())
-                            + Color.INFO).sendTo(sender);
+                            + Color.ALERT).sendTo(sender);
         }
 
         String arenaId = args[1];
@@ -61,13 +64,21 @@ public class EditArenaCommand extends CommandHandler {
         if (arena.get().getMetadata().containsKey(MetadataKey.Arena.EDITOR)) {
             TTTCore.locale.getLocalizable("error.arena.has-editor").withPrefix(Color.ALERT)
                     .withReplacements(Color.EM + Bukkit.getPlayer(arena.get()
-                            .getMetadata().<UUID>get(MetadataKey.Arena.EDITOR).get()).getName() + Color.INFO)
+                            .getMetadata().<UUID>get(MetadataKey.Arena.EDITOR).get()).getName() + Color.ALERT)
                     .sendTo(sender);
+            return;
+        }
+
+        if (arena.get().getRound().isPresent()) {
+            TTTCore.locale.getLocalizable("error.arena.in-progress-editing").withPrefix(Color.ALERT)
+                    .withReplacements(Color.EM + "/ttt end " + arena.get().getId() + Color.ALERT,
+                            Color.EM + "/ttt kickall " + arena.get().getId() + Color.ALERT).sendTo(sender);
             return;
         }
 
         TTTCore.ARENA_EDITORS.put(((Player) sender).getUniqueId(), arena.get().getId());
         arena.get().getMetadata().set(MetadataKey.Arena.EDITOR, ((Player) sender).getUniqueId());
+        arena.get().getOrCreateRound(ImmutableSet.of(Stage.EDITING)).addChallenger(((Player) sender).getUniqueId());
     }
 
 }
