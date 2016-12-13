@@ -24,9 +24,15 @@
 
 package net.caseif.ttt.command.handler.arena;
 
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
+import net.caseif.ttt.util.constant.Color;
+import net.caseif.ttt.util.constant.StructureType;
+import net.caseif.ttt.util.helper.data.CollectionsHelper;
 
+import com.google.common.collect.Lists;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class StructureCommand extends CommandHandler {
 
@@ -36,7 +42,24 @@ public class StructureCommand extends CommandHandler {
 
     @Override
     public void handle() {
-        //TODO: implement
+        String arenaId = TTTCore.ARENA_EDITORS.get(((Player) sender).getUniqueId());
+        if (arenaId == null) {
+            TTTCore.locale.getLocalizable("error.arena.not-editing").withPrefix(Color.ALERT).sendTo(sender);
+            return;
+        }
+
+        switch (args[1]) {
+            case StructureType.TRAITOR_TESTER: {
+                //TODO: implement
+            }
+            default: {
+                TTTCore.locale.getLocalizable("error.arena.invalid-structure").withPrefix(Color.ALERT).sendTo(sender);
+                TTTCore.locale.getLocalizable("error.arena.available-structures").withPrefix(Color.INFO)
+                        .withReplacements(Color.SECONDARY + CollectionsHelper.prettyList(
+                                Lists.newArrayList(StructureType.TRAITOR_TESTER)
+                        ) + Color.INFO).sendTo(sender);
+            }
+        }
     }
 
 }

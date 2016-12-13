@@ -40,6 +40,7 @@ public class KickAllCommand extends CommandHandler {
         super(sender, args);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void handle() {
         String arenaId = args[1];
@@ -54,6 +55,7 @@ public class KickAllCommand extends CommandHandler {
             return;
         }
 
+        arena.get().getRound().get().end();
         for (Challenger ch : arena.get().getRound().get().getChallengers()) {
             ch.removeFromRound();
             TTTCore.locale.getLocalizable("info.personal.kick").withPrefix(Color.ALERT)

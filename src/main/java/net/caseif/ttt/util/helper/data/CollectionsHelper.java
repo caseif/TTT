@@ -43,7 +43,7 @@ public final class CollectionsHelper {
                 sb.append(", ");
             } else if (i == list.size() - 2) {
                 if (list.size() > 2) {
-                    sb.append(",");
+                    sb.append(", ");
                 }
                 sb.append(" and ");
             }
