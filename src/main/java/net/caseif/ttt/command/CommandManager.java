@@ -81,11 +81,11 @@ public class CommandManager implements CommandExecutor {
         addRef(map, "arenainfo", ArenaInfoCommand.class, "admin", "[arena id]", 1, true);
         addRef(map, "arenaprop", ArenaPropertyCommand.class, "superadmin", "[arena id] [property] [value]", 3, true);
         addRef(map, "createarena", CreateArenaCommand.class, "superadmin", "", 1, false, "carena");
+        addRef(map, "import", ImportCommand.class, "superadmin", "[arena id]", 2, true);
+        addRef(map, "removearena", RemoveArenaCommand.class, "superadmin", "[arena id]", 2, true, "rarena");
         addRef(map, "editarena", EditArenaCommand.class, "superadmin", "[arena id]", 2, false);
         addRef(map, "structure", StructureCommand.class, "superadmin", "[arena id]", 2, false);
         addRef(map, "done", DoneCommand.class, "superadmin", "", 1, false);
-        addRef(map, "import", ImportCommand.class, "superadmin", "[arena id]", 2, true);
-        addRef(map, "removearena", RemoveArenaCommand.class, "superadmin", "[arena id]", 2, true, "rarena");
         addRef(map, "listspawns", ListSpawnsCommand.class, "superadmin", "[arena id]", 2, true);
         addRef(map, "addspawn", AddSpawnCommand.class, "superadmin", "[arena id] {[x] [y] [z]}", 2, true);
         addRef(map, "removespawn", RemoveSpawnCommand.class, "superadmin", "[arena id] [index]|[[x] [y] [z]]", 2,
