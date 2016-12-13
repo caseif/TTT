@@ -36,7 +36,7 @@ public class KickAllCommand extends CommandHandler {
 
     @Override
     public void handle() {
-        //TODO: implement
+
     }
 
 }

@@ -36,6 +36,7 @@ import net.caseif.ttt.command.handler.arena.ImportCommand;
 import net.caseif.ttt.command.handler.arena.ListSpawnsCommand;
 import net.caseif.ttt.command.handler.arena.RemoveArenaCommand;
 import net.caseif.ttt.command.handler.arena.RemoveSpawnCommand;
+import net.caseif.ttt.command.handler.arena.StructureCommand;
 import net.caseif.ttt.command.handler.misc.DefaultCommand;
 import net.caseif.ttt.command.handler.misc.HelpCommand;
 import net.caseif.ttt.command.handler.misc.XyzzyCommand;
@@ -47,6 +48,7 @@ import net.caseif.ttt.command.handler.player.RoleCommand;
 import net.caseif.ttt.command.handler.player.SlayCommand;
 import net.caseif.ttt.command.handler.round.EndCommand;
 import net.caseif.ttt.command.handler.round.ForceEndCommand;
+import net.caseif.ttt.command.handler.round.KickAllCommand;
 import net.caseif.ttt.command.handler.round.PrepareCommand;
 import net.caseif.ttt.command.handler.round.RolesCommand;
 import net.caseif.ttt.command.handler.round.StartCommand;
@@ -71,21 +73,22 @@ public class CommandManager implements CommandExecutor {
         Map<String, CommandRef> map = new LinkedHashMap<>();
 
         // use
-        addRef(map, "join", JoinCommand.class, "use", "[arena name]", 1, false);
+        addRef(map, "join", JoinCommand.class, "use", "[arena id]", 1, false);
         addRef(map, "leave", LeaveCommand.class, "use", "", 1, false);
         addRef(map, "listarenas", ListArenasCommand.class, "use", "", 1, true);
 
         // arena
-        addRef(map, "arenainfo", ArenaInfoCommand.class, "admin", "[arena name]", 1, true);
-        addRef(map, "arenaprop", ArenaPropertyCommand.class, "superadmin", "[arena name] [property] [value]", 3, true);
+        addRef(map, "arenainfo", ArenaInfoCommand.class, "admin", "[arena id]", 1, true);
+        addRef(map, "arenaprop", ArenaPropertyCommand.class, "superadmin", "[arena id] [property] [value]", 3, true);
         addRef(map, "createarena", CreateArenaCommand.class, "superadmin", "", 1, false, "carena");
-        addRef(map, "editarena", EditArenaCommand.class, "superadmin", "", 2, false);
+        addRef(map, "editarena", EditArenaCommand.class, "superadmin", "[arena id]", 2, false);
+        addRef(map, "structure", StructureCommand.class, "superadmin", "[arena id]", 2, false);
         addRef(map, "done", DoneCommand.class, "superadmin", "", 1, false);
-        addRef(map, "import", ImportCommand.class, "superadmin", "[arena name]", 2, true);
-        addRef(map, "removearena", RemoveArenaCommand.class, "superadmin", "[arena name]", 2, true, "rarena");
-        addRef(map, "listspawns", ListSpawnsCommand.class, "superadmin", "[arena name]", 2, true);
-        addRef(map, "addspawn", AddSpawnCommand.class, "superadmin", "[arena name] {[x] [y] [z]}", 2, true);
-        addRef(map, "removespawn", RemoveSpawnCommand.class, "superadmin", "[arena name] [index]|[[x] [y] [z]]", 2,
+        addRef(map, "import", ImportCommand.class, "superadmin", "[arena id]", 2, true);
+        addRef(map, "removearena", RemoveArenaCommand.class, "superadmin", "[arena id]", 2, true, "rarena");
+        addRef(map, "listspawns", ListSpawnsCommand.class, "superadmin", "[arena id]", 2, true);
+        addRef(map, "addspawn", AddSpawnCommand.class, "superadmin", "[arena id] {[x] [y] [z]}", 2, true);
+        addRef(map, "removespawn", RemoveSpawnCommand.class, "superadmin", "[arena id] [index]|[[x] [y] [z]]", 2,
                 true);
 
         // player
@@ -97,11 +100,12 @@ public class CommandManager implements CommandExecutor {
         addRef(map, "pardon", PardonCommand.class, "admin", "[player name] {minutes}", 2, true);
 
         // round
-        addRef(map, "roles", RolesCommand.class, "admin", "[arena name]", 2, true);
-        addRef(map, "prepare", PrepareCommand.class, "admin", "[arena name]", 2, true);
-        addRef(map, "start", StartCommand.class, "admin", "[arena name]", 2, true);
-        addRef(map, "end", EndCommand.class, "admin", "[arena name] {victor (t/i)}", 2, true);
-        addRef(map, "forceend", ForceEndCommand.class, "admin", "[arena name] {victor (t/i)}", 2, true);
+        addRef(map, "roles", RolesCommand.class, "admin", "[arena id]", 2, true);
+        addRef(map, "prepare", PrepareCommand.class, "admin", "[arena id]", 2, true);
+        addRef(map, "start", StartCommand.class, "admin", "[arena id]", 2, true);
+        addRef(map, "end", EndCommand.class, "admin", "[arena id] {victor (t/i)}", 2, true);
+        addRef(map, "forceend", ForceEndCommand.class, "admin", "[arena id] {victor (t/i)}", 2, true);
+        addRef(map, "kickall", KickAllCommand.class, "admin", "[arena id]", 2, true);
 
         // misc
         addRef(map, "help", HelpCommand.class, null, "{command}", 1, true, "?");

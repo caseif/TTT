@@ -69,7 +69,8 @@ public class EditArenaCommand extends CommandHandler {
             return;
         }
 
-        if (arena.get().getRound().isPresent()) {
+        if (arena.get().getRound().isPresent() && arena.get().getRound().get().getChallengers().size() > 0
+                && arena.get().getRound().get().getLifecycleStage() != Stage.EDITING) {
             TTTCore.locale.getLocalizable("error.arena.in-progress-editing").withPrefix(Color.ALERT)
                     .withReplacements(Color.EM + "/ttt end " + arena.get().getId() + Color.ALERT,
                             Color.EM + "/ttt kickall " + arena.get().getId() + Color.ALERT).sendTo(sender);
