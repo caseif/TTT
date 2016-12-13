@@ -24,8 +24,14 @@
 
 package net.caseif.ttt.command.handler.round;
 
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
+import net.caseif.ttt.util.constant.Color;
 
+import com.google.common.base.Optional;
+import net.caseif.flint.arena.Arena;
+import net.caseif.flint.challenger.Challenger;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 public class KickAllCommand extends CommandHandler {
@@ -36,7 +42,24 @@ public class KickAllCommand extends CommandHandler {
 
     @Override
     public void handle() {
+        String arenaId = args[1];
+        Optional<Arena> arena = TTTCore.mg.getArena(arenaId);
+        if (!arena.isPresent()) {
+            TTTCore.locale.getLocalizable("error.arena.dne").withPrefix(Color.ALERT).sendTo(sender);
+            return;
+        }
+        if (!arena.get().getRound().isPresent()) {
+            TTTCore.locale.getLocalizable("error.round.dne").withPrefix(Color.ALERT)
+                    .withReplacements(Color.EM + arena.get().getId() + Color.ALERT).sendTo(sender);
+            return;
+        }
 
+        for (Challenger ch : arena.get().getRound().get().getChallengers()) {
+            ch.removeFromRound();
+            TTTCore.locale.getLocalizable("info.personal.kick").withPrefix(Color.ALERT)
+                    .sendTo(Bukkit.getPlayer(ch.getUniqueId()));
+        }
+        TTTCore.locale.getLocalizable("info.personal.kick.all").withPrefix(Color.INFO).sendTo(sender);
     }
 
 }
