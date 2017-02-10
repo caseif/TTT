@@ -36,6 +36,7 @@ import com.google.common.collect.Sets;
 import net.caseif.flint.arena.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.conversations.Conversation;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -79,6 +80,10 @@ public class EditArenaCommand extends CommandHandler {
         TTTCore.ARENA_EDITORS.put(((Player) sender).getUniqueId(), arena.get().getId());
         arena.get().getMetadata().set(MetadataKey.Arena.EDITOR, ((Player) sender).getUniqueId());
         arena.get().getOrCreateRound(ImmutableSet.of(Stage.EDITING)).addChallenger(((Player) sender).getUniqueId());
+
+        //TODO: enter player into a conversation
+        new Conversation()
+        ((Player) sender).beginConversation()
     }
 
 }
