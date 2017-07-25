@@ -119,7 +119,8 @@ public class CommandManager implements CommandExecutor {
                                String... aliases) {
         cmd = cmd.toLowerCase();
         CommandRef cr = new CommandRef(cmd, clazz, TTTCore.locale.getLocalizable("info.command.desc." + cmd),
-                perm != null ? "ttt." + perm : null, "/ttt " + cmd + " " + usage, minArgs, consoleAllowed, aliases);
+                perm != null ? "ttt." + perm : null, "/ttt " + cmd + " " + usage, minArgs, consoleAllowed, hidden,
+                aliases);
         map.put(cmd, cr);
         for (String alias : aliases) {
             map.put(alias, cr);

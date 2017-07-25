@@ -48,10 +48,18 @@ import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * Listener for player events initiated by a manual interaction.
  */
 public class PlayerInteractListener implements Listener {
+
+    private static final long INTERACT_COOLDOWN = 100L;
+
+    private static final Map<UUID, Long> LAST_INTERACT_MAP = new HashMap<>();
 
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -67,7 +75,16 @@ public class PlayerInteractListener implements Listener {
                     return;
                 }
 
+                if (LAST_INTERACT_MAP.containsKey(event.getPlayer().getUniqueId())) {
+                    if (System.currentTimeMillis() - LAST_INTERACT_MAP.get(event.getPlayer().getUniqueId())
+                            < INTERACT_COOLDOWN) {
+                        return;
+                    }
+                }
+
                 InteractHelper.handleEvent(event, ch);
+
+                LAST_INTERACT_MAP.put(event.getPlayer().getUniqueId(), System.currentTimeMillis());
             }
         }
 

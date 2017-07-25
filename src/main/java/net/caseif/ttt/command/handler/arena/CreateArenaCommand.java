@@ -24,8 +24,8 @@
 
 package net.caseif.ttt.command.handler.arena;
 
-import static net.caseif.ttt.listeners.wizard.WizardListener.WIZARDS;
-import static net.caseif.ttt.listeners.wizard.WizardListener.WIZARD_INFO;
+import static net.caseif.ttt.listeners.wizard.WizardListener.wizardInfo;
+import static net.caseif.ttt.listeners.wizard.WizardListener.wizards;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
@@ -42,9 +42,9 @@ public class CreateArenaCommand extends CommandHandler {
 
     @Override
     public void handle() {
-        if (!WIZARDS.containsKey(((Player) sender).getUniqueId())) {
-            WIZARDS.put(((Player) sender).getUniqueId(), 0);
-            WIZARD_INFO.put(((Player) sender).getUniqueId(), new Object[4]);
+        if (!wizards.containsKey(((Player) sender).getUniqueId())) {
+            wizards.put(((Player) sender).getUniqueId(), 0);
+            wizardInfo.put(((Player) sender).getUniqueId(), new Object[4]);
             TTTCore.locale.getLocalizable("info.personal.arena.create.welcome").withPrefix(Color.INFO).sendTo(sender);
             TTTCore.locale.getLocalizable("info.personal.arena.create.exit-note").withPrefix(Color.INFO)
                     .withReplacements(TTTCore.locale.getLocalizable("info.personal.arena.create.cancel-keyword")
