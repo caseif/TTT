@@ -46,6 +46,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -55,20 +57,24 @@ import java.util.UUID;
  */
 public class WizardListener implements Listener {
 
-    public static BiMap<UUID, Integer> WIZARDS = HashBiMap.create();
-    public static BiMap<UUID, Object[]> WIZARD_INFO = HashBiMap.create();
+    private static final long INTERACT_COOLDOWN = 100L;
+
+    private static final Map<UUID, Long> LAST_INTERACT_MAP = new HashMap<>();
+
+    public static BiMap<UUID, Integer> wizards = HashBiMap.create();
+    public static BiMap<UUID, Object[]> wizardInfo = HashBiMap.create();
 
     @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("fallthrough")
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        if (WIZARDS.containsKey(event.getPlayer().getUniqueId())) {
-            int stage = WIZARDS.get(event.getPlayer().getUniqueId());
+        if (wizards.containsKey(event.getPlayer().getUniqueId())) {
+            int stage = wizards.get(event.getPlayer().getUniqueId());
             if (event.getMessage().equalsIgnoreCase(TTTCore.locale
                     .getLocalizable("info.personal.arena.create.cancel-keyword")
                     .localizeFor(event.getPlayer()))) {
                 event.setCancelled(true);
-                WIZARDS.remove(event.getPlayer().getUniqueId());
-                WIZARD_INFO.remove(event.getPlayer().getUniqueId());
+                wizards.remove(event.getPlayer().getUniqueId());
+                wizardInfo.remove(event.getPlayer().getUniqueId());
                 event.getPlayer().sendMessage(DIVIDER);
                 TTTCore.locale.getLocalizable("info.personal.arena.create.cancelled").withPrefix(Color.ALERT)
                         .sendTo(event.getPlayer());
@@ -84,7 +90,7 @@ public class WizardListener implements Listener {
                             break;
                         }
                         increment(event.getPlayer());
-                        WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_ID] = event.getMessage();
+                        wizardInfo.get(event.getPlayer().getUniqueId())[Stage.WIZARD_ID] = event.getMessage();
                         event.getPlayer().sendMessage(DIVIDER);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.id")
                                 .withPrefix(Color.INFO)
@@ -100,12 +106,12 @@ public class WizardListener implements Listener {
                     if (event.getMessage().equalsIgnoreCase(
                             TTTCore.locale.getLocalizable("info.personal.arena.create.ok-keyword")
                                     .localizeFor(event.getPlayer()))) {
-                        Object[] info = WIZARD_INFO.get(event.getPlayer().getUniqueId());
+                        Object[] info = wizardInfo.get(event.getPlayer().getUniqueId());
                         Boundary boundary = new Boundary((Location3D) info[Stage.WIZARD_FIRST_BOUND],
                                 (Location3D) info[Stage.WIZARD_SECOND_BOUND]);
                         Location3D spawn = LocationHelper.convert(event.getPlayer().getLocation());
 
-                        if (!event.getPlayer().getWorld().getName().equals(((Location3D) WIZARD_INFO
+                        if (!event.getPlayer().getWorld().getName().equals(((Location3D) wizardInfo
                                 .get(event.getPlayer().getUniqueId())[Stage.WIZARD_FIRST_BOUND])
                                 .getWorld().get())
                                 || !boundary.contains(spawn)) {
@@ -121,8 +127,8 @@ public class WizardListener implements Listener {
                                 .withReplacements(Color.EM + "/ttt join "
                                         + ((String) info[Stage.WIZARD_ID]).toLowerCase() + Color.INFO)
                                 .sendTo(event.getPlayer());
-                        WIZARDS.remove(event.getPlayer().getUniqueId());
-                        WIZARD_INFO.remove(event.getPlayer().getUniqueId());
+                        wizards.remove(event.getPlayer().getUniqueId());
+                        wizardInfo.remove(event.getPlayer().getUniqueId());
                         break;
                     }
                     // fall-through is intentional
@@ -138,15 +144,24 @@ public class WizardListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     @SuppressWarnings("fallthrough")
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if (LAST_INTERACT_MAP.containsKey(event.getPlayer().getUniqueId())) {
+            if (System.currentTimeMillis() - LAST_INTERACT_MAP.get(event.getPlayer().getUniqueId())
+                    < INTERACT_COOLDOWN) {
+                return;
+            }
+        }
+
+        LAST_INTERACT_MAP.put(event.getPlayer().getUniqueId(), System.currentTimeMillis());
+
         if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (WIZARDS.containsKey(event.getPlayer().getUniqueId())) {
-                int stage = WIZARDS.get(event.getPlayer().getUniqueId());
+            if (wizards.containsKey(event.getPlayer().getUniqueId())) {
+                int stage = wizards.get(event.getPlayer().getUniqueId());
                 event.setCancelled(true);
                 Block c = event.getClickedBlock();
                 switch (stage) {
                     case Stage.WIZARD_FIRST_BOUND:
                         increment(event.getPlayer());
-                        WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_FIRST_BOUND]
+                        wizardInfo.get(event.getPlayer().getUniqueId())[Stage.WIZARD_FIRST_BOUND]
                                 = new Location3D(c.getWorld().getName(), c.getX(), 0, c.getZ());
                         event.getPlayer().sendMessage(DIVIDER);
                         TTTCore.locale.getLocalizable("info.personal.arena.create.bound-1")
@@ -155,12 +170,12 @@ public class WizardListener implements Listener {
                                 .sendTo(event.getPlayer());
                         break;
                     case Stage.WIZARD_SECOND_BOUND:
-                        if (c.getWorld().getName().equals(((Location3D) WIZARD_INFO
+                        if (c.getWorld().getName().equals(((Location3D) wizardInfo
                                         .get(event.getPlayer().getUniqueId())[Stage.WIZARD_FIRST_BOUND])
                                         .getWorld().get()
                         )) {
                             increment(event.getPlayer());
-                            WIZARD_INFO.get(event.getPlayer().getUniqueId())[Stage.WIZARD_SECOND_BOUND]
+                            wizardInfo.get(event.getPlayer().getUniqueId())[Stage.WIZARD_SECOND_BOUND]
                                     = new Location3D(c.getWorld().getName(), c.getX(), c.getWorld().getMaxHeight(),
                                     c.getZ());
                             event.getPlayer().sendMessage(DIVIDER);
@@ -187,14 +202,14 @@ public class WizardListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (WIZARDS.containsKey(event.getPlayer().getUniqueId())) {
-            WIZARDS.remove(event.getPlayer().getUniqueId());
-            WIZARD_INFO.remove(event.getPlayer().getUniqueId());
+        if (wizards.containsKey(event.getPlayer().getUniqueId())) {
+            wizards.remove(event.getPlayer().getUniqueId());
+            wizardInfo.remove(event.getPlayer().getUniqueId());
         }
     }
 
     private void increment(Player player) {
-        WIZARDS.put(player.getUniqueId(), WIZARDS.get(player.getUniqueId()) + 1);
+        wizards.put(player.getUniqueId(), wizards.get(player.getUniqueId()) + 1);
     }
 
     private class Stage {

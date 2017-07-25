@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 // Apply Gradle plugins
 plugins {
     id 'java'
@@ -13,7 +15,7 @@ defaultTasks 'clean', 'updateLicenses', 'build', 'shadowJar'
 
 // Project information
 group = 'net.caseif.ttt'
-version = '0.11.1'
+version = '0.11.2'
 
 // Extended project information
 ext.projectName = 'ttt'
@@ -92,6 +94,11 @@ tasks.withType(JavaCompile) {
 processResources {
     from 'LICENSE'
     filter {String line -> line.replace('SNAPSHOT', 'SNAPSHOT' + versionSuffix)}
+
+    filter ReplaceTokens, tokens: [
+            "name": project.name,
+            "version": project.version
+    ]
 }
 
 jar {
