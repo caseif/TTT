@@ -97,6 +97,12 @@ public class TTTCore {
         HALLOWEEN = cal.get(Calendar.MONTH) == Calendar.OCTOBER && cal.get(Calendar.DAY_OF_MONTH) == 31;
     }
 
+
+    private boolean legacyMinecraftVersion;
+    private static final int MC_1_8_TRANSFORMED = 1_008_000;
+    private static final int MC_1_8_8_TRANSFORMED = 1_008_008;
+    private static final int MC_1_13_TRANSFORMED = 1_013_000;
+
     TTTCore(JavaPlugin plugin, LocaleManager localeManager) {
         if (INSTANCE != null) {
             throw new IllegalStateException("Cannot initialize singleton class TTTCore more than once");
@@ -112,6 +118,11 @@ public class TTTCore {
         kLog = Logger.getLogger("TTT Karma Debug");
         kLog.setParent(log);
 
+        checkJavaVersion();
+        checkBukkitVersion();
+
+        checkIfLegacyMinecraft();
+
         // register plugin with Flint
         mg = FlintCore.registerPlugin(plugin.getName());
 
@@ -125,9 +136,6 @@ public class TTTCore {
             TTTBootstrap.INSTANCE.failMinor();
             return;
         }
-
-        checkJavaVersion();
-        checkBukkitVersion();
 
         if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
             ArenaHelper.applyNextArena();
@@ -183,6 +191,22 @@ public class TTTCore {
                 getDedicatedArena().getOrCreateRound().addChallenger(pl.getUniqueId());
             }
         }
+    }
+
+    public boolean isLegacyMinecraftVersion() {
+        return legacyMinecraftVersion;
+    }
+
+    private int getTransformedMcVersion() {
+        String[] mcVersions = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+
+        return (Integer.parseInt(mcVersions[0]) * 1_000_000)
+                + (Integer.parseInt(mcVersions[1]) * 1_000)
+                + (mcVersions.length > 2 ? Integer.parseInt(mcVersions[2]) : 0);
+    }
+
+    private void checkIfLegacyMinecraft() {
+        legacyMinecraftVersion = getTransformedMcVersion() < MC_1_13_TRANSFORMED;
     }
 
     public void applyConfigOptions() {
@@ -314,9 +338,14 @@ public class TTTCore {
     }
 
     private void checkBukkitVersion() {
-        String ver = Bukkit.class.getPackage().getSpecificationVersion();
-        if (ver.startsWith("1.8") && !ver.startsWith("1.8.8")) {
+        int mcVer = getTransformedMcVersion();
+        if (mcVer >= MC_1_8_TRANSFORMED && mcVer < MC_1_8_8_TRANSFORMED) {
             logWarning("error.plugin.old-bukkit-1.8");
+        } else if (mcVer >= MC_1_13_TRANSFORMED) {
+            //TODO: remove when safe
+            logWarning("This server is running Minecraft version 1.13 or later.");
+            logWarning("TTT's support for this version may be incomplete or unstable.");
+            logWarning("Please report any issues at https://github.com/caseif/Steel/issues");
         }
     }
 

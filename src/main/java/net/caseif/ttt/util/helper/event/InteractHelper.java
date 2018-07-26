@@ -27,6 +27,7 @@ package net.caseif.ttt.util.helper.event;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Body;
+import net.caseif.ttt.util.helper.platform.MaterialHelper;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.MetadataKey;
@@ -237,24 +238,19 @@ public final class InteractHelper {
 
         // role identifier
         {
-            ItemStack roleId = new ItemStack(Material.WOOL, 1);
-            ItemMeta roleIdMeta = roleId.getItemMeta();
-            short durability;
             String roleStr = body.getRole();
+
             String prefix;
-            switch (body.getRole()) {
+            switch (roleStr) {
                 case Role.DETECTIVE: {
-                    durability = 11;
                     prefix = Color.DETECTIVE;
                     break;
                 }
                 case Role.INNOCENT: {
-                    durability = 5;
                     prefix = Color.INNOCENT;
                     break;
                 }
                 case Role.TRAITOR: {
-                    durability = 14;
                     prefix = Color.TRAITOR;
                     break;
                 }
@@ -262,7 +258,11 @@ public final class InteractHelper {
                     throw new AssertionError();
                 }
             }
-            roleId.setDurability(durability);
+
+            ItemStack roleId = MaterialHelper.instance().createRoleWool(roleStr);
+
+            ItemMeta roleIdMeta = roleId.getItemMeta();
+
             roleIdMeta.setDisplayName(TTTCore.locale.getLocalizable("fragment." + roleStr).withPrefix(prefix)
                     .localizeFor(player));
             roleIdMeta.setLore(Collections.singletonList(
@@ -274,7 +274,7 @@ public final class InteractHelper {
 
         // death clock
         {
-            ItemStack clock = new ItemStack(Material.WATCH, 1);
+            ItemStack clock = new ItemStack(MaterialHelper.instance().CLOCK, 1);
             ItemMeta clockMeta = clock.getItemMeta();
             long deathSeconds = (System.currentTimeMillis() - body.getDeathTime()) / 1000L;
             NumberFormat nf = NumberFormat.getInstance();
@@ -295,7 +295,7 @@ public final class InteractHelper {
             NumberFormat nf = NumberFormat.getInstance();
             nf.setMinimumIntegerDigits(2);
             String decayTime = nf.format(decaySeconds / 60) + ":" + nf.format(decaySeconds % 60);
-            ItemStack dna = new ItemStack(Material.LEASH, 1);
+            ItemStack dna = new ItemStack(MaterialHelper.instance().LEAD, 1);
             ItemMeta dnaMeta = dna.getItemMeta();
             dnaMeta.setDisplayName(TTTCore.locale.getLocalizable("item.dna.name").localizeFor(player));
             dnaMeta.setLore(CollectionsHelper.formatLore(

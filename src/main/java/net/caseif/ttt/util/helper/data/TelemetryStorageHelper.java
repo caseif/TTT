@@ -104,7 +104,7 @@ public class TelemetryStorageHelper {
             if (!(tag instanceof ListTag)) {
                 is.close(); // release file
                 Files.delete(store.toPath());
-                throw new IllegalStateException("Root tag of telemetry data store is not a list! This won't do...");
+                throw new IllegalStateException("Root tag of telemetry data store is not a list!");
             }
 
             ListTag list = (ListTag) tag;
@@ -143,7 +143,7 @@ public class TelemetryStorageHelper {
                 try (FileOutputStream os = new FileOutputStream(store)) {
                     os.write(new byte[0]);
                 } catch (IOException exc) {
-                    throw new RuntimeException("Failed to erase telemetry database! This is not good.", exc);
+                    throw new RuntimeException("Failed to erase telemetry database!", exc);
                 }
             }
         }

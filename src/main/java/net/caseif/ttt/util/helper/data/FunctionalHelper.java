@@ -22,39 +22,25 @@
  * THE SOFTWARE.
  */
 
-package net.caseif.ttt.util.helper.platform;
+package net.caseif.ttt.util.helper.data;
 
-import net.caseif.ttt.TTTCore;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+public class FunctionalHelper {
 
-import java.lang.reflect.Method;
-
-/**
- * Static utility class for inventory-related functionality.
- */
-public final class InventoryHelper {
-
-    private InventoryHelper() {
-    }
-
-    public static void removeArrow(Inventory inv) {
-        for (int i = 0; i < inv.getContents().length; i++) {
-            ItemStack is = inv.getItem(i);
-            if (is != null) {
-                if (is.getType() == Material.ARROW) {
-                    if (is.getAmount() == 1) {
-                        inv.setItem(i, null);
-                    } else if (is.getAmount() > 1) {
-                        is.setAmount(is.getAmount() - 1);
-                    }
-                    break;
-                }
+    public static <T> Predicate<T> createPredicate(final Function<T, Boolean> func) {
+        return new Predicate<T>() {
+            @Override
+            public boolean apply(T input) {
+                return func.apply(input);
             }
-        }
+
+            @Override
+            public boolean test(T input) {
+                return apply(input);
+            }
+        };
     }
 
 }

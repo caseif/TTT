@@ -25,6 +25,7 @@
 package net.caseif.ttt.util.compatibility;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.helper.platform.MaterialHelper;
 
 import com.google.common.base.Optional;
 import com.google.common.io.Files;
@@ -170,7 +171,8 @@ public final class LegacyMglibStorageConverter {
                         continue;
                     }
                     Location l = new Location(Bukkit.getWorld(world), x, y, z);
-                    if (l.getBlock().getType() != Material.WALL_SIGN && l.getBlock().getType() != Material.SIGN_POST) {
+                    if (l.getBlock().getType() != Material.WALL_SIGN
+                            && !MaterialHelper.instance().isStandingSign(l.getBlock().getType())) {
                         l.getBlock().setType(Material.WALL_SIGN);
                     }
                     Location3D loc = new Location3D(world, x, y, z);

@@ -28,8 +28,10 @@ import static net.caseif.ttt.util.helper.data.DataVerificationHelper.isDouble;
 
 import net.caseif.ttt.TTTBootstrap;
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.helper.data.FunctionalHelper;
 import net.caseif.ttt.util.helper.io.FileHelper;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
@@ -185,12 +187,14 @@ public final class TTTConfig {
     }
 
     private Set<String> getLegacyKeys(final String modernKey) {
-        return new HashSet<>(Collections2.filter(LEGACY_NODES.keySet(), new Predicate<String>() {
-            @Override
-            public boolean apply(String key) {
-                return LEGACY_NODES.get(key).equals(modernKey);
-            }
-        }));
+        return new HashSet<>(Collections2.filter(LEGACY_NODES.keySet(), FunctionalHelper.createPredicate(
+                new Function<String, Boolean>() {
+                    @Override
+                    public Boolean apply(String key) {
+                        return LEGACY_NODES.get(key).equals(modernKey);
+                    }
+                }
+        )));
     }
 
     // this is essentially a ghetto-ass YAML parser that doesn't support nesting in any form

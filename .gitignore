@@ -2,6 +2,7 @@
 .idea/
 bin/
 build/
+out/
 target/
 .classpath
 .project

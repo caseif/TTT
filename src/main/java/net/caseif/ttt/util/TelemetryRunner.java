@@ -52,7 +52,7 @@ public class TelemetryRunner implements Runnable {
     private static final String UUID_FILE_NAME = "telemetry/uuid.dat";
     private static final String TIMESTAMP_FILE_NAME = "telemetry/timestamp.dat";
 
-    private static final String TELEMETRY_SERVER = "http://telemetry.caseif.net/ttt.php";
+    private static final String TELEMETRY_SERVER = "https://telemetry.caseif.net/ttt.php";
 
     private final JTelemetry jt = new JTelemetry(TELEMETRY_SERVER);
 

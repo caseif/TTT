@@ -28,6 +28,7 @@ import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.helper.event.InteractHelper;
+import net.caseif.ttt.util.helper.platform.MaterialHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -62,7 +63,7 @@ public class PlayerInteractListener implements Listener {
     private static final Map<UUID, Long> LAST_INTERACT_MAP = new HashMap<>();
 
     @SuppressWarnings("deprecation")
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteract(PlayerInteractEvent event) {
         // check if player is in TTT round
         if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
@@ -70,7 +71,7 @@ public class PlayerInteractListener implements Listener {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 // disallow cheating/bed setting
                 if (event.getClickedBlock().getType() == Material.ENDER_CHEST
-                        || event.getClickedBlock().getType() == Material.BED_BLOCK) {
+                        || MaterialHelper.instance().isBed(event.getClickedBlock().getType())) {
                     event.setCancelled(true);
                     return;
                 }
