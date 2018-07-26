@@ -29,6 +29,7 @@ import static net.caseif.ttt.util.helper.gamemode.RoleHelper.isTraitor;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Body;
+import net.caseif.ttt.util.helper.platform.MaterialHelper;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.constant.Role;
@@ -99,9 +100,7 @@ public final class DeathHelper {
         }
 
         Block block = loc.getBlock();
-        while (block.getType() != Material.AIR && block.getType() != Material.WATER
-                && block.getType() != Material.LAVA && block.getType() != Material.STATIONARY_WATER
-                && block.getType() != Material.STATIONARY_LAVA) {
+        while (block.getType() != Material.AIR && !MaterialHelper.instance().isLiquid(block.getType())) {
             block = loc.add(0, 1, 0).getBlock();
         }
 

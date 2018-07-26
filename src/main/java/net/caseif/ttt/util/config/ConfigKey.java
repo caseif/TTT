@@ -105,7 +105,7 @@ public class ConfigKey<T> {
     public static final ConfigKey<Material> CROWBAR_ITEM
            = new ConfigKey<>(Material.class, "crowbar-item", Material.IRON_SWORD);
     public static final ConfigKey<Material> GUN_ITEM
-            = new ConfigKey<>(Material.class, "gun-item", Material.IRON_BARDING);
+            = new ConfigKey<>(Material.class, "gun-item", Material.IRON_HORSE_ARMOR);
     public static final ConfigKey<Integer> CROWBAR_DAMAGE = new ConfigKey<>(Integer.class, "crowbar-damage");
     public static final ConfigKey<Boolean> REQUIRE_AMMO_FOR_GUNS
             = new ConfigKey<>(Boolean.class, "require-ammo-for-guns");

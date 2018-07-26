@@ -25,6 +25,7 @@
 package net.caseif.ttt.listeners.player;
 
 import net.caseif.ttt.TTTCore;
+import net.caseif.ttt.util.helper.platform.MaterialHelper;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.helper.event.InteractHelper;
@@ -70,7 +71,7 @@ public class PlayerInteractListener implements Listener {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 // disallow cheating/bed setting
                 if (event.getClickedBlock().getType() == Material.ENDER_CHEST
-                        || event.getClickedBlock().getType() == Material.BED_BLOCK) {
+                        || MaterialHelper.instance().isBed(event.getClickedBlock().getType())) {
                     event.setCancelled(true);
                     return;
                 }

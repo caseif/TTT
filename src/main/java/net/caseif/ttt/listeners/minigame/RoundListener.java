@@ -36,10 +36,12 @@ import net.caseif.ttt.util.constant.CommandRegex;
 import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.constant.Stage;
+import net.caseif.ttt.util.helper.data.FunctionalHelper;
 import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
@@ -63,48 +65,60 @@ import java.util.UUID;
  */
 public class RoundListener {
 
-    private static final Predicate<Challenger> PRED_WIN = new Predicate<Challenger>() {
-        @Override
-        public boolean apply(Challenger chal) {
-            return isTraitor(chal)
-                    == chal.getRound().getMetadata().<Boolean>get(MetadataKey.Round.TRAITOR_VICTORY).or(false);
-        }
-    };
+    private static final Predicate<Challenger> PRED_WIN = FunctionalHelper.createPredicate(
+            new Function<Challenger, Boolean>() {
+                @Override
+                public Boolean apply(Challenger chal) {
+                    return isTraitor(chal)
+                            == chal.getRound().getMetadata().<Boolean>get(MetadataKey.Round.TRAITOR_VICTORY).or(false);
+                }
+            }
+    );
 
-    private static final Predicate<Challenger> PRED_LOSE = new Predicate<Challenger>() {
-        @Override
-        public boolean apply(Challenger chal) {
-            return !PRED_WIN.apply(chal);
-        }
-    };
+    private static final Predicate<Challenger> PRED_LOSE = FunctionalHelper.createPredicate(
+            new Function<Challenger, Boolean>() {
+                @Override
+                public Boolean apply(Challenger chal) {
+                    return !PRED_WIN.apply(chal);
+                }
+            }
+    );
 
-    private static final Predicate<Challenger> PRED_I = new Predicate<Challenger>() {
-        @Override
-        public boolean apply(Challenger chal) {
-            return !isTraitor(chal);
-        }
-    };
+    private static final Predicate<Challenger> PRED_I = FunctionalHelper.createPredicate(
+            new Function<Challenger, Boolean>() {
+                @Override
+                public Boolean apply(Challenger chal) {
+                    return !isTraitor(chal);
+                }
+            }
+    );
 
-    private static final Predicate<Challenger> PRED_IND = new Predicate<Challenger>() {
-        @Override
-        public boolean apply(Challenger chal) {
-            return !isTraitor(chal) && !chal.getMetadata().containsKey(Role.DETECTIVE);
-        }
-    };
+    private static final Predicate<Challenger> PRED_IND = FunctionalHelper.createPredicate(
+            new Function<Challenger, Boolean>() {
+                @Override
+                public Boolean apply(Challenger chal) {
+                    return !isTraitor(chal) && !chal.getMetadata().containsKey(Role.DETECTIVE);
+                }
+            }
+    );
 
-    private static final Predicate<Challenger> PRED_D = new Predicate<Challenger>() {
-        @Override
-        public boolean apply(Challenger chal) {
-            return chal.getMetadata().containsKey(Role.DETECTIVE);
-        }
-    };
+    private static final Predicate<Challenger> PRED_D = FunctionalHelper.createPredicate(
+            new Function<Challenger, Boolean>() {
+                @Override
+                public Boolean apply(Challenger chal) {
+                    return chal.getMetadata().containsKey(Role.DETECTIVE);
+                }
+            }
+    );
 
-    private static final Predicate<Challenger> PRED_T = new Predicate<Challenger>() {
-        @Override
-        public boolean apply(Challenger chal) {
-            return isTraitor(chal);
-        }
-    };
+    private static final Predicate<Challenger> PRED_T = FunctionalHelper.createPredicate(
+            new Function<Challenger, Boolean>() {
+                @Override
+                public Boolean apply(Challenger chal) {
+                    return isTraitor(chal);
+                }
+            }
+    );
 
     @Subscribe
     public void onRoundChangeLifecycleStage(RoundChangeLifecycleStageEvent event) {

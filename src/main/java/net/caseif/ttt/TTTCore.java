@@ -87,11 +87,14 @@ public class TTTCore {
 
     // dedicated mode stuff
     private static Arena dedicatedArena;
-
     static {
         Calendar cal = Calendar.getInstance();
         HALLOWEEN = cal.get(Calendar.MONTH) == Calendar.OCTOBER && cal.get(Calendar.DAY_OF_MONTH) == 31;
     }
+
+
+    private boolean legacyMinecraftVersion;
+    private static final int MC_113_TRANSFORMED = 1_013_000;
 
     TTTCore(JavaPlugin plugin, LocaleManager localeManager) {
         if (INSTANCE != null) {
@@ -124,6 +127,8 @@ public class TTTCore {
 
         checkJavaVersion();
         checkBukkitVersion();
+
+        checkIfLegacyMinecraft();
 
         if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
             ArenaHelper.applyNextArena();
@@ -179,6 +184,20 @@ public class TTTCore {
                 getDedicatedArena().getOrCreateRound().addChallenger(pl.getUniqueId());
             }
         }
+    }
+
+    public boolean isLegacyMinecraftVersion() {
+        return legacyMinecraftVersion;
+    }
+
+    private void checkIfLegacyMinecraft() {
+        String[] mcVersions = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+
+        int transformedMcVersion = (Integer.parseInt(mcVersions[0]) * 1_000_000)
+                + (Integer.parseInt(mcVersions[1]) * 1_000)
+                + (mcVersions.length > 2 ? Integer.parseInt(mcVersions[2]) : 0);
+
+        legacyMinecraftVersion = transformedMcVersion < MC_113_TRANSFORMED;
     }
 
     public void applyConfigOptions() {
