@@ -341,6 +341,11 @@ public class TTTCore {
         int mcVer = getTransformedMcVersion();
         if (mcVer >= MC_1_8_TRANSFORMED && mcVer < MC_1_8_8_TRANSFORMED) {
             logWarning("error.plugin.old-bukkit-1.8");
+        } else if (mcVer >= MC_1_13_TRANSFORMED) {
+            //TODO: remove when safe
+            logWarning("This server is running Minecraft version 1.13 or later.");
+            logWarning("TTT's support for this version may be incomplete or unstable.");
+            logWarning("Please report any issues at https://github.com/caseif/Steel/issues");
         }
     }
 
