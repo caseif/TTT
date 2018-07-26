@@ -51,8 +51,8 @@ repositories {
         url 'http://repo.gravitydevelopment.net'
     }
     maven {
-        name = 'mcstats'
-        url 'http://repo.mcstats.org/content/repositories/public'
+        name = 'bstats'
+        url 'http://repo.bstats.org/content/repositories/releases/'
     }
     maven {
         name = 'sponge'
@@ -67,7 +67,7 @@ ext {
     crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.2'
     jtelemetry = 'net.caseif.jtelemetry:jtelemetry:1.1.0'
     updater = 'net.gravitydevelopment.updater:updater:2.4'
-    metrics = 'org.mcstats.bukkit:metrics:R8-SNAPSHOT'
+    bstats = 'org.bstats:bstats-bukkit:1.2'
     jnbt = 'org.jnbt:jnbt:1.1'
 }
 
@@ -79,7 +79,7 @@ dependencies {
     compile crosstitles
     compile jtelemetry
     compile updater
-    compile metrics
+    compile bstats
     compile jnbt
 
     checkstyle 'org.spongepowered:checkstyle:6.1.1-sponge1'
@@ -111,7 +111,7 @@ shadowJar {
         include dependency(crosstitles)
         include dependency(jtelemetry)
         include dependency(updater)
-        include dependency(metrics)
+        include dependency(bstats)
         include dependency(jnbt)
     }
     classifier = ''
@@ -120,7 +120,7 @@ shadowJar {
     relocate('net.caseif.crosstitles', 'net.caseif.ttt.lib.net.caseif.crosstitles')
     relocate('net.caseif.jtelemetry', 'net.caseif.ttt.lib.net.caseif.jtelemetry')
     relocate('net.gravitydevelopment.updater', 'net.caseif.ttt.lib.net.gravitydevelopment.updater')
-    relocate('org.mcstats', 'net.caseif.ttt.lib.org.mcstats')
+    relocate('org.bstats', 'net.caseif.ttt.lib.org.bstats')
     relocate('org.jnbt', 'net.caseif.ttt.lib.org.jnbt')
 }
 

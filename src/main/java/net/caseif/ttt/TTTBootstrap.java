@@ -33,14 +33,16 @@ import net.caseif.ttt.command.SpecialCommandManager;
 import net.caseif.ttt.listeners.ListenerManager;
 import net.caseif.ttt.util.FreshUpdater;
 
+import net.caseif.flint.FlintCore;
 import net.caseif.rosetta.LocaleManager;
 import net.gravitydevelopment.updater.Updater;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 public class TTTBootstrap extends JavaPlugin {
 
@@ -56,13 +58,18 @@ public class TTTBootstrap extends JavaPlugin {
     @Override
     public void onEnable() {
         STEEL = Bukkit.getPluginManager().isPluginEnabled("Steel");
+
         locale = new LocaleManager(this);
+
         initializeUpdater();
-        initializeMetrics();
+
         if (!STEEL) {
             fail();
             return;
         }
+
+        initializeMetrics();
+
         new TTTCore(this, locale).initialize();
     }
 
@@ -100,25 +107,21 @@ public class TTTBootstrap extends JavaPlugin {
 
     private void initializeMetrics() {
         if (getConfig().getBoolean("enable-metrics")) {
-            try {
-                Metrics metrics = new Metrics(this);
-                if (STEEL) {
-                    Metrics.Graph graph = metrics.createGraph("Steel Version");
-                    graph.addPlotter(new Metrics.Plotter(
-                            Bukkit.getPluginManager().getPlugin("Steel").getDescription().getVersion()
-                    ) {
-                        public int getValue() {
-                            return 1;
-                        }
-                    });
-                    metrics.addGraph(graph);
+            Metrics metrics = new Metrics(this);
+
+            metrics.addCustomChart(new Metrics.SimplePie("steel_version", new Callable<String>() {
+                @Override
+                public String call() {
+                    return Bukkit.getPluginManager().getPlugin("Steel").getDescription().getVersion();
                 }
-                metrics.start();
-            } catch (IOException ex) {
-                if (getConfig().getBoolean("verbose-logging")) {
-                    getLogger().warning(locale.getLocalizable("error.plugin.mcstats").localize());
+            }));
+
+            metrics.addCustomChart(new Metrics.SimplePie("flint_api_level", new Callable<String>() {
+                @Override
+                public String call() {
+                    return Integer.toString(FlintCore.getApiRevision());
                 }
-            }
+            }));
         }
     }
 

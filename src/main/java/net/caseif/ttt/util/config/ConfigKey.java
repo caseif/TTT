@@ -24,6 +24,7 @@
 
 package net.caseif.ttt.util.config;
 
+import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.helper.platform.MaterialHelper;
 
 import com.google.common.reflect.TypeToken;
@@ -104,10 +105,14 @@ public class ConfigKey<T> {
             = new ConfigKey<>(Boolean.class, "large-victory-titles");
 
     // Weapon settings
-    public static final ConfigKey<Material> CROWBAR_ITEM
-           = new ConfigKey<>(Material.class, "crowbar-item", Material.IRON_SWORD);
-    public static final ConfigKey<Material> GUN_ITEM
-            = new ConfigKey<>(Material.class, "gun-item", MaterialHelper.instance().IRON_HORSE_ARMOR);
+    public static final ConfigKey<Material> CROWBAR_ITEM =
+            new ConfigKey<>(Material.class, "crowbar-item"
+                    + (TTTCore.getInstance().isLegacyMinecraftVersion() ? "-legacy" : ""),
+                    Material.IRON_SWORD);
+    public static final ConfigKey<Material> GUN_ITEM =
+            new ConfigKey(Material.class, "gun-item"
+                    + (TTTCore.getInstance().isLegacyMinecraftVersion() ? "-legacy" : ""),
+                    MaterialHelper.instance().IRON_HORSE_ARMOR);
     public static final ConfigKey<Integer> CROWBAR_DAMAGE = new ConfigKey<>(Integer.class, "crowbar-damage");
     public static final ConfigKey<Boolean> REQUIRE_AMMO_FOR_GUNS
             = new ConfigKey<>(Boolean.class, "require-ammo-for-guns");
@@ -139,9 +144,9 @@ public class ConfigKey<T> {
 
     // Operating settings
     public static final ConfigKey<OperatingMode> OPERATING_MODE
-           = new ConfigKey<>(OperatingMode.class, "operating-mode", OperatingMode.STANDARD);
+            = new ConfigKey<>(OperatingMode.class, "operating-mode", OperatingMode.STANDARD);
     public static final ConfigKey<CycleMode> MAP_CYCLE_MODE
-           = new ConfigKey<>(CycleMode.class, "map-cycle-mode", CycleMode.SHUFFLE);
+            = new ConfigKey<>(CycleMode.class, "map-cycle-mode", CycleMode.SHUFFLE);
     public static final ConfigKey<Integer> MAP_CYCLE_ROUND_LIMIT
             = new ConfigKey<>(Integer.class, "map-cycle-round-limit");
     public static final ConfigKey<Integer> MAP_CYCLE_TIME_LIMIT

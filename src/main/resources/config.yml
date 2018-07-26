@@ -156,10 +156,18 @@ large-victory-titles: false
 # See here for all valid values: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 crowbar-item: IRON_SWORD
 
+# The same as crowbar-item, but for pre-1.13 servers.
+#Note that the Material registry was overhauled in the 1.13 update.
+crowbar-item-legacy: IRON_SWORD
+
 # The item to use as a gun. This should be a raw Material enum value.
 # See here for all valid values: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
-# The default value, IRON_BARDING, represents iron horse armor.
-gun-item: IRON_BARDING
+# The default value is IRON_HORSE_ARMOR.
+gun-item: IRON_HORSE_ARMOR
+
+# The same as gun-item, but for pre-1.13 servers.
+##Note that the Material registry was overhauled in the 1.13 update.
+gun-item-legacy: IRON_BARDING
 
 # The amount of damage (in half-hearts) each hit with a crowbar should do.
 crowbar-damage: 5
@@ -281,7 +289,7 @@ map-cycle-round-limit: 6
 map-cycle-time-limit: 30
 
 # The server to return players to upon using the `/ttt leave` command in a dedicated server.
-# This will only take effect if
+# This will only take effect if both of the following conditions are met:
 #   a) the server is part of a BungeeCord network
 #   b) the 'operating-mode' config key is set to 'dedicated'
 return-server: ''
@@ -304,5 +312,5 @@ enable-auto-update: true
 # Whether the plugin is allowed to submit anonymous usage information to a private telemetry server.
 enable-telemetry: true
 
-# Whether the plugin is allowed to submit anonymous usage information to MCStats.
+# Whether the plugin is allowed to submit anonymous usage information to bStats.
 enable-metrics: true
