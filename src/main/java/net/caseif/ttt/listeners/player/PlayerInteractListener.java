@@ -63,7 +63,7 @@ public class PlayerInteractListener implements Listener {
     private static final Map<UUID, Long> LAST_INTERACT_MAP = new HashMap<>();
 
     @SuppressWarnings("deprecation")
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteract(PlayerInteractEvent event) {
         // check if player is in TTT round
         if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {

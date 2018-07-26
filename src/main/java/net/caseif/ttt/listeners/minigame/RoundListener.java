@@ -42,6 +42,7 @@ import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.eventbus.Subscribe;
 import net.caseif.flint.challenger.Challenger;
@@ -161,7 +162,11 @@ public class RoundListener {
     public void onRoundTick(RoundTimerTickEvent event) {
         Round r = event.getRound();
 
-        r.getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get().updateTitle();
+        Optional<ScoreboardManager> sbm = r.getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER);
+
+        if (sbm.isPresent()) {
+            sbm.get().updateTitle();
+        }
 
         if (r.getLifecycleStage() != Stage.WAITING) {
             if (event.getRound().getLifecycleStage() == Stage.PLAYING) {

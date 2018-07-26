@@ -95,7 +95,9 @@ public class TTTCore {
 
 
     private boolean legacyMinecraftVersion;
-    private static final int MC_113_TRANSFORMED = 1_013_000;
+    private static final int MC_1_8_TRANSFORMED = 1_008_000;
+    private static final int MC_1_8_8_TRANSFORMED = 1_008_008;
+    private static final int MC_1_13_TRANSFORMED = 1_013_000;
 
     TTTCore(JavaPlugin plugin, LocaleManager localeManager) {
         if (INSTANCE != null) {
@@ -191,14 +193,16 @@ public class TTTCore {
         return legacyMinecraftVersion;
     }
 
-    private void checkIfLegacyMinecraft() {
+    private int getTransformedMcVersion() {
         String[] mcVersions = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
 
-        int transformedMcVersion = (Integer.parseInt(mcVersions[0]) * 1_000_000)
+        return (Integer.parseInt(mcVersions[0]) * 1_000_000)
                 + (Integer.parseInt(mcVersions[1]) * 1_000)
                 + (mcVersions.length > 2 ? Integer.parseInt(mcVersions[2]) : 0);
+    }
 
-        legacyMinecraftVersion = transformedMcVersion < MC_113_TRANSFORMED;
+    private void checkIfLegacyMinecraft() {
+        legacyMinecraftVersion = getTransformedMcVersion() < MC_1_13_TRANSFORMED;
     }
 
     public void applyConfigOptions() {
@@ -334,8 +338,8 @@ public class TTTCore {
     }
 
     private void checkBukkitVersion() {
-        String ver = Bukkit.class.getPackage().getSpecificationVersion();
-        if (ver.startsWith("1.8") && !ver.startsWith("1.8.8")) {
+        int mcVer = getTransformedMcVersion();
+        if (mcVer >= MC_1_8_TRANSFORMED && mcVer < MC_1_8_8_TRANSFORMED) {
             logWarning("error.plugin.old-bukkit-1.8");
         }
     }
