@@ -87,6 +87,7 @@ public class TTTCore {
 
     // dedicated mode stuff
     private static Arena dedicatedArena;
+
     static {
         Calendar cal = Calendar.getInstance();
         HALLOWEEN = cal.get(Calendar.MONTH) == Calendar.OCTOBER && cal.get(Calendar.DAY_OF_MONTH) == 31;
@@ -111,6 +112,11 @@ public class TTTCore {
         kLog = Logger.getLogger("TTT Karma Debug");
         kLog.setParent(log);
 
+        checkJavaVersion();
+        checkBukkitVersion();
+
+        checkIfLegacyMinecraft();
+
         // register plugin with Flint
         mg = FlintCore.registerPlugin(plugin.getName());
 
@@ -124,11 +130,6 @@ public class TTTCore {
             TTTBootstrap.INSTANCE.failMinor();
             return;
         }
-
-        checkJavaVersion();
-        checkBukkitVersion();
-
-        checkIfLegacyMinecraft();
 
         if (TTTCore.config.get(ConfigKey.OPERATING_MODE) == OperatingMode.DEDICATED) {
             ArenaHelper.applyNextArena();

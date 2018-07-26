@@ -24,6 +24,8 @@
 
 package net.caseif.ttt.util.config;
 
+import net.caseif.ttt.util.helper.platform.MaterialHelper;
+
 import com.google.common.reflect.TypeToken;
 import org.bukkit.Material;
 
@@ -105,7 +107,7 @@ public class ConfigKey<T> {
     public static final ConfigKey<Material> CROWBAR_ITEM
            = new ConfigKey<>(Material.class, "crowbar-item", Material.IRON_SWORD);
     public static final ConfigKey<Material> GUN_ITEM
-            = new ConfigKey<>(Material.class, "gun-item", Material.IRON_HORSE_ARMOR);
+            = new ConfigKey<>(Material.class, "gun-item", MaterialHelper.instance().IRON_HORSE_ARMOR);
     public static final ConfigKey<Integer> CROWBAR_DAMAGE = new ConfigKey<>(Integer.class, "crowbar-damage");
     public static final ConfigKey<Boolean> REQUIRE_AMMO_FOR_GUNS
             = new ConfigKey<>(Boolean.class, "require-ammo-for-guns");

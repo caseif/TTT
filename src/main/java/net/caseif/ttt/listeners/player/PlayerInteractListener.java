@@ -25,10 +25,10 @@
 package net.caseif.ttt.listeners.player;
 
 import net.caseif.ttt.TTTCore;
-import net.caseif.ttt.util.helper.platform.MaterialHelper;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.helper.event.InteractHelper;
+import net.caseif.ttt.util.helper.platform.MaterialHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;

@@ -33,17 +33,26 @@ import org.bukkit.Material;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.Field;
+
 public abstract class MaterialHelper {
 
-    private static final MaterialHelper INSTANCE = TTTCore.getInstance().isLegacyMinecraftVersion()
-            ? new LegacyMaterialHelper()
-            : new ModernMaterialHelper();
+    private static final MaterialHelper INSTANCE;
+
+    static {
+        if (TTTCore.getInstance().isLegacyMinecraftVersion()) {
+            INSTANCE = new LegacyMaterialHelper();
+        } else {
+            INSTANCE = new ModernMaterialHelper();
+        }
+    }
 
     public static MaterialHelper instance() {
         return INSTANCE;
     }
 
     public Material CLOCK;
+    public Material IRON_HORSE_ARMOR;
     public Material LEAD;
 
     public abstract boolean isBed(Material material);
@@ -57,30 +66,60 @@ public abstract class MaterialHelper {
     @SuppressWarnings("deprecation")
     private static class LegacyMaterialHelper extends MaterialHelper {
 
-        private static final ImmutableSet<Material> FLUIDS = ImmutableSet.of(
-                Material.WATER, Material.LAVA,
-                Material.LEGACY_STATIONARY_WATER, Material.LEGACY_STATIONARY_LAVA
-        );
+        private static Material BED_BLOCK;
+        private static Material IRON_BARDING;
+        private static Material LEASH;
+        private static Material SIGN_POST;
+        private static Material STATIONARY_LAVA;
+        private static Material STATIONARY_WATER;
+        private static Material WATCH;
+        private static Material WOOL;
 
-        private static final ImmutableMap<String, Integer> WOOL_DURABILITY_MAP = ImmutableMap.of(
-                Role.DETECTIVE, 11,
-                Role.INNOCENT, 5,
-                Role.TRAITOR, 14
-        );
+        private static final ImmutableSet<Material> FLUIDS;
+
+        private static final ImmutableMap<String, Integer> WOOL_DURABILITY_MAP;
+
+        static {
+            for (Field field : LegacyMaterialHelper.class.getDeclaredFields()) {
+                if (field.getType() == Material.class) {
+                    try {
+                        field.set(null, lookup(field.getName()));
+                    } catch (IllegalAccessException ex) {
+                        throw new RuntimeException("Failed to set legacy material field " + field.getName() + ".");
+                    }
+                }
+            }
+
+            FLUIDS = ImmutableSet.of(
+                    Material.WATER, Material.LAVA,
+                    STATIONARY_WATER, STATIONARY_LAVA
+            );
+
+            WOOL_DURABILITY_MAP = ImmutableMap.of(
+                    Role.DETECTIVE, 11,
+                    Role.INNOCENT, 5,
+                    Role.TRAITOR, 14
+            );
+        }
+
+        private static Material lookup(String id) {
+            return Material.valueOf(id);
+        }
 
         private LegacyMaterialHelper() {
-            CLOCK = Material.LEGACY_WATCH;
-            LEAD = Material.LEGACY_LEASH;
+            CLOCK = WATCH;
+            IRON_HORSE_ARMOR = IRON_BARDING;
+            LEAD = LEASH;
         }
 
         @Override
         public boolean isBed(Material material) {
-            return material == Material.LEGACY_BED_BLOCK;
+            return material == BED_BLOCK;
         }
 
         @Override
         public boolean isStandingSign(Material material) {
-            return material == Material.LEGACY_SIGN_POST;
+            return material == SIGN_POST;
         }
 
         @Override
@@ -90,7 +129,7 @@ public abstract class MaterialHelper {
 
         @Override
         public ItemStack createRoleWool(String role) {
-            ItemStack roleId = new ItemStack(Material.LEGACY_WOOL, 1);
+            ItemStack roleId = new ItemStack(WOOL, 1);
 
             short durability = WOOL_DURABILITY_MAP.getOrDefault(role, -1).shortValue();
 
@@ -114,6 +153,7 @@ public abstract class MaterialHelper {
 
         private ModernMaterialHelper() {
             CLOCK = Material.CLOCK;
+            IRON_HORSE_ARMOR = Material.IRON_HORSE_ARMOR;
             LEAD = Material.LEAD;
         }
 
