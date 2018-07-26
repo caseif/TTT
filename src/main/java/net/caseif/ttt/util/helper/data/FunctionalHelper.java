@@ -35,6 +35,7 @@ public class FunctionalHelper {
             public boolean apply(T input) {
                 return func.apply(input);
             }
+
             @Override
             public boolean test(T input) {
                 return apply(input);
