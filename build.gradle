@@ -15,7 +15,7 @@ defaultTasks 'clean', 'updateLicenses', 'build', 'shadowJar'
 
 // Project information
 group = 'net.caseif.ttt'
-version = '0.11.3'
+version = '0.11.4-SNAPSHOT'
 
 // Extended project information
 ext.projectName = 'ttt'
