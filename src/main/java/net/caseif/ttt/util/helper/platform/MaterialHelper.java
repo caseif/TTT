@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.block.data.type.Bed;
+import org.bukkit.block.data.type.Sign;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
@@ -59,6 +60,8 @@ public abstract class MaterialHelper {
 
     public abstract boolean isStandingSign(Material material);
 
+    public abstract boolean isWallSign(Material material);
+
     public abstract boolean isLiquid(Material material);
 
     public abstract ItemStack createRoleWool(String role);
@@ -72,6 +75,7 @@ public abstract class MaterialHelper {
         private static Material SIGN_POST;
         private static Material STATIONARY_LAVA;
         private static Material STATIONARY_WATER;
+        private static Material WALL_SIGN;
         private static Material WATCH;
         private static Material WOOL;
 
@@ -83,7 +87,7 @@ public abstract class MaterialHelper {
             for (Field field : LegacyMaterialHelper.class.getDeclaredFields()) {
                 if (field.getType() == Material.class) {
                     try {
-                        field.set(null, lookup(field.getName()));
+                        field.set(null, Material.valueOf(field.getName()));
                     } catch (IllegalAccessException ex) {
                         throw new RuntimeException("Failed to set legacy material field " + field.getName() + ".");
                     }
@@ -102,10 +106,6 @@ public abstract class MaterialHelper {
             );
         }
 
-        private static Material lookup(String id) {
-            return Material.valueOf(id);
-        }
-
         private LegacyMaterialHelper() {
             CLOCK = WATCH;
             IRON_HORSE_ARMOR = IRON_BARDING;
@@ -120,6 +120,11 @@ public abstract class MaterialHelper {
         @Override
         public boolean isStandingSign(Material material) {
             return material == SIGN_POST;
+        }
+
+        @Override
+        public boolean isWallSign(Material material) {
+            return material == WALL_SIGN;
         }
 
         @Override
@@ -164,7 +169,22 @@ public abstract class MaterialHelper {
 
         @Override
         public boolean isStandingSign(Material material) {
-            return material == Material.SIGN;
+            return material == Material.ACACIA_SIGN
+                    || material == Material.BIRCH_SIGN
+                    || material == Material.DARK_OAK_SIGN
+                    || material == Material.JUNGLE_SIGN
+                    || material == Material.OAK_SIGN
+                    || material == Material.SPRUCE_SIGN;
+        }
+
+        @Override
+        public boolean isWallSign(Material material) {
+            return material == Material.ACACIA_WALL_SIGN
+                    || material == Material.BIRCH_WALL_SIGN
+                    || material == Material.DARK_OAK_WALL_SIGN
+                    || material == Material.JUNGLE_WALL_SIGN
+                    || material == Material.OAK_WALL_SIGN
+                    || material == Material.SPRUCE_WALL_SIGN;
         }
 
         @Override
