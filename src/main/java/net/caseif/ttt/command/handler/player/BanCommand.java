@@ -28,17 +28,15 @@ import static net.caseif.ttt.util.helper.data.DataVerificationHelper.isInt;
 
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.command.handler.CommandHandler;
-import net.caseif.ttt.util.UUIDFetcher;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.helper.gamemode.BanHelper;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.entity.Player;
 
 import java.io.IOException;
-import java.util.UUID;
 
 public class BanCommand extends CommandHandler {
 
@@ -60,36 +58,29 @@ public class BanCommand extends CommandHandler {
         }
         try {
             @SuppressWarnings("deprecation")
-            Player pl = Bukkit.getPlayer(name);
-            UUID uuid = null;
-            if (pl != null) {
-                uuid = pl.getUniqueId();
-            } else {
-                try {
-                    uuid = UUIDFetcher.getUUIDOf(name);
-                } catch (UUIDFetcher.UUIDException ignored) {
-                }
-                if (uuid == null) {
-                    TTTCore.locale.getLocalizable("error.plugin.uuid").withPrefix(Color.ALERT).sendTo(sender);
-                    return;
-                }
+            OfflinePlayer pl = Bukkit.getOfflinePlayer(name);
+            if (pl == null) {
+                TTTCore.locale.getLocalizable("error.admin.ban.invalid-player").withPrefix(Color.ALERT)
+                        .withReplacements(name).sendTo(sender);
+                return;
             }
-            BanHelper.ban(uuid, time);
+            BanHelper.ban(pl.getUniqueId(), time);
             if (time == -1) {
-                if (pl != null) {
-                    TTTCore.locale.getLocalizable("info.personal.ban.perm").withPrefix(Color.ALERT).sendTo(pl);
+                if (pl.isOnline()) {
+                    TTTCore.locale.getLocalizable("info.personal.ban.perm").withPrefix(Color.ALERT)
+                            .sendTo(pl.getPlayer());
                 }
                 TTTCore.locale.getLocalizable("info.personal.ban.other.perm").withPrefix(Color.INFO)
                         .withReplacements(name).sendTo(sender);
             } else {
-                if (pl != null) {
+                if (pl.isOnline()) {
                     TTTCore.locale.getLocalizable("info.personal.ban.temp").withPrefix(Color.ALERT)
                             .withReplacements(TTTCore.locale.getLocalizable("fragment.minutes"
                                     + (time == 1 ? ".singular" : "")).withReplacements(time + ""))
-                            .sendTo(pl);
+                            .sendTo(pl.getPlayer());
                 }
                 TTTCore.locale.getLocalizable("info.personal.ban.other.temp").withPrefix(Color.INFO)
-                        .withReplacements(pl != null ? pl.getName() : name,
+                        .withReplacements(pl.getName(),
                                 TTTCore.locale.getLocalizable("fragment.minutes" + (time == 1 ? ".singular" : ""))
                                         .withReplacements(time + "").localizeFor(sender)
                         ).sendTo(sender);

@@ -66,7 +66,7 @@ import java.util.logging.Logger;
  * Minecraft port of Trouble In Terrorist Town.
  *
  * @author Maxim Roncace
- * @version 0.11.0
+ * @version 0.12.0-SNAPSHOT
  */
 public class TTTCore {
 
