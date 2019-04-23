@@ -55,6 +55,7 @@ public abstract class MaterialHelper {
     public Material CLOCK;
     public Material IRON_HORSE_ARMOR;
     public Material LEAD;
+    public Material OAK_WALL_SIGN;
 
     public abstract boolean isBed(Material material);
 
@@ -110,6 +111,7 @@ public abstract class MaterialHelper {
             CLOCK = WATCH;
             IRON_HORSE_ARMOR = IRON_BARDING;
             LEAD = LEASH;
+            OAK_WALL_SIGN = WALL_SIGN;
         }
 
         @Override
@@ -160,6 +162,7 @@ public abstract class MaterialHelper {
             CLOCK = Material.CLOCK;
             IRON_HORSE_ARMOR = Material.IRON_HORSE_ARMOR;
             LEAD = Material.LEAD;
+            OAK_WALL_SIGN = Material.OAK_WALL_SIGN;
         }
 
         @Override
