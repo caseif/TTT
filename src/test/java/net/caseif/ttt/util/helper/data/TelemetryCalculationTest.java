@@ -24,10 +24,10 @@
 
 package net.caseif.ttt.util.helper.data;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class TelemetryCalculationTest {
 
     private TelemetryStorageHelper.RoundSummaryStats stats;
 
-    @Before
+    @BeforeAll
     public void initialize() {
         List<TelemetryStorageHelper.RoundSummary> summaries = new ArrayList<>();
         for (int i = 0; i < durations.length; i++) {

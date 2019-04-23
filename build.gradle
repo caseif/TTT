@@ -61,13 +61,21 @@ repositories {
 }
 
 ext {
+<<<<<<< HEAD
     bukkit = 'org.bukkit:bukkit:1.13-R0.1-SNAPSHOT'
     flint = 'net.caseif.flint:flint:1.3.1'
+=======
+    bukkit = 'org.bukkit:bukkit:1.14-pre5-SNAPSHOT'
+    flint = 'net.caseif.flint:flint:1.3'
+>>>>>>> master
     rosetta = 'net.caseif.rosetta:rosetta:1.1.3'
     jtelemetry = 'net.caseif.jtelemetry:jtelemetry:1.1.0'
     updater = 'net.gravitydevelopment.updater:updater:2.4'
     bstats = 'org.bstats:bstats-bukkit:1.2'
     jnbt = 'org.jnbt:jnbt:1.1'
+
+    junit_api = 'org.junit.jupiter:junit-jupiter-api:5.4.2'
+    junit_engine = 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
 }
 
 // Project dependencies
@@ -79,6 +87,9 @@ dependencies {
     compile updater
     compile bstats
     compile jnbt
+
+    testCompile junit_api
+    testRuntime junit_engine
 
     checkstyle 'org.spongepowered:checkstyle:6.1.1-sponge1'
 }
