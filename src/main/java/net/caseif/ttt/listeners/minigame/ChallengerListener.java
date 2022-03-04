@@ -57,6 +57,8 @@ public class ChallengerListener {
 
     @Subscribe
     public void onChallengerJoinRound(ChallengerJoinRoundEvent event) {
+        RoundHelper.initializeRoundMetadata(event.getRound());
+
         if (event.getRound().getLifecycleStage() == Stage.PLAYING
                 || event.getRound().getLifecycleStage() == Stage.ROUND_OVER) {
             event.getChallenger().setSpectating(true);

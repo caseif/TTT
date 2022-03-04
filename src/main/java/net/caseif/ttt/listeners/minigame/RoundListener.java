@@ -144,26 +144,6 @@ public class RoundListener {
         }
     }
 
-    // not sure if this is the right event to listen to - need to review this
-    @Subscribe
-    public void onRoundTimerStart(RoundTimerStartEvent event) {
-        event.getRound().getMetadata().set(MetadataKey.Arena.PROPERTY_MIN_PLAYERS,
-                TTTCore.config.get(ConfigKey.MINIMUM_PLAYERS));
-
-        PersistentMetadata md = event.getRound().getArena().getPersistentMetadata();
-        if (md.containsKey(MetadataKey.Arena.PROPERTY_CAT)) {
-            PersistentMetadata props = md.<PersistentMetadata>get(MetadataKey.Arena.PROPERTY_CAT).get();
-            if (props.containsKey(MetadataKey.Arena.PROPERTY_MAX_PLAYERS)) {
-                event.getRound().setConfigValue(ConfigNode.MAX_PLAYERS,
-                                props.<Integer>get(MetadataKey.Arena.PROPERTY_MAX_PLAYERS).get());
-            }
-            if (props.containsKey(MetadataKey.Arena.PROPERTY_MIN_PLAYERS)) {
-                event.getRound().getMetadata().set(MetadataKey.Arena.PROPERTY_MIN_PLAYERS,
-                        props.get(MetadataKey.Arena.PROPERTY_MIN_PLAYERS).get());
-            }
-        }
-    }
-
     @SuppressWarnings({"deprecation"})
     @Subscribe
     public void onRoundTick(RoundTimerTickEvent event) {

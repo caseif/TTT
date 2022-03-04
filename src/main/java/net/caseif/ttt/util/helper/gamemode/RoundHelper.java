@@ -36,6 +36,8 @@ import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.platform.TitleHelper;
 
 import net.caseif.flint.challenger.Challenger;
+import net.caseif.flint.config.ConfigNode;
+import net.caseif.flint.metadata.persist.PersistentMetadata;
 import net.caseif.flint.round.Round;
 import net.caseif.rosetta.Localizable;
 import org.bukkit.Bukkit;
@@ -241,6 +243,28 @@ public final class RoundHelper {
             }
         }
         return timeStr.toString();
+    }
+
+    public static void initializeRoundMetadata(Round round) {
+        if (round.getMetadata().containsKey(MetadataKey.Round.METADATA_INITIALIZED)) {
+            return;
+        }
+
+        round.getMetadata().set(MetadataKey.Arena.PROPERTY_MIN_PLAYERS,
+                TTTCore.config.get(ConfigKey.MINIMUM_PLAYERS));
+
+        PersistentMetadata arenaMeta = round.getArena().getPersistentMetadata();
+        if (arenaMeta.containsKey(MetadataKey.Arena.PROPERTY_CAT)) {
+            PersistentMetadata props = arenaMeta.<PersistentMetadata>get(MetadataKey.Arena.PROPERTY_CAT).get();
+            if (props.containsKey(MetadataKey.Arena.PROPERTY_MAX_PLAYERS)) {
+                round.setConfigValue(ConfigNode.MAX_PLAYERS,
+                                props.<Integer>get(MetadataKey.Arena.PROPERTY_MAX_PLAYERS).get());
+            }
+            if (props.containsKey(MetadataKey.Arena.PROPERTY_MIN_PLAYERS)) {
+                round.getMetadata().set(MetadataKey.Arena.PROPERTY_MIN_PLAYERS,
+                        props.get(MetadataKey.Arena.PROPERTY_MIN_PLAYERS).get());
+            }
+        }
     }
 
 }

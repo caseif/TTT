@@ -60,6 +60,7 @@ public class MetadataKey {
 
     public static class Round {
 
+        public static final String METADATA_INITIALIZED = "metaInitialized";
         public static final String BODY_LIST = "bodies";
         public static final String SCOREBOARD_MANAGER = "scoreboardManager";
         public static final String TRAITOR_VICTORY = "t-victory";
