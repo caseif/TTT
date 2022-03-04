@@ -7,8 +7,8 @@ plugins {
     id 'idea'
     id 'checkstyle'
 
-    id 'net.minecrell.licenser' version '0.2.1'
-    id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'org.cadixdev.licenser' version '0.6.1'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 defaultTasks 'clean', 'updateLicenses', 'build', 'shadowJar'
@@ -44,15 +44,7 @@ repositories {
     }
     maven {
         name = 'caseif'
-        url 'https://repo.caseif.net/content/groups/public/'
-    }
-    maven {
-        name = 'gravity'
-        url 'http://repo.gravitydevelopment.net'
-    }
-    maven {
-        name = 'bstats'
-        url 'http://repo.bstats.org/content/repositories/releases/'
+        url 'https://repo.caseif.net/'
     }
     maven {
         name = 'sponge'
@@ -76,17 +68,17 @@ ext {
 
 // Project dependencies
 dependencies {
-    compile bukkit
-    compile flint
-    compile rosetta
-    compile crosstitles
-    compile jtelemetry
-    compile updater
-    compile bstats
-    compile jnbt
+    implementation bukkit
+    implementation flint
+    implementation rosetta
+    implementation crosstitles
+    implementation jtelemetry
+    implementation updater
+    implementation bstats
+    implementation jnbt
 
-    testCompile junit_api
-    testRuntime junit_engine
+    testImplementation junit_api
+    testRuntimeOnly junit_engine
 
     checkstyle 'org.spongepowered:checkstyle:6.1.1-sponge1'
 }
@@ -163,6 +155,6 @@ tasks.withType(Checkstyle) {
     exclude '**/*.yml'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.1'
+wrapper {
+    gradleVersion = '7.4'
 }
