@@ -97,8 +97,7 @@ public class TTTCore {
 
 
     private boolean legacyMinecraftVersion;
-    private static final int MC_1_8_TRANSFORMED = 1_008_000;
-    private static final int MC_1_8_8_TRANSFORMED = 1_008_008;
+    private static final int MC_1_12_2_TRANSFORMED = 1_012_002;
     private static final int MC_1_13_TRANSFORMED = 1_013_000;
 
     TTTCore(JavaPlugin plugin, LocaleManager localeManager) {
@@ -116,7 +115,6 @@ public class TTTCore {
         kLog = Logger.getLogger("TTT Karma Debug");
         kLog.setParent(log);
 
-        checkJavaVersion();
         checkBukkitVersion();
 
         checkIfLegacyMinecraft();
@@ -321,25 +319,15 @@ public class TTTCore {
         LegacyMglibStorageDeleter.deleteObsoleteStorage();
     }
 
-    private void checkJavaVersion() {
-        try {
-            if (Float.parseFloat(StandardSystemProperty.JAVA_CLASS_VERSION.value()) < 52.0) {
-                logWarning("error.plugin.old-java");
-            }
-        } catch (NumberFormatException ignored) {
-            logWarning("error.plugin.unknown-java");
-        }
-    }
-
     private void checkBukkitVersion() {
         int mcVer = getTransformedMcVersion();
-        if (mcVer >= MC_1_8_TRANSFORMED && mcVer < MC_1_8_8_TRANSFORMED) {
-            logWarning("error.plugin.old-bukkit-1.8");
+        if (mcVer >= MC_1_12_2_TRANSFORMED && mcVer < MC_1_12_2_TRANSFORMED) {
+            logWarning("error.plugin.old-minecraft-1.12");
         } else if (mcVer >= MC_1_13_TRANSFORMED) {
             //TODO: remove when safe
             logWarning("This server is running Minecraft version 1.13 or later.");
             logWarning("TTT's support for this version may be incomplete or unstable.");
-            logWarning("Please report any issues at https://github.com/caseif/Steel/issues");
+            logWarning("Please report any issues at https://github.com/caseif/TTT/issues");
         }
     }
 
