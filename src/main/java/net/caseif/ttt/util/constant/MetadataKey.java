@@ -60,7 +60,6 @@ public class MetadataKey {
         public static final String SCOREBOARD_MANAGER = "scoreboardManager";
         public static final String TRAITOR_VICTORY = "t-victory";
         public static final String ROUND_RESTARTING = "restarting";
-        public static final String ROUND_DURATION = "duration";
         public static final String HASTE_TIME = "hasteTime";
 
         private Round() {
