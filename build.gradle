@@ -32,8 +32,8 @@ ext.versionSuffix = version.contains('SNAPSHOT') ? (
                 + (System.getenv('BUILD_NUMBER') ? '-jnks' + System.getenv('BUILD_NUMBER') : '')
 ) : ''
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 // Project repositories
 repositories {
