@@ -157,7 +157,6 @@ public class ConfigKey<T> {
     public static final ConfigKey<Boolean> VERBOSE_LOGGING = new ConfigKey<>(Boolean.class, "verbose-logging");
     public static final ConfigKey<String> LOCALE = new ConfigKey<>(String.class, "locale");
     public static final ConfigKey<Boolean> ENABLE_AUTO_UPDATE = new ConfigKey<>(Boolean.class, "enable-auto-update");
-    public static final ConfigKey<Boolean> ENABLE_TELEMETRY = new ConfigKey<>(Boolean.class, "enable-telemetry");
     public static final ConfigKey<Boolean> ENABLE_METRICS = new ConfigKey<>(Boolean.class, "enable-metrics");
 
     private TypeToken<T> type;

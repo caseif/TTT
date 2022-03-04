@@ -37,7 +37,6 @@ import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.data.FunctionalHelper;
-import net.caseif.ttt.util.helper.data.TelemetryStorageHelper;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.RoundHelper;
 
@@ -131,10 +130,6 @@ public class RoundListener {
             runCommands(TTTCore.config.get(ConfigKey.PREPARE_CMDS), event.getRound());
         } else if (event.getStageAfter() == Stage.PLAYING) {
             RoundHelper.startRound(event.getRound());
-            if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
-                event.getRound().getMetadata().set(MetadataKey.Round.ROUND_PLAYER_COUNT,
-                        event.getRound().getChallengers().size());
-            }
             runCommands(TTTCore.config.get(ConfigKey.START_CMDS), event.getRound());
         } else if (event.getStageAfter() == Stage.ROUND_OVER) {
             RoundHelper.closeRound(event.getRound(), event.getStageBefore() == Stage.PLAYING);
@@ -144,16 +139,6 @@ public class RoundListener {
                                 .withPrefix(Color.INFO));
             }
 
-            if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
-                if (!event.getRound().getMetadata().containsKey(MetadataKey.Round.ROUND_DURATION)) {
-                    event.getRound().getMetadata()
-                            .set(MetadataKey.Round.ROUND_DURATION, event.getStageBefore().getDuration());
-                }
-                if (!event.getRound().getMetadata().containsKey(MetadataKey.Round.ROUND_RESULT)) {
-                    event.getRound().getMetadata().set(MetadataKey.Round.ROUND_RESULT, 2);
-                }
-                TelemetryStorageHelper.pushRound(event.getRound());
-            }
             runCommands(TTTCore.config.get(ConfigKey.COOLDOWN_CMDS), event.getRound());
             runWinLoseCmds(event.getRound());
         }
@@ -240,12 +225,6 @@ public class RoundListener {
                 if (!(tLeft && iLeft)) {
                     if (tLeft) {
                         event.getRound().getMetadata().set(MetadataKey.Round.TRAITOR_VICTORY, true);
-                    }
-
-                    if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
-                        event.getRound().getMetadata().set(MetadataKey.Round.ROUND_RESULT, (byte) (tLeft ? 1 : 0));
-                        event.getRound().getMetadata()
-                                .set(MetadataKey.Round.ROUND_DURATION, (int) event.getRound().getTime());
                     }
 
                     event.getRound().setLifecycleStage(Stage.ROUND_OVER, true);

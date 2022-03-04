@@ -30,7 +30,6 @@ import static net.caseif.ttt.util.constant.PluginInfo.MIN_FLINT_VERSION;
 import net.caseif.ttt.command.CommandManager;
 import net.caseif.ttt.listeners.ListenerManager;
 import net.caseif.ttt.lobby.StatusLobbySignPopulator;
-import net.caseif.ttt.util.TelemetryRunner;
 import net.caseif.ttt.util.compatibility.LegacyConfigFolderRenamer;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageConverter;
 import net.caseif.ttt.util.compatibility.LegacyMglibStorageDeleter;
@@ -83,7 +82,6 @@ public class TTTCore {
     public static LocaleManager locale;
     public static TTTConfig config;
     public static ContributorListHelper clh;
-    private static TelemetryRunner telRunner;
 
     public static final boolean HALLOWEEN;
 
@@ -150,10 +148,6 @@ public class TTTCore {
         }
 
         clh = new ContributorListHelper(TTTCore.class.getResourceAsStream("/contributors.txt"));
-
-        if (TTTCore.config.get(ConfigKey.ENABLE_TELEMETRY)) {
-            telRunner = new TelemetryRunner();
-        }
 
         mg.setConfigValue(ConfigNode.FORBIDDEN_COMMANDS, ImmutableSet.of("kit", "msg", "pm", "r", "me", "back"));
         mg.setConfigValue(ConfigNode.STATUS_LOBBY_SIGN_POPULATOR,

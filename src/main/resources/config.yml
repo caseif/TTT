@@ -309,8 +309,5 @@ locale: en_US
 # Whether the plugin should update itself (highly recommended).
 enable-auto-update: true
 
-# Whether the plugin is allowed to submit anonymous usage information to a private telemetry server.
-enable-telemetry: true
-
 # Whether the plugin is allowed to submit anonymous usage information to bStats.
 enable-metrics: true
