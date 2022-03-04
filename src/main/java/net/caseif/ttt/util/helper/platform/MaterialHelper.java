@@ -177,7 +177,9 @@ public abstract class MaterialHelper {
                     || material == Material.DARK_OAK_SIGN
                     || material == Material.JUNGLE_SIGN
                     || material == Material.OAK_SIGN
-                    || material == Material.SPRUCE_SIGN;
+                    || material == Material.SPRUCE_SIGN
+                    || material == Material.matchMaterial("minecraft:warped_sign")
+                    || material == Material.matchMaterial("minecraft:crimson_sign");
         }
 
         @Override
@@ -187,7 +189,9 @@ public abstract class MaterialHelper {
                     || material == Material.DARK_OAK_WALL_SIGN
                     || material == Material.JUNGLE_WALL_SIGN
                     || material == Material.OAK_WALL_SIGN
-                    || material == Material.SPRUCE_WALL_SIGN;
+                    || material == Material.SPRUCE_WALL_SIGN
+                    || material == Material.matchMaterial("minecraft:warped_wall_sign")
+                    || material == Material.matchMaterial("minecraft:crimson_wall_sign");
         }
 
         @Override
