@@ -56,10 +56,8 @@ ext {
     bukkit = 'org.spigotmc:spigot-api:1.14-pre5-SNAPSHOT'
     flint = 'net.caseif.flint:flint:1.3.1'
     rosetta = 'net.caseif.rosetta:rosetta:1.1.3'
-    crosstitles = 'net.caseif.crosstitles:crosstitles:0.1.2'
     updater = 'net.gravitydevelopment.updater:updater:2.4'
     bstats = 'org.bstats:bstats-bukkit:1.2'
-    jnbt = 'org.jnbt:jnbt:1.1'
 
     junit_api = 'org.junit.jupiter:junit-jupiter-api:5.4.2'
     junit_engine = 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
@@ -70,10 +68,8 @@ dependencies {
     implementation bukkit
     implementation flint
     implementation rosetta
-    implementation crosstitles
     implementation updater
     implementation bstats
-    implementation jnbt
 
     testImplementation junit_api
     testRuntimeOnly junit_engine
@@ -104,18 +100,14 @@ jar {
 shadowJar {
     dependencies {
         include dependency(rosetta)
-        include dependency(crosstitles)
         include dependency(updater)
         include dependency(bstats)
-        include dependency(jnbt)
     }
     classifier = ''
 
     relocate('net.caseif.rosetta', 'net.caseif.ttt.lib.net.caseif.rosetta')
-    relocate('net.caseif.crosstitles', 'net.caseif.ttt.lib.net.caseif.crosstitles')
     relocate('net.gravitydevelopment.updater', 'net.caseif.ttt.lib.net.gravitydevelopment.updater')
     relocate('org.bstats', 'net.caseif.ttt.lib.org.bstats')
-    relocate('org.jnbt', 'net.caseif.ttt.lib.org.jnbt')
 }
 
 task sourceJar(type: Jar) {
