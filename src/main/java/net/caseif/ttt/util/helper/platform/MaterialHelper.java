@@ -27,14 +27,17 @@ package net.caseif.ttt.util.helper.platform;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.util.constant.Role;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
-import org.bukkit.block.data.type.Bed;
-import org.bukkit.block.data.type.Sign;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public abstract class MaterialHelper {
 
@@ -151,48 +154,99 @@ public abstract class MaterialHelper {
     }
 
     private static class ModernMaterialHelper extends MaterialHelper {
+        // this class is free to depend on the new behavior of
+        // Material#matchMaterial introduced by Spigot 1.13 since it's only used
+        // for Minecraft 1.13 and higher
 
-        private static final ImmutableMap<String, Material> WOOL_MAP = ImmutableMap.of(
-                Role.DETECTIVE, Material.BLUE_WOOL,
-                Role.INNOCENT, Material.GREEN_WOOL,
-                Role.TRAITOR, Material.RED_WOOL
+        private static final ImmutableList<Material> getMaterialList(String... ids) {
+            return Arrays.stream(ids)
+                .map(Material::matchMaterial)
+                .filter(Predicates.notNull())
+                .collect(ImmutableList.toImmutableList());
+        }
+
+        private static final ImmutableList<Material> STANDING_SIGN_TYPES = getMaterialList(
+            "minecraft:acacia_sign",
+            "minecraft:birch_sign",
+            "minecraft:dark_oak_sign",
+            "minecraft:jungle_sign",
+            "minecraft:oak_sign",
+            "minecraft:spruce_sign",
+            "minecraft:warped_sign",
+            "minecraft:crimson_sign"
         );
 
+        private static final ImmutableList<Material> WALL_SIGN_TYPES = getMaterialList(
+            "minecraft:acacia_wall_sign",
+            "minecraft:birch_wall_sign",
+            "minecraft:dark_oak_wall_sign",
+            "minecraft:jungle_wall_sign",
+            "minecraft:oak_wall_sign",
+            "minecraft:spruce_wall_sign",
+            "minecraft:warped_wall_sign",
+            "minecraft:crimson_wall_sign"
+        );
+
+        private static final ImmutableMap<String, Material> WOOL_MAP = ImmutableMap.of(
+                Role.DETECTIVE, Material.matchMaterial("minecraft:blue_wool"),
+                Role.INNOCENT, Material.matchMaterial("minecraft:green_wool"),
+                Role.TRAITOR, Material.matchMaterial("minecraft:red_wool")
+        );
+
+        private static final ImmutableList<Material> FLUIDS = getMaterialList(
+            "minecraft:water",
+            "minecraft:lava"
+        );
+
+        private static final Class<?> c_blockdata_Bed;
+        private static final Method m_Material_createBlockData;
+
+        static {
+            try {
+                c_blockdata_Bed = Class.forName("org.bukkit.block.data.type.Bed");
+                m_Material_createBlockData = Material.class.getMethod("createBlockData");
+            } catch (ClassNotFoundException | NoSuchMethodException ex) {
+                throw new RuntimeException("Reflection lookup failed in 1.13+ material helper", ex);
+            }
+        }
+
         private ModernMaterialHelper() {
-            CLOCK = Material.CLOCK;
-            IRON_HORSE_ARMOR = Material.IRON_HORSE_ARMOR;
-            LEAD = Material.LEAD;
-            OAK_WALL_SIGN = Material.OAK_WALL_SIGN;
+            CLOCK = Material.matchMaterial("minecraft:clock");
+            IRON_HORSE_ARMOR = Material.matchMaterial("minecraft:iron_horse_armor");
+            LEAD = Material.matchMaterial("minecraft:lead");
+            OAK_WALL_SIGN = Material.matchMaterial("minecraft:oak_wall_sign");
         }
 
         @Override
         public boolean isBed(Material material) {
-            return material.createBlockData() instanceof Bed;
+            try {
+                Object blockData = m_Material_createBlockData.invoke(material);
+
+                if (blockData == null) {
+                    return false;
+                }
+
+                return c_blockdata_Bed.isAssignableFrom(blockData.getClass());
+            } catch (IllegalAccessException ex) {
+                throw new RuntimeException("Reflection invocation failed in 1.13+ material helper", ex);
+            } catch (InvocationTargetException ex) {
+                throw new RuntimeException(ex);
+            }
         }
 
         @Override
         public boolean isStandingSign(Material material) {
-            return material == Material.ACACIA_SIGN
-                    || material == Material.BIRCH_SIGN
-                    || material == Material.DARK_OAK_SIGN
-                    || material == Material.JUNGLE_SIGN
-                    || material == Material.OAK_SIGN
-                    || material == Material.SPRUCE_SIGN;
+            return STANDING_SIGN_TYPES.stream().anyMatch(Predicates.equalTo(material));
         }
 
         @Override
         public boolean isWallSign(Material material) {
-            return material == Material.ACACIA_WALL_SIGN
-                    || material == Material.BIRCH_WALL_SIGN
-                    || material == Material.DARK_OAK_WALL_SIGN
-                    || material == Material.JUNGLE_WALL_SIGN
-                    || material == Material.OAK_WALL_SIGN
-                    || material == Material.SPRUCE_WALL_SIGN;
+            return WALL_SIGN_TYPES.stream().anyMatch(Predicates.equalTo(material));
         }
 
         @Override
         public boolean isLiquid(Material material) {
-            return material == Material.WATER || material == Material.LAVA;
+            return FLUIDS.stream().anyMatch(Predicates.equalTo(material));
         }
 
         @Override
