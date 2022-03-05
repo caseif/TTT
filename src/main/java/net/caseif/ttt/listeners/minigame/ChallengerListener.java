@@ -46,6 +46,7 @@ import net.caseif.flint.event.round.challenger.ChallengerJoinRoundEvent;
 import net.caseif.flint.event.round.challenger.ChallengerLeaveRoundEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -67,7 +68,7 @@ public class ChallengerListener {
         }
 
         Player pl = Bukkit.getPlayer(event.getChallenger().getUniqueId());
-        pl.setHealth(pl.getMaxHealth());
+        pl.setHealth(pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         pl.setCompassTarget(Bukkit.getWorlds().get(1).getSpawnLocation());
 
         if (!event.getChallenger().getMetadata().containsKey(MetadataKey.Player.PURE_SPECTATOR)) {

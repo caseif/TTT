@@ -35,19 +35,20 @@ import net.caseif.flint.challenger.Challenger;
 import net.caseif.rosetta.Localizable;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +63,6 @@ public class PlayerInteractListener implements Listener {
 
     private static final Map<UUID, Long> LAST_INTERACT_MAP = new HashMap<>();
 
-    @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteract(PlayerInteractEvent event) {
         // check if player is in TTT round
@@ -112,8 +112,12 @@ public class PlayerInteractListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-        if (TTTCore.mg.getChallenger(event.getPlayer().getUniqueId()).isPresent()) {
+    public void onPlayerPickupItem(EntityPickupItemEvent event) {
+        if (event.getEntityType() != EntityType.PLAYER) {
+            return;
+        }
+
+        if (TTTCore.mg.getChallenger(event.getEntity().getUniqueId()).isPresent()) {
             event.setCancelled(true);
         }
     }

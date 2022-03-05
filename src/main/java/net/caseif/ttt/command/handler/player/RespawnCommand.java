@@ -39,6 +39,7 @@ import net.caseif.flint.metadata.Metadata;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -54,7 +55,6 @@ public class RespawnCommand extends CommandHandler {
     public void handle() {
         String name = args[1];
 
-        @SuppressWarnings("deprecation")
         Player pl = Bukkit.getPlayer(name);
         if (pl == null) {
             TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ALERT).sendTo(sender);
@@ -92,7 +92,7 @@ public class RespawnCommand extends CommandHandler {
 
         RoundHelper.distributeItems(ch.get());
 
-        pl.setHealth(pl.getMaxHealth());
+        pl.setHealth(pl.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         pl.setFoodLevel(20);
 
         ch.get().getRound().getMetadata().<ScoreboardManager>get(MetadataKey.Round.SCOREBOARD_MANAGER).get()

@@ -158,7 +158,7 @@ public abstract class MaterialHelper {
         // Material#matchMaterial introduced by Spigot 1.13 since it's only used
         // for Minecraft 1.13 and higher
 
-        private static final ImmutableList<Material> getMaterialList(String... ids) {
+        private static ImmutableList<Material> getMaterialList(String... ids) {
             return Arrays.stream(ids)
                 .map(Material::matchMaterial)
                 .filter(Predicates.notNull())

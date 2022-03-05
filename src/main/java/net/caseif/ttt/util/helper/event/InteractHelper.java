@@ -27,7 +27,6 @@ package net.caseif.ttt.util.helper.event;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Body;
-import net.caseif.ttt.util.helper.platform.MaterialHelper;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.constant.MetadataKey;
@@ -35,6 +34,7 @@ import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.data.CollectionsHelper;
 import net.caseif.ttt.util.helper.platform.InventoryHelper;
+import net.caseif.ttt.util.helper.platform.MaterialHelper;
 
 import com.google.common.base.Optional;
 import net.caseif.flint.challenger.Challenger;
@@ -88,11 +88,12 @@ public final class InteractHelper {
             }
 
             if (opener.getMetadata().containsKey(Role.DETECTIVE) && !opener.isSpectating()) { // handle DNA scanning
-                if (event.getPlayer().getItemInHand() != null
-                        && event.getPlayer().getItemInHand().getType() == Material.COMPASS
-                        && event.getPlayer().getItemInHand().getItemMeta() != null
-                        && event.getPlayer().getItemInHand().getItemMeta().getDisplayName() != null
-                        && event.getPlayer().getItemInHand().getItemMeta().getDisplayName().endsWith(
+                ItemStack heldItem = event.getPlayer().getInventory().getItemInMainHand();
+                if (heldItem != null
+                        && heldItem.getType() == Material.COMPASS
+                        && heldItem.getItemMeta() != null
+                        && heldItem.getItemMeta().getDisplayName() != null
+                        && heldItem.getItemMeta().getDisplayName().endsWith(
                         TTTCore.locale.getLocalizable("item.dna-scanner.name").localize())) {
                     event.setCancelled(true);
                     doDnaCheck(body, opener, event.getPlayer());

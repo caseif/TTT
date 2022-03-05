@@ -51,6 +51,7 @@ public class StructureCommand extends CommandHandler {
         switch (args[1]) {
             case StructureType.TRAITOR_TESTER: {
                 //TODO: implement
+                break;
             }
             default: {
                 TTTCore.locale.getLocalizable("error.arena.invalid-structure").withPrefix(Color.ALERT).sendTo(sender);

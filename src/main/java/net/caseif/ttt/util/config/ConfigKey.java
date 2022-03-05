@@ -110,7 +110,7 @@ public class ConfigKey<T> {
                     + (TTTCore.getInstance().isLegacyMinecraftVersion() ? "-legacy" : ""),
                     Material.IRON_SWORD);
     public static final ConfigKey<Material> GUN_ITEM =
-            new ConfigKey(Material.class, "gun-item"
+            new ConfigKey<>(Material.class, "gun-item"
                     + (TTTCore.getInstance().isLegacyMinecraftVersion() ? "-legacy" : ""),
                     MaterialHelper.instance().IRON_HORSE_ARMOR);
     public static final ConfigKey<Integer> CROWBAR_DAMAGE = new ConfigKey<>(Integer.class, "crowbar-damage");

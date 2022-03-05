@@ -29,12 +29,12 @@ import static net.caseif.ttt.util.helper.gamemode.RoleHelper.isTraitor;
 import net.caseif.ttt.TTTCore;
 import net.caseif.ttt.scoreboard.ScoreboardManager;
 import net.caseif.ttt.util.Body;
-import net.caseif.ttt.util.helper.platform.MaterialHelper;
 import net.caseif.ttt.util.config.ConfigKey;
 import net.caseif.ttt.util.constant.MetadataKey;
 import net.caseif.ttt.util.constant.Role;
 import net.caseif.ttt.util.helper.gamemode.KarmaHelper;
 import net.caseif.ttt.util.helper.platform.LocationHelper;
+import net.caseif.ttt.util.helper.platform.MaterialHelper;
 import net.caseif.ttt.util.helper.platform.NmsHelper;
 import net.caseif.ttt.util.helper.platform.PlayerHelper;
 
@@ -44,6 +44,7 @@ import net.caseif.flint.util.physical.Boundary;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -125,7 +126,7 @@ public final class DeathHelper {
         ch.setSpectating(true);
         PlayerHelper.watchPlayerGameMode(ch);
 
-        player.setHealth(player.getMaxHealth());
+        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
     }
 
     private Optional<Challenger> getKiller() {

@@ -46,6 +46,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Listener for player events initiated by an automatic process (that is, one
@@ -109,10 +110,12 @@ public class PlayerUpdateListener implements Listener {
                             return;
                         }
 
-                        if (damager.getItemInHand() != null
-                                && damager.getItemInHand().getItemMeta() != null
-                                && damager.getItemInHand().getItemMeta().getDisplayName() != null
-                                && damager.getItemInHand().getItemMeta().getDisplayName()
+                        ItemStack heldItem = damager.getInventory().getItemInMainHand();
+
+                        if (heldItem != null
+                                && heldItem.getItemMeta() != null
+                                && heldItem.getItemMeta().getDisplayName() != null
+                                && heldItem.getItemMeta().getDisplayName()
                                 .endsWith(TTTCore.locale.getLocalizable("item.crowbar.name")
                                         .localize())) {
                             event.setDamage(TTTCore.config.get(ConfigKey.CROWBAR_DAMAGE));
