@@ -152,7 +152,7 @@ public final class KarmaHelper {
             subtractKarma(damager, getDamagePenalty(damage, getKarma(victim)));
         } else if (!isTraitor(damager)) { // isTraitor(victim) is implicitly true - innocent damaging traitor
             addKarma(damager, getDamageReward(damage));
-        }
+        } // else, traitor damaging innocent - no karma reward or penalty
     }
 
     public static void applyKillKarma(Challenger killer, Challenger victim) {
@@ -160,7 +160,7 @@ public final class KarmaHelper {
             subtractKarma(killer, getKillPenalty(getKarma(victim)));
         } else if (!isTraitor(killer)) { // isTraitor(victim) is implicitly true - innocent damaging traitor
             addKarma(killer, getKillReward());
-        }
+        } // else, traitor killing innocent - no karma reward or penalty
     }
 
     private static void handleKick(Challenger player) {
