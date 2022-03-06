@@ -32,7 +32,6 @@ import net.caseif.ttt.util.helper.data.FunctionalHelper;
 import net.caseif.ttt.util.helper.io.FileHelper;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Material;
@@ -297,9 +296,10 @@ public final class TTTConfig {
             (buffer != null ? buffer : sb).append(line).append(newlineChar);
         }
         FileHelper.copyFile(userConfigFile, new File(userConfigFile.getParentFile(), "config.yml.old"));
-        FileWriter w = new FileWriter(userConfigFile);
-        w.append(sb.toString());
-        w.flush();
+        try (FileWriter w = new FileWriter(userConfigFile)) {
+            w.append(sb.toString());
+            w.flush();
+        }
     }
 
 }

@@ -24,14 +24,9 @@
 
 package net.caseif.ttt.util.helper.platform;
 
-import net.caseif.ttt.TTTCore;
-
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.lang.reflect.Method;
 
 /**
  * Static utility class for inventory-related functionality.

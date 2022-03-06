@@ -32,7 +32,6 @@ import net.caseif.ttt.util.constant.Stage;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import net.caseif.flint.arena.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;

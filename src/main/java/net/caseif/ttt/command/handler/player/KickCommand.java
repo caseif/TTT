@@ -43,7 +43,6 @@ public class KickCommand extends CommandHandler {
     @Override
     public void handle() {
         String name = args[1];
-        @SuppressWarnings("deprecation")
         Player pl = Bukkit.getPlayer(name);
         if (pl == null) {
             TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ALERT).sendTo(sender);

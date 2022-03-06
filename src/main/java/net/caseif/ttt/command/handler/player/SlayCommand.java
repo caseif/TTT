@@ -46,7 +46,6 @@ public class SlayCommand extends CommandHandler {
     public void handle() {
         String name = args[1];
 
-        @SuppressWarnings("deprecation")
         Player pl = Bukkit.getPlayer(name);
         if (pl == null) {
             TTTCore.locale.getLocalizable("error.round.player-offline").withPrefix(Color.ALERT)

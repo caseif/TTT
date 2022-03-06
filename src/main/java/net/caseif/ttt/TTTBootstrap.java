@@ -41,7 +41,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.Callable;
 
 public class TTTBootstrap extends JavaPlugin {

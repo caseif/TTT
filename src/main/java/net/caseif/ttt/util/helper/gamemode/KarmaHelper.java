@@ -164,7 +164,6 @@ public final class KarmaHelper {
     }
 
     private static void handleKick(Challenger player) {
-        @SuppressWarnings("deprecation")
         Player p = TTTCore.getPlugin().getServer().getPlayer(player.getName());
         assert p != null;
         player.removeFromRound();

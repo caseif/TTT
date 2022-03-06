@@ -34,7 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings({"serial", "unchecked"})
+@SuppressWarnings({"serial"})
 public class ConfigKey<T> {
 
     private static final Set<ConfigKey<?>> keys = new HashSet<>();

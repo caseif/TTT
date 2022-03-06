@@ -49,7 +49,6 @@ public class HelpCommand extends CommandHandler {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void handle() {
         boolean isInt = false;
         if (args.length == 1 || (isInt = DataVerificationHelper.isInt(args[1]))) {

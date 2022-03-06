@@ -41,7 +41,6 @@ import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 import net.caseif.ttt.util.helper.platform.BungeeHelper;
 
-import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.ImmutableSet;
 import net.caseif.flint.FlintCore;
 import net.caseif.flint.arena.Arena;

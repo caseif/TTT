@@ -70,7 +70,6 @@ public abstract class MaterialHelper {
 
     public abstract ItemStack createRoleWool(String role);
 
-    @SuppressWarnings("deprecation")
     private static class LegacyMaterialHelper extends MaterialHelper {
 
         private static Material BED_BLOCK;

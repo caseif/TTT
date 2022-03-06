@@ -34,7 +34,6 @@ import net.caseif.flint.util.physical.Boundary;
 import net.caseif.flint.util.physical.Location3D;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -110,7 +109,7 @@ public final class LegacyMglibStorageConverter {
                     }
                     Location3D[] spawnArr = new Location3D[spawnPoints.size()];
                     spawnPoints.toArray(spawnArr);
-                    Arena arena = TTTCore.mg.createBuilder(Arena.class).id(finalId).displayName(displayName)
+                    TTTCore.mg.createBuilder(Arena.class).id(finalId).displayName(displayName)
                             .spawnPoints(spawnArr).boundary(Boundary.INFINITE).build();
                     count++;
                 }
