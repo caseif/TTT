@@ -29,7 +29,10 @@ import net.caseif.ttt.command.handler.CommandHandler;
 import net.caseif.ttt.util.constant.Color;
 import net.caseif.ttt.util.helper.data.CollectionsHelper;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+
+import java.util.Calendar;
 
 public class DefaultCommand extends CommandHandler {
 
@@ -39,6 +42,12 @@ public class DefaultCommand extends CommandHandler {
 
     @Override
     public void handle() {
+        Calendar cal = Calendar.getInstance();
+        if (cal.before(new Calendar.Builder().setDate(2022, Calendar.MAY, 31).build())) {
+            sender.sendMessage(ChatColor.BLUE + "Slava " + ChatColor.YELLOW + "Ukraini!");
+        } else {
+            sender.sendMessage("No dice!");
+        }
         TTTCore.locale.getLocalizable("info.plugin.info").withPrefix(Color.INFO)
                 .withReplacements(TTTCore.getPlugin().getDescription().getVersion(),
                         CollectionsHelper.prettyList(TTTCore.getPlugin().getDescription().getAuthors()))
