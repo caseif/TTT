@@ -54,60 +54,85 @@ public final class NmsHelper {
         String[] array = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
         VERSION_STRING = array.length == 4 ? array[3] + "." : "";
 
-        Method craftPlayer_getHandle = null;
-        Field entityPlayer_playerConection = null;
-        Method playerConnection_a_packetPlayInClientCommand = null;
+        Method m_CraftPlayer_getHandle = null;
+        Field f_EntityPlayer_playerConnection = null;
+        Method m_PlayerConnection_a_PacketPlayInClientCommand = null;
         Object clientCommandPacketInstance = null;
         try {
             // get method for recieving CraftPlayer's EntityPlayer
-            craftPlayer_getHandle = getCraftClass("entity.CraftPlayer").getMethod("getHandle");
+            m_CraftPlayer_getHandle = getCraftClass("entity.CraftPlayer").getMethod("getHandle");
             // get the PlayerConnection of the EntityPlayer
-            entityPlayer_playerConection = getNmsClass("EntityPlayer").getDeclaredField("playerConnection");
+            Class<?> c_EntityPlayer = m_CraftPlayer_getHandle.getReturnType();
+            
+            // the PlayerConnection field changed names in 1.17, then at some point stopped being deobfuscated
+            // so we just access by type to avoid a bunch of nonsense and hopefully prevent future breakage
+            for (Field field : c_EntityPlayer.getDeclaredFields()) {
+                if (field.getType().getSimpleName().equals("PlayerConnection")) {
+                    if (f_EntityPlayer_playerConnection != null) {
+                        throw new RuntimeException("EntityPlayer contains multiple fields of type PlayerConnection - "
+                        + "refusing to proceed");
+                    }
+                    f_EntityPlayer_playerConnection = field;
+                }
+            }
+
             // method to send the packet
-            playerConnection_a_packetPlayInClientCommand = getNmsClass("PlayerConnection")
-                    .getMethod("a", getNmsClass("PacketPlayInClientCommand"));
+            Class<?> c_PlayerConnection = f_EntityPlayer_playerConnection.getType();
+            Class<?> c_PacketPlayInClientCommand;
+            try {
+                c_PacketPlayInClientCommand = Class.forName("net.minecraft.network.protocol.game.PacketPlayInClientCommand");
+            } catch (ClassNotFoundException ex) {
+                c_PacketPlayInClientCommand = getVersionedNmsClass("PacketPlayInClientCommand");
+            }
+            m_PlayerConnection_a_PacketPlayInClientCommand = c_PlayerConnection.getMethod("a",
+                    c_PacketPlayInClientCommand);
 
             try {
-                try { // 1.6 and above
-                    @SuppressWarnings("rawtypes")
-                    Class<? extends Enum> enumClass;
+                @SuppressWarnings("rawtypes")
+                Class<? extends Enum> c_EnumClientCommand;
+                try {                    
+                    // Spigot's NMS mappings were totally overhauled during 1.16.5
                     try {
-                        // this changed at some point in 1.8 to an inner class; I don't care to figure out exactly when
-                        String className = "PacketPlayInClientCommand$EnumClientCommand";
+                        String className = "net.minecraft.network.protocol.game.PacketPlayInClientCommand$EnumClientCommand";
 
-                        // do an indirect declaration to avoid compiler errors
+                        // we do an indirect assignment to avoid compiler warnings
                         // (I don't want to disable warnings for the whole method)
                         @SuppressWarnings({"rawtypes", "unchecked"})
-                        Class<? extends Enum> temp = (Class<? extends Enum>) getNmsClass(className);
-                        enumClass = temp;
-                    } catch (ClassNotFoundException ex) { // older 1.8 builds/1.7
+                        Class<? extends Enum> temp = (Class<? extends Enum>) Class.forName(className);
+                        c_EnumClientCommand = temp;
+                    } catch (ClassNotFoundException ex) { // 1.16.5 or earlier
+                        String className = "PacketPlayInClientCommand$EnumClientCommand";
+                        // this changed at some point in 1.8 to an inner class; I don't care to figure out exactly when
+                        // also, same thing with the indirect assginment
                         @SuppressWarnings({"rawtypes", "unchecked"})
-                        Class<? extends Enum> temp = (Class<? extends Enum>) getNmsClass("EnumClientCommand");
-                        enumClass = temp;
+                        Class<? extends Enum> temp = (Class<? extends Enum>) getVersionedNmsClass(className);
+                        c_EnumClientCommand = temp;
                     }
-                    @SuppressWarnings("unchecked")
-                    Object performRespawn = Enum.valueOf(enumClass, "PERFORM_RESPAWN");
-                    clientCommandPacketInstance = getNmsClass("PacketPlayInClientCommand")
-                            .getConstructor(performRespawn.getClass())
-                            .newInstance(performRespawn);
-                } catch (ClassNotFoundException ex) { // pre-1.6
-                    ex.printStackTrace();
-                    clientCommandPacketInstance = getNmsClass("Packet205ClientCommand").getConstructor().newInstance();
-                    clientCommandPacketInstance.getClass().getDeclaredField("a").set(clientCommandPacketInstance, 1);
+
+                } catch (ClassNotFoundException ex) { // older 1.8 builds/1.7
+                    @SuppressWarnings({"rawtypes", "unchecked"})
+                    Class<? extends Enum> temp = (Class<? extends Enum>) getVersionedNmsClass("EnumClientCommand");
+                    c_EnumClientCommand = temp;
                 }
+                @SuppressWarnings("unchecked")
+                Object performRespawn = Enum.valueOf(c_EnumClientCommand, "PERFORM_RESPAWN");
+                clientCommandPacketInstance = c_PacketPlayInClientCommand
+                        .getConstructor(performRespawn.getClass())
+                        .newInstance(performRespawn);
             } catch (ClassNotFoundException ex) {
                 ex.printStackTrace();
                 TTTCore.getInstance()
-                        .logSevere(TTTCore.locale.getLocalizable("plugin.alert.nms.client-command").localize());
+                        .logSevere(TTTCore.locale.getLocalizable("error.plugin.nms").localize());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            TTTCore.getInstance().logSevere(TTTCore.locale.getLocalizable("plugin.alert.nms.fail").localize());
+            TTTCore.getInstance().logSevere(TTTCore.locale.getLocalizable("error.plugin.nms").localize());
             nmsException = true;
         }
-        CRAFT_PLAYER_GET_HANDLE = craftPlayer_getHandle;
-        ENTITY_PLAYER_PLAYER_CONNECTION = entityPlayer_playerConection;
-        PLAYER_CONNECTION_A_PACKET_PLAY_IN_CLIENT_COMMAND = playerConnection_a_packetPlayInClientCommand;
+
+        CRAFT_PLAYER_GET_HANDLE = m_CraftPlayer_getHandle;
+        ENTITY_PLAYER_PLAYER_CONNECTION = f_EntityPlayer_playerConnection;
+        PLAYER_CONNECTION_A_PACKET_PLAY_IN_CLIENT_COMMAND = m_PlayerConnection_a_PacketPlayInClientCommand;
         CLIENT_COMMAND_PACKET_INSTANCE = clientCommandPacketInstance;
 
         NMS_SUPPORT = !nmsException;
@@ -118,13 +143,13 @@ public final class NmsHelper {
 
     /**
      * Retrieves a class by the given name from the package
-     * {@code net.minecraft.server}.
+     * {@code net.minecraft.server.<PACKAGE_VERSION>}.
      *
      * @param name The name of the class to retrieve
      * @return The class object from the package {@code net.minecraft.server}
      * @throws ClassNotFoundException If the class does not exist in the package
      */
-    private static Class<?> getNmsClass(String name) throws ClassNotFoundException {
+    private static Class<?> getVersionedNmsClass(String name) throws ClassNotFoundException {
         String className = "net.minecraft.server." + VERSION_STRING + name;
         return Class.forName(className);
     }

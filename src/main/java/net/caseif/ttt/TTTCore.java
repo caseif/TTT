@@ -40,6 +40,7 @@ import net.caseif.ttt.util.constant.Stage;
 import net.caseif.ttt.util.helper.gamemode.ArenaHelper;
 import net.caseif.ttt.util.helper.gamemode.ContributorListHelper;
 import net.caseif.ttt.util.helper.platform.BungeeHelper;
+import net.caseif.ttt.util.helper.platform.NmsHelper;
 
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.ImmutableSet;
@@ -116,6 +117,12 @@ public class TTTCore {
         checkBukkitVersion();
 
         checkIfLegacyMinecraft();
+
+        // force <clinit> so we fail fast if the reflective access fails
+        try {
+            Class.forName(NmsHelper.class.getCanonicalName());
+        } catch (ClassNotFoundException ex) { // swallow
+        }
 
         // register plugin with Flint
         mg = FlintCore.registerPlugin(plugin.getName());

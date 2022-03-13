@@ -118,6 +118,7 @@ public final class DeathHelper {
             event.setDeathMessage("");
             event.getDrops().clear();
 
+            TTTCore.log.info("Sending respawn packet to " + player.getName());
             NmsHelper.sendRespawnPacket(player);
             player.teleport(loc);
         }

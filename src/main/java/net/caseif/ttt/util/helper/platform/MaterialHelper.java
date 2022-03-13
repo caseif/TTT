@@ -31,7 +31,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Material;
 import org.bukkit.block.data.type.Bed;
-import org.bukkit.block.data.type.Sign;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
@@ -162,7 +161,7 @@ public abstract class MaterialHelper {
             CLOCK = Material.CLOCK;
             IRON_HORSE_ARMOR = Material.IRON_HORSE_ARMOR;
             LEAD = Material.LEAD;
-            OAK_WALL_SIGN = Material.OAK_WALL_SIGN;
+            OAK_WALL_SIGN = Material.matchMaterial("minecraft:oak_wall_sign");
         }
 
         @Override
@@ -172,24 +171,24 @@ public abstract class MaterialHelper {
 
         @Override
         public boolean isStandingSign(Material material) {
-            return material == Material.ACACIA_SIGN
-                    || material == Material.BIRCH_SIGN
-                    || material == Material.DARK_OAK_SIGN
-                    || material == Material.JUNGLE_SIGN
-                    || material == Material.OAK_SIGN
-                    || material == Material.SPRUCE_SIGN
+            return material == Material.matchMaterial("minecraft:acacia_sign")
+                    || material == Material.matchMaterial("minecraft:birch_sign")
+                    || material == Material.matchMaterial("minecraft:dark_oak_sign")
+                    || material == Material.matchMaterial("minecraft:jungle_sign")
+                    || material == Material.matchMaterial("minecraft:oak_sign")
+                    || material == Material.matchMaterial("minecraft:spruce_sign")
                     || material == Material.matchMaterial("minecraft:warped_sign")
                     || material == Material.matchMaterial("minecraft:crimson_sign");
         }
 
         @Override
         public boolean isWallSign(Material material) {
-            return material == Material.ACACIA_WALL_SIGN
-                    || material == Material.BIRCH_WALL_SIGN
-                    || material == Material.DARK_OAK_WALL_SIGN
-                    || material == Material.JUNGLE_WALL_SIGN
-                    || material == Material.OAK_WALL_SIGN
-                    || material == Material.SPRUCE_WALL_SIGN
+            return material == Material.matchMaterial("minecraft:acacia_wall_sign")
+                    || material == Material.matchMaterial("minecraft:birch_wall_sign")
+                    || material == Material.matchMaterial("minecraft:dark_oak_wall_sign")
+                    || material == Material.matchMaterial("minecraft:jungle_wall_sign")
+                    || material == Material.matchMaterial("minecraft:oak_wall_sign")
+                    || material == Material.matchMaterial("minecraft:spruce_wall_sign")
                     || material == Material.matchMaterial("minecraft:warped_wall_sign")
                     || material == Material.matchMaterial("minecraft:crimson_wall_sign");
         }
