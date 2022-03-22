@@ -24,6 +24,8 @@
 <module name="Checker">
     <property name="charset" value="UTF-8"/>
 
+	<property name="severity" value="warning"/>
+
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.sf.net/config_whitespace.html -->
     <module name="FileTabCharacter">
@@ -236,9 +238,6 @@
 
     <module name="NewlineAtEndOfFile"/>
     <module name="SuppressionFilter">
-        <property name="file" value="${basedir}/etc/checkstyle-suppressions.xml"/>
+        <property name="file" value="${config_loc}/checkstyle-suppressions.xml"/>
     </module>
-
-    <property name="basedir" value="${basedir}"/>
-    <property name="severity" value="${severity}"/>
 </module>
