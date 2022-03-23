@@ -18,8 +18,9 @@ group = "net.caseif.ttt"
 version = "0.11.5-SNAPSHOT"
 
 // Extended project information
-val description: String by extra { "A Bukkit minigame based off the Garry\"s Mod gamemode Trouble In Terrorist Town." }
+val description: String by extra { "A Bukkit minigame based off the Garry's Mod gamemode Trouble In Terrorist Town." }
 val inceptionYear: String by extra { "2013" }
+val author: String by extra { "Max Roncace" }
 val packaging: String by extra { "jar" }
 
 java {
@@ -60,18 +61,18 @@ tasks.withType<JavaCompile> {
 tasks.named<Copy>("processResources") {
     from("LICENSE")
 
-    filesMatching("LICENSE") {
-        expand("name" to project.name)
-        expand("version" to project.version)
+    filesMatching(mutableListOf("**/LICENSE", "**/plugin.yml")) {
+        expand("version" to project.version,
+               "author" to author)
     }
 }
 
 tasks.withType<Jar> {
-    classifier = "base"
+    archiveClassifier.set("base")
 }
 
 tasks.withType<ShadowJar> {
-    classifier = ""
+    archiveClassifier.set("")
 
     relocate("net.caseif.rosetta", "net.caseif.ttt.lib.net.caseif.rosetta")
     relocate("net.caseif.crosstitles", "net.caseif.ttt.lib.net.caseif.crosstitles")
@@ -83,7 +84,7 @@ tasks.withType<ShadowJar> {
 tasks.create<Jar>("sourceJar") {
     from(sourceSets["main"].java)
     from(sourceSets["main"].resources)
-    classifier = "sources"
+    archiveClassifier.set("sources")
 }
 
 artifacts {
