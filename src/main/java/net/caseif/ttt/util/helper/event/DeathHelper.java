@@ -112,15 +112,20 @@ public final class DeathHelper {
     }
 
     private void cancelEvent(final Challenger ch) {
-        Location loc = player.getLocation(); // sending the packet resets the location
+        final Location loc = player.getLocation(); // sending the packet resets the location
 
         if (event != null) {
             event.setDeathMessage("");
             event.getDrops().clear();
 
-            TTTCore.log.info("Sending respawn packet to " + player.getName());
-            NmsHelper.sendRespawnPacket(player);
-            player.teleport(loc);
+            Bukkit.getScheduler().runTaskLater(TTTCore.getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+                    TTTCore.log.info("Sending respawn packet to " + player.getName());
+                    NmsHelper.sendRespawnPacket(player);
+                    player.teleport(loc);
+                }
+            }, 1L);
         }
 
         ch.setSpectating(true);

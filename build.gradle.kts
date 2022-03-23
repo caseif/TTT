@@ -38,8 +38,8 @@ repositories {
 
 // Project dependencies
 dependencies {
-    shadow("org.spigotmc:spigot-api:1.14-pre5-SNAPSHOT")
-    shadow("net.caseif.flint:flint:1.3")
+    implementation("org.spigotmc:spigot-api:1.14-pre5-SNAPSHOT")
+    implementation("net.caseif.flint:flint:1.3")
     implementation("net.caseif.rosetta:rosetta:1.1.4")
     implementation("net.caseif.crosstitles:crosstitles:0.1.3")
     implementation("net.gravitydevelopment.updater:updater:2.4")
@@ -73,6 +73,14 @@ tasks.withType<Jar> {
 
 tasks.withType<ShadowJar> {
     archiveClassifier.set("")
+
+    dependencies {
+        include(dependency("net.caseif.rosetta:rosetta"))
+        include(dependency("net.caseif.crosstitles:crosstitles"))
+        include(dependency("net.gravitydevelopment.updater:updater"))
+        include(dependency("org.bstats:bstats-bukkit"))
+        include(dependency("org.jnbt:jnbt"))
+    }
 
     relocate("net.caseif.rosetta", "net.caseif.ttt.lib.net.caseif.rosetta")
     relocate("net.caseif.crosstitles", "net.caseif.ttt.lib.net.caseif.crosstitles")
