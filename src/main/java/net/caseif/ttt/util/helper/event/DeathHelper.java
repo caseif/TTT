@@ -117,15 +117,9 @@ public final class DeathHelper {
         if (event != null) {
             event.setDeathMessage("");
             event.getDrops().clear();
-
-            Bukkit.getScheduler().runTaskLater(TTTCore.getPlugin(), new Runnable() {
-                @Override
-                public void run() {
-                    TTTCore.log.info("Sending respawn packet to " + player.getName());
-                    NmsHelper.sendRespawnPacket(player);
-                    player.teleport(loc);
-                }
-            }, 1L);
+            TTTCore.log.info("Sending respawn packet to " + player.getName());
+            NmsHelper.sendRespawnPacket(player);
+            player.teleport(loc);
         }
 
         ch.setSpectating(true);
